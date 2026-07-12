@@ -1,0 +1,44 @@
+app-messages:host {
+  ion-content {
+    --background: #f8fafc;
+  }
+
+  /* تنسيقات الهيدر (Lineone Style) */
+  .lineone-header {
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    
+    ion-toolbar {
+      --background: #ffffff;
+    }
+    
+    .text-dark { color: #334155; }
+    .fw-bold { font-weight: 600; font-size: 1.15rem; letter-spacing: 0.5px; }
+  }
+
+  /* تنسيق أيقونات القائمة وزر الإضافة (Lineone Style) */
+  .menu-btn-container, ion-buttons[slot="end"] {
+    margin-inline-start: 5px;
+
+    .custom-menu-btn {
+      --background: #f1f5f9; /* خلفية رمادية فاتحة جداً */
+      --border-radius: 12px; /* زوايا دائرية ناعمة */
+      --padding-start: 8px;
+      --padding-end: 8px;
+      height: 40px;
+      width: 40px;
+      margin: 0;
+      transition: all 0.2s ease;
+
+      ion-icon {
+        font-size: 1.6rem;
+        color: #334155; /* لون الأيقونة (Slate 700) */
+      }
+
+      &:active {
+        --background: #e2e8f0; /* تتغير الخلفية عند النقر */
+        transform: scale(0.95);
+      }
+    }
+  }
+}

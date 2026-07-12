@@ -1,0 +1,30 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar>
+    <ion-buttons slot="end" class="mr-2 w-10">
+      <ion-back-button defaultHref="/" text="" icon="chevron-back-outline" class="custom-back-btn"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title class="ion-text-center fw-bold text-dark">
+      {{ pageTitle }}
+    </ion-title>
+
+    <ion-buttons slot="start" class="w-10"></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content mode="md" class="bg-[#f8fafc]">
+  
+  <ngx-extended-pdf-viewer
+    [src]="pdfUrl"
+    [useBrowserLocale]="true"
+    [height]="'100%'"
+    [showToolbar]="true"
+    [showSidebarButton]="false"
+    [showFindButton]="true"
+    [showPagingButtons]="true"
+    [showZoomButtons]="true"
+    [showSecondaryToolbarButton]="false"
+    backgroundColor="#f8fafc">
+  </ngx-extended-pdf-viewer>
+
+</ion-content>

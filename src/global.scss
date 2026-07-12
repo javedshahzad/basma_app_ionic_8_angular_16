@@ -1,0 +1,1034 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+// @import 'swiper/scss';
+// @import '@ionic/angular/css/ionic-swiper';
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+*{
+  font-family: "Rubik", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+// Add this to your global.scss
+
+.bottom-safe-area {
+  padding-bottom: env(safe-area-inset-bottom, 16px); // fallback to 16px if not supported
+}
+
+.popover-viewport.sc-ion-popover-md{
+  overflow: auto !important;
+}
+
+
+.select-icon {
+  left: -13px !important;
+  top: 0px;
+}
+
+// =======================previewImg====================
+.alert-message.sc-ion-alert-md {
+max-height: 100vh;
+  font-size: 16px;
+}
+
+.sc-ion-alert-md-h{
+--max-width:100vw;
+}
+
+//css for calendar background
+.monthview-eventdetail-timecolumn{
+  display: none;
+}
+
+.calendar-bg-black{ 
+  background-color: var(--light-yellow) !important;
+  color:#fff;
+  border-radius: 3px;
+  margin: 3px !important;
+  border: 2px solid #fff !important;
+ }
+ .table-bordered{
+  border: none !important;
+}
+.table-bordered > tbody > tr > td{
+  border: none !important;
+  box-shadow: none !important;
+  margin: 3px !important;
+}
+.monthview-selected{
+  background-color: var(--light-yellow) !important;
+color:#fff;
+border-radius: 3px;
+}
+.monthview-current{
+  background-color: var(--blue-color) !important;
+color:#fff;
+border-radius: 3px;
+}
+.table-bordered > thead > tr > th{
+  margin: 5px;
+  border: none !important;
+  box-shadow: none !important;
+}
+  
+.cal-modal{
+  padding:15px;
+  --height:80%;
+  --border-radius:10px;
+}
+
+.toastClass{  
+margin-top: -55px!important;   
+}
+
+.btn-hide{
+  display: none !important;
+}
+
+.my-custom-action{    
+  .action-sheet-group{
+      border-radius: 20px !important;
+      margin: 10px;
+  }
+  .action-sheet-group-cancel{
+      margin: 0px 10px 10px 10px;
+  }
+}
+
+
+.action-sheet-button-inner.sc-ion-action-sheet-md {
+  -ms-flex-pack: start;
+  justify-content: space-between;
+}
+
+body{
+  direction: rtl;
+}
+ion-app.platform-ios12 ion-content { pointer-events: auto; /*fix scroll lock on ios12.2*/ }
+
+.right-direction{
+  direction: ltr !important;
+}
+.left-direction{
+  direction: rtl !important;
+}
+
+.text-right{
+  text-align: right;
+}
+.text-center{
+  text-align: center;
+}
+.text-left{
+  text-align: left;
+}
+ion-reorder::part(icon) {
+color: #fff !important;
+opacity: 1 !important;
+}
+ion-segment-button{
+      text-transform: capitalize !important;
+  letter-spacing: 0 !important;
+}
+.segment-button-checked{
+  background: var(--light-blue) !important;
+  border-radius: 5px !important;
+}
+.profile-picture{
+      width: 40px;
+      border-radius: 50%;
+      height: 40px;
+}
+.norecord-found{
+  white-space: normal;
+  padding: 10px 10px;
+}
+
+.centerInput{
+      text-align: center;
+  input{
+      text-align: center;
+  }
+}
+.reorder-icon {
+      color: #fff;
+      opacity: 1!important;
+}
+
+.select-popover{
+  .popover-content{
+          top: 7px !important;
+          /* left: 102px; */
+          right: 7px !important;
+  }
+}
+
+
+
+.small_btn_header{
+      --padding-start: 5px !important;
+  --padding-end: unset !important;
+}
+.sidemenu-color{
+  --background: var(--light-color) !important;
+  border-radius: 45px !important;
+  .sidemenu-header{
+      width: 100%;
+          padding: 5vh 18px 4px;
+  }
+  .username{
+      font-size: 25px;
+      color: var(--menu-text-color);
+      margin: 0px 15px;
+      font-weight: 300;
+  }
+  .username-detail{
+      font-size: 15px;
+      color: var(--menu-text-color);
+      margin: 12px 15px;
+      font-weight: 300;
+  }
+  .sidemenu-names{
+      background: none;
+      color: var(--menu-text-color);
+      font-size: 15px;
+      font-weight: 300;
+      //padding: 2px 0;
+      ion-icon{
+          color: #909dff;
+          font-size: 22px;
+      }
+  }
+  .logout{
+      background-color: #f43f5e;
+    /* 🟢 السحر هنا: دمجنا الهامش الطبيعي مع المنطقة الآمنة للنظام */
+    margin: 20px auto calc(20px + env(safe-area-inset-bottom, 16px)) auto !important;
+    font-size: 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    width: 85%;
+    color: white;
+    padding: 12px;
+    text-align: center;
+  }
+  ion-list{
+      background: unset;
+  }
+}
+ionic-selectable-modal{
+  .buttons-first-slot{
+      position: absolute;
+      left: 7px;
+      z-index: 5;
+  }
+}
+.switch-account {
+  /* جعل الخلفية تغطي الشاشة بالكامل للتحكم بموقع المحتوى */
+  align-items: flex-end !important;
+  justify-content: center !important;
+
+  &::part(content) {
+    /* 🟢 إلغاء أي حسابات تلقائية لـ Ionic لضمان تموضعنا المخصص */
+    position: absolute !important;
+    top: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    
+    /* 🟢 تحديد العرض ليكون مناسباً لجميع الشاشات */
+    width: 94vw !important;
+    max-width: 450px !important; /* للحماية في شاشات التابلت */
+    
+    /* 🟢 وضعها في الأسفل مع احترام الـ Navigation Bar */
+    bottom: calc(env(safe-area-inset-bottom, 20px) + 16px) !important;
+    
+    /* 🟢 تصميم جمالي (حواف دائرية وظل) */
+    border-radius: 24px !important;
+    box-shadow: 0px -4px 20px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+.edit-student{
+  --width: 94vw !important;
+  --height: 45vh !important;
+
+}
+.edit-student-details{
+  --width: 96vw !important;
+  --height: 55vh !important;
+
+}
+.tab-selected{
+  border-top: 3px solid;
+}
+  .custom-alertController{
+      border-radius: 13px;
+      .title{
+          font-size: 20px !important;
+          text-align: center;
+      }
+      .sub-title{
+          font-size: 15px !important;
+          margin: -29px 0px;
+          color: #bbbbbb;
+          text-align: center;
+      }
+      .abscence{
+          margin: 31px -20px;
+          table{
+              width: 100%;
+              tr{
+                  th{
+                      font-size: 30px;
+                    }
+                  td{
+                      text-align: center;
+                  }
+              }
+          }
+      }
+  }
+  .alert-danger{
+      color: red;
+      font-size: 11px;
+      margin-left: 16px;
+      margin-top: 1px;
+      padding: 0px 0;
+  }
+  .activeMenuPage{
+      background-color: rgba(255, 255, 255, 0.09) !important;
+      border-radius: 5px;
+      ion-icon{
+          color: #fff !important;
+      }
+  }
+
+.alert-wrapper {
+  width: 100% !important;
+}
+.alert-radio-button {
+  padding: 0px 30px;
+}
+.createmessage{
+  border: 1px solid;
+  margin: 0 70px !important;
+}
+
+//custom profile modal
+.custom-modal-main {
+  background: rgba(158, 158, 158, 0.65);
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  .custom-modal {
+      background: #fff;
+      width: 90%;
+      padding: 10px;
+      border-radius: 10px;
+      position: relative;
+      .custom-modal-header {
+          position: absolute;
+          top: -49px;
+          width: 100%;
+          left: 0;
+          .image-sec {
+              width: 100px;
+              height: 100px;
+              border-radius: 50%;
+              background-position: center;
+              background-size: contain;
+              margin: 0 auto;
+              border: 5px solid #fff;
+              position: relative;
+              .add-image-icon {
+                  position: absolute;
+                  top: 60px;
+                  right: -4px;
+                  background: #fff;
+                  height: 30px;
+                  width: 30px;
+                  text-align: center;
+                  border: 2px solid #fff;
+                  border-radius: 50%;
+                  ion-icon{
+                      color: green;
+                      font-size: 25px;
+                  }
+                  ion-icon::before{
+                      font-size: 25px;
+                  }
+              }
+          }
+      }
+      .custom-note-header {
+          text-align: center;
+      }
+      .custom-modal-content {
+          text-align: center;
+          width: 100%;
+          margin-top: 15%;
+          h2 {
+              font-weight: bold;
+          }
+          p{
+              margin: 0;
+              color: #666;
+          }
+          .download-button {
+              position: absolute;
+              bottom: 1rem;
+              ion-icon{
+                  font-size: 30px;
+              }
+          }
+      }
+      .custom-note-content{
+          text-align: center;
+          width: 100%;
+          margin-bottom: 20px;
+          ion-icon.rating-star::before {
+              font-size: 2em;
+          }
+      }
+      .custom-modal-footer{
+        margin-bottom: calc(env(safe-area-inset-bottom, 16px) + 35px);
+
+          .absence-count{
+              font-size: 25px;
+              font-weight: 700;
+              margin: 10px 0 0;
+          }
+          .absence{
+              font-size: 12px;
+              font-weight: 400;
+              color: #666;
+              margin-top: 0;
+          }
+      }
+  }
+}
+//syling cards
+ion-card{
+        margin: 5px 0px 5px 0px;
+}
+
+//custom calender modal
+.custom-calender-modal-main{
+  ion-calendar .calendar-row .today {
+      box-shadow: inset 0 0 10px #3d5afe;
+      background: #3d5afe;
+      align-items: center;
+  }
+  ion-calendar .calendar-row .eventBlip {
+      background: #3d5afe;
+  }
+  background: rgba(158, 158, 158, 0.65);
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 9999;
+  top: 9%;
+  .calender-container {
+      width: 100%;
+      background: #fff;
+      position: relative;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      height: 40%;
+      .calender-body {
+          position: absolute;
+          width: 100%;
+          bottom: auto;
+      }
+  }
+  .clickd-div {
+      width: 100%;
+      height: 60%;
+      position: absolute;
+      bottom: 0;
+  }
+}
+.add-circle{
+ 
+  font-size: 27px;
+}
+.toast-md .toast-wrapper {
+  width: 88% !important;
+  background: #333333b0 !important;
+  border-radius: 50px !important;
+  bottom: 8% !important;
+}
+.toast-md .toast-message {
+  padding: 11px 16px 11px !important;
+}
+.toolbar-ios ion-title {
+  padding: 0 52px 1px 16px !important;
+}
+.parent-connect-rules{
+  ul{
+      list-style: none;
+      padding: 0;
+      margin-left: 0;
+  }
+  li{
+      padding: 4px 0;
+  }
+  li::before {
+      content: "\2022";
+      color: #2979ff;
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: 0;
+  }
+}
+.e-learningdesc{
+  p{
+      white-space: normal !important;
+  }
+}
+.btn-primary{
+  --box-shadow:unset;
+  width:100%;
+}
+.btn-secondary{
+  --box-shadow:unset;
+  --border-width:1px;
+  width:100%;
+}
+
+//custon loader
+.loaderStyle{
+      --backdrop-opacity: 0.7;
+      --height: 70% !important;
+      --width: 83% !important;
+      --background: transparent !important;
+      --box-shadow: none;
+      --box-shadow: none;
+       overflow: hidden;
+            .popover-viewport{
+              --background: transparent;
+              top: 30% !important;
+              left: 26% !important;
+              position: absolute !important;
+              --box-shadow: none;
+              overflow: hidden;
+            }
+}
+.editClassPopup{
+  .btnfirst{
+          color: #3d5afe;
+          // background: #3880ff;
+          margin: 5px 0px;
+          font-weight: bold;
+          position: absolute;
+          top: 2px;
+          left: 7px;
+  }
+  .btnsecond{
+          color: #fff;
+          background: #43a047;
+          margin: 5px 0px; 
+          font-weight: bold;
+          width: 46%;
+          text-align: center !important;
+          padding-left: 60px;
+  }
+  .btnthird{
+      color: #fff;
+      background: #f00;
+      margin: 5px 0px;
+      font-weight: bold;
+      width: 46%;
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      text-align: center !important;
+      padding-left: 60px;
+  }
+}
+
+//rating popup
+
+.ratePopup{
+      --width: 96vw !important;
+      -height: 44vh!important;
+      .popover-content{
+              top: 14vh !important;
+              left: 4vw !important;
+      }
+}
+
+@media only screen and (max-height: 639px) and (orientation: portrait) {
+  .custom-calender-modal-main{
+      top: 9%;
+      .calender-container {
+          height: 50%;
+      }
+      .clickd-div {
+          height: 50%;
+      }
+  }
+}
+@media only screen and (min-height: 720px) and (orientation: portrait) {
+  .custom-calender-modal-main{
+      top: 7%;
+      .calender-container {
+          height: 35%;
+      }
+      .clickd-div {
+          height: 65%;
+      }
+  }
+}
+
+@media only screen and (orientation: landscape) {
+  .custom-calender-modal-main{
+      top: 9%;
+      .calender-container {
+          height: 70%;
+      }
+      .clickd-div {
+          height: 30%;
+      }
+  }
+}
+.ionic-selectable-item{
+  ion-label{
+    white-space: normal !important;
+    overflow: auto !important;
+  }
+}
+.send-msg-to-user {
+  .ionic-selectable-value {
+      flex: 1;
+       padding-top: 0 !important; 
+      padding-bottom: 0 !important; 
+      overflow: hidden; 
+  }
+  .ionic-selectable-label-default .ionic-selectable-value, .ionic-selectable-label-fixed .ionic-selectable-value {
+       padding-left: 0 !important; 
+  }
+  .ionic-selectable-icon {
+      display: none !important;
+  }
+}
+ion-menu-button{
+  background: var(--blue-color);
+  color: var(--light-color);
+  border-radius: 10px;
+  height: 35px;
+  width: 40px;
+}
+ion-calendar{
+  .title{
+    padding: 8px 40px 0 40px !important;
+    overflow: hidden;
+    background: var(--calender-blue);
+    border-radius: 10px;
+    height: 50px;
+    .switch-btn{
+      color: var(--light-color) !important;
+    }
+    .back{
+      color: var(--light-color) !important;
+    }
+    .forward{
+      color: var(--light-color) !important;
+    }
+  }
+
+}
+ion-header{
+  border: none !important;
+}
+ion-searchbar{
+  --background: var(--light-color) !important;
+}
+.item-icon{
+  font-size: 30px;
+  color: var(--blue-color);
+  margin-left: 10px;
+}
+ion-item{
+  --background: var(--light-blue);
+  }
+  .rounded-btn{
+    background: var(--blue-color);
+    color: #fff;
+    border-radius: 30px;
+    height: 34px !important;
+    width: 34px;
+    padding-right: 1px;
+  }
+  .rounded-btn-for-students{
+    background: var(--blue-color);
+    color: #fff;
+    border-radius: 50px;
+    height: 66px !important;
+    width: 66px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 15px;
+  }
+
+/* Custom modal styling */
+.half-modal .modal-wrapper {
+  height: 50%; /* Half the screen height */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  overflow: hidden;
+  --background: #ffffff; /* Modal background color */
+  box-shadow: 0px -4px 8px rgba(0, 0, 0, 0.2); /* Shadow for floating effect */
+  z-index: 1000; /* Ensure modal is above other content */
+}
+
+/* Ensure backdrop stays behind the modal */
+.half-modal .modal-backdrop {
+  z-index: 999; /* Ensure the backdrop is under the modal */
+  background-color: rgba(0, 0, 0, 0.3); /* Slight opacity for backdrop */
+}
+.plan-receipt-modal {
+    --width: 360px;
+    --height: 350px;
+    --border-radius: 15px;
+}
+
+/* ==============================================
+   تنسيقات القائمة السفلية (Action Sheet) للغة العربية
+   ============================================== */
+.custom-action-sheet {
+  direction: rtl !important; /* إجبار القائمة على الاتجاه العربي */
+
+  .action-sheet-button {
+    justify-content: flex-start !important; /* محاذاة العناصر لليمين */
+    text-align: right !important;
+  }
+
+  .action-sheet-button-inner {
+    justify-content: flex-start !important;
+    text-align: right !important;
+    font-family: inherit; /* توحيد الخط مع التطبيق */
+  }
+
+  /* ضبط المسافة بين الأيقونة والنص */
+  .action-sheet-icon {
+    margin-right: 0 !important;
+    margin-left: 16px !important;
+  }
+}
+
+/* تنسيق نافذة الصور الرمزية على الشاشات الكبيرة */
+@media (min-width: 768px) {
+  .avatar-modal-class {
+    --width: 800px; /* العرض المثالي لشاشة الكمبيوتر */
+    --height: 600px;
+    --border-radius: 40px;
+    
+    /* لضمان التوسيط التام */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ==========================================================
+   🔴 تنسيق نافذة تقييم الطالب (Add Review) لشاشات الكمبيوتر
+   ========================================================== */
+@media (min-width: 768px) {
+  .review-desktop-modal {
+    --width: 850px !important;           /* عرض النافذة المريح للعين */
+    --max-width: 95vw !important;        /* أقصى عرض مسموح به */
+    --height: 85vh !important;           /* ارتفاع النافذة (85% من الشاشة) */
+    --border-radius: 24px !important;    /* حواف دائرية تتطابق مع تصميم Lineone */
+    --box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  }
+
+  /* ==========================================================
+   🌟 تنسيق قائمة الخيارات السفلية (Action Sheet) - تصميم Lineone
+   ========================================================== */
+ion-action-sheet {
+  direction: rtl;
+  --backdrop-opacity: 0.5;
+  
+  .action-sheet-group {
+    background: #ffffff;
+    border-radius: 24px;
+    /* 🟢 السحر هنا: 16 بكسل هامش طبيعي + ارتفاع شريط النظام */
+    margin: 10px 16px calc(16px + env(safe-area-inset-bottom, 20px)) 16px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* عنوان النافذة */
+  .action-sheet-title {
+    font-family: inherit;
+    font-weight: 700 !important;
+    color: #64748b !important; /* Slate 500 */
+    font-size: 15px !important;
+    padding: 16px !important;
+    border-bottom: 1px solid #f1f5f9 !important; /* Slate 100 */
+    background: #ffffff !important;
+  }
+
+  /* أزرار الحسابات */
+  .action-sheet-button {
+    color: #1e293b !important; /* Slate 800 */
+    font-family: inherit;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+    padding: 18px 16px !important;
+    background: #ffffff !important;
+    transition: all 0.2s ease;
+
+    &:hover, &:active, &.ion-activated {
+      background: #f8fafc !important; /* Slate 50 */
+    }
+
+    /* أيقونة الحساب (إن وجدت) */
+    .action-sheet-icon {
+      color: #6366f1 !important; /* Indigo 500 */
+      font-size: 22px !important;
+      margin-inline-end: 12px !important;
+    }
+  }
+
+  /* زر الإلغاء (فصله بلون أحمر فاتح للتميز) */
+  .action-sheet-cancel {
+    color: #ef4444 !important; /* Rose 500 */
+    background: #fef2f2 !important; /* Rose 50 */
+    font-weight: 700 !important;
+    
+    &:hover, &:active, &.ion-activated {
+      background: #fee2e2 !important; /* Rose 100 */
+    }
+
+    .action-sheet-icon {
+      color: #ef4444 !important;
+    }
+  }
+}
+}
+
+/* ==========================================================
+   🌟 تنسيق نافذة ionic-selectable (شامل الاختيار المتعدد) - Lineone
+   ========================================================== */
+
+ion-modal.lineone-selectable-modal {
+  /* جعل النافذة تطفو من الأسفل بارتفاع 70% */
+  --height: 70% !important;
+  --border-radius: 28px 28px 0 0 !important;
+  align-items: flex-end !important;
+  
+  &::part(content) {
+    border-radius: 28px 28px 0 0 !important;
+    bottom: 0 !important;
+    position: absolute !important;
+  }
+  
+  .modal-wrapper {
+    position: absolute !important;
+    bottom: 0 !important;
+    height: 100% !important;
+    border-radius: 28px 28px 0 0 !important;
+  }
+
+  ionic-selectable-modal {
+    background: #ffffff !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    
+    /* 1. رأس النافذة */
+    ion-header {
+      box-shadow: none !important;
+      ion-toolbar {
+        --background: #ffffff !important;
+        --border-width: 0 !important;
+        padding-top: 10px !important;
+
+        ion-title {
+          color: #1e293b !important; /* Slate 800 */
+          font-weight: 900 !important;
+          font-size: 1.15rem !important;
+        }
+      }
+    }
+
+    /* 2. شريط البحث */
+    ion-searchbar {
+      --background: #f1f5f9 !important;
+      --border-radius: 14px !important;
+      --box-shadow: none !important;
+      --icon-color: #4f46e5 !important; /* Indigo 600 */
+      --color: #1e293b !important;
+      padding: 0 16px 16px 16px !important;
+      
+      .searchbar-input {
+        font-weight: 700 !important;
+      }
+    }
+
+    /* 3. قائمة الخيارات */
+    ion-content {
+      --background: #ffffff !important;
+      
+      ion-item {
+        --background: transparent !important;
+        --border-color: #f1f5f9 !important;
+        color: #475569 !important;
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        margin: 4px 12px !important;
+        border-radius: 12px !important;
+        --padding-start: 10px !important;
+
+        &.ion-activated {
+          --background: #f8fafc !important;
+        }
+
+        /* 🔴 تصميم مربعات التحديد (Checkboxes) للاختيار المتعدد */
+        ion-checkbox {
+          --border-color: #cbd5e1 !important;
+          --border-radius: 6px !important;
+          --border-color-checked: #4f46e5 !important;
+          --background-checked: #4f46e5 !important;
+          margin-inline-end: 12px !important;
+        }
+      }
+
+      /* العنصر المختار */
+      ion-item.ionic-selectable-item-is-selected {
+        --background: #eef2ff !important;
+        color: #4f46e5 !important;
+        border: 1px solid #c7d2fe !important;
+      }
+    }
+
+    /* 4. 🔴 الشريط السفلي (زر التأكيد للاختيار المتعدد) */
+    ion-footer {
+      background: #ffffff !important;
+      border-top: 1px solid #f1f5f9 !important;
+      padding: 12px 16px !important;
+
+      ion-toolbar {
+        --background: #ffffff !important;
+        
+        ion-button {
+          --background: #4f46e5 !important; /* Indigo 600 */
+          --background-hover: #4338ca !important;
+          --color: #ffffff !important;
+          --border-radius: 16px !important;
+          font-weight: 800 !important;
+          height: 52px !important;
+          margin: 0 !important;
+          width: 100% !important;
+          font-size: 1rem !important;
+          box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2) !important;
+        }
+      }
+    }
+  }
+}
+
+/* ========================================== */
+/* 🌟 تصميم نافذة ملف الطالب المصغرة بالمنتصف */
+/* ========================================== */
+ion-modal.profile-modal-class {
+  --width: 92%;
+  --max-width: 400px;
+  --height: auto;
+  --max-height: 90vh;
+  --border-radius: 24px;
+  --background: transparent;
+  
+  /* 🔴 إجبار Ionic على إظهار الخلفية بالشفافية التي نحددها نحن */
+  --backdrop-opacity: 1 !important; 
+  
+  align-items: center;
+  justify-content: center;
+
+  &::part(backdrop) {
+    background: rgba(15, 23, 42, 0.5) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+  }
+
+  &::part(content) {
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+    background: white; 
+    overflow: hidden;
+  }
+}
+
+/* ========================================== */
+/* 🌟 جعل نافذة الصورة المكبرة شفافة بالكامل */
+/* ========================================== */
+ion-modal.fullscreen-image-modal {
+  --background: transparent;
+  --backdrop-opacity: 0 !important; /* لأننا نستخدم الخلفية الخاصة بنا داخل الـ div */
+}
+
+/* ========================================== */
+/* 🪟 تخصيص النوافذ المنبثقة الشفافة (Lineone) */
+/* ========================================== */
+.transparent-modal {
+  --background: rgba(15, 23, 42, 0.4); /* خلفية داكنة شفافة (Slate-900/40) */
+  backdrop-filter: blur(4px); /* تأثير الضبابية للخلفية */
+  
+  &::part(content) {
+    background: transparent; /* إزالة الخلفية الصلبة للحاوية الداخلية */
+    box-shadow: none;
+  }
+}
+
+/* 🌟 حماية جميع الفوترات (Footers) في التطبيق من التداخل مع شريط التنقل */
+ion-footer {
+  padding-bottom: max(env(safe-area-inset-bottom), 24px) !important;
+}
+
+/* رفع محتوى الصفحات التي تحتوي على فوتر لكي لا يغطي الفوتر على آخر عنصر */
+ion-content {
+  --padding-bottom: max(env(safe-area-inset-bottom), 24px);
+}

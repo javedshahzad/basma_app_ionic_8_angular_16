@@ -1,0 +1,197 @@
+/* خلفية القائمة الجانبية بيضاء نظيفة */
+.lineone-sidebar {
+  --background: #ffffff;
+}
+
+/* الرأس (Header) - تصميم مسطح ونظيف */
+.sidebar-header {
+  padding: 30px 20px 15px 20px;
+  background: #ffffff;
+
+  .user-info-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+
+  .avatar-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #f1f5f9; /* Slate 100 */
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .user-text {
+    .user-name {
+      color: #1e293b; /* Slate 800 */
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 4px 0;
+    }
+    .user-role {
+      color: #64748b; /* Slate 500 */
+      font-size: 0.85rem;
+      margin: 0;
+    }
+  }
+
+  .lineone-switch-btn {
+    --color: var(--ion-color-primary);
+    --border-color: rgba(var(--ion-color-primary-rgb), 0.3);
+    --border-radius: 8px;
+    margin: 0;
+    width: 100%;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0;
+  }
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: #e2e8f0; /* Slate 200 */
+  margin: 0 20px 10px 20px;
+}
+
+/* القائمة (Menu List) */
+.lineone-menu-list {
+  background: #ffffff;
+  padding: 0 12px;
+
+  .menu-section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8; /* Slate 400 */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 15px 12px 5px 12px;
+  }
+
+  /* تصميم العنصر العادي */
+  .menu-item {
+    border-radius: 8px;
+    padding: 6px 4px;
+    margin-bottom: 2px;
+    align-items: center;
+    color: #475569; /* Slate 600 */
+    transition: all 0.2s ease;
+    cursor: pointer;
+
+    .icon-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      ion-icon {
+        font-size: 1.35rem;
+        color: #64748b; /* Slate 500 */
+        transition: color 0.2s ease;
+      }
+    }
+
+    .text-col {
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    &:hover, &:active {
+      background: #f8fafc; /* Slate 50 */
+      color: #0f172a; /* Slate 900 */
+      
+      .icon-col ion-icon {
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+
+  /* تصميم العنصر النشط (Active) */
+  .active-item {
+    background: rgba(var(--ion-color-primary-rgb), 0.08) !important;
+    color: var(--ion-color-primary) !important;
+    font-weight: 700 !important;
+
+    .icon-col ion-icon {
+      color: var(--ion-color-primary) !important;
+    }
+  }
+
+  /* قسم تغيير اللغة */
+  .lang-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    margin: 10px 4px 15px 4px;
+
+    .lang-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+
+      ion-icon {
+        font-size: 1.2rem;
+        color: var(--ion-color-primary);
+      }
+    }
+
+    .select-col {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 !important;
+
+      ion-select {
+        color: var(--ion-color-primary);
+        font-weight: bold;
+        font-size: 0.9rem;
+        padding: 4px 8px !important;
+      }
+    }
+  }
+}
+
+/* زر تسجيل الخروج */
+.logout-wrapper {
+  margin-top: 10px;
+  border-top: 1px solid #e2e8f0;
+
+  .lineone-logout-btn {
+    --color: #ef4444; /* لون أحمر فلات */
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0;
+    
+    ion-icon {
+      font-size: 1.4rem;
+    }
+
+    &:active {
+      --background: #fef2f2; /* خلفية حمراء باهتة عند النقر */
+    }
+  }
+}
+
+/* 🌟 دفع محتوى القائمة الجانبية (وزر تسجيل الخروج) للأعلى لتجنب شريط أندرويد */
+ion-menu ion-content {
+  --padding-bottom: max(env(safe-area-inset-bottom), 40px) !important;
+}
+
+ion-menu ion-footer {
+  padding-bottom: max(env(safe-area-inset-bottom), 24px) !important;
+  background: white; /* تأكد من تطابق لون الخلفية مع تصميمك */
+}
+
+/* في حال كان زر الخروج موجوداً داخل عنصر معين في الأسفل */
+.menu-bottom-container {
+  margin-bottom: max(env(safe-area-inset-bottom), 24px) !important;
+}

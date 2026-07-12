@@ -1,0 +1,16 @@
+.body{
+    margin: 4vh;
+        .edit-icon{
+        	    font-size: 3vh;
+			    position: absolute;
+			    right: 1vh;
+			    top: 1vh;
+			    z-index: 2;
+        }
+        .input-row{
+        	padding-bottom: 4vh;
+        	.item{
+        		width: 100%;
+        	}
+        }
+    }

@@ -1,0 +1,68 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar>
+    <ion-buttons slot="start" class="menu-btn-container w-10"></ion-buttons>
+
+    <ion-title class="ion-text-center fw-bold text-dark">
+      اختيار المستخدمين
+    </ion-title>
+
+    <ion-buttons slot="end" class="mr-2 w-10 menu-btn-container">
+      <ion-button color="dark" class="custom-menu-btn" (click)="dismiss()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  
+  <ion-toolbar class="px-4 pb-2 border-b border-slate-100">
+    <div class="flex items-center bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1 focus-within:border-indigo-500 transition-colors">
+      <ion-icon name="search-outline" class="text-slate-400 text-xl"></ion-icon>
+      <ion-input type="text" 
+                 placeholder="ابحث عن اسم المستخدم..." 
+                 [(ngModel)]="searchQuery"
+                 (ngModelChange)="searchUser()" 
+                 class="text-slate-700 font-medium mr-2" 
+                 clearInput>
+      </ion-input>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+  <div class="p-4 flex flex-col gap-3 pb-24">
+    
+    <div *ngFor="let user of filteredUsers" 
+         (click)="toggleUserSelection(user)"
+         class="flex items-center gap-4 bg-white p-3 rounded-2xl border transition-all cursor-pointer shadow-sm hover:shadow-md"
+         [ngClass]="isUserSelected(user) ? 'border-indigo-400 bg-indigo-50/30' : 'border-slate-100'">
+      
+      <div class="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg shadow-sm"
+           [ngClass]="isUserSelected(user) ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-500'">
+        {{ user.first_name ? user.first_name.charAt(0).toUpperCase() : 'U' }}
+      </div>
+      
+      <div class="flex-1">
+        <h4 class="text-base font-bold text-slate-800 m-0">{{user.first_name}}</h4>
+      </div>
+      
+      <div *ngIf="isUserSelected(user)" class="text-indigo-500 transition-transform scale-110">
+        <ion-icon name="checkmark-circle" class="text-3xl"></ion-icon>
+      </div>
+      <div *ngIf="!isUserSelected(user)" class="text-slate-300">
+        <ion-icon name="ellipse-outline" class="text-3xl"></ion-icon>
+      </div>
+    </div>
+
+    <div *ngIf="filteredUsers.length === 0" class="text-center py-10 text-slate-400 font-medium">
+      لا يوجد مستخدم بهذا الاسم
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border bg-white border-t border-slate-100">
+  <div class="p-4">
+    <button (click)="confirmSelection()" class="w-full py-4 text-white font-bold rounded-2xl shadow-lg transition-all active:scale-[0.98]"
+            [ngClass]="selectedUsers.length > 0 ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' : 'bg-slate-300 pointer-events-none'">
+      تأكيد الاختيار ({{selectedUsers.length}})
+    </button>
+  </div>
+</ion-footer>

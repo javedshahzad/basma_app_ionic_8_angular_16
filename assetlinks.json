@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.webapp.attendance",
+      "sha256_cert_fingerprints": [
+        "E6:9C:58:DD:EE:5C:97:39:3F:1B:AD:C4:44:E2:60:62:E5:83:42:5E:3D:A9:DD:A9:DF:7C:0B:F2:BE:71:E7:08"
+      ]
+    }
+  }
+]

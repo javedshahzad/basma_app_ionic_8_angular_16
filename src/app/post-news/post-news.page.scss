@@ -1,0 +1,28 @@
+app-post-news:host {
+  .lineone-header {
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    
+    ion-toolbar {
+      --background: transparent;
+    }
+    
+    .text-dark { color: #334155; }
+    .fw-bold { font-weight: 600; font-size: 1.15rem; letter-spacing: 0.5px; }
+  }
+
+  ion-textarea {
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    --background: transparent;
+    font-family: inherit;
+    --placeholder-color: #94a3b8;
+  }
+  
+  ion-input {
+    --padding-start: 0;
+    --padding-end: 0;
+  }
+}

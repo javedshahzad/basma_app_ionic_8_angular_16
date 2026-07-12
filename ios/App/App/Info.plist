@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	
+	<key>FirebaseAutomaticScreenReportingEnabled</key>
+	<string>NO</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>بصمة</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>basmapp.com</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app requires constant Bluetooth access to function properly.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app requires Bluetooth access to function properly.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app requires calendar access to function properly.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to capture profile pictures and send images in chat, enhancing your communication experience with personalized visuals</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app requires contacts access to function properly.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app requires constant access to your location in order to track your position, even when the screen is off or the app is in the background.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app requires access to your location when the screen is on and the app is displayed.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires microphone access to function properly.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>This app requires motion detection access to function properly.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We would like to access your photo library to allow you to select and send existing photos in chat . making your conversations more engaging with visual content.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>This app requires reminders access to function properly.</string>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+</dict>
+</plist>

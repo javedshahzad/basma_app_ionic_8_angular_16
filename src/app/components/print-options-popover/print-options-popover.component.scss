@@ -1,0 +1,9 @@
+:host {
+  --background: #ffffff;
+  display: block;
+}
+
+/* إخفاء أي هوامش افتراضية من Ionic Popover */
+ion-list {
+  background: transparent;
+}

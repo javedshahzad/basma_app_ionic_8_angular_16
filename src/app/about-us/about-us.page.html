@@ -1,0 +1,68 @@
+<ion-header >
+  <ion-toolbar mode="md">
+    <ion-buttons slot="start">
+      <!-- <ion-menu-button></ion-menu-button> -->
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title text-right>{{'about.pagetitle' | translate}}</ion-title>
+   </ion-toolbar>
+</ion-header>
+
+<ion-content mode="md">
+  <ion-card>
+    <ion-card-header>
+      <h2>{{'about.what_is_stu_follow_up' | translate}}</h2>
+      <!-- <h2>ما هو نظام متابعة الطلاب ؟</h2> -->
+    </ion-card-header>
+    <ion-card-content>
+      {{'about.stu_follow_up_ans' | translate}}
+      <!-- هو عبارة عن تطبيق يهدف إلى تحسين بيئة العمل المدرسي حيث يتيح للإدارة المدرسية متابعة حالة الطالب أثناء الدوام المدرسي بشكل مباشر مقدماً مجموعة من الخدمات المتنوعه التي تعين المعلمين لإداء مهامهم الموكلين بها للتقليل من الأعباء الإدارية ورفع مستوى أدائهم داخل الحصة الدراسية مما ينعكس بالإيجاب على مستوى التحصيل الدراسي لدى الطالب وتقليل الأعباء المالية التي تترتب على ولي الأمر من خلال الدروس الخصوصيه وغيرها. -->
+<!-- كما يسمح النظام بتوفير آلية مبتكرة لتقييم مستوى الطالب سلوكياً وتعليمياً وشراكه رقابية بين المؤسسة التربوية وولي أمر الطالب يساهم في الحد من الظواهر السلبية داخل المبنى المدرسي وإعداد جيل من الشباب واعي بشخصيته, صانع لهويته ومساهم في تحقيق الرؤية الوطنية. -->
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <h2>{{'about.system_goals' | translate}}:</h2>
+    </ion-card-header>
+    <ion-card-content>
+      <ul>
+        <!-- <li>ترشيد استهلاك المصادر المادية في المؤسسة التعليمية</li> -->
+        <li>{{'about.ration_the_Consumption' | translate}}</li>
+        <!-- <li>توفير وسيلة سهلة ودقيقة لتسجيل حضور وغياب الطلاب داخل الفصل.</li> -->
+        <li>{{'about.providing_an_easy_and_accurate' | translate}}</li>
+        <!-- <li>توفير تقارير دقيقة ومتابعة مستمرة للطلاب من قبل الإدارة المدرسية.</li> -->
+        <li>{{'about.providing_accurate_report' | translate}}</li>
+        <!-- <li>الحد من الظواهر السلبية داخل المبنى المدرسي وتعزيز الأمن الوقائي لدى الطلاب.</li> -->
+        <li>{{'about.reducing_negative_phenomena' | translate}}</li>
+        <!-- <li>تخفيف العبء على المعلمين المكلفين بالإشراف الإداري والتفرغ لمتابعة سلوك الطلاب.</li> -->
+        <li>{{'about.reducing_the_burden_on_teachers' | translate}}</li>
+        <!-- <li>المساهمة في غرس وتعزيز القيم الأخلاقية النبيلة النابعة من تعاليم ديننا الاسلامي الحنيف والعادات العربية الاصيلة.</li> -->
+        <li>{{'about.contribute_to_instilling' | translate}}</li>
+        <!-- <li>اشراك ولي أمر الطالب بصفة مباشرة وبشكل فعال من اجل تحسين مستوى الطالب تربويا وتعليميا.</li> -->
+        <li>{{'about.involve_the_gardian' | translate}}</li>
+        <!-- <li>توفير الوسائل الكفيلة بجذب العناصر المؤهلة من أعضاء الهيئة التدريسية والفنية بما يضمن حسن استثمار وتوجيه هذه العناصر لخدمة نظام التعليم ورسالته السامية من أجل تطوير وتنمية العمل التربوي.</li> -->
+        <li>{{'about.means_to_attract' | translate}}</li>
+        <!-- <li>المساهمة في إعداد جيل من الشباب واعي بشخصيته، صانع لهويته ومساهم في تحقيق الرؤية الوطنية.</li> -->
+        <li>{{'about.contribute_to_pre_young_gen' | translate}}</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+
+    <ion-card>
+    <ion-card-header>
+      <!-- <h2>لمزيد من المعلومات:</h2> -->
+      <h2>{{'about.further_info' | translate}}</h2>
+    </ion-card-header>
+    <ion-card-content>
+      <ul>
+        <li (click) = "openPDF('https://basmapp.com/Att-App/assets/appmanual.pdf')" class="link">{{'about.system_user_manual'| translate}} [ <span>{{'about.press_here' | translate}} </span> ] </li>
+        <!-- <li (click) = "openPDF('https://webapp.ws/att-admin/assets/appmanual.pdf')" class="link">{{'about.system_user_manual'| translate}} [ <span>{{'about.press_here' | translate}} </span> ] </li> -->
+        <!-- <li>قسم المحتوى التعليمي الخاص بكيفية استخدام النظام</li> -->
+        <li>{{'about.sec_of_educational_content' | translate}}</li>
+        <li (click) = "openUrl('https://webapp.ws/iticket/')" class="link">{{'about.system_technical_support_site' | translate}} [ <span>{{'about.press_here' | translate}}</span> ]</li>
+      </ul>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

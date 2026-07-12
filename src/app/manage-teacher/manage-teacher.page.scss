@@ -1,0 +1,58 @@
+/* ==========================================================================
+   Lineone Inspired Styles for Manage Teachers Page
+   ========================================================================== */
+
+app-manage-teacher:host {
+
+  ion-content {
+    --background: #f8fafc; /* خلفية Lineone المميزة */
+  }
+
+  /* إخفاء خطوط التمرير */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* --- تصميم الهيدر --- */
+  .lineone-header {
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    
+    ion-toolbar { 
+      --background: transparent; 
+      position: relative; 
+    }
+    
+    .lineone-title {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: #1e293b;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      pointer-events: none; 
+    }
+  }
+
+  /* --- حركات الدخول (Animations) --- */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

@@ -1,0 +1,35 @@
+.list{
+	.list-header{
+		    font-size: 16px;
+    		font-weight: 700;
+	}
+	.card{
+		.card-header{
+			padding: unset;
+    		border: 0.2px solid #00000017;
+			.item{
+
+			}
+		}
+		.card-content{
+			padding: unset;
+    		margin: unset;
+			.item-lover{
+				.item-text{
+					min-width: 147px;
+    				text-align: center;
+				}
+				.row{
+					    width: 100%;
+    					text-align: center;
+					.col{
+						ion-checkbox{
+							margin: 0px auto;
+    						padding-top: 2px;
+						}
+					}
+				}
+			}
+		}
+	}
+}

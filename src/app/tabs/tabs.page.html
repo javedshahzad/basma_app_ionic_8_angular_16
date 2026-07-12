@@ -1,0 +1,58 @@
+<ion-tabs>
+
+  <ion-tab-bar slot="bottom" class="lineone-tab-bar" mode="md">
+    
+    <ion-tab-button tab="classlist" [style.display]="(!isParent && !isStudent) ? 'flex' : 'none'">
+      <ion-icon name="grid-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="delaylist" [style.display]="(!isParent && !isStudent && !isteacher) ? 'flex' : 'none'">
+      <ion-icon name="time-outline"></ion-icon>
+    </ion-tab-button> 
+
+    <ion-tab-button tab="follow-up-student" [style.display]="(!isParent && !isStudent) ? 'flex' : 'none'"> 
+      <ion-icon name="analytics-outline"></ion-icon>
+    </ion-tab-button> 
+
+    <ion-tab-button tab="news" [style.display]="(!isParent && hide_new != '1' && !isStudent) ? 'flex' : 'none'">
+      <ion-badge *ngIf="dataProvider.unread" class="lineone-badge" mode="md"></ion-badge>
+      <ion-icon name="megaphone-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="student-titles" [style.display]="isStudent ? 'flex' : 'none'">
+      <ion-icon name="medal-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="student-notes" [style.display]="isStudent ? 'flex' : 'none'">
+      <ion-icon name="reader-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="warning-report" [style.display]="isStudent ? 'flex' : 'none'">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="news" [style.display]="(isStudent && hide_new != '1') ? 'flex' : 'none'">
+      <ion-badge *ngIf="dataProvider.unread" class="lineone-badge" mode="md"></ion-badge>
+      <ion-icon name="megaphone-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="children" [style.display]="isParent ? 'flex' : 'none'">
+      <ion-icon name="people-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="news" [style.display]="(isParent && hide_new != '1') ? 'flex' : 'none'">
+      <ion-icon name="megaphone-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="parentconnect" [style.display]="isParent ? 'flex' : 'none'">
+      <ion-badge *ngIf="dataProvider.private_message" class="lineone-badge" mode="md"></ion-badge>
+      <ion-icon name="chatbubbles-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="messages">
+      <ion-icon name="notifications-outline"></ion-icon>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+
+</ion-tabs>

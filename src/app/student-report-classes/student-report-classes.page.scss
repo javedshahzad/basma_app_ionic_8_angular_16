@@ -1,0 +1,81 @@
+app-student-report-classes:host {
+    
+  /* خلفية المنصة (Slate 50) */
+  .lineone-bg {
+    --background: #f8fafc;
+  }
+
+  /* هيدر أبيض مسطح ونظيف */
+  .lineone-header {
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* ظل سفلي خفيف جداً */
+    
+    ion-toolbar {
+      --background: #ffffff;
+    }
+  }
+
+  /* ================= البطاقات (Cards) المطابقة لـ classlist ================= */
+  .lineone-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+    border: 1px solid rgba(226, 232, 240, 0.8); /* Slate 200 */
+
+    &:active {
+      transform: scale(0.97);
+      background: #f8fafc;
+    }
+
+    .card-content-flex {
+      display: flex;
+      align-items: center;
+    }
+
+    /* الأيقونة داخل مربع ملون بشفافية (أهم ميزة في Lineone) */
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+
+      .icon-bg {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        opacity: 0.12; /* شفافية اللون 12% */
+        border-radius: inherit;
+      }
+      
+      ion-icon {
+        z-index: 1;
+      }
+    }
+
+    .text-content {
+      flex: 1;
+      overflow: hidden;
+
+      .card-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .card-subtitle {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2; /* 🔴 أضف هذا السطر هنا */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        }
+    }
+  }
+
+}

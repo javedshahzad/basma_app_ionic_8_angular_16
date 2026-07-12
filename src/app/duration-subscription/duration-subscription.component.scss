@@ -1,0 +1,77 @@
+ion-item{
+    border: 2px solid #ddd;
+    border-radius: 12px;
+}
+.plan-item-container {
+    position: relative;
+    border-radius: 12px;
+    margin: 10px;
+    background-color: #ffffff;
+  }
+  
+  .plan-item {
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+  
+//   .discount-badge {
+//     position: absolute;
+//     top: -8px;
+//     left: -8px;
+//     background: #38a4dc;
+//     color: white;
+//     font-size: 12px;
+//     font-weight: bold;
+//     padding: 4px 8px;
+//     border-radius: 50%;
+//   }
+  
+  .price {
+    text-align: right;
+    margin: 3px;
+    margin-bottom: 10px;
+  }
+  
+  .original-price {
+    text-decoration: line-through;
+    font-size: 12px;
+    color: gray;
+    margin-top: 18px;
+  }
+  
+  .discount-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #3c1361;
+    padding-left: 5px;
+    
+  }
+  
+  .monthly-price {
+    font-size: 12px;
+    background: #eae8f0;
+    color: #3c1361;
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  
+  .continue-button {
+    margin-top: 24px;
+    font-weight: bold;
+    --background: #008000;
+  }
+  
+  .terms {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .terms a {
+    color: #0066cc;
+    text-decoration: none;
+  }
+  

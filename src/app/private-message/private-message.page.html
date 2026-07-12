@@ -1,0 +1,84 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar>
+    <ion-buttons slot="end" class="mr-2 w-10">
+      <ion-back-button defaultHref="/" text="" icon="chevron-back-outline" class="custom-back-btn"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title class="ion-text-center fw-bold text-dark">
+      {{'private_msg.title' | translate}}
+    </ion-title>
+
+    <ion-buttons slot="start" class="w-10"></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+  
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="p-4 max-w-2xl mx-auto space-y-4 pb-8">
+    
+    <div *ngIf="notifications?.length > 0" class="space-y-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 transition-all hover:shadow-md hover:border-indigo-100 relative overflow-hidden" *ngFor="let notification of notifications; let i = index;">
+        
+        <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-indigo-500"></div>
+
+        <div class="flex items-start justify-between mb-3 pl-1 pr-3">
+          <div class="flex items-center gap-1.5 text-slate-400 text-[11px] font-medium bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
+            <ion-icon name="time-outline"></ion-icon>
+            <span dir="ltr">{{notification.date}}</span>
+          </div>
+          
+          <button class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center hover:bg-rose-100 transition-colors active:scale-95" (click)="deleteNotification(notification.ID, i)">
+            <ion-icon name="trash-outline" class="text-lg"></ion-icon>
+          </button>
+        </div>
+
+        <div class="text-sm text-slate-700 font-bold leading-relaxed mb-1 pr-3 whitespace-pre-line">
+          {{notification.notification}}
+        </div>
+
+        <div *ngIf="notification.notification_image && notification.notification_image !== 'null'" class="mt-4 pr-3">
+          <div class="w-full rounded-xl overflow-hidden bg-slate-50 border border-slate-100 relative group cursor-pointer" (click)="openImageContainer(notification.notification_image)">
+            <img [src]="notification.notification_image" class="w-full h-auto max-h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <ion-icon name="expand-outline" class="text-white text-3xl"></ion-icon>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- حالة عدم وجود رسائل -->
+    <div class="flex flex-col items-center justify-center py-24" *ngIf="notifications?.length == 0">
+      <div class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center text-slate-400 mb-5 shadow-sm">
+        <ion-icon name="mail-unread-outline" class="text-5xl"></ion-icon>
+      </div>
+      <h3 class="text-lg font-bold text-slate-800 mb-2">صندوق الوارد فارغ</h3>
+      <p class="text-sm font-medium text-slate-500 text-center max-w-xs leading-relaxed">
+        {{noRecordFound || 'ليس لديك أي رسائل خاصة في الوقت الحالي.'}}
+      </p>
+    </div>
+
+  </div>
+</ion-content>
+
+<!-- 🟢 نافذة عرض الصور المدمجة والاحترافية -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300" *ngIf="showImageViewer" (click)="closeFullscreenImage()">
+  
+  <button class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95" (click)="closeFullscreenImage()">
+    <ion-icon name="close" class="text-xl"></ion-icon>
+  </button>
+  
+  <button class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-2xl shadow-lg flex items-center gap-2 backdrop-blur-lg transition-all active:scale-95" (click)="$event.stopPropagation(); downloadImage(viewImageUrl)">
+    <ion-icon name="download-outline" class="text-xl"></ion-icon> حفظ الصورة
+  </button>
+
+  <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
+    <img [src]="viewImageUrl" class="max-w-full max-h-[80vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+  </div>
+
+</div>

@@ -1,0 +1,87 @@
+<ion-header class="ion-no-border lineone-header" mode="md">
+  <ion-toolbar>
+    <ion-title class="text-slate-800 font-bold text-lg text-center">
+      {{'followUp_student.select_classes' | translate}}
+    </ion-title>
+    
+    <ion-buttons slot="end" class="mr-2">
+      <ion-back-button defaultHref="/tabs/follow-up-student" text="" icon="chevron-back-outline" class="custom-back-btn"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+  <div class="p-4 max-w-2xl mx-auto pb-6">
+    
+    <!-- النصوص التعريفية (تم إخراجها لتظهر دائماً) -->
+    <div class="mb-5 px-1">
+      <h3 class="text-lg font-black text-slate-800 m-0 mb-1 flex items-center gap-2">
+        <ion-icon name="library-outline" class="text-indigo-600"></ion-icon>
+        الفصول الدراسية
+      </h3>
+      <p class="text-xs font-bold text-slate-400 m-0">قم بتحديد الفصول التي ترغب في إضافتها أو إدارتها في قائمتك.</p>
+    </div>
+
+    <!-- قائمة الفصول -->
+    <div class="space-y-3" *ngIf="classes && classes.length > 0">
+      
+      <div class="bg-white rounded-2xl shadow-sm border p-3 flex items-center justify-between cursor-pointer transition-all duration-300 active:scale-[0.98]"
+           *ngFor="let classItem of classes; let i = index"
+           [ngClass]="classItem.is_selected ? 'border-indigo-400 bg-indigo-50/50 shadow-md' : 'border-slate-100 hover:border-indigo-200'"
+           (click)="classItem.is_selected = !classItem.is_selected; changeClass(classItem, {detail: {checked: classItem.is_selected}})">
+
+        <!-- تفاصيل الفصل (يمين) -->
+        <div class="flex items-center gap-4 pointer-events-none w-full">
+          
+          <!-- الأيقونة -->
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-colors"
+               [ngClass]="classItem.is_selected ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200' : 'bg-slate-50 text-slate-400 border border-slate-200'">
+            <ion-icon name="library" class="text-2xl"></ion-icon>
+          </div>
+          
+          <!-- النصوص -->
+          <div class="flex-1 overflow-hidden ml-2 text-right">
+            <h4 class="text-sm font-bold m-0 mb-0.5 truncate transition-colors" [ngClass]="classItem.is_selected ? 'text-indigo-900' : 'text-slate-800'">
+              {{classItem.courses.name}}
+            </h4>
+            <p class="text-[11px] font-bold m-0 truncate transition-colors" [ngClass]="classItem.is_selected ? 'text-indigo-500' : 'text-slate-400'">
+              {{classItem.courses.desc || 'لا يوجد وصف متاح لهذا الفصل'}}
+            </p>
+          </div>
+
+          <!-- الـ Checkbox -->
+          <div class="pointer-events-none ml-2">
+            <ion-checkbox mode="md" 
+                          class="border-slate-300 shadow-sm" 
+                          style="--border-radius: 6px; --checkmark-color: white; --background-checked: #4f46e5; --border-color-checked: #4f46e5;"
+                          [checked]="classItem.is_selected">
+            </ion-checkbox>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- حالة الشاشة الفارغة (No Data) -->
+    <div class="text-center py-20" *ngIf="!classes || classes.length == 0">
+      <div class="w-20 h-20 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center mx-auto mb-4 text-slate-400 shadow-sm">
+        <ion-icon name="business-outline" class="text-4xl"></ion-icon>
+      </div>
+      <p class="text-slate-600 font-bold text-sm">لا توجد فصول دراسية متاحة حالياً</p>
+      <p class="text-slate-400 font-medium text-xs mt-1 max-w-xs mx-auto">لم يتم إسناد فصول إضافية لك من قبل الإدارة بعد.</p>
+    </div>
+
+  </div>
+</ion-content>
+
+<!-- زر الحفظ في الأسفل يظهر فقط إذا تم إجراء تغييرات -->
+<ion-footer class="ion-no-border bg-white border-t border-slate-100 shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.05)] rounded-t-3xl" *ngIf="changedData.length > 0">
+  <div class="p-5 max-w-2xl mx-auto">
+    <button class="w-full flex items-center justify-center gap-2 py-4 text-sm font-bold text-white bg-indigo-600 rounded-2xl hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all active:scale-[0.98]" 
+            (click)="setClasses()">
+      <ion-icon name="save-outline" class="text-xl"></ion-icon>
+      {{'followUp_student.select_classes' | translate}}
+    </button>
+  </div>
+</ion-footer>

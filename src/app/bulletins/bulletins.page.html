@@ -1,0 +1,134 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar>
+    <ion-buttons slot="start" class="menu-btn-container">
+      <ion-button color="dark" class="custom-menu-btn" *ngIf="userType=='1'" (click)="openCamera()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="ion-text-center fw-bold text-dark">
+      {{'bulletin.title' | translate}}
+    </ion-title>
+
+    <ion-buttons slot="end" class="ml-2 w-10">
+      <ion-back-button 
+        defaultHref="/tabs" 
+        text="" 
+        class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors flex items-center justify-center">
+      </ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+  
+  <div class="p-4 max-w-2xl mx-auto space-y-4 pb-8">
+    
+    <div *ngIf="isLoading" class="space-y-4">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4" *ngFor="let dummy of [1,2,3]">
+        <div class="flex items-center gap-3 mb-4">
+          <ion-skeleton-text animated class="w-12 h-12 rounded-full m-0"></ion-skeleton-text>
+          <div class="flex-1">
+            <ion-skeleton-text animated class="w-32 h-4 mb-2 rounded-md"></ion-skeleton-text>
+            <ion-skeleton-text animated class="w-20 h-3 rounded-md"></ion-skeleton-text>
+          </div>
+        </div>
+        <ion-skeleton-text animated class="w-3/4 h-5 rounded-md mb-3"></ion-skeleton-text>
+        <ion-skeleton-text animated class="w-full h-10 rounded-xl mt-4"></ion-skeleton-text>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!isLoading">
+      
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative" *ngFor="let bullet of allBullentins">
+        
+        <div *ngIf="bullet.is_closed == '1'" class="absolute top-4 left-4 w-8 h-8 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center">
+          <ion-icon name="checkmark-done" class="text-xl"></ion-icon>
+        </div>
+
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+          <div class="flex items-center gap-3 mb-3" *ngIf="bullet.created_by == user_no">
+            <img [src]="bullet.created_by_user_pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-10 h-10 rounded-full object-cover border border-slate-200 bg-white">
+            <div>
+              <h4 class="text-sm font-bold text-slate-800 m-0">{{bullet.created_by_username}}</h4>
+              <p class="text-[11px] font-medium text-slate-500 m-0 mt-0.5 flex items-center gap-1">
+                <ion-icon name="time-outline"></ion-icon> {{bullet.created_at | dateFormat}}
+              </p>
+            </div>
+          </div>
+
+          <h3 class="text-base font-extrabold text-slate-800 m-0 leading-snug pl-8">{{bullet.bulletin_title}}</h3>
+
+          <div class="mt-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold"
+               [ngClass]="bullet.created_by == bullet.send_by ? 'bg-indigo-50 text-indigo-600' : 'bg-amber-50 text-amber-600'"
+               *ngIf="bullet.created_by != user_no">
+            <ion-icon name="arrow-undo"></ion-icon>
+            <span *ngIf="bullet.created_by == bullet.send_by">{{'bulletin.send_by' | translate}}: {{bullet.send_by_username}}</span>
+            <span *ngIf="bullet.created_by != bullet.send_by">{{'bulletin.forwarded_by' | translate}}: {{bullet.send_by_username}}</span>
+          </div>
+        </div>
+
+        <div class="p-4" *ngIf="bullet.documents">
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            
+            <div *ngIf="bullet.documents.pdf != ''" 
+                 class="aspect-[4/3] bg-rose-50 rounded-xl border border-rose-100 flex flex-col items-center justify-center cursor-pointer hover:bg-rose-100 transition-colors"
+                 (click)="openPdfs(bullet.documents.pdf)">
+              <ion-icon name="document-text" class="text-4xl text-rose-500 mb-2"></ion-icon>
+              <span class="text-[10px] font-bold text-rose-700">PDF File</span>
+            </div>
+
+            <ng-container *ngFor="let doc of bullet.documents.files">
+              
+              <div *ngIf="!doc.is_img && doc.extension == 'pdf'" 
+                   class="aspect-[4/3] bg-rose-50 rounded-xl border border-rose-100 flex flex-col items-center justify-center cursor-pointer hover:bg-rose-100 transition-colors"
+                   (click)="openPdf(doc.url_original)">
+                <ion-icon name="document-text" class="text-4xl text-rose-500 mb-2"></ion-icon>
+                <span class="text-[10px] font-bold text-rose-700">PDF File</span>
+              </div>
+
+              <div *ngIf="!doc.is_img && doc.extension != 'pdf'" 
+                   class="aspect-[4/3] bg-blue-50 rounded-xl border border-blue-100 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-100 transition-colors"
+                   (click)="opendoc(doc.url)">
+                <ion-icon name="document-attach" class="text-4xl text-blue-500 mb-2"></ion-icon>
+                <span class="text-[10px] font-bold text-blue-700">Document</span>
+              </div>
+
+              <div *ngIf="doc.is_img" 
+                   class="aspect-[4/3] rounded-xl border border-slate-200 overflow-hidden cursor-pointer shadow-sm group"
+                   (click)="openImage(doc.url_original)">
+                <img [src]="doc.url_original" onerror="this.onerror=null;this.src='assets/imgs/image.png';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+              </div>
+
+            </ng-container>
+            
+          </div>
+        </div>
+
+        <div class="px-4 pb-4 pt-2">
+          <button (click)="openBulletin(bullet)" 
+                  class="w-full py-3.5 rounded-xl font-bold text-sm text-indigo-600 bg-indigo-50 border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all active:scale-[0.98]">
+            {{'bulletin.view' | translate}}
+          </button>
+        </div>
+
+      </div>
+
+      <div class="flex flex-col items-center justify-center py-20" *ngIf="allBullentins?.length == 0">
+        <div class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center text-slate-400 mb-5 shadow-sm">
+          <ion-icon name="folder-open-outline" class="text-5xl"></ion-icon>
+        </div>
+        <h3 class="text-lg font-bold text-slate-800 mb-2">لا توجد تعاميم</h3>
+        <p class="text-sm font-medium text-slate-500 text-center max-w-xs leading-relaxed">
+          لم يتم إدراج أي تعاميم أو نشرات جديدة حتى الآن.
+        </p>
+      </div>
+
+    </ng-container>
+
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+  </div>
+</ion-content>

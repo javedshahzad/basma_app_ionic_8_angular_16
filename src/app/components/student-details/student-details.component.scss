@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  background: #ffffff;
+  
+  /* مسح أي تأثيرات افتراضية من Ionic Inputs */
+  ion-input {
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+  }
+}

@@ -1,0 +1,27 @@
+app-tasks-calendar:host {
+    
+    /* لون الخلفية الأساسي للمنصة ليتوافق مع تصميم Lineone */
+    .lineone-bg {
+        --background: #f8fafc;
+    }
+
+    /* =======================================================
+       🌟 تخصيص مربع الاختيار (Checkbox) ليطابق تصميم Lineone
+       ======================================================= */
+    ion-checkbox.lineone-checkbox {
+        --size: 24px;
+        --checkbox-background-checked: #4f46e5; /* Indigo 600 */
+        --border-color: #cbd5e1; /* Slate 300 */
+        --border-color-checked: #4f46e5;
+        --border-radius: 8px;
+        --border-width: 2px;
+        --checkmark-width: 3px;
+        margin: 0;
+        transition: all 0.2s ease;
+    }
+
+    /* دعم النوتش في أجهزة الايفون (Safe Area) للفوتر */
+    .pb-safe {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+    }
+}

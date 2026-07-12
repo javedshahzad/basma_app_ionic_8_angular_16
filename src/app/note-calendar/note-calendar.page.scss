@@ -1,0 +1,50 @@
+app-note-calendar:host {
+    
+    .lineone-bg {
+        --background: #f8fafc;
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.4s ease-out forwards;
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* =======================================================
+       🌟 Styling Native ion-datetime to fit Lineone UI
+       ======================================================= */
+    ion-datetime {
+        /* Force dark text color to prevent invisible text on white background */
+        color: #1e293b !important; 
+        --color: #1e293b !important;
+        --ion-text-color: #1e293b !important;
+        
+        --background: transparent;
+        --wheel-text-color: #1e293b;
+        --wheel-fade-background-rgb: 248, 250, 252; /* matches slate-50 */
+        
+        /* Make the calendar header (month/year) bolder */
+        &::part(calendar-month-year) {
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        /* Active/Selected Day Styling */
+        &::part(active) {
+            color: #ffffff !important;
+        }
+
+        /* Today's Date Styling */
+        &::part(today) {
+            color: #4f46e5 !important;
+            font-weight: 900;
+        }
+    }
+}

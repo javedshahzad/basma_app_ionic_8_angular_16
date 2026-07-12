@@ -1,0 +1,32 @@
+app-edit-user-profile:host {
+
+  /* ضمان تطبيق الخلفية الرمادية الفاتحة على الصفحة */
+  ion-content {
+    --background: #f8fafc;
+  }
+
+  /* إخفاء خطوط التمرير (Scrollbars) لشكل أكثر أناقة */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* --- الترويسة وأزرار العودة --- */
+  .lineone-header {
+    background: #ffffff;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    ion-toolbar { --background: #ffffff; }
+    .text-dark { color: #1e293b; }
+    .fw-bold { font-weight: 700; font-size: 1.1rem; }
+  }
+
+  /* تنسيق النافذة الذكية (Modal) لاختيار الفصول */
+  ion-modal.smart-class-modal {
+    --border-radius: 20px 20px 0 0; /* زوايا دائرية علوية في الجوال */
+    
+    @media (min-width: 768px) {
+      --border-radius: 20px;
+      --width: 450px;
+      --height: 600px;
+    }
+  }
+}

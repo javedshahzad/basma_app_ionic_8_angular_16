@@ -1,0 +1,39 @@
+app-playvideo:host {
+  
+  .lineone-header {
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    
+    ion-toolbar {
+      --background: transparent;
+    }
+    
+    .text-dark { color: #334155; }
+    .fw-bold { font-weight: 600; font-size: 1.15rem; }
+  }
+
+  .custom-back-btn {
+    --background: #f1f5f9;
+    --background-hover: #e2e8f0;
+    --color: #334155;
+    --border-radius: 12px;
+    height: 40px;
+    width: 40px;
+    margin: 0;
+
+    &::part(native) {
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* ميزة Line-clamp لإخفاء النص الزائد بـ (...) إذا تجاوز سطرين */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

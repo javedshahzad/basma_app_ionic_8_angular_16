@@ -1,0 +1,28 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar class="bg-black border-b border-white/10">
+    <ion-buttons slot="start" class="ml-2 w-10">
+      <!-- 🟢 استخدام الدالة النظيفة للإغلاق -->
+      <button (click)="closeModal()" class="w-10 h-10 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all flex items-center justify-center">
+        <ion-icon name="close" class="text-2xl"></ion-icon>
+      </button>
+    </ion-buttons>
+    
+    <ion-title class="ion-text-center font-bold text-white text-base">
+      عرض الصورة
+    </ion-title>
+
+    <ion-buttons slot="end" class="mr-2 w-10"></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-black" mode="md">
+  <!-- 🟢 التخلص من الستايل الداخلي واستخدام Tailwind -->
+  <div class="h-full w-full flex justify-center items-center bg-black/95 p-4">
+    <pinch-zoom [limit-zoom]="100" class="w-full">
+      <!-- 🟢 إضافة onerror كحماية إضافية للصور التالفة -->
+      <img [src]="pic ? pic : 'assets/imgs/default_avatar.png'" 
+           onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
+           class="max-w-full max-h-[85vh] object-contain mx-auto rounded-2xl shadow-2xl" />
+    </pinch-zoom>
+  </div>
+</ion-content>

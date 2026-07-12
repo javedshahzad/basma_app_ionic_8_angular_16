@@ -1,0 +1,64 @@
+app-contact-us:host {
+  
+  /* 🟢 جعل خلفية الصفحة بالكامل رمادية فاتحة لكي تبرز الحقول البيضاء */
+  ion-content {
+    --background: #f8fafc; 
+  }
+
+  /* 🟢 الهيدر الأبيض المسطح */
+  .lineone-header {
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    
+    ion-toolbar {
+      --background: #ffffff;
+    }
+    
+    .text-dark { color: #334155; }
+    .fw-bold { font-weight: 600; font-size: 1.15rem; }
+  }
+
+  /* 🟢 تصفير هوامش ion-item الافتراضية لتبدو كحقل مخصص */
+  ion-item {
+    --background: transparent;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    --min-height: 50px;
+    
+    /* جعل المؤشر والإدخال يلتصق باليمين في البريد الإلكتروني (لأنه dir=ltr) */
+    ion-input.text-right {
+      --padding-end: 0;
+      text-align: right !important;
+    }
+  }
+
+  /* 🟢 تنسيق رسائل الخطأ */
+  .error-msg {
+    font-size: 11px;
+    color: #f43f5e; /* Rose 500 */
+    font-weight: 700;
+    margin-top: 6px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    
+    ion-icon {
+      font-size: 14px;
+    }
+  }
+
+  /* 🟢 شريط تمرير ناعم للرسالة */
+  .custom-scrollbar {
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 10px;
+    }
+  }
+}

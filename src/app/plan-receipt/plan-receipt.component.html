@@ -1,0 +1,91 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar class="bg-white">
+    <ion-buttons slot="start" class="ml-2">
+      <ion-button (click)="dissmis()" class="w-10 h-10 rounded-full bg-slate-50 text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center">
+        <ion-icon name="close-outline" class="text-xl"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="font-extrabold text-slate-800 text-base text-center w-full">
+      <ng-container *ngIf="!isSuccessBool">{{'subscription_duration.subscription' | translate}}</ng-container>
+      <ng-container *ngIf="isSuccessBool">{{'subscription_duration.subscription_success' | translate}}</ng-container>
+    </ion-title>
+    
+    <ion-buttons slot="end" class="mr-2 w-10"></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+  <div class="px-4 py-8 max-w-lg mx-auto">
+    
+    <!-- 🟢 أيقونة النجاح -->
+    <div *ngIf="isSuccessBool" class="flex flex-col items-center justify-center mb-6 animate-fade-in-up">
+      <div class="w-20 h-20 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center shadow-inner mb-3">
+        <ion-icon name="checkmark-circle" class="text-5xl"></ion-icon>
+      </div>
+      <h2 class="text-lg font-black text-slate-800">تمت العملية بنجاح</h2>
+    </div>
+
+    <!-- 🟢 أيقونة قيد المراجعة / التأكيد -->
+    <div *ngIf="!isSuccessBool" class="flex flex-col items-center justify-center mb-6 animate-fade-in-up">
+      <div class="w-20 h-20 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center shadow-inner mb-3">
+        <ion-icon name="receipt-outline" class="text-5xl"></ion-icon>
+      </div>
+      <h2 class="text-lg font-black text-slate-800">مراجعة الطلب</h2>
+      <p class="text-xs text-slate-500 font-bold mt-1">الرجاء مراجعة تفاصيل الخطة قبل التأكيد</p>
+    </div>
+
+    <!-- 🟢 كارت الفاتورة الاحترافي -->
+    <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 space-y-4 relative overflow-hidden animate-fade-in-up" style="animation-delay: 0.1s;">
+      
+      <!-- شريط ملون علوي حسب الحالة -->
+      <div class="absolute top-0 left-0 right-0 h-1.5" [ngClass]="isSuccessBool ? 'bg-emerald-500' : 'bg-indigo-500'"></div>
+
+      <div *ngIf="isSuccessBool" class="flex justify-between items-center py-2 border-b border-slate-50">
+        <span class="text-xs font-bold text-slate-400">{{'plan.orderId' | translate}}</span>
+        <span class="text-sm font-black text-slate-800" dir="ltr">{{OrderID}}</span>
+      </div>
+
+      <div class="flex justify-between items-center py-2 border-b border-slate-50">
+        <span class="text-xs font-bold text-slate-400">{{'plan.name' | translate}}</span>
+        <span class="text-sm font-black text-slate-800">{{selectedPlan?.name}}</span>
+      </div>
+
+      <div class="flex justify-between items-center py-2 border-b border-slate-50">
+        <span class="text-xs font-bold text-slate-400">{{'plan.duration' | translate}}</span>
+        <span class="text-sm font-black text-slate-800" dir="ltr">{{selectedPlan?.month}} Months</span>
+      </div>
+
+      <div class="flex justify-between items-center py-2 border-b border-slate-50">
+        <span class="text-xs font-bold text-slate-400">{{'plan.status' | translate}}</span>
+        <span class="text-[11px] font-bold px-3 py-1 rounded-lg" 
+              [ngClass]="isSuccessBool ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'">
+          {{ isSuccessBool ? 'Approved' : 'Pending' }}
+        </span>
+      </div>
+
+      <!-- 🟢 إجمالي المبلغ -->
+      <div class="flex justify-between items-center py-3 mt-2 bg-slate-50 rounded-xl px-4 border border-slate-100">
+        <span class="text-sm font-black text-slate-500">{{'plan.ammount' | translate}}</span>
+        <span class="text-lg font-black text-indigo-600" dir="ltr">{{ selectedPlan?.total_price | currency:'USD' }}</span>
+      </div>
+
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border bg-white border-t border-slate-100">
+  <div class="p-4 max-w-lg mx-auto pb-safe">
+    
+    <button *ngIf="!isSuccessBool" (click)="OnCofirm()" class="w-full py-4 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all active:scale-95 hover:bg-indigo-700 flex items-center justify-center gap-2">
+      <ion-icon name="checkmark-done-outline" class="text-xl"></ion-icon>
+      تأكيد الطلب
+    </button>
+    
+    <button *ngIf="isSuccessBool" (click)="OnDone()" class="w-full py-4 rounded-xl font-black text-white text-sm bg-emerald-500 shadow-md shadow-emerald-200 transition-all active:scale-95 hover:bg-emerald-600 flex items-center justify-center gap-2">
+      <ion-icon name="checkmark-outline" class="text-xl"></ion-icon>
+      إنهاء
+    </button>
+
+  </div>
+</ion-footer>

@@ -1,0 +1,73 @@
+<ion-header class="ion-no-border" mode="md">
+  <ion-toolbar style="--background: #f8fafc;" class="relative text-center border-b border-slate-100">
+    
+    <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
+      <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title class="font-extrabold text-slate-800 text-base w-full">{{'search.search' | translate}}</ion-title>
+
+  </ion-toolbar>
+
+  <div class="bg-[#f8fafc] px-4 pb-3 pt-2 border-b border-slate-100">
+    <ion-searchbar 
+      [(ngModel)]="searchtxt" 
+      placeholder="{{'search.search' | translate}}" 
+      (ionChange)="filterList($event)" 
+      mode="ios" 
+      searchIcon="search-outline" 
+      class="lineone-searchbar p-0 m-0">
+    </ion-searchbar>
+  </div>
+</ion-header>
+
+<ion-content class="lineone-bg" mode="md" dir="rtl">
+  <div class="px-4 py-6 max-w-3xl mx-auto space-y-3 pb-20">
+    
+    <ng-container *ngIf="allStudents?.length > 0">
+      <div *ngFor="let student of allStudents" 
+           class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md" 
+           (click)="openStudentDetails(student)">
+          
+          <div class="shrink-0 relative">
+              <img *ngIf="student.pic" [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 shadow-sm">
+              <div *ngIf="!student.pic" class="w-14 h-14 rounded-full bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center text-indigo-400 shadow-sm">
+                  <ion-icon name="person" class="text-2xl"></ion-icon>
+              </div>
+          </div>
+
+          <div class="flex-1">
+              <h4 class="font-bold text-sm text-slate-800 m-0">{{student.name}}</h4>
+              <div class="flex flex-wrap items-center gap-2 mt-2">
+                  <span class="bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1">
+                      <ion-icon name="id-card-outline" class="text-slate-400"></ion-icon>
+                      {{student.student_id}}
+                  </span>
+                  <span class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1">
+                      <ion-icon name="library-outline" class="text-indigo-400"></ion-icon>
+                      {{student.class_name}}
+                  </span>
+              </div>
+          </div>
+
+          <ion-icon name="chevron-back-outline" class="text-slate-300 text-xl shrink-0"></ion-icon>
+      </div>
+    </ng-container>
+
+    <div class="py-24 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white shadow-sm mt-4" *ngIf="!allStudents || allStudents?.length == 0">
+      <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
+        <ion-icon name="search-outline" class="text-4xl text-slate-300"></ion-icon>
+      </div>
+      <h4 class="text-slate-500 font-bold text-sm m-0 text-center px-4 leading-relaxed">
+        <ng-container *ngIf="searchtxt">لا يوجد نتائج مطابقة لبحثك</ng-container>
+        <ng-container *ngIf="!searchtxt">اكتب اسم الطالب أو رمز الطالب للبحث</ng-container>
+      </h4>
+    </div>
+
+  </div>
+
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+</ion-content>

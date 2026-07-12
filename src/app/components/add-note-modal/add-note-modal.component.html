@@ -1,0 +1,27 @@
+<div class="w-full h-full flex items-center justify-center" (click)="hideModal()">
+  <div class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10" dir="rtl" (click)="$event.stopPropagation()">
+    
+    <h4 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+      <ion-icon name="document-text" class="text-indigo-600 bg-indigo-50 p-2 rounded-xl"></ion-icon> 
+      {{'student-details.add_note' | translate}}
+    </h4>
+    
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-2 mb-2 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+      <ion-textarea class="text-sm text-slate-700 bg-transparent" [(ngModel)]="noteMessage" placeholder="{{'student-details.type_here' | translate}}" rows="3"></ion-textarea>
+    </div>
+    
+    <p class="text-left text-xs font-bold mb-5" [ngClass]="noteMessage.length > 45 ? 'text-rose-500' : 'text-slate-400'">
+      {{noteMessage?.length || 0}}/45
+    </p>
+    
+    <div class="flex gap-3">
+      <button class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors" (click)="hideModal()">
+        {{'alertmessages.alert_btn_cancel_text' | translate}}
+      </button>
+      <button class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md shadow-indigo-200 transition-colors active:scale-95" (click)="submitNote()">
+        {{'alertmessages.alert_btn_submit_text' | translate}}
+      </button>
+    </div>
+    
+  </div>
+</div>

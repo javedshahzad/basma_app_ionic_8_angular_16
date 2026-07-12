@@ -1,0 +1,214 @@
+<ion-header class="ion-no-border lineone-header" mode="md">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button slot="start" *ngIf="userDetails.details.is_school_admin == 1" (click)="openVoucherModal()" fill="clear" class="lineone-icon-btn">
+      <ion-icon name="add-circle-outline"></ion-icon>
+    </ion-button>
+    </ion-buttons>
+    
+    <ion-title class="lineone-title ion-text-center">{{'plan.title' | translate}}</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-back-button 
+        defaultHref="/tabs" 
+        text="" 
+        class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors flex items-center justify-center">
+      </ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="lineone-content" mode="md">
+  <div class="main-container">
+    
+    <div class="current-subscription-banner animate__animated animate__fadeInDown" *ngIf="availablePlan && availablePlan.plan">
+      <div class="plan-info">
+        <div class="icon-box">
+          <ion-icon name="shield-checkmark"></ion-icon>
+        </div>
+        <div class="texts">
+          <p class="subtitle">باقتك الفعالة حالياً</p>
+          <h3 class="title">{{ availablePlan.plan?.name || ('plan.currentPlan' | translate) }}</h3>
+        </div>
+      </div>
+      <div class="plan-expiry border-r border-white/20 pr-4">
+        <p class="subtitle">تاريخ الانتهاء</p>
+        <p class="date" dir="ltr">{{ availablePlan.exp_date | date : 'yyyy-MM-dd' }}</p>
+      </div>
+    </div>
+
+    <!-- <div class="current-subscription-banner free-plan animate__animated animate__fadeInDown" *ngIf="!availablePlan || !availablePlan.plan || availablePlan.plan.slug == 'free'">
+      <div class="plan-info">
+        <div class="icon-box">
+          <ion-icon name="information-circle"></ion-icon>
+        </div>
+        <div class="texts">
+          <h3 class="title">الباقة الأساسية</h3>
+          <p class="subtitle">أنت على الباقة المجانية، قم بالترقية لفتح الميزات.</p>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="plan-list-section" *ngIf="plans?.length > 0">
+      
+      <div class="section-header">
+        <h2 class="section-title">{{'plan.availablePlan' | translate}}</h2>
+      </div>
+
+      <div class="plans-grid">
+        
+        <div class="lineone-card plan-card animate__animated animate__fadeInUp" 
+             *ngFor="let Singleitem of plans; let i=index" 
+             [ngClass]="{'is-current-plan': Singleitem.slug == availablePlan.plan.slug}">
+
+          <div class="current-plan-badge" *ngIf="Singleitem.slug == availablePlan.plan.slug">
+            <ion-icon name="star"></ion-icon>
+            {{'plan.currentPlan' | translate}}
+          </div>
+
+          <div class="plan-card-header">
+            <h3 class="plan-name">{{Singleitem.name}}</h3>
+          </div>
+
+          <div class="plan-features-list">
+            
+            <div class="feature-item">
+              <ion-icon name="business-outline" class="icon-neutral"></ion-icon>
+              <div class="feature-text">
+                <span class="font-bold">{{Singleitem.no_of_classes | translate}}</span> {{'plan.classes_allowed' | translate}}
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <ion-icon name="people-outline" class="icon-neutral"></ion-icon>
+              <div class="feature-text">
+                <span class="font-bold">{{Singleitem.no_of_students | translate}}</span> {{'plan.no_of_students' | translate}}
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <ion-icon [name]="Singleitem.news_post_per_day != '0' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.news_post_per_day != '0' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text">
+                <span *ngIf="Singleitem.news_post_per_day != '0'">{{Singleitem.news_post_per_day | translate}} {{'plan.news_post_per_day' | translate}}</span>
+                <span *ngIf="Singleitem.news_post_per_day == '0'" class="text-muted">{{'plan.news_post_per_day' | translate}}</span>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <ion-icon [name]="Singleitem.e_learning_material == '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.e_learning_material == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.e_learning_material == '0'}">
+                {{'plan.e_learning_material' | translate}}
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <ion-icon [name]="Singleitem.student_report_pdf == '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.student_report_pdf == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.student_report_pdf == '0'}">
+                {{'plan.student_report_pdf' | translate}}
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <ion-icon [name]="Singleitem.student_report_excel == '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.student_report_excel == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.student_report_excel == '0'}">
+                {{'plan.student_report_excel' | translate}}
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <ion-icon [name]="Singleitem.follow_up_teacher_report_pdf == '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.follow_up_teacher_report_pdf == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.follow_up_teacher_report_pdf == '0'}">
+                {{'plan.follow_up_teacher_pdf' | translate}}
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <ion-icon [name]="Singleitem.follow_up_teacher_report_excel == '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.follow_up_teacher_report_excel == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.follow_up_teacher_report_excel == '0'}">
+                {{'plan.follow_up_teacher_excel' | translate}}
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <ion-icon [name]="Singleitem.slug == 'premium' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.slug == 'premium' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.slug !== 'premium'}">
+                {{'plan.call_of_student_report' | translate}}
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <ion-icon [name]="Singleitem.slug == 'premium' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.slug == 'premium' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.slug !== 'premium'}">
+                {{'plan.student_pledges' | translate}}
+              </div>
+            </div>
+
+          </div> <div class="active-plan-details" *ngIf="Singleitem.slug == availablePlan.plan.slug && availablePlan.plan.slug != 'free'">
+            <div class="detail-row">
+              <span class="label">{{'plan.duration' | translate}}</span>
+              <span class="value">{{availablePlan?.billingPeriod}} {{availablePlan.billingPeriodUnit}}</span>
+            </div>
+            <div class="detail-row">
+              <span class="label">{{'plan.expired' | translate}}</span>
+              <span class="value text-danger">{{availablePlan.exp_date | date : 'mediumDate'}}</span>
+            </div>
+          </div>
+          
+          <div class="plan-card-footer" *ngIf="Singleitem.slug !== 'free'">
+            <button class="lineone-btn btn-primary" *ngIf="Singleitem.slug != availablePlan.plan.slug" (click)="subscribe(Singleitem,i)">
+              <ion-icon name="flash-outline" slot="start"></ion-icon>
+              {{'plan.subscribe' | translate}}
+            </button>
+            
+            <button class="lineone-btn btn-disabled" disabled *ngIf="Singleitem.slug == availablePlan.plan.slug">
+              <ion-icon name="checkmark-done-outline" slot="start"></ion-icon>
+              {{'plan.currentPlan' | translate}}
+            </button>
+          </div>
+
+        </div> </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-modal [isOpen]="showVoucherModal" (didDismiss)="closeVoucherModal()" [initialBreakpoint]="0.35" [breakpoints]="[0, 0.35, 0.65]" handleBehavior="cycle" class="lineone-modal">
+  <ng-template>
+    <div class="p-6 flex flex-col" dir="rtl">
+      
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
+          <ion-icon name="ticket" class="text-3xl"></ion-icon>
+        </div>
+        <div>
+          <h3 class="text-xl font-black text-slate-800 m-0 leading-tight">تفعيل المميزات الاضافية</h3>
+          <p class="text-xs font-bold text-slate-500 m-0 mt-1">أدخل الكود لتفعيل المميزات الاضافية.</p>
+        </div>
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-2 mb-4 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-inner">
+        <ion-input type="text" [(ngModel)]="voucherCode" placeholder="أدخل كود..." 
+                   class="text-base font-black text-slate-800 text-center tracking-[0.2em] uppercase">
+        </ion-input>
+      </div>
+
+      <div class="flex gap-3 mb-2">
+        <button class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-4 rounded-xl transition-colors active:scale-95" (click)="closeVoucherModal()">
+          {{'alertmessages.alert_btn_cancel_text' | translate}}
+        </button>
+        <button class="flex-[1.5] bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100 flex items-center justify-center gap-2"
+                (click)="applyVoucherCode()" [disabled]="!voucherCode || voucherCode.trim() === ''">
+          <ion-icon name="checkmark-circle" class="text-lg"></ion-icon> تفعيل الآن
+        </button>
+      </div>
+
+    </div>
+  </ng-template>
+</ion-modal>

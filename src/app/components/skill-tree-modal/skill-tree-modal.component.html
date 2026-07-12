@@ -1,0 +1,96 @@
+<ion-header class="ion-no-border bg-white pt-2">
+  <div class="flex justify-between items-center px-4 pb-2 border-b border-slate-100">
+    <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
+      <ion-icon name="medal" class="text-amber-500 text-xl"></ion-icon>
+      تقييم مهارات الطالب
+    </h3>
+    <button (click)="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all">
+      <ion-icon name="close" class="text-xl"></ion-icon>
+    </button>
+  </div>
+</ion-header>
+
+<ion-content class="bg-slate-50">
+  <div class="p-4 space-y-3 pb-8" dir="rtl">
+    
+    <div class="text-center mb-4">
+      <h2 class="text-sm font-bold text-slate-600 m-0">كيف أبدع <span class="text-indigo-600 font-black">{{student?.name}}</span> اليوم؟</h2>
+    </div>
+
+    <div class="flex items-center justify-between p-3 bg-amber-50 border border-slate-100 shadow-sm rounded-2xl transition-all hover:border-amber-300">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 border border-amber-100 shrink-0"><ion-icon name="bulb" class="text-2xl"></ion-icon></div>
+        <div>
+          <h4 class="text-sm font-black text-slate-800 m-0">العبقرية العلمية</h4>
+          <p class="text-[10px] font-bold text-slate-400 m-0 mt-0.5">إجابة ذكية، مشاركة مميزة</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0" dir="ltr">
+        <button (click)="awardPoints('cognitive', 1)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200">+1</button>
+        <button (click)="awardPoints('cognitive', 2)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200">+2</button>
+        <button (click)="awardPoints('cognitive', 3)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200">+3</button>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between p-3 bg-blue-50 border border-slate-100 shadow-sm rounded-2xl transition-all hover:border-blue-300">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100 shrink-0"><ion-icon name="chatbubbles" class="text-2xl"></ion-icon></div>
+        <div>
+          <h4 class="text-sm font-black text-slate-800 m-0">التواصل والتعاون</h4>
+          <p class="text-[10px] font-bold text-slate-400 m-0 mt-0.5">مساعدة الزملاء، روح الفريق</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0" dir="ltr">
+        <button (click)="awardPoints('social', 1)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200">+1</button>
+        <button (click)="awardPoints('social', 2)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200">+2</button>
+        <button (click)="awardPoints('social', 3)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200">+3</button>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between p-3 bg-emerald-50 border border-slate-100 shadow-sm rounded-2xl transition-all hover:border-emerald-300">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 border border-emerald-100 shrink-0"><ion-icon name="shield-checkmark" class="text-2xl"></ion-icon></div>
+        <div>
+          <h4 class="text-sm font-black text-slate-800 m-0">الانضباط والمسؤولية</h4>
+          <p class="text-[10px] font-bold text-slate-400 m-0 mt-0.5">حل الواجب، الهدوء، الترتيب</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0" dir="ltr">
+        <button (click)="awardPoints('discipline', 1)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200">+1</button>
+        <button (click)="awardPoints('discipline', 2)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200">+2</button>
+        <button (click)="awardPoints('discipline', 3)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200">+3</button>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between p-3 bg-rose-50 border border-slate-100 shadow-sm rounded-2xl transition-all hover:border-rose-300">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100 shrink-0"><ion-icon name="heart" class="text-2xl"></ion-icon></div>
+        <div>
+          <h4 class="text-sm font-black text-slate-800 m-0">الذكاء العاطفي</h4>
+          <p class="text-[10px] font-bold text-slate-400 m-0 mt-0.5">التعاطف، التحكم في الغضب</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0" dir="ltr">
+        <button (click)="awardPoints('emotional', 1)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200">+1</button>
+        <button (click)="awardPoints('emotional', 2)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200">+2</button>
+        <button (click)="awardPoints('emotional', 3)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200">+3</button>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between p-3 bg-purple-50 border border-slate-100 shadow-sm rounded-2xl transition-all hover:border-purple-300">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500 border border-purple-100 shrink-0"><ion-icon name="laptop" class="text-2xl"></ion-icon></div>
+        <div>
+          <h4 class="text-sm font-black text-slate-800 m-0">المهارات العملية</h4>
+          <p class="text-[10px] font-bold text-slate-400 m-0 mt-0.5">الإبداع، التنظيم، الفنون</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0" dir="ltr">
+        <button (click)="awardPoints('practical', 1)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200">+1</button>
+        <button (click)="awardPoints('practical', 2)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200">+2</button>
+        <button (click)="awardPoints('practical', 3)" class="w-9 h-9 rounded-full bg-slate-50 border border-slate-200 text-slate-600 font-bold text-xs shadow-sm active:scale-90 transition-all hover:bg-purple-50 hover:text-purple-600 hover:border-purple-200">+3</button>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

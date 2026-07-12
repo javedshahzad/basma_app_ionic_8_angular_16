@@ -1,0 +1,94 @@
+<ion-header class="ion-no-border" mode="md">
+  <ion-toolbar style="--background: #f8fafc;" class="relative text-center border-b border-slate-100">
+    
+    <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
+      <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title class="font-extrabold text-slate-800 text-base w-full">تقويم الامتحانات</ion-title>
+
+    <ion-buttons slot="start" class="absolute right-2 z-10 top-0 bottom-0">
+      <button (click)="printReport()" class="w-9 h-9 rounded-full bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 transition-all flex items-center justify-center active:scale-95">
+        <ion-icon name="print-outline" class="text-lg"></ion-icon>
+      </button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="lineone-bg" mode="md" dir="rtl">
+  <div class="px-4 py-6 max-w-lg mx-auto pb-12">
+    
+    <!-- Calendar Widget -->
+    <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 overflow-hidden mb-6 animate-fade-in-up">
+      <div class="flex items-center gap-2 mb-2 px-2">
+        <ion-icon name="calendar" class="text-indigo-500 text-lg"></ion-icon>
+        <span class="text-sm font-bold text-slate-700">حدد أيام الامتحانات</span>
+      </div>
+      
+      <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-100">
+        <ion-datetime 
+          mode="md"
+          presentation="date" 
+          size="cover"
+          multiple="true"
+          locale="ar-KW"
+          firstDayOfWeek="0"
+          [highlightedDates]="highlightedDates"
+          (ionChange)="onDateChange($event)"
+          color="primary">
+        </ion-datetime>
+      </div>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
+      
+      <div class="flex items-center justify-between px-1 mb-4" *ngIf="dates.length > 0">
+        <h4 class="font-extrabold text-slate-800 m-0">ملاحظات الأيام المحددة</h4>
+        <span class="bg-indigo-100 text-indigo-700 font-bold text-xs px-2.5 py-1 rounded-lg">{{ dates.length }} يوم</span>
+      </div>
+
+      <!-- Empty State: No Date Selected -->
+      <div *ngIf="dates.length === 0" class="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-200 rounded-[2rem] py-14 shadow-sm">
+        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
+          <ion-icon name="calendar-outline" class="text-3xl text-slate-300"></ion-icon>
+        </div>
+        <p class="text-slate-500 font-bold text-sm m-0">حدد يوماً أو أكثر لعرض الملاحظات</p>
+      </div>
+
+      <!-- Empty State: Date Selected but No Notes -->
+      <div *ngIf="dates.length > 0 && selectedNotes.length === 0" class="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-200 rounded-[2rem] py-14 shadow-sm">
+        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
+          <ion-icon name="document-text-outline" class="text-3xl text-slate-300"></ion-icon>
+        </div>
+        <p class="text-slate-500 font-bold text-sm m-0">لا توجد ملاحظات مسجلة لهذه الأيام</p>
+      </div>
+
+      <!-- Notes List -->
+      <div *ngIf="selectedNotes.length > 0" class="space-y-3">
+        <div *ngFor="let item of selectedNotes" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden">
+          
+          <!-- Colored left border accent -->
+          <div class="absolute top-0 bottom-0 right-0 w-1.5 bg-[#ff7043]"></div>
+          
+          <div class="pr-2">
+            <p class="text-slate-700 font-bold m-0 text-sm leading-relaxed whitespace-pre-line">
+              {{ item.description || 'ملاحظة امتحان غير معنونة' }}
+            </p>
+            
+            <div class="flex items-center gap-2 mt-3 pt-3 border-t border-slate-50">
+              <div class="w-6 h-6 rounded-md bg-slate-50 flex items-center justify-center border border-slate-100">
+                <ion-icon name="calendar-clear-outline" class="text-slate-400 text-[10px]"></ion-icon> 
+              </div>
+              <span class="text-slate-500 font-bold text-[11px]">{{ item.examNoteDate | date:'fullDate':'':'ar-KW' }}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</ion-content>

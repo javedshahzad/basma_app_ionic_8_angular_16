@@ -1,0 +1,13 @@
+<div class="bg-white" dir="rtl">
+  <div class="flex flex-col py-2">
+    <button class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors text-right w-full" *ngIf="canEdit" (click)="dismiss('edit')">
+      <ion-icon name="create-outline" class="text-indigo-600 text-lg"></ion-icon> تفعيل وضع التعديل
+    </button>
+    <button class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors text-right w-full" *ngIf="canAdd" (click)="dismiss('add')">
+      <ion-icon name="person-add-outline" class="text-indigo-600 text-lg"></ion-icon> تسجيل طالب جديد
+    </button>
+    <button class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors text-right w-full" (click)="dismiss('notes')">
+      <ion-icon name="document-text-outline" class="text-indigo-600 text-lg"></ion-icon> عرض الملاحظات
+    </button>
+  </div>
+</div>

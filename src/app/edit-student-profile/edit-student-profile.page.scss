@@ -1,0 +1,49 @@
+app-edit-student-profile:host {
+    
+    /* لون الخلفية الأساسي للمنصة */
+    .lineone-bg {
+        --background: #f8fafc;
+    }
+
+    /* حركة دخول انسيابية للبطاقة */
+    .animate-fade-in-up {
+        animation: fadeInUp 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* إزالة تأثير التباعد الافتراضي لحقول Ionic */
+    ion-input, ion-select {
+        --padding-start: 0;
+        --padding-end: 0;
+    }
+    
+    /* تخصيص قائمة الصفوف */
+    ion-select {
+        width: 100%;
+        max-width: 100%;
+        
+        &::part(placeholder) {
+            color: #94a3b8; 
+            font-weight: normal;
+            opacity: 1;
+        }
+        &::part(text) {
+            color: #1e293b; 
+            font-weight: 700;
+        }
+        &::part(icon) {
+            color: #64748b; 
+            opacity: 1;
+        }
+    }
+}

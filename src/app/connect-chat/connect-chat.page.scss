@@ -1,0 +1,36 @@
+app-connect-chat {
+  
+  // إخفاء الـ Scrollbar الافتراضي في حقل النص لجعله أنظف
+  ion-textarea {
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    --placeholder-color: #94a3b8;
+    --placeholder-font-weight: 500;
+    margin: 0;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  // تحسين شكل الروابط داخل الرسائل
+  ::ng-deep a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    opacity: 0.9;
+    font-weight: 600;
+  }
+  
+  // تعديل لون الروابط في الرسائل المرسلة (الزرقاء/البنفسجية) لتكون واضحة
+  .bg-indigo-600 ::ng-deep a {
+    color: #c7d2fe; // لون نيلي فاتح جداً
+  }
+
+  // إخفاء شريط التابس السفلي الإجباري لتوفير مساحة للوحة المفاتيح
+  :host-context(ion-tabs) {
+    ion-tab-bar {
+      display: none !important;
+    }
+  }
+}

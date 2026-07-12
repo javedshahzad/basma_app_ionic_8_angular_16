@@ -1,0 +1,41 @@
+app-add-notes:host {
+    
+    /* إزالة الحواف الداخلية للعناصر المخصصة لتندمج مع تصميمنا */
+    ion-select, ionic-selectable {
+        --padding-start: 0;
+        --padding-end: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    ion-datetime {
+        --padding-start: 0;
+        --padding-end: 0;
+    }
+
+    ion-textarea {
+        --padding-start: 0;
+        --padding-end: 0;
+        --padding-top: 0;
+        --padding-bottom: 0;
+    }
+
+    /* تخصيص القائمة المنسدلة (ionic-selectable) لتطابق الألوان */
+    ionic-selectable::part(placeholder) {
+        color: #94a3b8; /* Slate 400 */
+        font-weight: 500;
+    }
+    
+    ionic-selectable::part(text) {
+        color: #1e293b; /* Slate 800 */
+        font-weight: 700;
+    }
+
+    ion-select::part(placeholder) {
+        color: #94a3b8; 
+    }
+
+    ion-select::part(text) {
+        color: #1e293b;
+    }
+}

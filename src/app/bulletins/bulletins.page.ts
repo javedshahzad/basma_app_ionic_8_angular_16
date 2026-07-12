@@ -1,0 +1,143 @@
+import { Component, OnInit, NgZone } from '@angular/core';
+import { NavController, AlertController, Platform, PopoverController } from '@ionic/angular';
+import { AuthService } from '../service/auth/auth.service';
+import { DataService } from '../service/data/data.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Router, NavigationExtras } from '@angular/router';
+import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
+
+// 🟢 استيراد خدمة التخزين الموحدة والآمنة
+import { StorageService } from '../service/storage.service';
+
+@Component({
+  selector: 'app-bulletins',
+  templateUrl: './bulletins.page.html',
+  styleUrls: ['./bulletins.page.scss'], 
+}) 
+export class BulletinsPage implements OnInit {
+  lang: any;
+  userDetails: any;
+  userType: any;
+  bulletins: any = [];
+  allBullentins: any = [];
+  user_no: any;
+  isLoading: boolean = true; // 🟢 متغير التحميل الوهمي السلس
+
+  constructor(
+    public navCtrl: NavController,
+    public dataProvider: DataService,
+    public authProvider: AuthService,
+    public translate: TranslateService,
+    public alertCtrl: AlertController,
+    public network: Network,
+    private photoViewer: PhotoViewer,
+    private router: Router,
+    public zone: NgZone,
+    public platform: Platform,
+    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+  ) {
+    this.translate.get("alertmessages").subscribe((response) => {
+      this.lang = response;
+    });
+  }
+
+  ngOnInit() {}
+
+  async ionViewWillEnter() {
+    this.isLoading = true;
+    this.allBullentins = [];
+    
+    // 🟢 استخدام StorageService الآمن
+    let userLoggedIn = await this.storageSr.get("userloggedin");
+    if (userLoggedIn) {
+      this.userDetails = userLoggedIn;
+      this.userType = this.userDetails.details.user_type;
+      this.user_no = this.userDetails.details.user_no;
+      this.getBulletins();
+    } else {
+      this.router.navigate(['login'], { replaceUrl: true });
+    }
+  }
+
+  getBulletins() {
+    let data = {
+      user_no: this.userDetails.details.user_no,
+      school_id: this.userDetails.details.school_id
+    };
+    
+    this.dataProvider.getBulletins(data).then(res => {
+      this.isLoading = false; // إخفاء التحميل
+      if (res) {
+        this.bulletins = res.data;
+        if (this.bulletins) {
+          if (this.bulletins.length > 1) {
+            this.allBullentins = this.bulletins.splice(0, 20);
+          } else {
+            this.allBullentins = this.bulletins;
+          }
+        }
+      }
+    }).catch(e => {
+      this.isLoading = false;
+      console.log(e);
+    });
+  }
+
+  doInfinite(infiniteScroll: any) {
+    setTimeout(() => {
+      if (this.bulletins && this.bulletins.length > 0) {
+        this.allBullentins = this.allBullentins.concat(this.bulletins.splice(0, 20));
+      }
+      infiniteScroll.target.complete();
+    }, 500);
+  }
+
+  addBulletin(base64Image) {
+    let objToSend: NavigationExtras = {
+      queryParams: { base64Image: base64Image }
+    };
+    this.router.navigate(['follow-bulletins'], { state: { cameraImage: objToSend } });
+  }
+
+  openImage(image) {
+    this.photoViewer.show(image); 
+  }
+
+  opendoc(pdf) {
+    let link = 'https://docs.google.com/viewer?url=' + pdf;
+    window.open(link, '_system');
+  }
+  
+  openPdf(pdf: string) {
+    window.open(pdf, '_system');
+  }
+
+  openPdfs(pdf: string) {
+    window.open(pdf + '.pdf', '_system');
+  }
+
+  openBulletin(bullet) {
+    const navigation: NavigationExtras = { state: bullet };
+    this.zone.run(() => {
+      this.router.navigate(['view-bulletin'], navigation);
+    });
+  }
+
+  async openCamera() {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 100,
+        resultType: CameraResultType.Base64,
+        source: CameraSource.Camera
+      });
+      if (image && image.base64String) {
+        let base64Image = 'data:image/jpeg;base64,' + image.base64String;
+        this.addBulletin(base64Image); 
+      }
+    } catch(e) { 
+      console.log("Camera Error: ", e); 
+    }
+  }
+}

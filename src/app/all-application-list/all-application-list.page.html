@@ -1,0 +1,116 @@
+<ion-header class="ion-no-border" mode="md">
+  <ion-toolbar style="--background: #f8fafc;" class="relative text-center">
+    <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
+      <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title class="font-extrabold text-slate-800 text-base w-full">{{'absent_students.all_absent_app' | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="lineone-bg" mode="md" dir="rtl">
+  <div class="px-3 py-4 pb-12 max-w-lg mx-auto space-y-4">
+
+    <div class="bg-white rounded-2xl shadow-sm shadow-slate-200/50 p-4 border border-slate-100">
+      <span class="block text-xs font-bold text-slate-700 px-1 mb-1.5">{{'absent_students.Date' | translate}}</span>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 flex justify-between items-center cursor-pointer hover:bg-slate-100 focus-within:ring-2 focus-within:ring-indigo-100 transition-all" (click)="openCalenderModal()">
+        <span class="font-bold text-sm text-slate-800">{{SelectedDate | date: 'mediumDate'}}</span>
+        <ion-icon name="calendar-outline" class="text-indigo-500 text-lg"></ion-icon>
+      </div>
+    </div>
+
+    <div class="space-y-3 mt-4">
+      
+      <div *ngIf="AllAvailableApplications?.length > 0" class="space-y-3">
+        <div *ngFor="let application of AllAvailableApplications; let i=index" class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm shadow-slate-200/50 flex flex-col gap-3 relative overflow-hidden">
+          
+          <div class="absolute top-0 right-0 bottom-0 w-1.5 rounded-r-2xl"
+               [ngClass]="{
+                 'bg-amber-400': application.application_status == '0',
+                 'bg-emerald-500': application.application_status == '1',
+                 'bg-rose-500': application.application_status == '2'
+               }"></div>
+
+          <div class="flex items-start justify-between gap-2 pl-1 pr-2">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 mt-1">
+                <ion-icon name="document-text" class="text-slate-400 text-lg"></ion-icon>
+              </div>
+              <div class="flex-1">
+                <h4 class="font-bold text-sm text-slate-800 m-0 leading-tight">{{application.studentObj.name}}</h4>
+                <p class="text-xs font-bold text-slate-500 mt-1 mb-0">{{application.courseObj.name}}</p>
+              </div>
+            </div>
+
+            <div class="flex-shrink-0 mt-1">
+              <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-1 rounded-lg text-[10px] font-bold" *ngIf="application.application_status == '1'">{{'absent_students.accepted' | translate}}</span>
+              <span class="bg-rose-50 text-rose-600 border border-rose-100 px-2 py-1 rounded-lg text-[10px] font-bold" *ngIf="application.application_status == '2'">{{'absent_students.rejected' | translate}}</span>
+            </div>
+          </div>
+
+          <div class="h-px bg-slate-50 w-full my-0.5"></div>
+
+          <div class="flex items-center gap-2 mt-1">
+            
+            <button (click)="ViewApplication(application)" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-1.5">
+              <ion-icon name="eye-outline" class="text-sm"></ion-icon>
+              {{'absent_students.view_app' | translate}}
+            </button>
+
+            <ng-container *ngIf="application.application_status == '0'">
+              <button (click)="submitApplication(application,'1')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-2.5 rounded-xl shadow-md shadow-emerald-200 transition-all active:scale-95 flex items-center justify-center gap-1">
+                <ion-icon name="checkmark-circle-outline" class="text-sm"></ion-icon>
+                {{'absent_students.accept' | translate}}
+              </button>
+              <button (click)="submitApplication(application,'2')" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-2.5 rounded-xl shadow-md shadow-rose-200 transition-all active:scale-95 flex items-center justify-center gap-1">
+                <ion-icon name="close-circle-outline" class="text-sm"></ion-icon>
+                {{'absent_students.reject' | translate}}
+              </button>
+            </ng-container>
+
+            <button *ngIf="application.application_status == '2'" (click)="submitApplication(application,'0')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-md shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center gap-1.5">
+              <ion-icon name="refresh-outline" class="text-sm"></ion-icon>
+              {{'absent_students.submit_again' | translate}}
+            </button>
+
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!AllAvailableApplications || AllAvailableApplications.length === 0" class="py-10 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl bg-white mt-4">
+        <ion-icon name="folder-open-outline" class="text-4xl text-slate-300 mb-2"></ion-icon>
+        <h4 class="text-slate-500 font-bold text-sm">لا توجد طلبات</h4>
+      </div>
+
+    </div>
+  </div>
+
+  
+</ion-content>
+
+<div class="fixed inset-0 z-[9999] flex items-end justify-center bg-slate-900/60 backdrop-blur-sm transition-all duration-300" *ngIf="showCalenderModal">
+    <div class="absolute inset-0" (click)="hideCalenderModal()"></div>
+    
+    <!-- 🌟 تم جعل الاتجاه RTL من اليمين لليسار -->
+    <div class="bg-white w-full max-w-md rounded-t-[2.5rem] shadow-2xl p-6 relative z-10 animate-fade-in-up" dir="rtl">
+      <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-0 right-0"></div>
+      
+      <div class="mt-4 flex justify-center w-full"> 
+        <!-- 🌟 استخدام ion-datetime الحديث مع دعم العربية والتحكم -->
+        <ion-datetime 
+          mode="md"
+          presentation="date" 
+          [value]="calendarDate"
+          (ionChange)="onDaySelect($event)"
+          (ionCancel)="hideCalenderModal()"
+          locale="ar-EG"
+          color="primary"
+          [showDefaultButtons]="true"
+          doneText="تأكيد"
+          cancelText="إلغاء"
+          class="rounded-2xl border border-slate-100 shadow-sm w-full max-w-[350px]">
+        </ion-datetime>
+      </div>
+
+    </div>
+  </div>

@@ -1,0 +1,60 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar class="relative text-center">
+    <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
+      <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title class="font-extrabold text-slate-800 text-base w-full">{{'bulletin.title' | translate}}</ion-title>
+    
+    <!-- إضافة زر احتياطي لضبط التوسيط -->
+    <ion-buttons slot="start" class="absolute right-2 z-10 top-0 bottom-0 w-9"></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="lineone-bg" mode="md" dir="rtl">
+  <div class="px-4 py-6 max-w-lg mx-auto" *ngIf="bulletin && (bulletin.bulletin_id || bulletin.id)">
+    
+    <!-- بطاقة تفاصيل النشرة -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-5 animate-fade-in-up">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0 shadow-inner">
+          <ion-icon name="megaphone" class="text-2xl"></ion-icon>
+        </div>
+        <div>
+          <h3 class="text-slate-800 font-bold text-base m-0 mb-1.5">{{bulletin.tital || 'تفاصيل النشرة'}}</h3>
+          <p class="text-slate-500 text-sm m-0 leading-relaxed">{{bulletin.description}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- بطاقة كتابة الملاحظة -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 animate-fade-in-up delay-100">
+      <h3 class="text-slate-800 font-bold text-sm mb-3 flex items-center gap-2">
+        <ion-icon name="document-text-outline" class="text-indigo-500 text-lg"></ion-icon>
+        {{'bulletin.note' | translate}}
+      </h3>
+      
+      <div class="bg-slate-50 rounded-xl border border-slate-200 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all overflow-hidden p-1">
+        <ion-textarea
+          class="m-0 p-3 text-slate-700 font-medium custom-textarea"
+          rows="5"
+          placeholder="اكتب ملاحظتك الإضافية هنا... (اختياري)"
+          [(ngModel)]="description">
+        </ion-textarea>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
+
+<!-- التذييل وزر المتابعة -->
+<ion-footer class="ion-no-border bg-white border-t border-slate-100">
+  <div class="p-4 max-w-lg mx-auto pb-safe">
+    <button
+      class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-base py-4 rounded-2xl shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+      (click)="share()">
+      <span>{{'bulletin.select_user' | translate}}</span>
+      <ion-icon name="arrow-back-outline" class="text-xl"></ion-icon>
+    </button>
+  </div>
+</ion-footer>

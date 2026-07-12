@@ -1,0 +1,31 @@
+app-settings:host {
+  /* جميع التنسيقات تمت كتابتها بنظام Tailwind CSS داخل ملف HTML */
+  /* هذا الملف يقتصر فقط على إصلاحات ضرورية لا تدعمها Tailwind في Ionic */
+
+  /* إخفاء خطوط التمرير لتبدو الواجهة كالتطبيقات الأصلية (Native) */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* إزالة أي خلفيات افتراضية تفرضها Ionic وتتعارض مع التصميم الجديد */
+  ion-item {
+    --background: transparent;
+    --border-color: transparent;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+  }
+
+  /* تخصيص مؤشر زر التبديل (Toggle) ليتناسب مع Lineone */
+  ion-toggle {
+    --background: #e2e8f0; /* Slate 200 */
+    --background-checked: var(--ion-color-primary); /* Indigo */
+    --handle-background: #ffffff;
+    --handle-background-checked: #ffffff;
+  }
+
+  /* تخصيص القوائم المنسدلة */
+  ion-select::part(icon) {
+    color: #64748b; /* Slate 500 */
+    opacity: 1;
+  }
+}

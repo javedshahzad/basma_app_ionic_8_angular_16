@@ -1,0 +1,35 @@
+1- print functionality in iOS app display empty where in android works fine.
+2- Hawaii devices and some old have below issue.
+3- upgrade target android 13 ( API level 33 ) or latest
+4- in android capture image from camera does not work.
+5- any menu field option in android does not work
+
+
+
+
+6- When you login as student than click on switch account button the switch panel won't display
+7- This is class notes page when teacher submit a note contain an image it display this pdf icon and when click on it will display error page. Since the attachment is image it should not display pdf icon at all
+8- In side menu navigate to Manage Teacher than click on icon at top left to add new teacher:
+
+- When you type teacher info even if you enter unique username after click on submit it will actually register the teacher than through error message says username already exists l.
+
+- In same step if you assign classes to teacher will register the teacher without assign any classes.
+
+9- After login in settings page there is a button at bottom to delete school account make sure this button will be visible to school admin account only.
+
+
+
+Keystore info
+
+Pass: xbx3123XBX#!@#
+Aias: AttendanceApp
+Pass: xbx3123XBX#!@#
+
+
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.print.PrintHelper;
+
+
+ "cordova-plugin-printer": "^0.8.0",

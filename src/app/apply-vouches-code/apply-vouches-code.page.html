@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+  		<ion-back-button></ion-back-button>
+  	</ion-buttons>
+    <ion-title>Apply Voucher Code</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label position="floating">
+      Code
+    </ion-label>
+    <ion-input type="text" [(ngModel)]="code" placeholder="Code..." name="code">
+
+    </ion-input>
+  </ion-item>
+  <!-- <ion-item>
+    <ion-label>
+      Select Plan
+    </ion-label>
+    <ion-select [(ngModel)]="plan_id" mode="ios"  interface="action-sheet" >
+      <ion-select-option *ngFor="let item of plans" [value]="item.id"  >
+        {{item.name}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item> -->
+  <ion-button expand="full" color="danger" (click)="ApplyCode()">Apply</ion-button>
+</ion-content>

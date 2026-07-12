@@ -1,0 +1,86 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar>
+    <ion-buttons slot="start" class="mr-2">
+      <ion-menu-button class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-700 shadow-sm flex items-center justify-center">
+      </ion-menu-button>
+    </ion-buttons>
+
+    <ion-title class="text-slate-800 font-bold text-base text-center">
+      {{'children.title' | translate}}
+    </ion-title>
+
+    <ion-buttons slot="end" class="ml-2 w-10"></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-slate-50" mode="md">
+  <div class="p-4 md:p-6 max-w-2xl mx-auto space-y-4 pb-20" dir="rtl">
+    
+    <div *ngIf="students?.length > 0" class="space-y-4">
+      <div *ngFor="let student of students" 
+     (click)="openStudentDetail(student)"
+     class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 relative overflow-hidden active:scale-[0.97] transition-all cursor-pointer">
+        
+        <div class="absolute -left-10 -top-10 w-32 h-32 bg-indigo-50/40 rounded-full blur-2xl z-0"></div>
+
+        <div class="flex items-start gap-4 relative z-10">
+          <div class="w-20 h-20 rounded-2xl border-2 border-white shadow-md bg-cover bg-center bg-slate-100 flex-shrink-0"
+               [ngStyle]="{'background-image': 'url(' + (student?.pic ? student.pic : 'assets/imgs/user.png') + ')'}">
+          </div>
+
+          <div class="flex-1 pt-1">
+            <div class="flex items-center gap-2">
+            <h2 class="text-slate-800 font-black text-lg leading-tight mb-2">{{student?.name}}</h2>
+            <span *ngIf="student.current_streak >= 10" class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
+            <span *ngIf="student.current_streak >= 5 && student.current_streak < 10" class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
+            <span *ngIf="student.isFrozen" class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"><ion-icon name="snow"></ion-icon> مجمد</span>
+          </div>
+
+            
+            <div class="space-y-1.5">
+              <div class="flex items-center gap-1">
+                <span class="text-slate-500 text-[11px] font-bold">المستوى: </span>
+                
+                <span class="text-[11px] font-black uppercase tracking-wider" 
+                      [ngClass]="getStudentBehaviourColor(student)">
+                  {{ getStudentBehaviourText(student) }}
+                </span>
+              </div>
+
+              <div class="flex items-center gap-1.5 mt-1">
+                <span class="text-slate-500 text-[10px] font-bold">اللقب: </span>
+                <span class="text-amber-600 text-[11px] font-black italic tracking-wide bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100/50">
+                  {{ getStudentTitle(student) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="self-center">
+            <ion-icon name="chevron-back" class="text-slate-300 text-xl"></ion-icon>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-slate-50 flex justify-between items-center relative z-10">
+          <div class="flex items-center gap-2">
+            <ion-icon name="calendar-outline" class="text-slate-400 text-sm"></ion-icon>
+            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">إجمالي الغياب: {{student?.attendance || 0}}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] text-rose-500 font-black bg-rose-50 px-2 py-1 rounded-lg border border-rose-100">
+              {{student?.unacceptable_absent_days || 0}} غياب بدون عذر مقبول
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="students?.length == 0" class="flex flex-col items-center justify-center py-20 text-center animate-fade-in">
+      <div class="w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center mb-4 border border-slate-200">
+        <ion-icon name="people-outline" class="text-4xl text-slate-400"></ion-icon>
+      </div>
+      <h3 class="text-slate-700 font-bold text-lg mb-2">{{noDataFound}}</h3>
+    </div>
+
+  </div>
+</ion-content>

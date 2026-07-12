@@ -1,0 +1,127 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay" side="start" persistent="true">
+      <ion-content class="lineone-sidebar">
+        
+        <div *ngIf="user.name" class="sidebar-header">
+          <div class="user-info-row">
+            <div class="avatar-box">
+              <img [src]="user.image" onerror="this.onerror=null;this.src='assets/imgs/logo.png';">
+            </div>
+            <div class="user-text">
+              <h2 class="user-name">{{user.name}}</h2>
+              <p class="user-role">{{user.description}}</p>
+            </div>
+          </div>
+          
+          <ion-button mode="ios" size="small" fill="outline" class="lineone-switch-btn" (click)="changeAccount($event)">
+            <ion-icon name="swap-horizontal-outline" slot="start"></ion-icon>
+            {{'sidemenu.switch' | translate}}
+          </ion-button>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <ion-list class="lineone-menu-list" lines="none">
+          
+          <ion-row class="menu-item lang-item">
+            <ion-col size="6" class="item-label">
+              <ion-icon name="language-outline"></ion-icon>
+              <span>{{'sidemenu.lang' | translate}}</span>
+            </ion-col>
+            <ion-col size="6" class="select-col">
+              <ion-select [(ngModel)]="selectedLanguage" (ionChange)="changeLanguage($event)" interface="popover" mode="ios">
+                <ion-select-option value="ar">العربية</ion-select-option>
+                <ion-select-option value="en">English</ion-select-option>
+              </ion-select>
+            </ion-col>
+          </ion-row>
+
+          <div class="menu-section-title">القائمة الرئيسية</div>
+
+          <ng-container *ngFor="let page of pages; let i = index">
+            <ion-row class="menu-item" [class.active-item]="getActivePage(page)" menuClose (click)="openPage(page)">
+              <ion-col size="2" class="icon-col">
+                <ion-icon [name]="page.icon"></ion-icon>
+              </ion-col>
+              <ion-col size="10" class="text-col">
+                {{page.title}}
+              </ion-col>
+            </ion-row>
+
+            <ng-container *ngIf="i == 1">
+              <ion-row class="menu-item" (click)="openPage('absent-students')" *ngIf="user.userType == 'admin' || user.is_show_absent_students == '1'">
+                <ion-col size="2" class="icon-col"><ion-icon name="calendar-clear-outline"></ion-icon></ion-col>
+                <ion-col size="10" class="text-col">{{'sidemenu.absent_students' | translate}}</ion-col>
+              </ion-row>
+            </ng-container>
+          </ng-container>
+
+          <div class="menu-section-title">إدارة وإعدادات</div>
+
+          <ion-row class="menu-item" *ngIf="activeLink.teacher_link == '1' && user.userType == 'admin'" (click)="shareRegistrationLink()">
+            <ion-col size="2" class="icon-col"><ion-icon name="share-social-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'sidemenu.register_link' | translate}}</ion-col>
+          </ion-row>
+
+          <ion-row class="menu-item" *ngIf="activeLink.parent_link == '1' && user.userType == 'admin' && isSchoolAdmin" (click)="shareParentRegistrationLink()">
+            <ion-col size="2" class="icon-col"><ion-icon name="share-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'sidemenu.register_parent' | translate}}</ion-col>
+          </ion-row>
+
+          <ion-row class="menu-item" *ngIf="user.name" (click)="openPage('settings')">
+            <ion-col size="2" class="icon-col"><ion-icon name="settings-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'sidemenu.settings' | translate}}</ion-col>
+          </ion-row>          
+
+          <ion-row class="menu-item" (click)="openPage('all-devices')" *ngIf="loggedin">
+            <ion-col size="2" class="icon-col"><ion-icon name="phone-portrait-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'sidemenu.devices' | translate}}</ion-col>
+          </ion-row>
+
+          <ion-row class="menu-item" *ngIf="isSchoolAdmin && user.name && (user.userType != 'parent' && user.userType !='student') && user.user_no != '9864'" (click)="openPage('available-plan')">
+            <ion-col size="2" class="icon-col"><ion-icon name="card-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'sidemenu.Plans' | translate}}</ion-col>
+          </ion-row>
+
+          <ion-row class="menu-item" *ngIf="user.userType == 'admin'" (click)="openBackendUrl()">
+            <ion-col size="2" class="icon-col"><ion-icon name="globe-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'sidemenu.backend' | translate}}</ion-col>
+          </ion-row>
+
+          <ion-row class="menu-item" (click)="openPage('contact-us')" *ngIf="isSchoolAdmin">
+            <ion-col size="2" class="icon-col"><ion-icon name="headset-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'sidemenu.contact_us' | translate}}</ion-col>
+          </ion-row>
+   
+          <ion-row class="menu-item" *ngIf="user.userType == 'admin'" (click)="openPDF()">
+            <ion-col size="2" class="icon-col"><ion-icon name="information-circle-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'sidemenu.about_us' | translate}}</ion-col>
+          </ion-row>  
+
+          <div class="menu-section-title">قانوني</div>
+
+          <ion-row class="menu-item" (click)="opentOs()">
+            <ion-col size="2" class="icon-col"><ion-icon name="document-text-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'tos_pp.term_of_service' | translate}}</ion-col>
+          </ion-row>
+
+          <ion-row class="menu-item" (click)="openPp()">
+            <ion-col size="2" class="icon-col"><ion-icon name="shield-checkmark-outline"></ion-icon></ion-col>
+            <ion-col size="10" class="text-col">{{'tos_pp.privacy_policy' | translate}}</ion-col>
+          </ion-row>
+
+        </ion-list>
+        
+        <div class="logout-wrapper ion-padding" *ngIf="loggedin">
+          <ion-button expand="block" class="lineone-logout-btn" fill="clear" menuClose (click)="logout()">
+            <ion-icon name="log-out-outline" slot="start"></ion-icon>
+            {{'sidemenu.logout' | translate}}
+          </ion-button>
+        </div>
+
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

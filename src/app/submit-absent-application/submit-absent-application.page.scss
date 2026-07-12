@@ -1,0 +1,32 @@
+app-submit-absent-application:host {
+    
+    .lineone-bg {
+        --background: #f8fafc;
+    }
+
+    /* حركة ظهور ناعمة للحقول الإضافية والصور */
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* تخصيص مدخلات Ionic داخل تصميم Tailwind */
+    ion-select::part(icon) {
+        display: none; /* إخفاء سهم Ionic الافتراضي لأننا أضفنا أيقوناتنا */
+    }
+    
+    ion-textarea {
+        --padding-start: 0;
+        --padding-top: 5px;
+    }
+}

@@ -1,0 +1,94 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar>
+    <ion-buttons slot="end" class="mr-2 w-10">
+      <ion-back-button defaultHref="/" text="" icon="chevron-back-outline" class="custom-back-btn"></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title class="ion-text-center fw-bold text-dark">
+      {{'eLearning.title' | translate}}
+    </ion-title>
+
+    <ion-buttons slot="start" class="w-10 ml-2"></ion-buttons>    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+  <div *ngIf="flag" class="max-w-3xl mx-auto pb-10">
+    
+    <!-- 🟢 مشغل الفيديو الرئيسي (عرض سينمائي 16:9) -->
+    <div class="w-full bg-slate-900 aspect-video relative shadow-lg">
+      
+      <!-- فيديو مرفوع على السيرفر -->
+      <video #videoPlayer controls *ngIf="material.material_video_file && material.material_video_file !== ''" 
+             [src]="material.material_video_file" 
+             autoplay playsinline 
+             class="w-full h-full object-contain"></video>
+             
+      <!-- فيديو يوتيوب أو مصدر خارجي -->
+      <iframe class="w-full h-full border-0" allowfullscreen="allowfullscreen" 
+              *ngIf="material.material_video_link && material.material_video_link !== ''"
+              [src]="material.material_video_link | safe"></iframe>
+    </div>
+
+    <!-- 🟢 تفاصيل المقطع التشغيلي -->
+    <div class="bg-white p-5 md:p-6 shadow-sm border-b border-slate-100 mb-6">
+      <div class="flex justify-between items-start gap-4">
+        <div>
+          <h4 class="text-lg font-black text-slate-800 m-0 mb-2 leading-tight">{{material.material_title}}</h4>
+          <p class="text-sm font-medium text-slate-500 m-0 leading-relaxed">{{material.material_description}}</p>
+        </div>
+        <button (click)="share(material)" class="w-11 h-11 shrink-0 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-100 transition-colors shadow-sm">
+          <ion-icon name="share-social" class="text-xl"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- 🟢 قائمة الفيديوهات ذات الصلة -->
+    <div class="px-4" *ngIf="material.related_videos?.length > 0">
+      <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 px-1 flex items-center gap-2">
+        <ion-icon name="albums-outline" class="text-base"></ion-icon>
+        مقاطع ذات صلة
+      </h3>
+      
+      <div class="space-y-3">
+        <div *ngFor="let relatedVideo of material.related_videos" 
+             (click)="playRelatedVideo(relatedVideo.id)"
+             class="bg-white rounded-2xl p-3 border border-slate-100 flex items-start gap-3 shadow-sm hover:shadow-md cursor-pointer transition-all active:scale-[0.98]">
+          
+          <!-- الغلاف أو الصورة المصغرة (Thumbnail) -->
+          <div class="w-32 h-20 rounded-xl overflow-hidden bg-slate-100 shrink-0 relative border border-slate-200">
+            
+            <!-- صورة مصغرة مرفوعة يدوياً -->
+            <img *ngIf="relatedVideo.video_thumb && relatedVideo.video_thumb.length > 0" 
+                 [src]="relatedVideo.video_thumb" 
+                 class="w-full h-full object-cover">
+                 
+            <!-- لقطة من الفيديو المرفوع (نطلب الثانية رقم 5 بدلاً من تشغيل الفيديو) -->
+            <video *ngIf="(!relatedVideo.video_thumb || relatedVideo.video_thumb.length === 0) && relatedVideo.material_video_file !== ''" 
+                   class="w-full h-full object-cover pointer-events-none" muted playsinline>
+              <!-- الحيلة الهندسية #t=5 لجلب الصورة دون تشغيل -->
+              <source [src]="relatedVideo.material_video_file + '#t=5'" type="video/mp4">
+            </video>
+
+            <!-- يوتيوب (شعار فقط لعدم إمكانية سحب المصغرة بدون API) -->
+            <div *ngIf="(!relatedVideo.video_thumb || relatedVideo.video_thumb.length === 0) && relatedVideo.material_video_file === ''" 
+                 class="w-full h-full flex items-center justify-center bg-rose-50 text-rose-500">
+                 <ion-icon name="logo-youtube" class="text-3xl"></ion-icon>
+            </div>
+            
+            <!-- أيقونة التشغيل التجميلية -->
+            <div class="absolute inset-0 bg-black/20 flex items-center justify-center">
+              <ion-icon name="play-circle" class="text-white text-3xl drop-shadow-md"></ion-icon>
+            </div>
+          </div>
+          
+          <!-- عنوان المقطع -->
+          <div class="flex-1 mt-1">
+            <p class="text-sm font-bold text-slate-700 m-0 line-clamp-2 leading-snug">{{relatedVideo.material_title}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

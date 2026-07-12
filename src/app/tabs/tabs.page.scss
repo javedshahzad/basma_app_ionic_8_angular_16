@@ -1,0 +1,35 @@
+app-students:host {
+  /* * ملاحظة: تم نقل أغلب التنسيقات البصرية إلى Tailwind CSS في ملف HTML 
+   * لضمان مطابقة تصميم Lineone بدقة وسهولة.
+   */
+
+  /* إخفاء خطوط التمرير (Scrollbars) لتبدو الواجهة أكثر نظافة واحترافية */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* تنسيق المكونات الخاصة بـ Ionic لضمان عدم تعارضها مع Tailwind */
+  ion-item {
+    --background: transparent;
+    --padding-start: 0;
+    --inner-padding-end: 0;
+    --border-style: none;
+  }
+
+  /* تحسين مظهر التقويم عند الفتح كمودال ليتناسب مع الألوان الجديدة */
+  ion-calendar {
+    --bg-color: #ffffff;
+    --color: #334155; /* Slate 700 */
+    --sel-color: #ffffff;
+    --sel-bg-color: var(--ion-color-primary, #4f46e5); /* Indigo 600 */
+  }
+
+  /* حركة ناعمة عند النقر على بطاقات الطلاب */
+  .bg-white {
+    &:active {
+      background-color: #f1f5f9; /* Slate 100 */
+      transform: scale(0.98);
+      transition: all 0.1s ease-in-out;
+    }
+  }
+}

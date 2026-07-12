@@ -1,0 +1,283 @@
+app-classlist:host {
+
+  /* خلفية رمادية فاتحة جداً (Slate 50) مطابقة لـ Lineone */
+  .lineone-bg {
+    --background: #f8fafc;
+  }
+
+  /* هيدر أبيض مسطح ونظيف */
+  .lineone-header {
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* ظل سفلي خفيف جداً */
+    
+    ion-toolbar {
+      --background: #ffffff;
+    }
+    
+    .text-dark {
+      color: #334155; /* Slate 700 */
+    }
+    .fw-bold {
+      font-weight: 600;
+      font-size: 1.15rem;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .main-container {
+    padding: 16px 12px;
+  }
+
+  /* ================= تصميم التبويبات (Tabs/Segments) ================= */
+  .segment-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+    margin-top: 10px;
+  }
+
+  .lineone-segment {
+    background: #f1f5f9; /* Slate 100 */
+    border-radius: 12px;
+    padding: 4px;
+    max-width: 400px;
+    width: 100%;
+
+    ion-segment-button {
+      --color: #64748b; /* Slate 500 */
+      --color-checked: #1e293b; /* Slate 800 */
+      --background-checked: #ffffff;
+      --border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      min-height: 42px;
+      box-shadow: none;
+      
+      &.segment-button-checked {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08); /* ظل خفيف للزر النشط */
+      }
+    }
+  }
+
+  /* ================= البطاقات (Cards) ================= */
+  .lineone-card {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+    margin: 8px 4px;
+    padding: 16px;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(226, 232, 240, 0.6); /* إطار خفيف جداً Slate 200 */
+
+    &:active {
+      transform: scale(0.98);
+      background: #f8fafc;
+    }
+
+    .card-content-flex {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* الأيقونة داخل مربع ملون بشفافية (أهم ميزة في Lineone) */
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+
+      .icon-bg {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        opacity: 0.12; /* شفافية اللون 12% */
+        border-radius: inherit;
+      }
+      
+      ion-icon {
+        z-index: 1;
+      }
+    }
+
+    .text-content {
+      flex: 1;
+      overflow: hidden;
+
+      .card-title {
+        margin: 0 0 4px 0;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #334155;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .card-subtitle {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #64748b;
+      }
+    }
+
+    .forward-icon {
+      color: #cbd5e1; /* Slate 300 */
+      font-size: 1.4rem;
+    }
+  }
+
+  /* ================= بطاقة الإحصائيات ================= */
+  .dashboard-card {
+    padding: 20px;
+
+    .dash-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+
+      .icon-box {
+        width: 42px;
+        height: 42px;
+        font-size: 1.3rem;
+        border-radius: 10px;
+      }
+      
+      .card-title {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #334155;
+      }
+    }
+
+    .dash-stats {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 12px 10px;
+      border: 1px solid #f1f5f9;
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+
+        .stat-value {
+          font-size: 1.15rem;
+          font-weight: 700;
+          margin-bottom: 4px;
+        }
+
+        .stat-label {
+          font-size: 0.75rem;
+          color: #64748b;
+          font-weight: 600;
+        }
+
+        .text-success { color: #10b981; }
+        .text-danger { color: #ef4444; }
+        .text-primary { color: #3b82f6; }
+      }
+
+      .stat-divider {
+        width: 1px;
+        height: 30px;
+        background: #e2e8f0;
+      }
+    }
+  }
+
+  /* ================= الحالات الفارغة ================= */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+    color: #94a3b8;
+
+    ion-icon {
+      font-size: 65px;
+      margin-bottom: 16px;
+      color: #cbd5e1;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  }
+
+  /* حركة دخول العناصر */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* تنسيق أيقونة القائمة الجانبية لتكون احترافية (Lineone Style) */
+.menu-btn-container {
+  margin-inline-start: 5px;
+
+  .custom-menu-btn {
+    --background: #f1f5f9; /* خلفية رمادية فاتحة جداً */
+    --border-radius: 12px; /* زوايا دائرية ناعمة */
+    --padding-start: 8px;
+    --padding-end: 8px;
+    height: 40px;
+    width: 40px;
+    margin: 0;
+    transition: all 0.2s ease;
+
+    ion-icon {
+      font-size: 1.6rem;
+      color: #334155; /* لون الأيقونة (Slate 700) */
+    }
+
+    &:active {
+      --background: #e2e8f0; /* تتغير الخلفية عند النقر */
+      transform: scale(0.95);
+    }
+  }
+
+  /* =========================================
+     🪟 تنسيق الـ Popover الذكي للتابلت 
+  ========================================= */
+  ion-popover.custom-popover {
+    --background: #ffffff;
+    --border-radius: 20px;
+    --box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+    --width: 250px; /* 🔴 تم إضافة هذا السطر لإجبار النافذة على عرض ثابت يمنع التمرير */
+    
+    &::part(content) {
+      border-radius: 20px;
+      overflow: hidden; /* إخفاء أي محتوى زائد */
+      padding: 0;
+    }
+  }
+
+  @keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: slideDown 0.3s ease-out forwards;
+}
+}

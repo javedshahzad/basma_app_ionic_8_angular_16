@@ -1,0 +1,33 @@
+app-add-class:host {
+  
+  .lineone-header {
+    background: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    
+    ion-toolbar {
+      --background: transparent;
+    }
+  }
+
+  .custom-back-btn {
+    --background: #f1f5f9;
+    --background-hover: #e2e8f0;
+    --color: #334155;
+    --border-radius: 12px;
+    height: 40px;
+    width: 40px;
+    margin: 0;
+
+    &::part(native) {
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* إخفاء شريط التمرير لمظهر نظيف */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}

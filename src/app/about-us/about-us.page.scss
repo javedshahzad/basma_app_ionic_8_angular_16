@@ -1,0 +1,38 @@
+app-about-us:host {
+    ion-card {
+        margin-bottom: 1px !important;
+        ion-card-header{
+            h2 {
+                font-weight: bold !important;
+                font-size: 1em !important;
+                    margin: unset;
+            }
+        }
+        ion-card-content {
+            color: #666;
+            text-align: justify;
+            font-size: 0.8em;
+            ul{
+                list-style: none;
+                padding: 0;
+                margin-left: 0;
+            }
+            li{
+                padding: 4px 0;
+                span{
+                    color: #2979ff;
+                    text-decoration: underline;
+                    cursor: pointer;
+                }
+            }
+            li::before {
+                content: "\2022";
+                color: #2979ff;
+                font-weight: bold;
+                display: inline-block;
+                width: 1em;
+                margin-left: 0;
+            }
+        }
+    }
+}

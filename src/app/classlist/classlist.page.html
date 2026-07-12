@@ -1,0 +1,184 @@
+<ion-header class="lineone-header ion-no-border" mode="md">
+  <ion-toolbar>
+    
+    <ion-buttons slot="start" class="menu-btn-container">
+      <ion-menu-toggle auto-hide="false">
+        <ion-button color="dark" class="custom-menu-btn" [disabled]="editMode">
+          <ion-icon name="menu-outline"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    
+    <ion-title class="ion-text-center fw-bold text-dark">
+      الصفحة الرئيسية
+    </ion-title>
+    
+    <ion-buttons slot="end" class="mr-2">
+      
+      <button *ngIf="userType == '2'"
+              [disabled]="editMode || !canReorder === true"
+              [ngClass]="(editMode || !canReorder === true) ? 'opacity-40 cursor-not-allowed bg-slate-50' : 'hover:bg-slate-100 bg-white'"
+              class="w-10 h-10 rounded-full border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center focus:outline-none" 
+              (click)="toogleReorder()">
+        <ion-icon name="swap-vertical-outline" class="text-xl"></ion-icon>
+      </button>
+
+      <button *ngIf="userType != '2'"
+              [disabled]="editMode || !canReorder === true"
+              [ngClass]="(editMode || !canReorder === true) ? 'opacity-40 cursor-not-allowed bg-slate-50' : 'hover:bg-slate-100 bg-white'"
+              class="w-10 h-10 rounded-full border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center focus:outline-none" 
+              (click)="openMenu($event)">
+        <ion-icon name="ellipsis-vertical" class="text-xl"></ion-icon>
+      </button>
+
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<div *ngIf="editMode" 
+     class="bg-indigo-600 text-white px-4 py-3 flex justify-between items-center shadow-lg animate-pulse sticky top-0 z-50" 
+     dir="rtl">
+  <div class="flex items-center gap-2">
+    <ion-icon name="create-outline" class="text-xl"></ion-icon>
+    <span class="font-bold text-sm">أنت الآن في وضع التعديل</span>
+  </div>
+  <button (click)="enableEditMode()" 
+          class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30">
+    إنهاء التعديل
+  </button>
+</div>
+
+<div *ngIf="!canReorder" 
+     class="bg-emerald-600 text-white px-4 py-3 flex justify-between items-center shadow-lg animate-pulse sticky top-0 z-50" 
+     dir="rtl">
+  <div class="flex items-center gap-2">
+    <ion-icon name="swap-vertical-outline" class="text-xl"></ion-icon>
+    <span class="font-bold text-sm">أنت الآن في وضع ترتيب الصفوف</span>
+  </div>
+  <button (click)="toogleReorder()" 
+          class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm">
+    حفظ الترتيب
+  </button>
+</div>
+
+<ion-content class="lineone-bg" mode="md">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" [disabled]="!canReorder">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="main-container">
+
+    <div class="space-y-4 mt-2" *ngIf="isLoading">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 animate-pulse" *ngFor="let dummy of [1,2,3,4,5]">
+        <div class="w-14 h-14 bg-slate-200 rounded-2xl"></div>
+        <div class="flex-1 space-y-3">
+          <div class="h-4 bg-slate-200 rounded-md w-2/3"></div>
+          <div class="h-3 bg-slate-200 rounded-md w-1/3"></div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!isLoading">
+      
+      <div class="segment-wrapper" *ngIf="userType == '1' || userType == '3' || userType == '7'">
+        <ion-segment [(ngModel)]="category" (ionChange)="segmentChanged($event)" mode="ios" class="lineone-segment" [disabled]="editMode || !canReorder">
+          <ion-segment-button value="list">
+            <ion-label>{{'classlist.pagetitle' | translate}}</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="dashboard">
+            <ion-label>{{'classlist.seminar' | translate}}</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
+      <div *ngIf="category === 'list'" class="fade-in">
+        <ion-grid class="ion-no-padding">
+          
+          <ng-container *ngIf="classes?.length > 0; else noClasses">
+            <ion-reorder-group [disabled]="canReorder" (ionItemReorder)="doReorder($event)" class="w-full flex flex-wrap">
+              <ion-col size="12" size-md="6" size-lg="4" *ngFor="let course of classes; let i = index">
+                
+                <ion-card class="lineone-card" (click)="canReorder ? openClassStudents(course) : null" [ngClass]="!canReorder ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'">
+                  <div class="card-content-flex flex items-center p-4">
+                    
+                    <div class="icon-box shrink-0" [style.color]="course.backgroundColor || classBackgroundColor[i] || 'var(--ion-color-primary)'">
+                      <div class="icon-bg" [style.background-color]="course.backgroundColor || classBackgroundColor[i] || 'var(--ion-color-primary)'"></div>
+                      <ion-icon name="library-outline"></ion-icon>
+                    </div>
+
+                    <div class="text-content flex-1 pr-3">
+                      <h3 class="card-title font-bold text-slate-800">{{course.name}}</h3>
+                      <p class="card-subtitle text-xs text-slate-500 mt-1" *ngIf="course.desc">{{course.desc}}</p>
+                    </div>
+
+                    <ion-icon name="chevron-back-outline" class="forward-icon text-slate-400 text-lg" *ngIf="canReorder"></ion-icon>
+                    
+                    <ion-reorder slot="end" *ngIf="!canReorder" class="reorder-btn ml-1">
+                      <ion-icon name="reorder-three" class="text-3xl text-slate-400 hover:text-indigo-600 transition-colors"></ion-icon>
+                    </ion-reorder>
+
+                  </div>
+                </ion-card>
+
+              </ion-col>
+            </ion-reorder-group>
+          </ng-container>
+
+        </ion-grid>
+
+        <ng-template #noClasses>
+          <div class="empty-state">
+            <ion-icon name="school-outline"></ion-icon>
+            <p>{{noDataFound || 'لم يتم إسناد أي فصول لك حتى الآن.'}}</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div *ngIf="category === 'dashboard'" class="fade-in">
+        <ion-grid class="ion-no-padding">
+          <ion-row *ngIf="dashBoard?.length > 0; else noDash">
+            
+            <ion-col size="12" size-md="6" size-lg="4" *ngFor="let seminar of dashBoard; let i = index">
+              <ion-card class="lineone-card dashboard-card" (click)="openSeminar(i+1)">
+                
+                <div class="dash-header">
+                  <div class="icon-box" [style.color]="classBackgroundColor[i] || 'var(--ion-color-primary)'">
+                    <div class="icon-bg" [style.background-color]="classBackgroundColor[i] || 'var(--ion-color-primary)'"></div>
+                    <ion-icon name="analytics-outline"></ion-icon>
+                  </div>
+                  <h3 class="card-title">{{seminar.name}}</h3>
+                </div>
+                
+                <div class="dash-stats">
+                  <div class="stat-item">
+                    <span class="stat-value text-success">{{seminar.present}}</span>
+                    <span class="stat-label">حضور</span>
+                  </div>
+                  <div class="stat-divider"></div>
+                  <div class="stat-item">
+                    <span class="stat-value text-danger">{{seminar.absent}}</span>
+                    <span class="stat-label">غياب</span>
+                  </div>
+                  <div class="stat-divider"></div>
+                  <div class="stat-item">
+                    <span class="stat-value text-primary">{{seminar.total_per_sent}}</span>
+                    <span class="stat-label">النسبة</span>
+                  </div>
+                </div>
+
+              </ion-card>
+            </ion-col>
+
+          </ion-row>
+        </ion-grid>
+
+        <ng-template #noDash>
+          <div class="empty-state">
+            <ion-icon name="analytics-outline"></ion-icon>
+            <p>لم يتم العثور على أي إحصائيات لهذا اليوم.</p>
+          </div>
+        </ng-template>
+      </div>
+
+    </div> </div> </ion-content>

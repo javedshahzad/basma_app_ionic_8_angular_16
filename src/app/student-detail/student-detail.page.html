@@ -1,0 +1,660 @@
+<ion-header class="ion-no-border bg-white border-b border-slate-200" mode="md">
+  <ion-toolbar class="--bg-transparent">
+    
+    <ion-buttons slot="start" class="mr-2 flex gap-2">
+      <button *ngIf="userType == 1 || userType == 3 || userType == 7" 
+              (click)="openUserDetails($event, studentDetails)" 
+              class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center shadow-sm">
+        <ion-icon name="id-card-outline" class="text-lg"></ion-icon>
+      </button>
+      
+      <button *ngIf="userType !='4'" (click)="presentPrintOption($event)" 
+              class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center shadow-sm">
+        <ion-icon name="print-outline" class="text-lg"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-title class="text-slate-800 font-bold text-base text-center">
+      {{'student-details.heading' | translate}}
+    </ion-title>
+
+    <ion-buttons slot="end" class="ml-2">
+      <!-- 🟢 زر العودة المخصص لحل مشكلة توجيه ولي الأمر -->
+      <button 
+        (click)="goBack()" 
+        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-100 transition-all flex items-center justify-center">
+        <ion-icon name="arrow-back" class="text-xl"></ion-icon>
+      </button>
+    </ion-buttons>
+    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="bg-[#f8fafc]" mode="md">
+  <div class="p-4 max-w-4xl mx-auto space-y-5 pb-16" dir="rtl">
+    
+    <div class="bg-white rounded-[2rem] p-5 sm:p-6 shadow-sm border border-slate-200 relative overflow-hidden animate-fade-in-up">
+      
+      <div class="flex items-center gap-4 relative z-10 mb-6">
+        <div class="relative shrink-0">
+          <img [src]="studentDetails.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
+               class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-slate-50 shadow-sm cursor-pointer hover:scale-105 transition-transform"
+               (click)="$event.stopPropagation(); openFullscreenImage(studentDetails.pic)">
+          
+          <button *ngIf="userType == '1' || userType == '3'" 
+                  class="absolute -bottom-1 -right-1 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all" 
+                  (click)="$event.stopPropagation(); takePicture($event)">
+            <ion-icon name="camera" class="text-sm"></ion-icon>
+          </button>
+        </div>
+
+        <div class="flex-1">
+          <div class="flex items-center gap-2">
+          <h2 class="text-lg sm:text-xl font-black text-slate-800 m-0 leading-tight">{{studentDetails.name}}</h2>
+          <span *ngIf="studentDetails?.current_streak >= 10" class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام">
+            <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{studentDetails?.current_streak}}</span>
+          </span>
+          
+          <span *ngIf="studentDetails?.current_streak >= 5 && studentDetails?.current_streak < 10" class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل">
+            <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{studentDetails?.current_streak}}</span>
+          </span>
+
+          <span *ngIf="isFrozen" class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0">
+            <ion-icon name="snow"></ion-icon> مجمد
+          </span>
+          </div>
+                    
+          <p class="text-indigo-600 text-xs sm:text-sm font-bold m-0 mt-1" *ngIf="studentDetails.course">{{studentDetails.course.name}}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 relative z-10">
+        
+        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex flex-col items-center justify-center text-center transition-all hover:bg-slate-100">
+          <span class="text-[9px] font-black text-slate-400 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
+            <ion-icon name="analytics-outline" class="text-indigo-400 text-sm"></ion-icon> مؤشر الأداء العام
+          </span>
+          <div class="flex items-center justify-center gap-1.5">
+             
+             <ion-icon 
+                [name]="gamification.getBehaviourIcon(studentDetails)" 
+                class="text-base {{ gamification.getBehaviourColorClass(studentDetails) }}">
+             </ion-icon>
+             
+             <p class="text-xs font-black {{ gamification.getBehaviourColorClass(studentDetails) }}">
+               {{ gamification.getStudentBehaviourText(studentDetails) }}
+             </p>
+
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-b from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-3 flex flex-col items-center justify-center text-center transition-all hover:border-amber-200">
+          <span class="text-[9px] font-black text-amber-500 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
+            <ion-icon name="star-outline" class="text-amber-500 text-sm"></ion-icon> مؤشر التميز المهاري
+          </span>
+          <p class="text-amber-700 font-black text-[11px] sm:text-xs m-0 leading-tight">{{ getStudentTitle(studentDetails) }}</p>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 animate-fade-in-up" style="animation-delay: 0.2s;">
+      
+      <div class="flex justify-between items-start mb-4">
+
+    <div class="flex flex-col gap-2">
+      <div class="w-fit bg-gradient-to-l from-amber-50 to-orange-50 border border-amber-200/60 text-amber-700 px-3 py-1.5 rounded-xl flex items-center justify-center shadow-sm">
+        
+        <ion-icon name="flash" class="text-amber-500 text-sm animate-pulse"></ion-icon>
+        <span class="text-[11px] font-black tracking-wide">إجمالي الخبرة: {{ studentDetails.student_points || 0 }} XP</span>
+      </div>
+      
+      <h3 class="text-base font-black text-slate-800 flex items-center gap-2">
+        <div class="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center shadow-sm">
+          <ion-icon name="analytics" class="text-indigo-600 text-lg"></ion-icon>
+        </div>
+        تحليل المهارات
+      </h3>
+    </div>
+
+    <button *ngIf="userType == '1'" (click)="openInventoryModal()" class="text-[11px] font-bold bg-white text-indigo-600 px-3 py-2 rounded-xl border-2 border-indigo-50 hover:bg-indigo-50 hover:border-indigo-100 transition-all flex items-center gap-1.5 shadow-sm shrink-0">
+      <ion-icon name="flask" class="text-sm"></ion-icon> خزانة الألقاب والأوسمة
+    </button>
+  </div>
+
+      <div *ngIf="isLoadingSkills" class="flex justify-center py-4">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+      </div>
+
+      <div *ngIf="!isLoadingSkills && studentSkillData" class="space-y-4">
+        
+        <div>
+          <div class="flex justify-between items-center text-[11px] font-bold mb-1.5">
+            <span class="text-slate-700 flex items-center gap-1"><ion-icon name="bulb" class="text-amber-500 text-sm"></ion-icon> العبقرية العلمية</span>
+            <span class="text-amber-500 bg-amber-50 px-2 py-0.5 rounded">{{studentSkillData.cognitive || 0}}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div class="bg-amber-400 h-1.5 rounded-full transition-all duration-1000" [style.width]="((studentSkillData.cognitive || 0) / (studentTotalPoints || 1) * 100) + '%'"></div>
+          </div>
+        </div>
+        
+        <div>
+          <div class="flex justify-between items-center text-[11px] font-bold mb-1.5">
+            <span class="text-slate-700 flex items-center gap-1"><ion-icon name="chatbubbles" class="text-blue-500 text-sm"></ion-icon> التواصل والتعاون</span>
+            <span class="text-blue-500 bg-blue-50 px-2 py-0.5 rounded">{{studentSkillData.social || 0}}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-1000" [style.width]="((studentSkillData.social || 0) / (studentTotalPoints || 1) * 100) + '%'"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center text-[11px] font-bold mb-1.5">
+            <span class="text-slate-700 flex items-center gap-1"><ion-icon name="shield-checkmark" class="text-emerald-500 text-sm"></ion-icon> الانضباط والمسؤولية</span>
+            <span class="text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded">{{studentSkillData.discipline || 0}}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div class="bg-emerald-500 h-1.5 rounded-full transition-all duration-1000" [style.width]="((studentSkillData.discipline || 0) / (studentTotalPoints || 1) * 100) + '%'"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center text-[11px] font-bold mb-1.5">
+            <span class="text-slate-700 flex items-center gap-1"><ion-icon name="heart" class="text-rose-500 text-sm"></ion-icon> الذكاء العاطفي</span>
+            <span class="text-rose-500 bg-rose-50 px-2 py-0.5 rounded">{{studentSkillData.emotional || 0}}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div class="bg-rose-500 h-1.5 rounded-full transition-all duration-1000" [style.width]="((studentSkillData.emotional || 0) / (studentTotalPoints || 1) * 100) + '%'"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center text-[11px] font-bold mb-1.5">
+            <span class="text-slate-700 flex items-center gap-1"><ion-icon name="laptop" class="text-purple-500 text-sm"></ion-icon> المهارات العملية</span>
+            <span class="text-purple-500 bg-purple-50 px-2 py-0.5 rounded">{{studentSkillData.practical || 0}}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div class="bg-purple-500 h-1.5 rounded-full transition-all duration-1000" [style.width]="((studentSkillData.practical || 0) / (studentTotalPoints || 1) * 100) + '%'"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div *ngIf="!isLoadingSkills && !studentSkillData" class="text-center py-6 bg-slate-50 rounded-xl mt-4 border border-slate-100">
+        <ion-icon name="folder-open-outline" class="text-3xl text-slate-300 mb-2"></ion-icon>
+        <p class="text-xs font-bold text-slate-400 m-0">لا توجد مهارات مسجلة حتى الآن</p>
+      </div>
+      
+    </div>
+    
+    
+    <div class="bg-slate-100 p-1 rounded-xl flex gap-1 mt-4 animate-fade-in-up" style="animation-delay: 0.3s;" *ngIf="studentDetails.can_view_absent">
+      
+      <button class="flex-1 py-2.5 text-[11px] sm:text-sm font-bold rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
+              [ngClass]="category === 'absence' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
+              (click)="switchCategory('absence')" *ngIf="userType != '2'"> <span>{{'student-details.total_absent' | translate}}</span>
+        <span class="px-1.5 py-0.5 rounded text-[10px]" [ngClass]="category === 'absence' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-200 text-slate-500'">{{studentDetails.absent_count || 0}}</span>
+      </button>
+      
+      <button class="flex-1 py-2.5 text-[11px] sm:text-sm font-bold rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
+              [ngClass]="category === 'pledgesAndCallOffParent' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
+              (click)="switchCategory('pledgesAndCallOffParent')" *ngIf="userType != '2'"> <span>{{'manage_report.reports' | translate}}</span>
+        <span class="px-1.5 py-0.5 rounded text-[10px]" [ngClass]="category === 'pledgesAndCallOffParent' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-200 text-slate-500'">{{(callOfStudentsReport?.length || 0) + (AllStudentPledgesReports?.length || 0)}}</span>
+      </button>
+      
+      <button class="flex-1 py-2.5 text-[11px] sm:text-sm font-bold rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
+              [ngClass]="category === 'notes' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
+              (click)="switchCategory('notes')"> <span>{{'student-details.notes' | translate}}</span>
+        <span class="px-1.5 py-0.5 rounded text-[10px]" [ngClass]="category === 'notes' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-200 text-slate-500'">{{notes?.notes?.length || 0}}</span>
+      </button>
+    </div>
+
+    <div [ngSwitch]="category" class="mt-2 animate-fade-in-up" style="animation-delay: 0.4s;">
+      
+      <div *ngSwitchCase="'absence'" class="space-y-3 pb-6">
+        
+        <div *ngIf="!isAbsenceLoaded" class="text-center py-12">
+          <ion-spinner name="crescent" color="primary"></ion-spinner>
+          <p class="text-slate-500 text-sm mt-3 font-medium">جاري جلب إحصائيات الغياب بدقة...</p>
+        </div>
+
+        <div *ngIf="isAbsenceLoaded" class="animate-fade-in">
+
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4" *ngIf="studentDetails.can_view_absent">
+            
+            <div class="bg-white rounded-[1.5rem] p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group" *ngIf="userType != '2'">
+              <div class="absolute inset-0 bg-rose-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <ion-icon name="close-circle" class="text-3xl text-rose-500 mb-1 relative z-10"></ion-icon>
+              <p class="text-[10px] font-bold text-slate-500 m-0 relative z-10">{{'list-student.unacceptable_absence' | translate}}</p>
+              <h4 class="text-lg font-black text-slate-800 m-0 mt-1 relative z-10">{{studentDetails.unacceptable_absent_days}}</h4>
+            </div>
+
+            <div class="bg-white rounded-[1.5rem] p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group" *ngIf="userType != '2'">
+              <div class="absolute inset-0 bg-amber-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <ion-icon name="warning" class="text-3xl text-amber-500 mb-1 relative z-10"></ion-icon>
+              <p class="text-[10px] font-bold text-slate-500 m-0 relative z-10">{{'list-student.suspension_days' | translate}}</p>
+              <h4 class="text-lg font-black text-slate-800 m-0 mt-1 relative z-10">{{studentDetails.suspend_days}}</h4>
+            </div>
+
+            <div class="bg-white rounded-[1.5rem] p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group" *ngIf="userType != '2'">
+              <div class="absolute inset-0 bg-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <ion-icon name="medkit" class="text-3xl text-emerald-500 mb-1 relative z-10"></ion-icon>
+              <p class="text-[10px] font-bold text-slate-500 m-0 relative z-10">{{'list-student.medical_days' | translate}}</p>
+              <h4 class="text-lg font-black text-slate-800 m-0 mt-1 relative z-10">{{studentDetails.medical_days}}</h4>
+            </div>
+
+            <div class="bg-white rounded-[1.5rem] p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group" [class.col-span-2]="userType == '2'" [class.md:col-span-4]="userType == '2'" *ngIf="userType != '2'">
+              <div class="absolute inset-0 bg-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <ion-icon name="time" class="text-3xl text-indigo-500 mb-1 relative z-10"></ion-icon>
+              <p class="text-[10px] font-bold text-slate-500 m-0 relative z-10">{{'delay_stu_list.total_delay' | translate}}</p>
+              <h4 class="text-lg font-black text-slate-800 m-0 mt-1 relative z-10">{{studentDetails.total_delay}}</h4>
+            </div>
+
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 mb-4" *ngIf="!studentDetails.can_view_absent">
+            <div class="bg-white rounded-[1.5rem] p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group">
+              <div class="absolute inset-0 bg-amber-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <ion-icon name="warning" class="text-3xl text-amber-500 mb-1 relative z-10"></ion-icon>
+              <p class="text-[10px] font-bold text-slate-500 m-0 relative z-10">{{'list-student.suspension_days' | translate}}</p>
+              <h4 class="text-lg font-black text-slate-800 m-0 mt-1 relative z-10">{{studentDetails.suspend_days}}</h4>
+            </div>
+            <div class="bg-white rounded-[1.5rem] p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group" *ngIf="userType != '2'">
+              <div class="absolute inset-0 bg-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <ion-icon name="medkit" class="text-3xl text-emerald-500 mb-1 relative z-10"></ion-icon>
+              <p class="text-[10px] font-bold text-slate-500 m-0 relative z-10">{{'list-student.medical_days' | translate}}</p>
+              <h4 class="text-lg font-black text-slate-800 m-0 mt-1 relative z-10">{{studentDetails.medical_days}}</h4>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden" *ngFor="let details of studentDetails?.absents">
+            
+            <div class="bg-slate-50 border-b border-slate-100 p-3 flex flex-col gap-2.5">
+              <div class="flex items-center gap-2 text-sm font-bold text-slate-700">
+                <ion-icon name="calendar-outline" class="text-indigo-500"></ion-icon>
+                <span>{{getArabicDayName(details.date)}}</span>
+                <span class="text-slate-300">|</span>
+                <span dir="ltr">{{details.date}}</span>
+              </div>
+              
+              <div class="flex items-start gap-1.5 bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm w-full">
+                <span class="text-[11px] font-bold text-slate-400 mt-0.5 whitespace-nowrap flex items-center gap-1">
+                  <ion-icon name="time-outline"></ion-icon> الحصص:
+                </span>
+                <span class="text-xs font-bold text-indigo-600 leading-relaxed text-right" style="word-break: break-word;">
+                  {{details.sem}}
+                </span>
+              </div>
+            </div>
+            
+            <div class="p-3">
+              <div class="space-y-2">
+                <div class="flex items-start gap-3 p-2.5 rounded-lg bg-slate-50 border border-slate-100" *ngFor="let note of details.notes; let i = index;">
+                  <div class="mt-0.5 text-slate-400"><ion-icon name="document-text" class="text-lg"></ion-icon></div>
+                  <div class="flex-1 text-sm text-slate-700 font-medium leading-relaxed text-right">{{note.note}}</div>
+                  <button class="text-rose-400 hover:text-rose-600 p-1 transition-colors bg-white rounded shadow-sm border border-rose-100" 
+                          *ngIf="userDetails.details && (note.created_by == userDetails.details.user_no || userDetails.details.user_type == '1')" 
+                          (click)="deleteAbsenceNote(details.notes, note.ID, i)">
+                    <ion-icon name="trash" class="text-base"></ion-icon>
+                  </button>
+                </div>
+              </div>
+              <button class="w-full mt-3 flex items-center justify-center gap-2 py-2.5 text-sm font-bold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-100 border-dashed" 
+                      (click)="addAbsentNote(details.notes, details.date)" *ngIf="userType == '1' || userType == '3'">
+                <ion-icon name="add-circle" class="text-lg"></ion-icon> إضافة ملاحظة غياب
+              </button>
+            </div>
+          </div>
+          
+          <div class="text-center py-16" *ngIf="studentDetails.absents?.length == 0">
+             <div class="w-16 h-16 bg-slate-100 border border-slate-200 rounded-2xl flex items-center justify-center mx-auto mb-3 text-slate-400">
+               <ion-icon name="calendar-clear-outline" class="text-3xl"></ion-icon>
+             </div>
+             <p class="text-slate-500 font-bold text-sm">{{noAbsenceFound || 'لا توجد غيابات مسجلة'}}</p>
+          </div>
+
+        </div> </div>
+
+      <div *ngSwitchCase="'pledgesAndCallOffParent'" class="space-y-4 pb-6">
+        <div class="text-center py-16" *ngIf="callOfStudentsReport.length == 0 && AllStudentPledgesReports.length == 0">
+           <div class="w-16 h-16 bg-slate-100 border border-slate-200 rounded-2xl flex items-center justify-center mx-auto mb-3 text-slate-400">
+             <ion-icon name="folder-open-outline" class="text-3xl"></ion-icon>
+           </div>
+           <p class="text-slate-500 font-bold text-sm">{{'manage_report.no_reports' | translate}}</p>
+        </div>
+
+        <div *ngIf="callOfStudentsReport.length > 0" class="space-y-3">
+          <h4 class="font-bold text-slate-700 text-sm flex items-center gap-2 mb-3 px-1">
+            <ion-icon name="call" class="text-indigo-500 bg-indigo-50 p-1.5 rounded-lg"></ion-icon> {{'manage_report.call_off_report' | translate}}
+          </h4>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4" *ngFor="let edays of callOfStudentsReport; let i=index">
+            <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-100">
+              <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
+              <div class="flex items-center gap-1.5 text-xs font-bold text-slate-600 flex-row-reverse" dir="ltr">
+                <ion-icon name="calendar-outline" class="text-sm"></ion-icon> {{edays.date | date : 'yyyy-MM-dd'}} 
+                <span class="text-slate-400 font-medium">({{edays.date | date : 'EEEE'}})</span>
+              </div>
+            </div>
+            <p class="text-sm font-bold text-slate-800 m-0 leading-relaxed text-right"><span class="text-slate-400 font-medium">{{'manage_report.reason' | translate}}:</span> <br> {{edays.reason}}</p>
+          </div>
+        </div>
+
+        <div *ngIf="AllStudentPledgesReports.length > 0" class="space-y-3 mt-6">
+          <h4 class="font-bold text-slate-700 text-sm flex items-center gap-2 mb-3 px-1">
+            <ion-icon name="document-text" class="text-amber-500 bg-amber-50 p-1.5 rounded-lg"></ion-icon> {{'manage_report.student_pledges_report' | translate}}
+          </h4>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4" *ngFor="let edays of AllStudentPledgesReports; let i=index">
+            <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-100">
+              <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
+              <span class="text-xs font-bold text-slate-600 flex items-center gap-1.5 flex-row-reverse" dir="ltr"><ion-icon name="calendar-outline" class="text-sm"></ion-icon> {{edays.date}}</span>
+            </div>
+            <div class="space-y-2 text-right">
+              <p class="text-sm font-bold text-slate-800 m-0 flex items-center gap-2"><span class="text-slate-400 font-medium">{{'manage_report.degree' | translate}}:</span> <span class="bg-rose-50 text-rose-600 px-2 py-0.5 rounded text-xs border border-rose-100">{{edays.degree_name}}</span></p>
+              <p class="text-sm font-bold text-slate-800 m-0 leading-relaxed"><span class="text-slate-400 font-medium">{{'manage_report.reason' | translate}}:</span> <br> {{edays.violation_desc}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngSwitchCase="'notes'" class="space-y-4 pb-6">
+        
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between" *ngIf="notes?.total_rating">
+          
+          <div class="flex flex-col items-center justify-center w-28 border-l border-slate-100 pl-4">
+            <h4 class="text-4xl font-extrabold text-slate-800 m-0 leading-none">{{notes.agg_ranking | number:'1.1-1'}}</h4>
+            <div class="flex items-center text-amber-400 text-sm my-1.5" dir="ltr">
+              <span *ngFor="let star of getSelectedStars(); let i = index;">
+                <ion-icon name="star" [ngStyle]="{'color': aggStars[i]}" *ngIf="!halfStar || halfStarPosition != i"></ion-icon>
+                <ion-icon name="star-half" *ngIf="halfStar && halfStarPosition == i" class="text-amber-400" style="transform: scaleX(-1);"></ion-icon>
+              </span>
+            </div>
+            <p class="text-[11px] font-bold text-slate-400 m-0 flex items-center gap-1"><ion-icon name="person"></ion-icon> {{notes.total_notes}} تقييم</p>
+          </div>
+
+          <div class="flex-1 mr-4" dir="ltr">
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5" *ngFor="let rating of ['five', 'four', 'three', 'two', 'one']; let idx = index">
+              <span class="w-2 text-center">{{5 - idx}}</span>
+              <div class="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-amber-400 rounded-full" [style.width]="(notes.total_rating[rating + '_stars'] || 0) + '%'"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <button class="w-full flex items-center justify-center gap-2 py-3 text-sm font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all active:scale-[0.98]" 
+                *ngIf="userType != '4' && canAddStudentNote" (click)="presentNoteActionSheet($event, 'add', '', '')">
+          <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> 
+          إضافة تقييم، نقاط أو ملاحظات
+        </button>
+
+        <div class="space-y-3">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 relative" *ngFor="let note of notes?.notes; let i = index;" dir="rtl">
+             <div class="flex justify-between items-start mb-3">
+               <div class="flex items-center gap-3">
+                 <img [src]="note.display_pic" class="w-10 h-10 rounded-xl object-cover border border-slate-200 bg-slate-50 cursor-pointer hover:scale-105 transition-transform" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" (click)="$event.stopPropagation(); openFullscreenImage(note.display_pic)">
+                 <div class="text-right">
+                   <h5 class="text-sm font-bold text-slate-800 m-0">{{note.first_name}} {{note.last_name}}</h5>
+                   <p class="text-[10px] font-bold text-slate-400 m-0 mt-1 flex items-center justify-start gap-1">
+                     <ion-icon name="calendar-outline"></ion-icon> {{note.date}} 
+                   </p>
+                 </div>
+               </div>
+               <button class="text-slate-400 hover:text-indigo-600 bg-slate-50 border border-slate-100 rounded-lg p-1.5 transition-colors mr-auto" 
+                      *ngIf="userDetails.details && (note.user_id == userDetails.details.user_no || userType == '1')" 
+                      (click)="editDeleteNotes($event, note.id, i, note)">
+                <ion-icon name="ellipsis-vertical" class="text-lg"></ion-icon>
+              </button>
+             </div>
+             
+             <div class="flex mb-2 bg-slate-50 w-max px-2 py-1 rounded-lg border border-slate-100" *ngIf="note.selections != undefined">
+                <span *ngFor="let star of getSelectedStars(); let si = index;">
+                  <ion-icon name="star" class="text-sm" [ngStyle]="{'color': note.selections[si]}"></ion-icon>
+                </span>
+             </div>
+
+             <p class="text-sm text-slate-700 font-medium leading-relaxed m-0 bg-slate-50 p-3 rounded-lg border border-slate-100 text-right">{{note.note}}</p>
+          </div>
+
+          <div class="text-center py-16" *ngIf="notes?.notes?.length == 0">
+             <div class="w-16 h-16 bg-slate-100 border border-slate-200 rounded-2xl flex items-center justify-center mx-auto mb-3 text-slate-400">
+               <ion-icon name="chatbubbles-outline" class="text-3xl"></ion-icon>
+             </div>
+             <p class="text-slate-500 font-bold text-sm">{{noNotesFound || 'لا توجد ملاحظات'}}</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</ion-content>
+
+<div class="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity" *ngIf="showWarningPopup" (click)="closeWarningPopup()">
+  <div class="bg-white rounded-[24px] w-10/12 max-w-sm p-6 flex flex-col items-center justify-center shadow-2xl animate-fade-in-up border border-slate-100 mx-auto" (click)="$event.stopPropagation()">
+    
+    <ng-container *ngIf="warningType === 'frozen'">
+      <div class="w-16 h-16 rounded-full bg-cyan-50 flex items-center justify-center mb-4 border border-cyan-100 shadow-inner">
+        <ion-icon name="snow" class="text-3xl text-cyan-500 animate-pulse"></ion-icon>
+      </div>
+      <h3 class="text-lg font-black text-slate-800 mb-2 text-center">طالب مجمد ❄️</h3>
+    </ng-container>
+
+    <ng-container *ngIf="warningType === 'warning'">
+      <div class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-4 border border-amber-100 shadow-inner">
+        <ion-icon name="warning-outline" class="text-3xl text-amber-500 animate-pulse"></ion-icon>
+      </div>
+      <h3 class="text-lg font-black text-slate-800 mb-2 text-center">مهلاً!</h3>
+    </ng-container>
+    
+    <p class="text-sm text-slate-500 text-center font-medium leading-relaxed mb-6">
+      {{ warningMessage }}
+    </p>
+    
+    <button (click)="closeWarningPopup()" 
+            [ngClass]="warningType === 'frozen' ? 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+            class="w-full py-3 rounded-xl font-bold transition-colors">
+      حسناً، فهمت
+    </button>
+  </div>
+</div>
+
+<div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300" 
+     *ngIf="showImageViewer" 
+     (click)="closeFullscreenImage()">
+  
+  <button class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95" (click)="closeFullscreenImage()">
+    <ion-icon name="close" class="text-xl"></ion-icon>
+  </button>
+
+  <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
+    <img [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+  </div>
+</div>
+
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity" *ngIf="showNoteModal">
+  <div class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10" dir="rtl" (click)="$event.stopPropagation()">
+    
+    <div class="flex items-center gap-3 mb-5">
+      <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+        <ion-icon name="document-text" class="text-xl"></ion-icon>
+      </div>
+      <h4 class="text-lg font-bold text-slate-800 m-0">{{'student-details.add_note' | translate}}</h4>
+    </div>
+
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-2 mb-2 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+      <ion-textarea class="text-sm text-slate-800 bg-transparent font-medium" [(ngModel)]="noteMessage" placeholder="{{'student-details.type_here' | translate}}" rows="4"></ion-textarea>
+    </div>
+    
+    <div class="flex justify-between items-center mb-6">
+      <p class="text-xs text-slate-400 font-bold m-0" [ngClass]="{'text-rose-500': noteMessage?.length > 45}">{{noteMessage?.length || 0}} / 45</p>
+    </div>
+    
+    <div class="flex gap-3">
+      <button class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors" (click)="hideNoteModal()">
+        {{'alertmessages.alert_btn_cancel_text' | translate}}
+      </button>
+      <button class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95" (click)="notes_action()">
+        {{'alertmessages.alert_btn_submit_text' | translate}}
+      </button>
+    </div>
+
+  </div>
+  <div class="absolute inset-0" (click)="hideNoteModal()"></div>
+</div>
+
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity" *ngIf="showAbsenceNoteModal">
+  <div class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10" dir="rtl" (click)="$event.stopPropagation()">
+    
+    <div class="flex items-center gap-3 mb-5">
+      <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+        <ion-icon name="document-text" class="text-xl"></ion-icon>
+      </div>
+      <h4 class="text-lg font-bold text-slate-800 m-0">إضافة ملاحظة غياب</h4>
+    </div>
+
+    <div class="bg-slate-50 border border-slate-200 rounded-xl p-2 mb-6 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+      <ion-textarea class="text-sm text-slate-800 bg-transparent font-medium" [(ngModel)]="absenceNoteText" placeholder="اكتب تفاصيل الملاحظة أو عذر الغياب هنا..." rows="4"></ion-textarea>
+    </div>
+    
+    <div class="flex gap-3">
+      <button class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors" (click)="hideAbsenceNoteModal()">
+        {{'alertmessages.alert_btn_cancel_text' | translate}}
+      </button>
+      <button class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95 disabled:opacity-50 disabled:shadow-none disabled:active:scale-100" 
+              (click)="submitAbsenceNote()" [disabled]="!absenceNoteText || absenceNoteText.trim() === ''">
+        {{'alertmessages.alert_btn_submit_text' | translate}}
+      </button>
+    </div>
+
+  </div>
+  <div class="absolute inset-0" (click)="hideAbsenceNoteModal()"></div>
+</div>
+
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity" *ngIf="showDeleteConfirmModal">
+  <div class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10 text-center" dir="rtl" (click)="$event.stopPropagation()">
+    
+    <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
+      <ion-icon name="trash" class="text-3xl"></ion-icon>
+    </div>
+    
+    <h4 class="text-lg font-bold text-slate-800 mb-2">تأكيد الحذف</h4>
+    <p class="text-sm text-slate-500 mb-6 font-medium">{{lang?.want_to_delete || 'هل أنت متأكد من رغبتك في حذف هذا العنصر؟'}}</p>
+    
+    <div class="flex gap-3">
+      <button class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors" (click)="hideDeleteConfirmModal()">
+        {{lang?.no || 'لا'}}
+      </button>
+      <button class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-rose-200 transition-all active:scale-95" (click)="confirmDelete()">
+        {{lang?.yes || 'نعم، احذف'}}
+      </button>
+    </div>
+
+  </div>
+  <div class="absolute inset-0" (click)="hideDeleteConfirmModal()"></div>
+</div>
+
+
+<ion-modal [isOpen]="showInventoryModal" (didDismiss)="closeInventoryModal()" [initialBreakpoint]="0.85" [breakpoints]="[0, 0.85, 1]" handleBehavior="cycle" class="lineone-modal">
+  <ng-template>
+    
+    <ion-header class="ion-no-border bg-white pt-2">
+      <div class="flex flex-col px-4 pb-2 border-b border-slate-100">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
+            <ion-icon name="flask" class="text-indigo-500 text-xl"></ion-icon> خزانة الطالب
+          </h3>
+          <button (click)="closeInventoryModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+            <ion-icon name="close" class="text-xl"></ion-icon>
+          </button>
+        </div>
+        
+        <div class="flex bg-slate-100 p-1 rounded-xl">
+          <button class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all" [ngClass]="inventoryTab == 'titles' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'" (click)="inventoryTab = 'titles'">🧪 دمج الألقاب</button>
+          <button class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all" [ngClass]="inventoryTab == 'badges' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'" (click)="inventoryTab = 'badges'">🥷 الإنجازات السرية</button>
+        </div>
+      </div>
+    </ion-header>
+
+    <ion-content class="bg-slate-50">
+      <div class="p-4 space-y-4 pb-10" dir="rtl">
+        
+        <div *ngIf="inventoryTab === 'titles'">
+          
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between mb-4">
+            <div>
+              <h4 class="text-sm font-black text-slate-700 m-0">اللقب الديناميكي (التلقائي)</h4>
+              <p class="text-[10px] text-slate-400 m-0">يتغير تلقائياً حسب أعلى مهارة.</p>
+            </div>
+            <button *ngIf="activeCraftedTitle !== null" (click)="toggleTitle(null)" class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg active:scale-95">تفعيل الافتراضي</button>
+            <span *ngIf="activeCraftedTitle === null" class="text-xs font-bold bg-emerald-50 text-emerald-600 px-3 py-1 border border-emerald-200 rounded-lg">✅ مفعل حالياً</span>
+          </div>
+
+          <h3 class="text-xs font-bold text-slate-500 mb-3 px-1">الألقاب المتاحة للدمج (الوصفات)</h3>
+          
+          <div class="grid grid-cols-1 gap-3">
+            <div *ngFor="let title of processedTitles" class="bg-white p-3 rounded-2xl shadow-sm border relative overflow-hidden transition-all" [ngClass]="title.isUnlocked ? title.border : 'border-slate-200 opacity-90'">
+              
+              <div class="flex gap-3 relative z-10">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" [ngClass]="title.isUnlocked ? title.bg : 'bg-slate-100 grayscale'">
+                  {{title.icon}}
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-sm font-black m-0 flex justify-between items-center" [ngClass]="title.isUnlocked ? title.color : 'text-slate-700'">
+                    {{title.name}}
+                    <span *ngIf="activeCraftedTitle === title.code" class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-200">مُفعل</span>
+                  </h4>
+                  <p class="text-[10px] text-slate-500 m-0 mt-0.5 leading-tight">{{title.desc}}</p>
+                  
+                  <div *ngIf="!title.isUnlocked" class="flex gap-1 mt-2 flex-wrap">
+                    <span *ngIf="title.cost.cognitive" class="text-[9px] font-bold bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded border border-amber-100"><ion-icon name="bulb"></ion-icon> {{studentWallet?.spendable_cognitive || 0}}/{{title.cost.cognitive}}</span>
+                    <span *ngIf="title.cost.practical" class="text-[9px] font-bold bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded border border-purple-100"><ion-icon name="laptop"></ion-icon> {{studentWallet?.spendable_practical || 0}}/{{title.cost.practical}}</span>
+                    <span *ngIf="title.cost.social" class="text-[9px] font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100"><ion-icon name="chatbubbles"></ion-icon> {{studentWallet?.spendable_social || 0}}/{{title.cost.social}}</span>
+                    <span *ngIf="title.cost.discipline" class="text-[9px] font-bold bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded border border-emerald-100"><ion-icon name="shield-checkmark"></ion-icon> {{studentWallet?.spendable_discipline || 0}}/{{title.cost.discipline}}</span>
+                    <span *ngIf="title.cost.emotional" class="text-[9px] font-bold bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded border border-rose-100"><ion-icon name="heart"></ion-icon> {{studentWallet?.spendable_emotional || 0}}/{{title.cost.emotional}}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-3 flex justify-end relative z-10 border-t border-slate-50 pt-2">
+                
+                <button *ngIf="title.isUnlocked && activeCraftedTitle !== title.code" (click)="toggleTitle(title.code)" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-lg active:scale-95">
+                  تفعيل اللقب
+                </button>
+                
+                <button *ngIf="!title.isUnlocked" (click)="craftTitle(title)" class="text-xs font-bold px-4 py-1.5 rounded-lg active:scale-95 transition-all" [ngClass]="canCraft(title.cost) ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 text-slate-400 pointer-events-none'">
+                  <ion-icon name="color-wand" class="mr-1"></ion-icon> دمج اللقب
+                </button>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="inventoryTab === 'badges'">
+          <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl mb-4 text-center">
+            <p class="text-[11px] text-indigo-600 font-bold m-0">اكتشف الأسرار المخفية! قم بأفعال مميزة داخل المدرسة لفك شفرة هذه الأوسمة النادرة.</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div *ngFor="let badge of processedBadges" class="bg-white p-3 rounded-2xl border text-center relative" [ngClass]="badge.isUnlocked ? 'border-amber-300 shadow-md' : 'border-slate-200 border-dashed'">
+              
+              <div *ngIf="!badge.isUnlocked" class="opacity-40 grayscale flex flex-col items-center justify-center h-full">
+                <div class="text-4xl mb-1">❓</div>
+                <h4 class="text-xs font-black text-slate-800 m-0 mb-1">وسام سري</h4>
+                <p class="text-[9px] text-slate-500 m-0 italic whitespace-normal break-words leading-relaxed">"{{badge.hint}}"</p>
+              </div>
+
+              <div *ngIf="badge.isUnlocked" class="animate-fade-in-up flex flex-col items-center justify-center h-full">
+                <div class="text-4xl mb-1 drop-shadow-md">{{badge.icon}}</div>
+                <h4 class="text-xs font-black text-amber-600 m-0 mb-1">{{badge.name}}</h4>
+                <p class="text-[9px] text-slate-600 m-0 leading-relaxed whitespace-normal break-words">{{badge.unlockedDesc}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>

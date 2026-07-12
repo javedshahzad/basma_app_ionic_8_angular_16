@@ -1,0 +1,36 @@
+app-search-student:host {
+    
+    /* لون الخلفية الأساسي للمنصة ليتوافق مع تصميم Lineone */
+    .lineone-bg {
+        --background: #f8fafc;
+    }
+
+    /* =======================================================
+       🌟 تخصيص شريط البحث (Searchbar) ليطابق تصميم Lineone
+       ======================================================= */
+    .lineone-searchbar {
+        --background: #ffffff;
+        --box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* ظل خفيف جداً */
+        --border-radius: 14px;
+        --icon-color: #94a3b8; /* Slate 400 */
+        --clear-button-color: #94a3b8;
+        --placeholder-color: #94a3b8;
+        --placeholder-font-weight: 600;
+        --color: #1e293b; /* Slate 800 للنص المكتوب */
+        
+        border: 1px solid #e2e8f0; /* Slate 200 */
+        border-radius: 14px;
+        transition: all 0.3s ease;
+
+        /* تأثير عند الضغط والكتابة داخل الحقل */
+        &.searchbar-has-focus {
+            border-color: #818cf8; /* Indigo 400 */
+            box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15); /* هالة زرقاء مضيئة حول الحقل */
+        }
+        
+        &::part(input) {
+            font-weight: 700;
+            font-size: 14px;
+        }
+    }
+}

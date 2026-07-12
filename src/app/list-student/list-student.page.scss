@@ -1,0 +1,11 @@
+app-list-student:host {
+  /* * تم نقل جميع التنسيقات إلى Tailwind CSS في ملف الـ HTML.
+   * لا تضف أي تنسيقات هنا إلا إذا كانت مخصصة لمتغيرات Ionic الداخلية
+   * مثل (--background) أو تعديلات الـ Shadow DOM التي لا يدعمها Tailwind مباشرة.
+   */
+
+  // إخفاء خطوط التمرير (Scrollbars) لشكل أكثر أناقة (اختياري)
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}

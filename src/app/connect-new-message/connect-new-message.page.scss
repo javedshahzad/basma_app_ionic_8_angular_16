@@ -1,0 +1,13 @@
+app-connect-new-message:host {
+  ion-content {
+    --background: #f8fafc;
+  }
+
+  /* تخصيص التكست ايريا لتكون نظيفة بدون حواف داخلية */
+  ion-textarea {
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
+}

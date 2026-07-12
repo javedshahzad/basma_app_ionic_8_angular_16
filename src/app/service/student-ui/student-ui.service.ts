@@ -1,0 +1,203 @@
+import { Injectable } from '@angular/core';
+import { ModalController, PopoverController, ActionSheetController, AlertController, Platform } from '@ionic/angular';
+
+import { StudentProfileModalComponent } from '../../components/student-profile-modal/student-profile-modal.component';
+import { ImageOptionPopoverComponent } from '../../components/image-option-popover/image-option-popover.component';
+import { AvatarImagesComponent } from '../../components/avatar-images/avatar-images.component';
+import { StudentOptionsPopoverComponent } from '../../components/student-options-popover/student-options-popover.component';
+import { SkillTreeModalComponent } from '../../components/skill-tree-modal/skill-tree-modal.component';
+import { AddStudentModalComponent } from '../../components/add-student-modal/add-student-modal.component';
+import { AdminActionsPopoverComponent } from '../../components/admin-actions-popover/admin-actions-popover.component';
+import { AddNoteModalComponent } from '../../components/add-note-modal/add-note-modal.component';
+import { AddReviewComponent } from '../../add-review/add-review.component';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StudentUiService {
+
+  constructor(
+    private modalCtrl: ModalController,
+    private popoverCtrl: PopoverController,
+    private actionSheetCtrl: ActionSheetController,
+    private alertCtrl: AlertController,
+    private platform: Platform
+  ) { }
+
+  // 1. إدارة نافذة شجرة المهارات
+  async openSkillTree(student: any): Promise<any> {
+    const modal = await this.modalCtrl.create({
+      component: SkillTreeModalComponent,
+      cssClass: 'lineone-modal',
+      initialBreakpoint: 0.70,
+      breakpoints: [0, 0.70, 0.9],
+      handleBehavior: 'cycle',
+      componentProps: { student: student }
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    return data;
+  }
+
+  // 2. إدارة نافذة تسجيل طالب جديد
+  async openAddStudent(langData: any): Promise<any> {
+    const modal = await this.modalCtrl.create({
+      component: AddStudentModalComponent,
+      cssClass: 'transparent-modal',
+      componentProps: { addStudentLang: langData }
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    return data;
+  }
+
+  // 3. إدارة قائمة إجراءات المشرف
+  async presentAdminActions(event: any, showAdd: boolean): Promise<string> {
+    return new Promise(async (resolve) => {
+      if (this.platform.width() >= 768) {
+        const popover = await this.popoverCtrl.create({
+          component: AdminActionsPopoverComponent,
+          event: event,
+          componentProps: { canEdit: false, canAdd: showAdd },
+          mode: 'ios', translucent: true
+        });
+        await popover.present();
+        const { data } = await popover.onDidDismiss();
+        resolve(data?.selectedAction);
+      } else {
+        let buttons = [];
+        if (showAdd) buttons.push({ text: 'تسجيل طالب جديد', icon: 'person-add-outline', handler: () => resolve('add') });
+        buttons.push({ text: 'عرض الملاحظات', icon: 'document-text-outline', handler: () => resolve('notes') });
+        buttons.push({ text: 'إلغاء', icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) });
+
+        const actionSheet = await this.actionSheetCtrl.create({
+          header: 'إجراءات المشرف', cssClass: 'custom-action-sheet', buttons: buttons
+        });
+        await actionSheet.present();
+      }
+    });
+  }
+
+  // 4. إدارة الملاحظات والتقييم
+  async openNoteOrReviewModal(student: any, mode: 'note' | 'review'): Promise<any> {
+    if (mode === 'note') {
+      const modal = await this.modalCtrl.create({ component: AddNoteModalComponent, cssClass: 'transparent-modal' });
+      await modal.present();
+      const { data } = await modal.onDidDismiss();
+      return { mode: 'note', data };
+    } else {
+      const modal = await this.modalCtrl.create({ component: AddReviewComponent, cssClass: 'review-desktop-modal', componentProps: { student: student.student_data } });
+      await modal.present();
+      const { data } = await modal.onDidDismiss();
+      return { mode: 'review', data };
+    }
+  }
+
+  // 5. 🟢 إدارة نافذة ملف الطالب (تم نقلها بالكامل لتنظيف الكنترولر)
+  async openStudentProfileModal(student: any, userType: string, editMode: boolean, onPhotoClick: Function, onFullscreenClick: Function): Promise<any> {
+    const modal = await this.modalCtrl.create({
+      component: StudentProfileModalComponent,
+      cssClass: 'profile-modal-class',
+      componentProps: {
+        student: student,
+        userType: userType,
+        editMode: editMode,
+        onPhotoClick: onPhotoClick,
+        onFullscreenClick: onFullscreenClick
+      }
+    });
+    await modal.present();
+    return await modal.onDidDismiss();
+  }
+
+  // 6. 🟢 خيارات تغيير الصورة
+  async presentImageOptions(event: any, lang: any): Promise<string> {
+    return new Promise(async (resolve) => {
+      if (this.platform.width() >= 768 && event) {
+        const popover = await this.popoverCtrl.create({
+          component: ImageOptionPopoverComponent, event: event, mode: 'ios', translucent: true
+        });
+        await popover.present();
+        const { data } = await popover.onDidDismiss();
+        resolve(data?.selectedAction);
+      } else {
+        const actionSheet = await this.actionSheetCtrl.create({
+          header: lang.image_option || 'تغيير صورة الطالب',
+          cssClass: 'custom-action-sheet',
+          buttons: [
+            { text: lang.camera || 'التقاط بالكاميرا', icon: 'camera-outline', handler: () => resolve('camera') },
+            { text: lang.gallery || 'اختيار من المعرض', icon: 'image-outline', handler: () => resolve('gallery') },
+            { text: lang.avatar || 'اختيار صورة رمزية', icon: 'people-circle-outline', handler: () => resolve('avatar') },
+            { text: lang.cancel || 'إلغاء', icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) }
+          ]
+        });
+        await actionSheet.present();
+      }
+    });
+  }
+
+  // 7. 🟢 نافذة اختيار الصورة الرمزية (Avatar)
+  async openAvatarModal(student: any): Promise<any> {
+    const modal = await this.modalCtrl.create({
+      component: AvatarImagesComponent, cssClass: 'avatar-modal-class', componentProps: { student: student }
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    return data;
+  }
+
+  // 8. 🟢 خيارات التقييم والملاحظات للطالب
+  async presentStudentOptions(event: any, student: any, detailsLang: any): Promise<string> {
+    return new Promise(async (resolve) => {
+      if (this.platform.width() >= 768) {
+        const popover = await this.popoverCtrl.create({
+          component: StudentOptionsPopoverComponent, event: event, componentProps: { student: student }, mode: 'ios', translucent: true
+        });
+        await popover.present();
+        const { data } = await popover.onDidDismiss();
+        resolve(data?.selectedAction);
+      } else {
+        const actionSheet = await this.actionSheetCtrl.create({
+          header: `إجراءات الطالب: ${student.name}`,
+          cssClass: 'custom-action-sheet',
+          buttons: [
+            { text: detailsLang?.student_review || 'تقييم الطالب', icon: 'star-outline', handler: () => resolve('review') },
+            { text: detailsLang?.student_note || 'إضافة ملاحظة', icon: 'document-text-outline', handler: () => resolve('note') },
+            { text: detailsLang?.student_point || 'شجرة المهارات (نقاط)', icon: 'medal-outline', handler: () => resolve('points') },
+            { text: detailsLang?.cancel || 'إلغاء', icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) }
+          ]
+        });
+        await actionSheet.present();
+      }
+    });
+  }
+
+  // 9. 🟢 خيارات الطباعة (Excel / PDF)
+  async presentPrintOptions(lang: any): Promise<string> {
+    return new Promise(async (resolve) => {
+      const alert = await this.alertCtrl.create({
+        header: lang.report_option,
+        buttons: [
+          { text: lang.exel, handler: () => resolve('exel') },
+          { text: lang.pdf, handler: () => resolve('pdf') },
+          { text: lang.cancel || 'إلغاء', role: 'cancel', handler: () => resolve(null) }
+        ]
+      });
+      await alert.present();
+    });
+  }
+
+  // 10. 🟢 رسالة الاشتراك
+  async presentSubscriptionAlert(planLang: any): Promise<boolean> {
+    return new Promise(async (resolve) => {
+      const alert = await this.alertCtrl.create({
+        header: planLang.not_valid, mode: 'ios',
+        buttons: [
+          { text: planLang.cancel, role: 'cancel', cssClass: 'secondary', handler: () => resolve(false) },
+          { text: planLang.subscribe, handler: () => resolve(true) }
+        ]
+      });
+      await alert.present();
+    });
+  }
+}

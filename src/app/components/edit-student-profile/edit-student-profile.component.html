@@ -1,0 +1,25 @@
+<div class="body">
+	<ion-icon class="edit-icon" name="close-outline" (click)="closeModal()"></ion-icon>
+	<ion-row class="input-row">
+		<ion-item class="item">
+			<ion-label>{{'edit_student.name' | translate}}</ion-label>
+			<ion-input type="text" placeholder="{{studentName}}" value="{{studentName}}" id="input"></ion-input>
+		</ion-item>
+		<ion-item class="item">
+			<ion-label>{{'edit_student.class' | translate}}</ion-label>
+			<ion-select placeholder="{{student.course_name}}" value="{{studentSemester}}" id="select" interface="popover">
+				<ion-select-option *ngFor="let c of classes" value={{c.cid}}>{{c.name}}</ion-select-option>
+			</ion-select>
+		</ion-item>
+	</ion-row>
+
+	<ion-row class="btn-row">
+		<ion-col>
+			<ion-button  expand="block" class="btn-primary" shape="round" color="primary" (click)="saveChanges()">{{'edit_student.save' | translate}}</ion-button>
+		</ion-col>
+		<ion-col>
+			<ion-button  expand="block" class="btn-primary" shape="round" color="secondary" (click)="deleteClass()">{{'edit_student.delete_class' | translate}}</ion-button>
+		</ion-col>
+	</ion-row>
+	
+</div>

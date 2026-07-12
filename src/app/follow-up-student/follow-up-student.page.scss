@@ -1,0 +1,18 @@
+app-duration-subscription:host {
+  
+  /* إخفاء خطوط التمرير (Scrollbars) لشكل أكثر أناقة */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* تخصيص لون أزرار الاختيار (Radio Buttons) لتناسب الهوية */
+  ion-radio {
+    --color: #cbd5e1; /* slate-300 */
+    --color-checked: #4f46e5; /* indigo-600 */
+  }
+
+  /* تخصيص النافذة (Modal) لتكون حوافها دائرية من الأعلى */
+  ion-content {
+    --background: #ffffff;
+  }
+}

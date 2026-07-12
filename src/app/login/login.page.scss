@@ -1,0 +1,28 @@
+app-login:host {
+  ion-content {
+    --background: #f8fafc; 
+  }
+
+  ion-input {
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    --background: transparent;
+  }
+
+  ion-checkbox {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+  }
+
+  /* إخفاء شريط التمرير لقائمة الحسابات مع الإبقاء على إمكانية التمرير */
+  .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+  }
+  .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+  }
+}

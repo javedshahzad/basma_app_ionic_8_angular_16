@@ -1,0 +1,46 @@
+app-followup-add-fields:host {
+  ion-content {
+    --background: #f8fafc;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  ion-input {
+    --padding-start: 0 !important;
+    --padding-end: 0 !important;
+    --padding-top: 0 !important;
+    --padding-bottom: 0 !important;
+    --inner-padding-end: 0 !important;
+    font-family: inherit;
+    
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  ion-checkbox {
+    --size: 22px;
+    --checkbox-background-checked: #4f46e5;
+    --border-color: #cbd5e1;
+    --border-color-checked: #4f46e5;
+  }
+
+  .pb-safe {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+  }
+
+  /* 🟢 حركة الدخول السلسة */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}

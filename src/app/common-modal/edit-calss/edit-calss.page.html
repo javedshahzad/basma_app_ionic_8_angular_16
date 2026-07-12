@@ -1,0 +1,63 @@
+<ion-header mode="md">
+  <ion-toolbar>
+  	<ion-buttons slot="end">
+  		<ion-back-button></ion-back-button>
+  	</ion-buttons>
+    <ion-title>{{'edit_class.title' | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content mode="md">
+
+	<ion-list lines="none" class="list" *ngIf="teacherList">
+		<ion-list-header class="list-header">
+			{{'edit_class.sub_title' | translate}}
+		</ion-list-header>
+		<ion-card class="card" *ngFor="let list of teacherList; let i=index"> 
+			<ion-card-header class="card-header">
+				<ion-item class="item">
+					<ion-avatar slot="start">
+						<img (click)="dataProvider.openAvatarModel(list.pic)" [src]="list.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';">
+					</ion-avatar>
+					<ion-label>
+						<h2>{{list.first_name}}</h2>
+						<p> {{list.is_assigned}}: {{'edit_class.is_assigned' | translate}}</p>
+					</ion-label>
+				</ion-item>
+			</ion-card-header>
+			<ion-card-content class="card-content">
+				<ion-item class="item-lover">
+					<div class="item-text">
+						{{'edit_class.teacher_assign' | translate}}
+					</div>
+				  	<ion-row class="row">
+				  		<ion-col size="6" class="col">
+				  			{{'edit_class.regular' | translate}}
+				  			<ion-checkbox [checked]="list.is_assigned==1 && list.assigned_as=='regular'" (click)="markTeacher(list,'reg',$event,i)" color="primary" id="reg{{i}}"></ion-checkbox>
+				  		</ion-col>
+				  		<ion-col size="6" class="col">
+				  			{{'edit_class.split' | translate}}
+							<ion-checkbox [checked]="list.is_assigned==1 && list.assigned_as=='split'" color="secondary" (click)="markTeacher(list,'spl',$event,i)" id="spl{{i}}"></ion-checkbox>
+				  		</ion-col>
+				  	</ion-row>
+				</ion-item>
+			</ion-card-content>
+		</ion-card>
+	</ion-list>
+
+	<ion-list *ngIf="teacherList.length<1 && noTeacher">
+		<ion-list-header>
+			{{'edit_class.no_data' | translate}}
+		</ion-list-header>
+	</ion-list>
+
+	<ion-row>
+		<ion-col size="12">
+			<ion-button  expand="block" class="btn-primary margin" *ngIf="teacherList.length>1"  color="primary" (click)="submitTeacher()">{{'edit_class.assign' | translate}}</ion-button>
+		</ion-col>
+		<ion-col size="12">
+			<ion-button  expand="block" class="btn-primary margin"  color="danger" (click)="deletClass()">{{'edit_class.delete' | translate}}</ion-button>
+		</ion-col>
+	</ion-row>
+
+</ion-content>

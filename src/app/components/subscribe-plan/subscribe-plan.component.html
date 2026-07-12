@@ -1,0 +1,108 @@
+<ion-header class="ion-no-border lineone-header" mode="md">
+  <ion-toolbar>
+    <ion-title class="lineone-title ion-text-center">نظام بصمة</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()" class="lineone-icon-btn">
+        <ion-icon name="close-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="lineone-content" mode="md">
+  <div class="main-container animate__animated animate__fadeIn">
+    
+    <div class="premium-hero-banner">
+      <div class="hero-bg-shapes"></div>
+      
+      <div class="hero-content">
+        <div class="crown-icon">
+          <ion-icon name="diamond"></ion-icon>
+        </div>
+        <h2 class="hero-title">الخطة المميزة</h2>
+        <!-- <div class="price-tag">
+          <span class="currency">دولار</span>
+          <span class="amount">٢٤,٩٩</span>
+          <span class="duration">/ شهر</span>
+        </div> -->
+        <p class="hero-desc">
+          أرتقي بمجتمعك المدرسي لتحسين جودة التعليم ودمج التقنية بطريقة منظمة ومبتكرة لتحقيق أهدافك.
+        </p>
+      </div>
+    </div>
+
+    <div class="features-wrapper">
+      
+      <div class="feature-card">
+        <div class="feature-img-box">
+          <img src="assets/imgs/premimum-1.jpeg" onerror="this.src='../../../assets/imgs/premimum-1.jpeg'" alt="feature 1">
+        </div>
+        <div class="feature-text">
+          <h3 class="title">{{'plan.premi_head_1' | translate}}</h3>
+          <p class="desc">{{'plan.premi_title_1' | translate}}</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-img-box">
+          <img src="assets/imgs/premimum-2.jpeg" alt="feature 2">
+        </div>
+        <div class="feature-text">
+          <h3 class="title">{{'plan.premi_head_2' | translate}}</h3>
+          <p class="desc">{{'plan.premi_title_2' | translate}}</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-img-box">
+          <img src="assets/imgs/premimum-3.jpeg" alt="feature 3">
+        </div>
+        <div class="feature-text">
+          <h3 class="title">{{'plan.premi_head_3' | translate}}</h3>
+          <p class="desc">{{'plan.premi_title_3' | translate}}</p>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-img-box">
+          <img src="assets/imgs/premimum-4.jpeg" alt="feature 4">
+        </div>
+        <div class="feature-text">
+          <h3 class="title">{{'plan.premi_head_4' | translate}}</h3>
+          <p class="desc">{{'plan.premi_title_4' | translate}}</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="legal-links-section">
+      <div class="manual-link" (click)="openPDF()">
+        <ion-icon name="book-outline"></ion-icon>
+        <span>{{'plan.app_manual' | translate}} <strong class="text-primary">{{'plan.app_manual_link' | translate}}</strong></span>
+      </div>
+      
+      <div class="pills-container">
+        <button class="legal-pill" (click)="opentOs()">
+          <ion-icon name="document-text-outline"></ion-icon> {{'plan.tos' | translate}}
+        </button>
+        <button class="legal-pill" (click)="openPp()">
+          <ion-icon name="shield-checkmark-outline"></ion-icon> {{'plan.pp' | translate}}
+        </button>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border lineone-footer" mode="md">
+  <div class="footer-actions">
+    <button class="lineone-btn btn-primary" (click)="gotoPlans()">
+      <ion-icon name="rocket-outline" slot="start"></ion-icon>
+      {{'plan.try_free' | translate}}
+    </button>
+    
+    <button class="lineone-btn btn-text" (click)="continue()">
+      {{'plan.subscribe_now' | translate}}
+    </button>
+  </div>
+</ion-footer>

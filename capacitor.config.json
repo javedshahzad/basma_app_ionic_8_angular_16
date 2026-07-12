@@ -1,0 +1,23 @@
+{
+	"appId": "com.webapp.attendance",
+	"appName": "بصمة",
+	"bundledWebRuntime": false,
+	"webDir": "www",
+	"plugins": {
+	  "SplashScreen": {
+		"showSpinner": false,
+		"launchShowDuration":4000,
+		"launchAutoHide": true,
+		"spinnerColor": "#f53d3d",
+		"splashFullScreen": true
+	  },
+	  "PushNotifications": {
+		"presentationOptions": ["badge", "sound", "alert"]
+	  }
+	},
+	"cordova": {
+		"prefrences":{
+			"WKWebViewOnly":true
+		}
+	}
+  }

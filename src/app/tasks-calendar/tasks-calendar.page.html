@@ -1,0 +1,68 @@
+<ion-header class="ion-no-border" mode="md">
+  <ion-toolbar style="--background: #f8fafc;" class="relative text-center border-b border-slate-100">
+    <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
+      <ion-back-button defaultHref="/tabs" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="font-extrabold text-slate-800 text-base w-full">{{'sidemenu.tasks_calendar' | translate}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="lineone-bg" mode="md" dir="rtl">
+  <div class="px-4 py-6 max-w-2xl mx-auto space-y-4 pb-6">
+    
+    <div class="text-center mb-8 mt-2">
+      <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-3 border-4 border-white shadow-sm">
+        <ion-icon name="calendar-outline" class="text-3xl text-indigo-500"></ion-icon>
+      </div>
+      <h2 class="text-lg font-black text-slate-800 m-0">تحديد الصفوف</h2>
+      <p class="text-sm font-bold text-slate-500 mt-1.5 leading-relaxed">
+        اختر صفاً واحداً أو أكثر لعرض التقويم والمهام المرتبطة بها
+      </p>
+    </div>
+
+    <ng-container *ngIf="classes?.length > 0">
+      <div *ngFor="let course of classes; let i = index" 
+           class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 transition-all hover:shadow-md cursor-pointer relative overflow-hidden"
+           (click)="checkboxRef.checked = !checkboxRef.checked; selectUser(course, {detail: {checked: checkboxRef.checked}}, i)">
+        
+        <div class="absolute top-0 bottom-0 right-0 w-1.5" [style.background-color]="course.backgroundColor || '#818cf8'"></div>
+
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border"
+             [style.background-color]="(course.backgroundColor || '#818cf8') + '15'"
+             [style.color]="course.backgroundColor || '#818cf8'"
+             [style.border-color]="(course.backgroundColor || '#818cf8') + '30'">
+          <ion-icon name="library-outline" class="text-2xl"></ion-icon>
+        </div>
+
+        <div class="flex-1 pr-1">
+          <h4 class="font-bold text-sm text-slate-800 m-0">{{course.name}}</h4>
+          <p class="text-xs font-bold text-slate-500 m-0 mt-1.5 line-clamp-1" *ngIf="course.desc">{{course.desc}}</p>
+        </div>
+
+        <div class="shrink-0 pl-1" (click)="$event.stopPropagation()">
+          <ion-checkbox #checkboxRef id="ch{{i}}" mode="md" class="lineone-checkbox" (ionChange)="selectUser(course, $event, i)"></ion-checkbox>
+        </div>
+
+      </div>
+    </ng-container>
+
+    <div class="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white shadow-sm mt-4" *ngIf="!classes || classes.length == 0">
+      <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
+        <ion-icon name="school-outline" class="text-3xl text-slate-300"></ion-icon>
+      </div>
+      <h4 class="text-slate-500 font-bold text-sm m-0 text-center px-4 leading-relaxed">
+        لا توجد صفوف متاحة لعرضها
+      </h4>
+    </div>
+
+  </div>
+</ion-content>
+
+<ion-footer class="ion-no-border bg-white/90 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+  <div class="p-4 max-w-2xl mx-auto w-full pb-safe">
+    <button (click)="openCalendar()" class="w-full py-4 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all active:scale-95 hover:bg-indigo-700 flex items-center justify-center gap-2">
+      <ion-icon name="checkmark-done-outline" class="text-xl"></ion-icon>
+      {{'alertmessages.alert_btn_submit_text' | translate}}
+    </button>
+  </div>
+</ion-footer>

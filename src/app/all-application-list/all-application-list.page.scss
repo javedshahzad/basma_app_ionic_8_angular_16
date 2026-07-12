@@ -1,0 +1,44 @@
+app-all-application-list:host {
+    
+    .lineone-bg {
+        --background: #f8fafc;
+    }
+
+    /* حركات النافذة السفلية للتقويم */
+    .animate-fade-in-up {
+        animation: fadeInUp 0.3s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* 🌟 إصلاح ألوان التقويم المدمج ion-datetime */
+ion-datetime {
+  /* إجبار الأرقام والنصوص على الظهور بلون داكن */
+  color: #1e293b !important; 
+  --color: #1e293b !important;
+  
+  /* لون خلفية التقويم */
+  --background: #ffffff;
+  
+  /* لون النصوص في عجلة اختيار الأشهر والسنوات */
+  --wheel-text-color: #1e293b;
+  --wheel-fade-background-rgb: 255, 255, 255;
+  
+  /* لون العنوان العلوي (إذا وجد) */
+  --title-color: #4f46e5; 
+}
+
+/* لضمان ظهور أزرار "تأكيد" و "إلغاء" بوضوح */
+ion-datetime::part(time-button) {
+  color: #1e293b;
+}
+}

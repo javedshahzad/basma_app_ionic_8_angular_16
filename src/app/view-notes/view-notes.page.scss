@@ -1,0 +1,21 @@
+app-view-notes:host {
+    
+    /* لون الخلفية الأساسي للمنصة ليتوافق مع تصميم Lineone */
+    .lineone-bg {
+        --background: #f8fafc;
+    }
+
+    /* حركة دخول انسيابية للبطاقات */
+    .animate-fade-in-up {
+        animation: fadeInUp 0.4s ease-out forwards;
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

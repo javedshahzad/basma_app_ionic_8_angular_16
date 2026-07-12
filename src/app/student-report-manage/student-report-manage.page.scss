@@ -1,0 +1,87 @@
+app-student-report-manage:host {
+    
+    .lineone-bg {
+        --background: #f8fafc;
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.4s ease-out forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* إصلاح مشكلة النقر على حقل التاريخ والوقت في أجهزة الكمبيوتر */
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        opacity: 0;
+    }
+
+    /* =======================================================
+       🌟 تخصيص قوائم ionic-selectable لعرض النص كاملاً (Text Wrap)
+       دون العبث في أكواد HTML الداخلية التي قد تكسر المكتبة
+       ======================================================= */
+    ionic-selectable {
+        width: 100%;
+        max-width: 100%;
+        min-height: 46px; 
+        height: auto !important; 
+        --padding-start: 0;
+        --padding-end: 0;
+        
+        &::part(placeholder) {
+            color: #94a3b8; 
+            font-weight: normal;
+        }
+        
+        /* 🔴 السر هنا: إجبار النص المختار على التفاف السطور تلقائياً */
+        &::part(text) {
+            color: #1e293b; 
+            font-weight: 700;
+            white-space: normal !important; 
+            overflow: visible !important;
+            text-overflow: unset !important;
+            line-height: 1.6;
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+        
+        &::part(icon) {
+            color: #64748b; 
+            opacity: 1;
+        }
+    }
+
+    ion-input, ion-select, ion-textarea {
+        --padding-start: 0;
+        --padding-end: 0;
+    }
+}
+
+/* خصائص نافذة الحذف المركزية */
+ion-modal.lineone-delete-modal {
+  --width: 90%;
+  --max-width: 360px;
+  --height: 330px;
+  --border-radius: 1.5rem;
+  --box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --background: transparent;
+}

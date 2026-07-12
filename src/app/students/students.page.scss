@@ -1,0 +1,22 @@
+app-students:host {
+  ion-content {
+    --background: #f8fafc;
+  }
+
+  /* إخفاء السكرول بار */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  ion-item {
+    --background: transparent;
+    --border-style: none;
+    --inner-padding-end: 0;
+    --padding-start: 0;
+  }
+  
+  /* تحسين عرض المودال على الجوال */
+  .custom-modal-main {
+    backdrop-filter: blur(4px);
+  }
+}

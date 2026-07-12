@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  width: 100%;
+  background: transparent;
+}
+
+/* تخصيص شكل شريط التمرير ليصبح مخفياً أو ناعماً جداً */
+.custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+  }
+}
