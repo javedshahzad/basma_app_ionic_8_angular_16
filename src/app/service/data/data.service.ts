@@ -41,7 +41,6 @@ export class DataService {
   
   loader: any;
   lang: any = {};
-  syncInterval: any;
   mediaDirectory: string = '';
   popOver:any;
   img = '';
@@ -49,6 +48,8 @@ export class DataService {
   private_message = false;
   deactivate_date : any ='';
   public uploadProgress: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  private syncInterval: any = null;
+  private isSyncing = false;
 
   
   /**
@@ -89,6 +90,14 @@ export class DataService {
     this.language.subscribe(res=>{
       environment.lang_code=res;
     })
+    this.network.onDisconnect().subscribe(() => {
+      this.showToast('No Internet connection...');
+    });
+
+    this.network.onConnect().subscribe(() => {
+      this.showToast('Internet connected');
+      this.syncOffileData();
+    });
   }
 
   // دالة مساعدة لاستقبال طلب التبديل من واجهة Lineone الجديدة
@@ -4077,70 +4086,194 @@ createNewParent(data: any): Promise<any> {
     })
   }
 
-  /**
-   * Function to sync offline attendance
-   */
-  async syncOffileData() {
-    if (!this.syncInterval) {
-      let isNetworkAvailable = await this.getNetworkInformation();
-      if (isNetworkAvailable) {
-        
-        let attendances = await this.storageSr.get("attendance");
-        if (attendances) {
-          let promises = [];
-          attendances.forEach((attendance) => {
-            promises.push(this.markOfflineAttendance(attendance));
-          });
-          Promise.all(promises).then(async (res) => {
-            this.showToast('Attendance Synced successfully');
-            await this.storageSr.remove("attendance"); // 👈 مسح آمن
-          });
+/**
+ * Function to sync offline attendance
+ */
+async syncOffileData() {
+
+  if (this.syncInterval) {
+    return;
+  }
+
+  // Run immediately
+  await this.performOfflineSync();
+
+  // Run every 20 seconds
+  this.syncInterval = setInterval(async () => {
+    await this.performOfflineSync();
+  }, 20000);
+}
+private async performOfflineSync() {
+
+  if (this.isSyncing) {
+    return;
+  }
+
+  this.isSyncing = true;
+
+  try {
+
+    const isNetworkAvailable = await this.getNetworkInformation();
+
+    if (!isNetworkAvailable) {
+      return;
+    }
+
+    /**
+     * Sync Attendance
+     */
+    const attendances = await this.storageSr.get("attendance") || [];
+
+    if (attendances.length > 0) {
+
+      const remainingAttendance = [];
+
+      for (const attendance of attendances) {
+
+        try {
+
+          await this.markAttendance(attendance);
+
+        } catch (error) {
+
+          console.error("Attendance sync failed", error);
+
+          remainingAttendance.push(attendance);
+
         }
 
-        let delayAttendances = await this.storageSr.get("delayattendance");
-        if (delayAttendances) {
-          let delayPromises = [];
-          delayAttendances.forEach((delayAttendance) => {
-            delayPromises.push(this.markOfflineDelayAttendance(delayAttendance.attendance, delayAttendance.submittedByUser));
-          });
-          Promise.all(delayPromises).then(async (res) => {
-            this.showToast('Delay Attendance Synced successfully');
-            await this.storageSr.remove("delayattendance"); // 👈 مسح آمن
-          });
-        }
       }
 
-      // تكرار المزامنة كل 20 ثانية (بأمان تام)
-      this.syncInterval = setInterval(async () => {
-        let isNet = await this.getNetworkInformation();
-        if (isNet) {
-          let atts = await this.storageSr.get("attendance");
-          if (atts) {
-            let promises = [];
-            atts.forEach((attendance) => {
-              promises.push(this.markOfflineAttendance(attendance));
-            });
-            Promise.all(promises).then(async (res) => {
-              this.showToast('Attendance Synced successfully');
-              await this.storageSr.remove("attendance");
-            });
-          }
+      if (remainingAttendance.length === 0) {
 
-          let delayAtts = await this.storageSr.get("delayattendance");
-          if (delayAtts) {
-            let delayPromises = [];
-            delayAtts.forEach((delayAttendance) => {
-              delayPromises.push(this.markOfflineDelayAttendance(delayAttendance.attendance, delayAttendance.submittedByUser));
-            });
-            Promise.all(delayPromises).then(async (res) => {
-              this.showToast('Delay Attendance Synced successfully');
-              await this.storageSr.remove("delayattendance");
-            });
-          }
-        }
-      }, 20000);
+        await this.storageSr.remove("attendance");
+        this.showToast("Attendance Synced Successfully");
+
+      } else {
+
+        await this.storageSr.set("attendance", remainingAttendance);
+
+      }
+
     }
+
+    /**
+     * Sync Delay Attendance
+     */
+    const delayAttendances = await this.storageSr.get("delayattendance") || [];
+
+    if (delayAttendances.length > 0) {
+
+      const remainingDelayAttendance = [];
+
+      for (const item of delayAttendances) {
+
+        try {
+
+          await this.markOfflineDelayAttendance(
+            item.attendance,
+            item.submittedByUser
+          );
+
+        } catch (error) {
+
+          console.error("Delay attendance sync failed", error);
+
+          remainingDelayAttendance.push(item);
+
+        }
+
+      }
+
+      if (remainingDelayAttendance.length === 0) {
+
+        await this.storageSr.remove("delayattendance");
+        this.showToast("Delay Attendance Synced Successfully");
+
+      } else {
+
+        await this.storageSr.set("delayattendance", remainingDelayAttendance);
+
+      }
+
+    }
+
+  } catch (error) {
+
+    console.error("Offline Sync Error", error);
+
+  } finally {
+
+    this.isSyncing = false;
+
   }
+
+}
+  // /**
+  //  * Function to sync offline attendance
+  //  */
+  // async syncOffileData() {
+  //   if (!this.syncInterval) {
+  //     let isNetworkAvailable = await this.getNetworkInformation();
+  //     if (isNetworkAvailable) {
+        
+  //       let attendances = await this.storageSr.get("attendance");
+  //       if (attendances) {
+  //         let promises = [];
+  //         attendances.forEach((attendance) => {
+  //           promises.push(this.markAttendance(attendance));
+  //         });
+  //         Promise.all(promises).then(async (res) => {
+  //           this.showToast('Attendance Synced successfully');
+  //           await this.storageSr.remove("attendance"); // 👈 مسح آمن
+  //         });
+  //       }
+
+  //       let delayAttendances = await this.storageSr.get("delayattendance");
+  //       if (delayAttendances) {
+  //         let delayPromises = [];
+  //         delayAttendances.forEach((delayAttendance) => {
+  //           delayPromises.push(this.markOfflineDelayAttendance(delayAttendance.attendance, delayAttendance.submittedByUser));
+  //         });
+  //         Promise.all(delayPromises).then(async (res) => {
+  //           this.showToast('Delay Attendance Synced successfully');
+  //           await this.storageSr.remove("delayattendance"); // 👈 مسح آمن
+  //         });
+  //       }
+  //     }
+
+  //     // تكرار المزامنة كل 20 ثانية (بأمان تام)
+  //     this.syncInterval = setInterval(async () => {
+  //       let isNet = await this.getNetworkInformation();
+  //       if (isNet) {
+  //         let atts = await this.storageSr.get("attendance");
+  //         console.log(atts,'ststs ==')
+  //         if (atts) {
+  //           let promises = [];
+  //           atts.forEach((attendance) => {
+  //             promises.push(this.markAttendance(attendance));
+  //           });
+  //           Promise.all(promises).then(async (res) => {
+  //             this.showToast('Attendance Synced successfully');
+  //             await this.storageSr.remove("attendance");
+  //           });
+  //         }
+
+  //         let delayAtts = await this.storageSr.get("delayattendance");
+  //         if (delayAtts) {
+  //           let delayPromises = [];
+  //           delayAtts.forEach((delayAttendance) => {
+  //             delayPromises.push(this.markOfflineDelayAttendance(delayAttendance.attendance, delayAttendance.submittedByUser));
+  //           });
+  //           Promise.all(delayPromises).then(async (res) => {
+  //             this.showToast('Delay Attendance Synced successfully');
+  //             await this.storageSr.remove("delayattendance");
+  //           });
+  //         }
+  //       }
+  //     }, 20000);
+  //   }
+  // }
 
   /**
    * Offline Attendance mark post function
@@ -4318,19 +4451,23 @@ createNewParent(data: any): Promise<any> {
   /**
    * Check whether network is available or not
    */
-  getNetworkInformation(): Promise<any> {
-    return new Promise((resolve) => {
-      if (this.platform.is('cordova')) {
-        if (this.network.type == this.network.Connection.UNKNOWN || this.network.type == this.network.Connection.NONE) {
-          resolve(false);
-        } else {
-          resolve(true)
-        }
-      } else {
-        resolve(true);
-      }
-    })
-  }
+getNetworkInformation(): Promise<boolean> {
+  return new Promise((resolve) => {
+
+    // Native app (Cordova/Capacitor)
+    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+      const isOnline =
+        this.network.type !== this.network.Connection.NONE &&
+        this.network.type !== this.network.Connection.UNKNOWN;
+
+      resolve(isOnline);
+      return;
+    }
+
+    // Browser/Desktop
+    resolve(navigator.onLine);
+  });
+}
 
   /**
    * Download image

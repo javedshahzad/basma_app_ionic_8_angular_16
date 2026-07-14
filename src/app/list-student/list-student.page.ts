@@ -1195,8 +1195,8 @@ export class ListStudentPage implements OnInit {
       username: this.userDetails.details.first_name || this.userDetails.details.username || 'الإدارة'
     };
 
-    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
+
+      if (this.isOnline()) {
         this.sendAttendanceToServer(data); 
       } else {
         this.dataProvider.hideLoading();
@@ -1204,10 +1204,12 @@ export class ListStudentPage implements OnInit {
         attendance.push(data);
         await this.storageSr.set("attendance", attendance);
         this.dataProvider.showToast(this.lang.offline_att_stored);
+        this.attendanceSheet = {};
+        this.removeSheet = {};
+        this.editMode = false;
+        this.attMarkBegin = false;
       }
-    } else {
-      this.sendAttendanceToServer(data); 
-    }
+  
   }
 
   sendAttendanceToServer(data: any) {
@@ -1232,7 +1234,14 @@ export class ListStudentPage implements OnInit {
       this.attendanceSheet
     );
   }
+isOnline(): boolean {
+  if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+    return this.network.type !== this.network.Connection.NONE &&
+           this.network.type !== this.network.Connection.UNKNOWN;
+  }
 
+  return navigator.onLine;
+}
   async registerNewStudent() {
     this.translate.get("reg_student").subscribe(async (response) => {
       this.addStudentLang = response; 
