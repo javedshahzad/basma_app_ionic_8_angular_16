@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { AuthService } from './service/auth/auth.service';
+import { AuthService } from '@services/auth/auth.service';
 import { Injectable } from '@angular/core';
 import {
   HttpInterceptor,
@@ -9,10 +9,10 @@ import {
   HttpResponse,
   HttpErrorResponse
 } from '@angular/common/http';
-import { Observable, throwError, timer } from 'rxjs';
-import { tap, retry, catchError } from 'rxjs/operators';
+import { Observable, throwError, timer, TimeoutError } from 'rxjs';
+import { tap, retry, catchError, timeout } from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
-import { DataService } from './service/data/data.service';
+import { DataService } from '@services/data/data.service';
 
 @Injectable()
 export class MyInterceptor implements HttpInterceptor {
@@ -32,26 +32,34 @@ export class MyInterceptor implements HttpInterceptor {
     let requestToHandle = request;
 
     // 1️⃣ الشق الأول: المنطق الخاص بك (إضافة UUID و user_no لطلبات POST المحددة)
-    if (request.method === 'POST' && localStorage.getItem('userloggedin')
-     && !request.url.endsWith('logout') 
-     && !request.url.endsWith('login') 
+    if (request.method === 'POST' && this.auth.currentUser
+     && !request.url.endsWith('logout')
+     && !request.url.endsWith('login')
      && !request.url.endsWith('schoolRegister') ) {
-      
-      let user = JSON.parse(localStorage.getItem('userloggedin') || '{}');
-      const uuid = localStorage.getItem('uuid');
-     
+
       requestToHandle = request.clone({
-        params: request.params.set('uuid', uuid || '1122112233112233').set("user_no", user.details?.user_no || ''),
+        params: request.params.set('uuid', this.auth.currentUuid || '1122112233112233').set("user_no", this.auth.currentUser.details?.user_no || ''),
       });
     }
 
+    // رفع الملفات (FormData) قد يستغرق وقتاً طويلاً على شبكة بطيئة، لذا نستثنيه
+    // من سقف الوقت (timeout) حتى لا تفشل عمليات رفع مشروعة لكنها بطيئة
+    const isUpload = requestToHandle.body instanceof FormData;
+
     // 2️⃣ الشق الثاني: إرسال الطلب ومراقبته (سواء كان معدلاً أم لا)
-    return next.handle(requestToHandle).pipe(
-      
+    let response$ = next.handle(requestToHandle);
+
+    if (!isUpload) {
+      // حد أقصى 30 ثانية لكل محاولة، حتى لا يبقى الطلب معلقاً إلى الأبد عند انقطاع صامت
+      response$ = response$.pipe(timeout(30000));
+    }
+
+    return response$.pipe(
+
       // أ) التحقق من الردود الناجحة (المنطق الخاص بك للـ Status 100)
       tap((event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
-          const responseData = event.body; 
+          const responseData = event.body;
           if (responseData && responseData.status === 100) {
             console.log('Terminating request due to status 100 in the response');
             this.presentAlert("تنبيه مطور: الخادم يطلب تسجيل الخروج بسبب عدم تطابق رقم الجهاز UUID. تم إيقاف الطرد لتسهيل التطوير.");
@@ -63,23 +71,30 @@ export class MyInterceptor implements HttpInterceptor {
       retry({
         count: 3, // المحاولة 3 مرات كحد أقصى
         delay: (error: HttpErrorResponse, retryCount: number) => {
-          // إذا كان الخطأ بسبب الضغط 429 أو صيانة مؤقتة 503
-          if (error.status === 429 || error.status === 503) {
+          // إذا كان الخطأ بسبب الضغط 429 أو صيانة مؤقتة 503، أو انقطاع الاتصال قبل وصول الطلب
+          // للسيرفر أصلاً (status 0) — وكلها حالات آمنة لإعادة المحاولة لأن الطلب لم يُعالَج فعلياً.
+          // لا تتم إعادة المحاولة عند انتهاء المهلة (timeout) لأن الطلب قد يكون وصل للسيرفر فعلاً
+          // ونُفّذ، وإعادة إرساله قد تكرر عمليات غير آمنة (مثل تسجيل حضور أو إضافة ملاحظة مرتين).
+          if (error.status === 429 || error.status === 503 || error.status === 0) {
             const delayTime = Math.pow(2, retryCount - 1) * 1000; // 1s, 2s, 4s
-            console.warn(`⏳ سيرفر مشغول (الخطأ ${error.status}). المحاولة رقم ${retryCount} بعد ${delayTime}ms...`);
-            return timer(delayTime); 
+            console.warn(`⏳ محاولة إعادة الاتصال (الخطأ ${error.status}). المحاولة رقم ${retryCount} بعد ${delayTime}ms...`);
+            return timer(delayTime);
           }
-          // إنهاء المحاولات فوراً لأي خطأ آخر (مثل 404 أو 401)
+          // إنهاء المحاولات فوراً لأي خطأ آخر (مثل 404 أو 401 أو انتهاء المهلة)
           return throwError(() => error);
         }
       }),
 
-      // ج) 🛡️ اصطياد الأخطاء النهائية بعد نفاذ المحاولات (أو انقطاع الإنترنت)
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 429 || error.status === 503) {
+      // ج) 🛡️ اصطياد الأخطاء النهائية بعد نفاذ المحاولات (أو انقطاع الإنترنت أو انتهاء المهلة)
+      catchError((error: any) => {
+        if (error instanceof TimeoutError) {
+          this.dataProvider.hideLoading();
+          this.dataProvider.showToast('استغرق الطلب وقتاً طويلاً، يرجى المحاولة مرة أخرى.');
+        }
+        else if (error.status === 429 || error.status === 503) {
           this.dataProvider.hideLoading();
           this.dataProvider.showToast('الشبكة مزدحمة حالياً، يرجى المحاولة بعد قليل.');
-        } 
+        }
         else if (error.status === 0) {
           this.dataProvider.hideLoading();
           this.dataProvider.showToast('تعذر الاتصال بالخادم. تأكد من اتصالك بالإنترنت.');
@@ -101,17 +116,14 @@ export class MyInterceptor implements HttpInterceptor {
   }
 
   logout() {
-    let userDetail = JSON.parse(localStorage.getItem("userloggedin") || '{}');
+    let userDetail = this.auth.currentUser || {};
     let data = {
       "user_no": userDetail.details?.user_no,
       "session_id": userDetail.session_id
     }
-    this.dataProvider.showLoading();
-    this.auth.doLogout(data).then(() => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.auth.doLogout(data)).then(() => {
       this.router.navigate(['login'], {replaceUrl: true});
     }).catch(() => {
-      this.dataProvider.hideLoading();
     });
   }
 }

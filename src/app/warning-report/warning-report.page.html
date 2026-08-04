@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="menu-btn-container">
       <ion-menu-toggle auto-hide="false">
@@ -43,7 +43,7 @@
     <div class="px-4 mt-2">
       
       <div *ngIf="show_loading" class="space-y-4">
-        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100" *ngFor="let i of [1,2]">
+        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100" *ngFor="let i of [1,2]; trackBy: trackByIndex">
           <ion-skeleton-text animated class="w-full h-20 rounded-xl"></ion-skeleton-text>
         </div>
       </div>
@@ -51,7 +51,7 @@
       <div *ngIf="reportType === 'warning' && !show_loading" class="animate-fade-in-up">
         
         <div class="space-y-4" *ngIf="reportData?.length > 0">
-          <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-rose-100 transition-all hover:shadow-md" *ngFor="let item of reportData; let i=index">
+          <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-rose-100 transition-all hover:shadow-md" *ngFor="let item of reportData; let i=index; trackBy: trackByIndex">
             
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
@@ -66,7 +66,7 @@
             </div>
 
             <div class="bg-slate-50 border border-slate-100 p-4 rounded-xl space-y-2" *ngIf="item && item[0]">
-              <div class="flex items-start gap-2" *ngFor="let msg of item[0].split(',')">
+              <div class="flex items-start gap-2" *ngFor="let msg of item[0].split(','); trackBy: trackByIndex">
                 <ion-icon name="ellipse" class="text-[6px] text-rose-400 mt-1.5 shrink-0"></ion-icon>
                 <p class="text-sm font-bold text-slate-600 m-0 leading-relaxed">{{msg}}</p>
               </div>
@@ -91,7 +91,7 @@
             <ion-icon name="call-outline"></ion-icon> تقارير استدعاء ولي الأمر
           </h2>
           <div class="space-y-4">
-            <div class="bg-white rounded-3xl p-4 shadow-sm border border-amber-100" *ngFor="let edays of callOfStudentsReport; let i=index">
+            <div class="bg-white rounded-3xl p-4 shadow-sm border border-amber-100" *ngFor="let edays of callOfStudentsReport; let i=index; trackBy: trackByIndex">
               <div class="flex items-center gap-3 mb-3">
                 <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
                   <span class="font-black text-sm">#{{i+1}}</span>
@@ -113,7 +113,7 @@
             <ion-icon name="document-text-outline"></ion-icon> تعهدات الطالب
           </h2>
           <div class="space-y-4">
-            <div class="bg-white rounded-3xl p-4 shadow-sm border border-indigo-100" *ngFor="let edays of AllStudentPledgesReports; let i=index">
+            <div class="bg-white rounded-3xl p-4 shadow-sm border border-indigo-100" *ngFor="let edays of AllStudentPledgesReports; let i=index; trackBy: trackByIndex">
               <div class="flex items-center gap-3 mb-3">
                 <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
                   <span class="font-black text-sm">#{{i+1}}</span>

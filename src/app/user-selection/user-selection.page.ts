@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, Input } from '@angular/core';
+﻿import { Component, OnInit, NgZone, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -6,15 +6,18 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
   selector: 'app-user-selection',
   // 🟢 إصلاح مسارات الملفات لكي لا يظهر خطأ (Module not found)
   templateUrl: './user-selection.page.html',
   styleUrls: ['./user-selection.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 // 🟢 إصلاح اسم الكلاس ليكون UserSelectionPage
 export class UserSelectionPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   
   // المتغيرات التي تمرر من النافذة الأب (إن وجدت)
   @Input() preSelectedUsers: any[] = [];
@@ -41,32 +44,36 @@ export class UserSelectionPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public modalController: ModalController,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
   }
 
   // 🟢 استخدام التزامن للتخلص من الـ localStorage عند فتح الصفحة
   async ngOnInit() {
     this.show_loading = true;
-    let userLoggedIn = await this.storageSr.get("userloggedin"); 
+    let userLoggedIn = await this.storageSr.get("userloggedin");
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      
+
       // إذا تم تمرير مستخدمين محددين مسبقاً، نقوم بتخزينهم
       if (this.preSelectedUsers && this.preSelectedUsers.length > 0) {
         this.selectedUsers = [...this.preSelectedUsers];
       }
-      
+
       this.getUsers();
     } else {
       this.show_loading = false;
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   // 🟢 إغلاق النافذة المنبثقة دون حفظ التغييرات
@@ -91,7 +98,7 @@ export class UserSelectionPage implements OnInit {
       'user_no': this.userDetails.details.user_no
     };
     
-    this.dataProvider.getAllSchoolUsers(data).then(res => {
+    this.schoolDirectoryApi.getAllSchoolUsers(data).then(res => {
       this.show_loading = false;
       if (res.session) {
         this.allUsers = res.data;
@@ -99,9 +106,11 @@ export class UserSelectionPage implements OnInit {
       } else {
         this.noUser = true;
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       this.noUser = true;
       this.show_loading = false;
+      this.cdr.markForCheck();
     });
   }
 
@@ -124,6 +133,7 @@ export class UserSelectionPage implements OnInit {
         const userMatch = user.username ? user.username.toLowerCase().includes(searchTerm) : false;
         return nameMatch || userMatch;
       });
+      this.cdr.markForCheck();
     }, 300); // 300ms Debounce
   }
 

@@ -1,4 +1,4 @@
-<div *ngIf="attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0">
+﻿<div *ngIf="attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0">
   
   <div *ngIf="canEdit && timeLeft > 0 && isToday && hasSubmitted" class="bg-amber-500 text-white px-4 py-2.5 flex justify-between items-center shadow-md mb-4 rounded-2xl mx-1" dir="rtl">
     <div class="flex items-center gap-2">
@@ -53,7 +53,7 @@
           <div class="relative" (click)="$event.stopPropagation(); onImageClick.emit(student)">
             <img [src]="student.pic ? student.pic : 'assets/imgs/user-avatar.png'" loading="lazy" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 shadow-sm">
             <div class="absolute bottom-0 right-0 bg-rose-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white" *ngIf="student.student_data?.medical_condition">M</div>
-            <!-- <img class="absolute -top-1 -left-1 w-5 h-5" [src]="student.computedIcon" *ngIf="student.agg_ranking > 0" /> -->
+            <!-- <img loading="lazy" class="absolute -top-1 -left-1 w-5 h-5" [src]="student.computedIcon" *ngIf="student.agg_ranking > 0" /> -->
           </div>
           
           <div class="flex-1">

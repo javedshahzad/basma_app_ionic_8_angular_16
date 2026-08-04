@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef, NgZone } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Platform, AlertController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from '../service/data/data.service';
@@ -12,6 +13,7 @@ import { GeoServiceProvider } from '../service/geo-service/geo-service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { NewsApiService } from '../service/news-api/news-api.service';
 
 @Component({
   selector: 'app-news',
@@ -20,7 +22,9 @@ import { StorageService } from '../service/storage.service';
 })
 export class NewsPage implements OnInit {
 
+  trackByIndex(index: number): number { return index; }
   @ViewChild('videoPlayer') mVideoPlayer: ElementRef;
+  private destroyRef = inject(DestroyRef);
 
   allNews: any = [];
   originalNews: any = [];
@@ -58,17 +62,18 @@ export class NewsPage implements OnInit {
     public screen: ScreenOrientation,
     public sanitizer: DomSanitizer,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private zone: NgZone
+    private zone: NgZone,
+    private newsApi: NewsApiService
   ) {
     this.translate.get("alertmessages").subscribe((res) => { this.lang = res; });
     this.translate.get("location").subscribe((res) => { this.location_lang = res; });
 
-    this.dataProvider.language.subscribe(() => {
+    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.translate.get("alertmessages").subscribe((res) => { this.lang = res; });
       this.translate.get("location").subscribe((res) => { this.location_lang = res; });
     });
 
-    this.authProvider.event.subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       if (res.changeUser) {
         this.loadDataSafely(false);
       }
@@ -76,7 +81,7 @@ export class NewsPage implements OnInit {
 
     // رادار التحديث المباشر للأخبار
     if (this.dataProvider.newsUpdated) {
-      this.dataProvider.newsUpdated.subscribe((updatedNews: any) => {
+      this.dataProvider.newsUpdated.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updatedNews: any) => {
         if (this.allNews && this.allNews.length > 0) {
           let index = this.allNews.findIndex(news => news.id === updatedNews.id || news.id === updatedNews.news_id);
           
@@ -153,16 +158,30 @@ export class NewsPage implements OnInit {
 
   urlify(text) {
     if (!text) return text;
+
+    // 🔒 تعقيم النص بالكامل أولاً حتى لا يتحول أي HTML/سكريبت داخل الخبر
+    // (المُدخل من مستخدم آخر) إلى عناصر حقيقية بعد bypassSecurityTrustHtml
+    const escaped = this.escapeHtml(text);
+
     var urlRegex = /(https?:\/\/[^\s]+)/g;
-    let parsedText = text.replace(urlRegex, function(url: string) {
+    let parsedText = escaped.replace(urlRegex, function(url: string) {
         return `<a href="${url}" class="text-indigo-600 font-bold hover:text-indigo-800 underline transition-colors">${url}</a>`;
     });
     return this.sanitizer.bypassSecurityTrustHtml(parsedText);
   }
 
+  private escapeHtml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   getNews(start: number, newsPerPage: number, countryCode: any, loading: boolean = true): Promise<any> {
     return new Promise((resolve) => {
-      this.dataProvider.getNewsJoin(start, newsPerPage, this.userDetails.details, countryCode).then((totalNews) => {
+      this.newsApi.getNewsJoin(start, newsPerPage, this.userDetails.details, countryCode).then((totalNews) => {
         this.dataProvider.unread = false;
         this.show_loading = false; 
         this.allNews = [];
@@ -254,7 +273,7 @@ export class NewsPage implements OnInit {
     let userLoggedIn = await this.storageSr.get("userloggedin");
     if (userLoggedIn) {
       if (news.already_like == 'true' || news.already_like == true) {
-        this.dataProvider.dislikeNewsPost({
+        this.newsApi.dislikeNewsPost({
           session_id: this.userDetails.session_id,
           news_id: news.id,
           user_no: this.userDetails?.details?.user_no
@@ -265,7 +284,7 @@ export class NewsPage implements OnInit {
           }
         });
       } else {
-        this.dataProvider.likeNewsPost({
+        this.newsApi.likeNewsPost({
           session_id: this.userDetails.session_id,
           news_id: news.id,
           user_no: this.userDetails.details.user_no
@@ -303,17 +322,16 @@ export class NewsPage implements OnInit {
     }, 300); 
   }
 
-  confirmDelete() {
+  async confirmDelete() {
     if (!this.newsToDelete) return;
-    this.dataProvider.showLoading();
-    
+
     let data = {
       user_no: this.userDetails.details.user_no,
       session_id:  this.userDetails.session_id
     };
 
-    this.dataProvider.deleteNews(data, this.newsToDelete.id).then(response => {
-      this.dataProvider.hideLoading();
+    try {
+      const response = await this.dataProvider.run(() => this.newsApi.deleteNews(data, this.newsToDelete.id));
       if (response.session) {
         this.allNews.splice(this.newsToDeleteIndex, 1);
         this.dataProvider.showToast(response.message);
@@ -323,11 +341,10 @@ export class NewsPage implements OnInit {
         this.dataProvider.errorALertMessage(response.message);
         this.closeDeleteModal();
       }
-    }).catch(error => {
-      this.dataProvider.hideLoading();
+    } catch (error) {
       this.dataProvider.errorALertMessage(error);
       this.closeDeleteModal();
-    });
+    }
   }
 
   openCountryModal() {

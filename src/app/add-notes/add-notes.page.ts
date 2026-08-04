@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../service/data/data.service';
@@ -11,6 +12,7 @@ import { PipesModule } from '../pipes/pipes.module';
 import { environment } from '../../environments/environment';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import dayjs from 'dayjs';
+import { StorageService } from '../service/storage.service';
 
 @Component({
   selector: 'app-add-notes',
@@ -27,6 +29,8 @@ import dayjs from 'dayjs';
   ]
 })
 export class AddNotesPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  private destroyRef = inject(DestroyRef);
   notes: any = {
     sendTo: '',
     description: '',
@@ -62,13 +66,14 @@ export class AddNotesPage implements OnInit {
     public dataProvider: DataService,
     private route: ActivatedRoute,
     private router: Router,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    private storageSr: StorageService
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
     });
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       if (this.router.getCurrentNavigation()?.extras?.state) {
         this.class_id = this.router.getCurrentNavigation().extras.state.state.course_id;
         this.students = this.router.getCurrentNavigation().extras.state.state.students;
@@ -77,7 +82,7 @@ export class AddNotesPage implements OnInit {
       }
     });
 
-    this.dataProvider.events.subscribe(res => {
+    this.dataProvider.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       this.uploadStaus = res;
     });
 
@@ -88,10 +93,10 @@ export class AddNotesPage implements OnInit {
     return Array(parseInt(localStorage.getItem('class_total_sem') || '0'));
   }
 
-  ionViewWillEnter() {
-    let userData = localStorage.getItem("userloggedin");
+  async ionViewWillEnter() {
+    let userData = await this.storageSr.get("userloggedin");
     if(userData) {
-      this.userDetails = JSON.parse(userData);
+      this.userDetails = userData;
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,NgZone } from '@angular/core';
+import { Component, OnInit, Input,NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -12,6 +12,7 @@ import { RegistrationApiService } from '../service/registration-api/registration
   selector: 'app-add-teacher',
   templateUrl: './add-teacher.page.html',
   styleUrls: ['./add-teacher.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddTeacherPage implements OnInit {
 	userDetails:any;
@@ -31,11 +32,13 @@ export class AddTeacherPage implements OnInit {
               private router:Router,
               public modalController: ModalController,
               private storageSr: StorageService,
-              private registrationApi: RegistrationApiService) {
+              private registrationApi: RegistrationApiService,
+              private cdr: ChangeDetectorRef) {
 
   	this.translate.get("alertmessages").subscribe((res)=>{
       this.lang = res;
 	  //console.log('langres',res);
+      this.cdr.markForCheck();
     })
                }
 
@@ -57,7 +60,7 @@ export class AddTeacherPage implements OnInit {
 			this.classes = response.data;
 			console.log("classs==>", this.classes);
 		}
-
+		this.cdr.markForCheck();
 	}).catch(error => {
 		this.dataProvider.errorALertMessage(error);
 	})

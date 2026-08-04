@@ -93,25 +93,23 @@ export class RegisterTeacherPage implements OnInit {
     }, 500);
   }
 
-  registerTeacher() {
-    this.dataProvider.showLoading();
-    this.dataProvider.registerNewTeacher({
-      "user_no": this.user_no,
-      "school_id": this.school_id,
-      "teacherId": this.teacher.teacherId,
-      "name": this.teacher.name,
-      "password": this.teacher.password
-    }).then((response) => {
-      this.dataProvider.hideLoading();
+  async registerTeacher() {
+    try {
+      const response = await this.dataProvider.run(() => this.dataProvider.registerNewTeacher({
+        "user_no": this.user_no,
+        "school_id": this.school_id,
+        "teacherId": this.teacher.teacherId,
+        "name": this.teacher.name,
+        "password": this.teacher.password
+      }));
       this.dataProvider.showToast(response);
-      
+
       this.user.email_id = this.teacher.teacherId;
       this.user.password = this.teacher.password;
       this.login(); // تسجيل الدخول مباشرة بعد نجاح التسجيل
-    }).catch((err) => {
-      this.dataProvider.hideLoading();
+    } catch (err) {
       this.dataProvider.errorALertMessage(err);
-    });
+    }
   }
 
   // 🟢 4. دالة تسجيل الدخول المحدثة للتخلص من الـ localStorage

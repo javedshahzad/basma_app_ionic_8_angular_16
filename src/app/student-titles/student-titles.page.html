@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="menu-btn-container">
       <ion-menu-toggle auto-hide="false">
@@ -33,7 +33,7 @@
       <div class="absolute -left-6 -top-6 w-24 h-24 bg-indigo-50 rounded-full blur-2xl"></div>
       
       <div class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner overflow-hidden shrink-0 p-0.5">
-        <img [src]="navData?.pic || 'assets/imgs/default_avatar.png'" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-full h-full object-cover rounded-xl">
+        <img loading="lazy" [src]="navData?.pic || 'assets/imgs/default_avatar.png'" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-full h-full object-cover rounded-xl">
       </div>
       <div class="flex-1 relative z-10">
         <h2 class="text-base font-black text-slate-800 m-0 leading-tight">{{navData?.first_name}} {{navData?.last_name}}</h2>
@@ -68,7 +68,7 @@
       </div>
 
       <div class="grid grid-cols-5 gap-1.5 w-full">
-        <div *ngFor="let skill of skillsCardsConfig" 
+        <div *ngFor="let skill of skillsCardsConfig; trackBy: trackByIndex" 
              class="flex flex-col items-center p-2 rounded-2xl bg-slate-50 border border-slate-100 relative overflow-hidden transition-all" 
              [ngClass]="skill.hoverBg">
           
@@ -118,7 +118,7 @@
       </h3>
       
       <div class="grid grid-cols-1 gap-3">
-        <div *ngFor="let title of alchemyTitlesList" class="bg-white p-3.5 rounded-2xl shadow-sm border relative overflow-hidden transition-all" [ngClass]="title.isUnlocked ? title.border : 'border-slate-200 opacity-95'">
+        <div *ngFor="let title of alchemyTitlesList; trackBy: trackByIndex" class="bg-white p-3.5 rounded-2xl shadow-sm border relative overflow-hidden transition-all" [ngClass]="title.isUnlocked ? title.border : 'border-slate-200 opacity-95'">
           
           <div class="flex gap-3.5 relative z-10">
             <div class="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0" [ngClass]="title.isUnlocked ? title.bg : 'bg-slate-100 grayscale'">
@@ -163,7 +163,7 @@
       </div>
 
       <div class="grid grid-cols-2 gap-3.5">
-        <div *ngFor="let badge of secretBadgesList" class="bg-white p-4 rounded-[1.5rem] border text-center relative transition-all" [ngClass]="badge.isUnlocked ? 'border-amber-300 shadow-md bg-gradient-to-b from-white to-amber-50/30' : 'border-slate-200 border-dashed'">
+        <div *ngFor="let badge of secretBadgesList; trackBy: trackByIndex" class="bg-white p-4 rounded-[1.5rem] border text-center relative transition-all" [ngClass]="badge.isUnlocked ? 'border-amber-300 shadow-md bg-gradient-to-b from-white to-amber-50/30' : 'border-slate-200 border-dashed'">
           
           <div *ngIf="!badge.isUnlocked" class="opacity-40 grayscale flex flex-col items-center justify-center h-full min-h-[120px]">
             <div class="text-5xl mb-2 drop-shadow-sm">❓</div>

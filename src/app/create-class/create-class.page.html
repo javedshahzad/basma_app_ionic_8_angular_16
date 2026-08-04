@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border bg-slate-50" mode="md">
+﻿<ion-header class="ion-no-border bg-slate-50" mode="md">
   <ion-toolbar class="--bg-transparent px-2">
     <ion-buttons slot="end">
       <button class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 hover:bg-slate-300 flex items-center justify-center transition-colors focus:outline-none" (click)="viewCtrl.dismiss(false)">
@@ -71,7 +71,7 @@
         <label class="block text-sm font-bold text-slate-600 mb-2">{{'createClass.seminar' | translate}}</label>
         <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-400 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-100 transition-all flex items-center h-[46px] cursor-pointer">
           <ion-select name="seminar" #seminar='ngModel' [(ngModel)]="class.semno" interface="popover" mode="md" class="w-full text-sm font-bold text-slate-700 m-0 py-0 outline-none" required>
-            <ion-select-option *ngFor="let seminar of getSeminars(); let i = index;" [value]="(i+1)">{{i+1}}</ion-select-option>
+            <ion-select-option *ngFor="let seminar of getSeminars(); let i = index;; trackBy: trackByIndex" [value]="(i+1)">{{i+1}}</ion-select-option>
           </ion-select>
         </div>
       </div>

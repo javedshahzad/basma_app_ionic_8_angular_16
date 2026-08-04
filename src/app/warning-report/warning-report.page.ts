@@ -8,6 +8,7 @@ import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { ReportsApiService } from '../service/reports-api/reports-api.service';
 
 @Component({
   selector: 'app-warning-report',
@@ -15,6 +16,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./warning-report.page.scss'],
 })
 export class WarningReportPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   userDetails: any = {};
   reportData: any = [];
   reportType: any = 'callOfParentAndPledges';
@@ -35,7 +37,8 @@ export class WarningReportPage implements OnInit {
               private printer: Printer,
               private platform: Platform, // 🟢 حقن المنصة للتحقق من بيئة العمل
               public modalCtrl: ModalController,
-              private storageSr: StorageService // 🟢 2. حقن خدمة التخزين الجديدة
+              private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
+              private reportsApi: ReportsApiService
              ) {
   }
 
@@ -87,18 +90,16 @@ export class WarningReportPage implements OnInit {
   }
 
   // 🟢 4. تحديث دالة الطباعة لتتوافق مع Capacitor/متصفح
-  printReport(i) {
+  async printReport(i) {
     let data = {
       "user_no": this.userDetails.details.user_no,
       "session_id": this.userDetails.session_id,
       "school_id": this.userDetails.details.school_id,
       "report_number": i + 1
     };
-    
-    this.dataProvider.showLoading();
-    
-    this.dataProvider.printWarning(data).then(res => {
-      this.dataProvider.hideLoading();
+
+    try {
+      const res = await this.dataProvider.run(() => this.dataProvider.printWarning(data));
       if (res && res.url) {
         let htmlContent = res.url.replace(/(\r\n|\n|\r)/gm, '');
 
@@ -119,11 +120,10 @@ export class WarningReportPage implements OnInit {
       } else {
         this.dataProvider.showToast('تعذر جلب التقرير من السيرفر');
       }
-    }).catch(error => {
-      this.dataProvider.hideLoading();
+    } catch (error) {
       this.dataProvider.showToast('حدث خطأ في الاتصال أثناء جلب التقرير');
       console.log(error);
-    });
+    }
   }
 
   // 🟢 دالة مساعدة لطباعة التقرير في المتصفح كـ Fallback آمن
@@ -150,7 +150,7 @@ export class WarningReportPage implements OnInit {
       "student_id": this.userDetails.details.stu_id,
       "school_id": this.userDetails.details.school_id
     };
-    this.dataProvider.GetAllCallOfStudentReport(data).then(res => {
+    this.reportsApi.GetAllCallOfStudentReport(data).then(res => {
       this.callOfStudentsReport = res.data;
     }).catch(error => {
       console.log(error);
@@ -165,7 +165,7 @@ export class WarningReportPage implements OnInit {
       "student_id": this.userDetails.details.stu_id,
       "school_id": this.userDetails.details.school_id
     };
-    this.dataProvider.GetStudentPledgesReport(data).then(res => {
+    this.reportsApi.GetStudentPledgesReport(data).then(res => {
       this.AllStudentPledgesReports = res.data;
     }).catch(error => {
       console.log(error);

@@ -1,25 +1,28 @@
-import { Injectable, EventEmitter } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { firstValueFrom, Subject } from "rxjs";
 import { Network } from "@awesome-cordova-plugins/network/ngx";
-import {
-  Platform,
-  AlertController,
-  PopoverController
-} from "@ionic/angular";
+import { Platform } from "@ionic/angular";
 import { DatabaseService } from "../database/database.service";
-import { LoaderComponent } from "../../components/loader/loader.component";
 import { Router } from "@angular/router";
 import { Device } from "@awesome-cordova-plugins/device/ngx";
 import { StorageService } from "../storage.service";
+import { OverlayService } from "../overlay/overlay.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  public event: EventEmitter<any>;
-  public eventChangeUser: EventEmitter<any>;
+  // ناقل أحداث المصادقة الموحّد للتطبيق (تسجيل دخول/خروج/تبديل مستخدم) —
+  // Subject بدل EventEmitter لأن هذا بث عام وليس ربط @Output لمكوّن
+  public event: Subject<any>;
   popOver: any;
+
+  // 🔒 نسخة في الذاكرة فقط (لا تُخزَّن على القرص) لتمكين MyInterceptor من
+  // قراءة بيانات الجلسة بشكل متزامن دون اللجوء لتخزينها كنص صريح في localStorage
+  public currentUser: any = null;
+  public currentUuid: string = null;
 
   constructor(
     public http: HttpClient,
@@ -27,94 +30,86 @@ export class AuthService {
     public device: Device,
     public platform: Platform,
     public dbProvider: DatabaseService,
-    public popoverController: PopoverController,
     private router: Router,
-    private alertController: AlertController,
-    private storageSr: StorageService 
+    private storageSr: StorageService,
+    private overlay: OverlayService
   ) {
-    this.event = new EventEmitter();
-    this.eventChangeUser = new EventEmitter();
+    this.event = new Subject();
+    this.hydrateCurrentUser();
+  }
+
+  private async hydrateCurrentUser() {
+    this.currentUser = await this.storageSr.get("userloggedin");
+    this.currentUuid = await this.storageSr.get("uuid");
   }
 
   changeUser(peram) {
     let em = { changeUser: peram };
-    this.event.emit(em);
+    this.event.next(em);
   }
 
   publishEvent(peram) {
     let em = { loggedin: peram };
-    this.event.emit(em);
+    this.event.next(em);
   }
 
   piblisEvenetActiveLink(param) {
     let em = { activeLink: param };
-    this.event.emit(em);
+    this.event.next(em);
   }
 
   deleteNote(param) {
     let em = { deleteNote: param };
-    this.event.emit(em);
+    this.event.next(em);
   }
 
-  doLogin(user): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.getNetworkInformation().then((isNetworkAvailable) => {
-        if (isNetworkAvailable) {
-          let header = new HttpHeaders();
-          user["lang_code"] = environment.lang_code;
-          let body: HttpParams = this.makeObjectToUrlParams(user);
-          header.append("Content-Type", "application/json");
-          
-          this.http.post(environment.serverURL + "login", body, { headers: header }).subscribe(
-            async (response: any) => { 
-              let resObj = response;
-              
-              if (resObj && resObj.status === 100) {
-                await this.flushLocalStorage(); 
-                this.router.navigate(["login"], { replaceUrl: true });
-                this.presentAlert(resObj.message || "عفواً، حسابك غير مفعل.");
-                reject("الحساب غير مفعل.");
-                return; 
-              }
+  async doLogin(user): Promise<any> {
+    const isNetworkAvailable = await this.getNetworkInformation();
+    if (!isNetworkAvailable) {
+      throw "الرجاء التأكد من اتصالك بالإنترنت";
+    }
 
-              if (resObj.success) {
-                // 🟢 السحر هنا: نحفظ بالخدمة الجديدة + المخزن القديم لإرضاء الـ AuthGuard
-                await this.storageSr.set("userloggedin", resObj); 
-                localStorage.setItem("userloggedin", JSON.stringify(resObj)); 
-                resolve(resObj);
-              } else {
-                reject(resObj.msg || "فشل تسجيل الدخول");
-              }
-            },
-            (error) => {
-              if (error && error.message) {
-                reject(error.message);
-              } else {
-                reject("حدث خطأ غير متوقع يرجى معاودة المحاولة في وقت لاحق.");
-              }
-            }
-          );
-        } else {
-          reject("الرجاء التأكد من اتصالك بالإنترنت");
-        }
-      });
-    });
+    let header = new HttpHeaders();
+    user["lang_code"] = environment.lang_code;
+    let body: HttpParams = this.makeObjectToUrlParams(user);
+    header.append("Content-Type", "application/json");
+
+    let resObj: any;
+    try {
+      resObj = await firstValueFrom(
+        this.http.post(environment.serverURL + "login", body, { headers: header })
+      );
+    } catch (error: any) {
+      if (error && error.message) {
+        throw error.message;
+      }
+      throw "حدث خطأ غير متوقع يرجى معاودة المحاولة في وقت لاحق.";
+    }
+
+    if (resObj && resObj.status === 100) {
+      await this.flushLocalStorage();
+      this.router.navigate(["login"], { replaceUrl: true });
+      this.presentAlert(resObj.message || "عفواً، حسابك غير مفعل.");
+      throw "الحساب غير مفعل.";
+    }
+
+    if (resObj.success) {
+      // 🔒 نحفظ في المخزن الآمن (StorageService) + نسخة في الذاكرة فقط
+      // لـ MyInterceptor، بدلاً من نص صريح في localStorage
+      await this.storageSr.set("userloggedin", resObj);
+      this.currentUser = resObj;
+      return resObj;
+    } else {
+      throw resObj.msg || "فشل تسجيل الدخول";
+    }
   }
 
   removeUrlFromString(inputString) {
-    if (!inputString) return "";
-    var urlRegex = /(https?:\/\/[^\s]+)/g;
-    return inputString.replace(urlRegex, '');
+    return this.overlay.removeUrlFromString(inputString);
   }
 
   async presentAlert(message) {
-    const alert = await this.alertController.create({
-      header: "تنبيه",
-      message: this.removeUrlFromString(message),
-      buttons: ["موافق"],
-      mode: "ios" 
-    });
-    await alert.present();
+    await this.overlay.presentAlert("تنبيه", this.removeUrlFromString(message), ["موافق"], "ios");
   }
 
   logout(): Promise<any> {
@@ -147,13 +142,7 @@ export class AuthService {
     if (this.popOver) {
       this.closePopup();
     }
-    this.popOver = await this.popoverController.create({
-      component: LoaderComponent,
-      backdropDismiss: false, 
-      translucent: false,
-      cssClass: "loaderStyle",
-    });
-    await this.popOver.present();
+    this.popOver = await this.overlay.createLoader(false);
   }
 
   async showLoading() {
@@ -162,98 +151,89 @@ export class AuthService {
 
   hideLoading() {
     setTimeout(() => {
-      this.closePopup(); 
+      this.closePopup();
     }, 300);
   }
 
   closePopup() {
     if (this.popOver) {
-      this.popOver.dismiss().catch(() => {});
-      this.popOver = null; 
+      this.overlay.dismissLoader(this.popOver);
+      this.popOver = null;
     }
   }
 
-  registerSchool(school: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.getNetworkInformation().then((isNetworkAvailable) => {
-        if (isNetworkAvailable) {
-          let headers = new HttpHeaders();
-          let body: HttpParams = this.makeObjectToUrlParams(school);
-          headers.append("Content-Type", "application/json");
-          
-          this.http.post(environment.serverURL + "schoolRegister", body, { headers }).subscribe(
-            (response: any) => {
-              let resObj = response;
-              if (resObj.success == true) {
-                resolve(resObj.msg);
-              } else {
-                reject(resObj.msg);
-              }
-            },
-            (error) => {
-              if (error && error.message) {
-                reject(error.message);
-              } else {
-                reject("حدث خطأ غير متوقع يرجى معاودة المحاولة في وقت لاحق.");
-              }
-            }
-          );
-        } else {
-          reject("الرجاء التأكد من اتصالك بالإنترنت");
-        }
-      });
-    });
+  async registerSchool(school: any): Promise<any> {
+    const isNetworkAvailable = await this.getNetworkInformation();
+    if (!isNetworkAvailable) {
+      throw "الرجاء التأكد من اتصالك بالإنترنت";
+    }
+
+    let headers = new HttpHeaders();
+    let body: HttpParams = this.makeObjectToUrlParams(school);
+    headers.append("Content-Type", "application/json");
+
+    let resObj: any;
+    try {
+      resObj = await firstValueFrom(
+        this.http.post(environment.serverURL + "schoolRegister", body, { headers })
+      );
+    } catch (error: any) {
+      if (error && error.message) {
+        throw error.message;
+      }
+      throw "حدث خطأ غير متوقع يرجى معاودة المحاولة في وقت لاحق.";
+    }
+
+    if (resObj.success == true) {
+      return resObj.msg;
+    } else {
+      throw resObj.msg;
+    }
   }
 
-  doLogout(data: any, option?: any): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.getNetworkInformation().then((isNetworkAvailable) => {
-        if (isNetworkAvailable) {
-          let header = new HttpHeaders();
-          let body: HttpParams = this.makeObjectToUrlParams(data);
-          header.append("Content-Type", "application/json");
-          
-          this.http.post(environment.serverURL + "logout", body, { headers: header }).subscribe(
-            async (response: any) => { 
-              if (response && response.success) {
-                await this.flushLocalStorage();
-                
-                let em = { loggedin: false };
-                this.event.emit(em);
-                this.publishEvent(false);
+  async doLogout(data: any, option?: any): Promise<any> {
+    const isNetworkAvailable = await this.getNetworkInformation();
+    if (!isNetworkAvailable) {
+      throw "الرجاء التأكد من اتصالك بالإنترنت";
+    }
 
-                if (!option) {
-                  let oldUser = await this.storageSr.get("earlyLogin");
-                  if (oldUser) {
-                    if (oldUser.length > 1) {
-                      reject(false);
-                      this.logInOtherAccount(data);
-                    } else {
-                      await this.storageSr.remove("earlyLogin");
-                      resolve(true);
-                    }
-                  } else {
-                    await this.storageSr.remove("earlyLogin");
-                    resolve(true);
-                  }
-                } else {
-                  resolve(true);
-                }
-              } else {
-                await this.flushLocalStorage();
-                resolve(true); 
-              }
-            },
-            async (error) => {
-              await this.flushLocalStorage();
-              resolve(true);
-            }
-          );
-        } else {
-           reject("الرجاء التأكد من اتصالك بالإنترنت");
-        }
-      });
-    });
+    let header = new HttpHeaders();
+    let body: HttpParams = this.makeObjectToUrlParams(data);
+    header.append("Content-Type", "application/json");
+
+    let response: any;
+    try {
+      response = await firstValueFrom(
+        this.http.post(environment.serverURL + "logout", body, { headers: header })
+      );
+    } catch (error) {
+      await this.flushLocalStorage();
+      return true;
+    }
+
+    if (!(response && response.success)) {
+      await this.flushLocalStorage();
+      return true;
+    }
+
+    await this.flushLocalStorage();
+
+    let em = { loggedin: false };
+    this.event.next(em);
+    this.publishEvent(false);
+
+    if (option) {
+      return true;
+    }
+
+    let oldUser = await this.storageSr.get("earlyLogin");
+    if (oldUser && oldUser.length > 1) {
+      this.logInOtherAccount(data);
+      throw false;
+    }
+
+    await this.storageSr.remove("earlyLogin");
+    return true;
   }
 
   // 🟢 دالة التبديل التلقائي بعد تسجيل الخروج
@@ -314,7 +294,8 @@ export class AuthService {
     return body;
   }
 
-  async flushLocalStorage() { 
+  async flushLocalStorage() {
+    this.currentUser = null;
     await this.storageSr.remove("userloggedin");
     await this.storageSr.remove("availablePlan"); 
     await this.storageSr.remove("attendance");

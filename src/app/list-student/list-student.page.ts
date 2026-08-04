@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController, ActionSheetController, MenuController, PopoverController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -14,7 +15,10 @@ import { AttendanceManagerService } from '../service/attendance-manager/attendan
 import { GamificationEngineService } from '../service/gamification-engine/gamification-engine.service';
 
 // 🟢 استيراد خدمة التخزين الموحدة
-import { StorageService } from '../service/storage.service'; 
+import { StorageService } from '../service/storage.service';
+import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
+import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
+import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 
 export enum UserRole {
   Admin = '1',
@@ -43,6 +47,8 @@ export enum TeacherTypeEnum {
   styleUrls: ['./list-student.page.scss'],
 })
 export class ListStudentPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  private destroyRef = inject(DestroyRef);
 
   showCalenderModal: boolean = false;
   dateSelected: Date;
@@ -138,9 +144,12 @@ export class ListStudentPage implements OnInit {
     private studentUi: StudentUiService,
     private attendanceManager: AttendanceManagerService,
     public gamification: GamificationEngineService,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private attendanceApi: AttendanceApiService,
+    private holidaysApi: HolidaysApiService,
+    private studentEngagement: StudentEngagementService
   ) {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const navigation = this.router.getCurrentNavigation();
       if (navigation && navigation.extras && navigation.extras.state) {
         this.navData = navigation.extras.state['course'];
@@ -148,7 +157,7 @@ export class ListStudentPage implements OnInit {
     });
 
     this.dateSelected = new Date();
-    
+
     this.translate.get("alertmessages").subscribe(res => this.lang = res);
     this.translate.get("plan").subscribe(val => this.planLang = val);
     this.translate.get("student-details").subscribe(val => this.student_detailse = val);
@@ -193,7 +202,7 @@ export class ListStudentPage implements OnInit {
         "session_id": this.userDetails.session_id
       };
       
-      this.dataProvider.getHolidays(data).then(response => {
+      this.holidaysApi.getHolidays(data).then(response => {
         if (response && response.holidays && response.holidays.length > 0) {
           this.holidayString = response.holiday_string;
           
@@ -1046,18 +1055,11 @@ export class ListStudentPage implements OnInit {
   }
 
   async takePicture(event?: any) {
-    const action = await this.studentUi.presentImageOptions(event, this.lang);
-    this.zone.run(() => {
-      if (action === 'camera') this.handleImageSelection('camera');
-      if (action === 'gallery') this.handleImageSelection('gallery');
-      if (action === 'avatar') this.OpenAvatarModel();
-    });
-  }
-
-  async handleImageSelection(source: 'camera' | 'gallery') {
-    const base64Image = await this.imageService.takePicture(source);
-    if (base64Image) {
-      this.ChangeStudentProfileAvatar(base64Image); 
+    const result = await this.studentEngagement.captureAvatarImage(event, this.lang);
+    if (result.base64) {
+      this.zone.run(() => this.ChangeStudentProfileAvatar(result.base64));
+    } else if (result.action === 'avatar') {
+      this.zone.run(() => this.OpenAvatarModel());
     }
   }
 
@@ -1096,29 +1098,22 @@ export class ListStudentPage implements OnInit {
     }
   }
 
-  ChangeStudentProfileAvatar(base64Data: string) {
+  async ChangeStudentProfileAvatar(base64Data: string) {
     if (!base64Data) {
       this.dataProvider.hideLoading();
       return;
     }
 
-    let finalImageData = base64Data.includes('data:image') ? base64Data : "data:image/png;base64," + base64Data;
+    try {
+      const result = await this.dataProvider.run(() => this.studentEngagement.uploadAvatar(base64Data, {
+        user_no: this.userDetails.details.user_no,
+        session_id: this.userDetails.session_id,
+        sid: this.student.sid
+      }));
 
-    this.dataProvider.showLoading();
-    let data = {
-      user_no: this.userDetails.details.user_no,
-      session_id: this.userDetails.session_id,
-      imageData: finalImageData, 
-      sid: this.student.sid
-    };
+      if (result.success) {
+        const newPicUrl = result.url;
 
-    this.dataProvider.updateUserImage(data).then((response: any) => {
-      this.dataProvider.hideLoading();
-      
-      if (response && response.session) {
-        
-        let newPicUrl = response.url + '?t=' + new Date().getTime();
-        
         this.zone.run(() => {
           // 1. تحديث الكائن المحلي
           this.student.pic = newPicUrl;
@@ -1128,7 +1123,7 @@ export class ListStudentPage implements OnInit {
              const liveIdx = this.attendanceResponse.students.findIndex((s: any) => s.sid === this.student.sid);
              if (liveIdx > -1) {
                 this.attendanceResponse.students[liveIdx].pic = newPicUrl;
-                this.attendanceResponse.students[liveIdx] = { ...this.attendanceResponse.students[liveIdx] }; 
+                this.attendanceResponse.students[liveIdx] = { ...this.attendanceResponse.students[liveIdx] };
              }
           }
 
@@ -1139,19 +1134,18 @@ export class ListStudentPage implements OnInit {
                 this.students[backupIdx].pic = newPicUrl;
              }
           }
-          
+
           if (this.cdr) this.cdr.detectChanges();
         });
 
         this.dataProvider.showToast("تم تحديث الصورة بنجاح");
       } else {
         this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(response.message);
+        this.dataProvider.errorALertMessage(result.message);
       }
-    }).catch((error) => {
-      this.dataProvider.hideLoading();
+    } catch (error: any) {
       this.dataProvider.errorALertMessage(error?.message || "حدث خطأ في الاتصال بالخادم.");
-    });
+    }
   }
 
   submitAttendance() {
@@ -1213,7 +1207,7 @@ export class ListStudentPage implements OnInit {
   }
 
   sendAttendanceToServer(data: any) {
-    this.dataProvider.markAttendance(data).then((response) => {
+    this.attendanceApi.markAttendance(data).then((response) => {
       this.dataProvider.hideLoading();
       this.dataProvider.showToast(response.message || "تم حفظ الغياب بنجاح");
       this.attendanceSheet = {};
@@ -1255,21 +1249,17 @@ isOnline(): boolean {
   }
 
   checkPlanAndRegister() {
-    this.dataProvider.showLoading();
     let data = { "school_id": this.userDetails.details.school_id };
-    
-    this.dataProvider.getCountStudents(data).then(res => {  
+
+    this.dataProvider.run(() => this.dataProvider.getCountStudents(data)).then(res => {
       var totalStudents = res.data;
       if(this.AvailablePlan.isExpire == true){
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast("This feature is part of subscription plan.Please subscribe plan!");
         return;
       }
       let studentData = { student_name: this.newStudentName, student_id: this.newStudentId };
-      this.dataProvider.hideLoading(); 
       this.addNewStudent(studentData, this.addStudentLang);
     }).catch(err => {
-      this.dataProvider.hideLoading();
       this.dataProvider.errorALertMessage(err);
     });
   }
@@ -1277,23 +1267,20 @@ isOnline(): boolean {
   addNewStudent(data, response){
     data.student_id = parseInt(data.student_id);
     if(Number.isInteger(data.student_id)){
-      this.dataProvider.showLoading();
-      this.dataProvider.registerStudent({
+      this.dataProvider.run(() => this.dataProvider.registerStudent({
         "name": data.student_name,
         "student_id": data.student_id,
         "user_no": this.userDetails.details.user_no,
         "school_id": this.userDetails.details.school_id,
         "course_id": this.courseInfo.cid
-      }).then((res)=>{
-        this.dataProvider.hideLoading();
+      })).then((res)=>{
         if(res.session){
           this.getStudents(false);
           this.dataProvider.showToast(this.lang.create_student_success_msg);
         }else{
-          this.dataProvider.showToast(res.message); 
+          this.dataProvider.showToast(res.message);
         }
       }).catch((err)=>{
-        this.dataProvider.hideLoading();
         this.dataProvider.errorALertMessage(err);
       });
     }else{
@@ -1318,17 +1305,15 @@ isOnline(): boolean {
   }
 
   async awardSkillPoints(student: any, skillType: string, point: number) {
-    this.dataProvider.showLoading();
     let body = {
       sid: String(student.sid),
-      userId: String(this.userDetails.details.user_no), 
-      points: "+" + point, 
+      userId: String(this.userDetails.details.user_no),
+      points: "+" + point,
       skill_type: skillType
     };
 
     try {
-      const res: any = await this.dataProvider.addStudentPoints(body);
-      this.dataProvider.hideLoading();
+      const res: any = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
       this.zone.run(() => {
         if (res && res.success) {
           this.dataProvider.showToast(`تمت إضافة ${point} نقطة بنجاح!`);
@@ -1338,7 +1323,6 @@ isOnline(): boolean {
         }
       });
     } catch (err: any) {
-      this.dataProvider.hideLoading();
       this.zone.run(() => {
         this.showModernWarning(`خطأ: ${typeof err === 'string' ? err : err?.message}`);
       });
@@ -1356,7 +1340,6 @@ isOnline(): boolean {
 
   // 🟢 7. إصلاح دالتي إرسال الملاحظات (إضافة date و course_id الناقصة)
   submitTextNote(student: any, message: string) {
-    this.dataProvider.showLoading();
     let data = {
       sid: student.sid,
       note: message,
@@ -1366,18 +1349,15 @@ isOnline(): boolean {
       date: this.dataProvider.getFormatedDate(this.dateSelected),
       course_id: this.navData?.cid || ''
     };
-    
-    this.dataProvider.addStudentNote(data).then(() => {
-      this.dataProvider.hideLoading();
+
+    this.dataProvider.run(() => this.studentEngagement.addNote(data)).then(() => {
       this.dataProvider.showToast(this.lang.add_note_success_message);
     }).catch(error => {
-      this.dataProvider.hideLoading();
       this.dataProvider.errorALertMessage(error);
     });
   }
 
   submitReviewNote(student: any, stars: number, message: string) {
-    this.dataProvider.showLoading();
     let data = {
       sid: student.sid,
       note: message,
@@ -1387,12 +1367,10 @@ isOnline(): boolean {
       date: this.dataProvider.getFormatedDate(this.dateSelected),
       course_id: this.navData?.cid || ''
     };
-    
-    this.dataProvider.addStudentNote(data).then(() => {
-      this.dataProvider.hideLoading();
+
+    this.dataProvider.run(() => this.studentEngagement.addNote(data)).then(() => {
       this.dataProvider.showToast(this.lang.add_review_success_message);
     }).catch(error => {
-      this.dataProvider.hideLoading();
       this.dataProvider.errorALertMessage(error);
     });
   }

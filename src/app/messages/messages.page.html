@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     
     <ion-buttons slot="start" class="menu-btn-container">
@@ -33,7 +33,7 @@
     
     <div *ngIf="notifications?.length > 0" class="flex flex-col gap-4">
       
-      <div *ngFor="let notification of notifications; let i = index;" 
+      <div *ngFor="let notification of notifications; let i = index; trackBy: trackByNotification"
            class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 flex gap-4 items-start relative hover:shadow-md transition-shadow group">
         
         <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center flex-shrink-0 border border-indigo-100">
@@ -94,7 +94,7 @@
     <ion-icon name="close" class="text-2xl"></ion-icon>
   </button>
   <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" (click)="$event.stopPropagation()">
-    <img [src]="imageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+    <img loading="lazy" [src]="imageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
   </div>
 </div>
 

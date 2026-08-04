@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,NgZone } from '@angular/core';
+﻿import { Component, OnInit, Input,NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DataService } from '../../service/data/data.service';
@@ -11,8 +11,10 @@ import {CreateClassPage } from '../../create-class/create-class.page';
   selector: 'app-edit-calss',
   templateUrl: './edit-calss.page.html',
   styleUrls: ['./edit-calss.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditCalssPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   course:any;
   userDetails:any;
   lang:any;
@@ -31,9 +33,11 @@ export class EditCalssPage implements OnInit {
               private route : ActivatedRoute,
               public zone:NgZone,
               private router:Router,
-              public modalController: ModalController) {
+              public modalController: ModalController,
+              private cdr: ChangeDetectorRef) {
                 this.translate.get("alertmessages").subscribe((res)=>{
                   this.lang = res;
+                  this.cdr.markForCheck();
                 })
               this.route.queryParams.subscribe(params => {
                 if (this.router.getCurrentNavigation().extras.state) {
@@ -44,6 +48,7 @@ export class EditCalssPage implements OnInit {
                   console.log('data',this.course,'userfa',this.userDetails);
                   this.getTeacher();
                 }
+                this.cdr.markForCheck();
               });
               }
 
@@ -61,9 +66,7 @@ export class EditCalssPage implements OnInit {
       'school_id':this.userDetails.school_id,
       'user_no':this.userDetails.user_no
     }
-    this.dataProvider.showLoading();
-    this.dataProvider.getTeachers(data).then(res=>{
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.dataProvider.getTeachers(data)).then(res=>{
       console.log('teschers',res);
       if(res.session){
         this.teacherList=res.data;
@@ -75,10 +78,11 @@ export class EditCalssPage implements OnInit {
         this.noTeacher=true;
         console.log('err',res);
       }
+      this.cdr.markForCheck();
     },error=>{
       this.noTeacher=true;
-      this.dataProvider.hideLoading();
       console.log(error);
+      this.cdr.markForCheck();
     })
   }
 
@@ -112,15 +116,13 @@ export class EditCalssPage implements OnInit {
   }
 
   submitTeacher(){
-      this.dataProvider.showLoading();
       let data={
         'teachersList':this.selectedTeacher,
         'class_id':this.course.cid,
         'school_id':this.userDetails.school_id,
         'user_no':this.userDetails.user_no
       }
-      this.dataProvider.updateTeacher(data).then(res=>{
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.dataProvider.updateTeacher(data)).then(res=>{
         console.log('teschers',res);
         if(res.session){
           this.dataProvider.showToast(res.data);
@@ -130,20 +132,17 @@ export class EditCalssPage implements OnInit {
         }
       },error=>{
          this.dataProvider.showToast(error);
-        this.dataProvider.hideLoading();
         console.log(error);
       })
   }
 
   deletClass(){
-    this.dataProvider.showLoading();
       let data={
         'class_id':this.course.cid,
         'school_id':this.userDetails.school_id,
         'user_no':this.userDetails.user_no
       }
-      this.dataProvider.deleteClass(data).then(res=>{
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.dataProvider.deleteClass(data)).then(res=>{
         console.log('teschers',res);
         if(res.session){
           this.dataProvider.showToast(res.data);
@@ -153,7 +152,6 @@ export class EditCalssPage implements OnInit {
         }
       },error=>{
          this.dataProvider.showToast(error);
-        this.dataProvider.hideLoading();
         console.log(error);
       })
   }

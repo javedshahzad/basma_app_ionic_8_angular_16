@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="end" class="mr-2 w-10">
       <ion-back-button 
@@ -31,7 +31,7 @@
       <div class="flex-1 flex items-center justify-between">
         
         <div class="flex items-center gap-2" *ngIf="country">
-           <img [src]="country.flag" class="w-6 h-auto rounded-sm shadow-sm border border-slate-200" onerror="this.style.display='none'"/>
+           <img loading="lazy" [src]="country.flag" class="w-6 h-auto rounded-sm shadow-sm border border-slate-200" onerror="this.style.display='none'"/>
            <span class="text-sm font-bold text-indigo-700">{{country.ar_name || country.name}}</span>
         </div>
         
@@ -49,7 +49,7 @@
 
     <!-- 🟢 Skeleton Loading للتحميل -->
     <div *ngIf="show_loading" class="space-y-3 mt-4">
-      <div *ngFor="let dummy of [1,2,3,4,5]" class="bg-white rounded-2xl p-3 border border-slate-100 flex items-center gap-3 animate-pulse">
+      <div *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex" class="bg-white rounded-2xl p-3 border border-slate-100 flex items-center gap-3 animate-pulse">
         <div class="w-14 h-14 rounded-xl bg-slate-200 shrink-0"></div>
         <div class="flex-1 space-y-2">
           <div class="h-4 bg-slate-200 rounded w-3/4"></div>
@@ -60,12 +60,12 @@
 
     <!-- 🟢 قائمة المدارس -->
     <ng-container *ngIf="!show_loading">
-      <div *ngFor="let school of schools" 
+      <div *ngFor="let school of schools; trackBy: trackByIndex" 
            (click)="openschool(school)"
            class="bg-white rounded-2xl p-3 shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer hover:border-indigo-300 hover:shadow-md transition-all active:scale-[0.98] group mt-3">
         
         <div class="relative shrink-0" (click)="$event.stopPropagation(); dataProvider.openAvatarModel(school.pic)">
-          <img [src]="school.pic" onerror="this.onerror=null;this.src='assets/imgs/logo.png';" class="w-14 h-14 rounded-xl object-cover border border-slate-200 bg-slate-50">
+          <img loading="lazy" [src]="school.pic" onerror="this.onerror=null;this.src='assets/imgs/logo.png';" class="w-14 h-14 rounded-xl object-cover border border-slate-200 bg-slate-50">
         </div>
         
         <div class="flex-1 overflow-hidden">
@@ -124,11 +124,11 @@
           <p class="text-slate-600 font-bold text-sm">لا توجد نتائج</p>
         </div>
 
-        <div *ngFor="let c of filteredCountries" class="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors border shadow-inner"
+        <div *ngFor="let c of filteredCountries; trackBy: trackByIndex" class="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors border shadow-inner"
              [ngClass]="country?.code === c.code ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-slate-100 hover:bg-slate-50'"
              (click)="selectCountry(c)">
           <div class="flex items-center gap-3">
-            <img [src]="c.flag" class="w-7 h-auto rounded-sm shadow-sm border border-slate-200" onerror="this.style.display='none'"/>
+            <img loading="lazy" [src]="c.flag" class="w-7 h-auto rounded-sm shadow-sm border border-slate-200" onerror="this.style.display='none'"/>
             <span class="text-sm font-bold" [ngClass]="country?.code === c.code ? 'text-indigo-700' : 'text-slate-700'">
               {{c.ar_name || c.name}}
             </span>

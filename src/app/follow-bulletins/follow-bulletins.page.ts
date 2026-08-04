@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -10,6 +11,8 @@ import { Filesystem } from '@capacitor/filesystem';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { SearchApiService } from '../service/search-api/search-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
   selector: 'app-follow-bulletins',
@@ -17,6 +20,8 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./follow-bulletins.page.scss'],
 })
 export class FollowBulletinsPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  private destroyRef = inject(DestroyRef);
   lang: any;
   allUsers: any = [];
   users: any;
@@ -46,14 +51,16 @@ export class FollowBulletinsPage implements OnInit {
     public formBuilder: FormBuilder,
     public zone: NgZone,
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private searchApi: SearchApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService
   ) {
 
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
     });
 
-    this.dataProvider.events.subscribe(res => {
+    this.dataProvider.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       this.uploadStaus = res;
     });
 
@@ -175,7 +182,7 @@ export class FollowBulletinsPage implements OnInit {
       'school_id': this.userDetails.details.school_id
     }
     this.show_loading = true;
-    this.dataProvider.getSchoolUsers(data).then(res => {
+    this.schoolDirectoryApi.getSchoolUsers(data).then(res => {
       this.show_loading = false;
       if (res.data) {
         this.users = res.data;
@@ -216,7 +223,7 @@ export class FollowBulletinsPage implements OnInit {
         school_id: this.userDetails.details.school_id
       }
       
-      this.dataProvider.searchUser(data).then(resp => {
+      this.searchApi.searchUser(data).then(resp => {
         this.show_loading = false;
         if (resp.data) {
           this.users = resp.data;

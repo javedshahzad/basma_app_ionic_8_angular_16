@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 import { ModalController, Platform } from '@ionic/angular';
@@ -14,6 +14,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./note-calendar.page.scss'],
 })
 export class NoteCalendarPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   userDetails: any = {};
   note: any = [];
   lang: any;
@@ -161,19 +162,16 @@ export class NoteCalendarPage implements OnInit {
       }
     }
 
-    this.dataProvider.showLoading();
-    
     let data = {
       course_id: Array.isArray(this.stateCids) ? JSON.stringify(this.stateCids) : JSON.stringify([this.stateCids]),
       user_no: this.userDetails.details.user_no,
       school_id: this.userDetails.details.school_id,
       title: this.viewTitle,
       dates: JSON.stringify(this.dates),
-      is_multi: Array.isArray(this.stateCids) && this.stateCids.length > 1 ? true : false 
+      is_multi: Array.isArray(this.stateCids) && this.stateCids.length > 1 ? true : false
     };
-    
-    this.dataProvider.printAllClassNotes(data).then(res => {
-      this.dataProvider.hideLoading();
+
+    this.dataProvider.run(() => this.dataProvider.printAllClassNotes(data)).then(res => {
       if (res && res.data) {
         let printContent = res.data.replace(/(\r\n|\n|\r)/gm, '');
         if (this.platform.is('cordova') || this.platform.is('capacitor')) {
@@ -195,7 +193,6 @@ export class NoteCalendarPage implements OnInit {
         }
       }
     }).catch(er => {
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast(er);
     });
   }

@@ -1,23 +1,26 @@
-import { Component, OnInit, Input,NgZone } from '@angular/core';
+﻿import { Component, OnInit, Input,NgZone, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController, IonicModule } from '@ionic/angular';
 import { NavController, Platform } from '@ionic/angular';
-import { AuthService } from '../../service/auth/auth.service';
-import { DatabaseService } from '../../service/database/database.service';
+import { AuthService } from '@services/auth/auth.service';
+import { DatabaseService } from '@services/database/database.service';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { StorageService } from '@services/storage.service';
 
 @Component({
   selector: 'app-edit-student-profile',
   templateUrl: './edit-student-profile.component.html',
   styleUrls: ['./edit-student-profile.component.scss'],
   standalone: true, // إضافة هذا السطر
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditStudentProfileComponent implements OnInit {
+  trackByIndex(index: number): number { return index; }
 	@Input()student:any;
 	@Input()classes:any;
 	loggedinUser:any;
@@ -40,19 +43,21 @@ export class EditStudentProfileComponent implements OnInit {
               private route : ActivatedRoute,
               public zone:NgZone,
               private router:Router,
-              public dbProvider: DatabaseService) { }
+              public dbProvider: DatabaseService,
+              private storageSr: StorageService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
   	this.studentName=this.student.name;
   	this.classes.forEach(res=>{
   		if(res.name==this.student.course_name){
-  		this.studentSemester=res.cid;	
+  		this.studentSemester=res.cid;
   		}
   	})
   //	console.log(this.student,this.classes,this.studentSemester,this.studentName);
-    if(localStorage.getItem("userloggedin")){
+    const userData = await this.storageSr.get("userloggedin");
+    if(userData){
      // console.log('logged in');
-      this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+      this.userDetails = userData;
       this.currentUser=this.userDetails.details.username;
       this.currentUserEmail=this.userDetails.details.email_id;
      // console.log('th',this.currentUser);

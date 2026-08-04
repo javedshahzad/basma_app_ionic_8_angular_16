@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -6,31 +7,31 @@ import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { ConnectNewMessagePage } from '../connect-new-message/connect-new-message.page';
-import { Subscription } from 'rxjs';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
 
 @Component({
   selector: 'app-parentconnect',
   templateUrl: './parentconnect.page.html',
   styleUrls: ['./parentconnect.page.scss'],
 })
-export class ParentconnectPage implements OnInit, OnDestroy {
+export class ParentconnectPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   lang: any = {};
   chats: any = [];
   noDataFound: string = '';
   userType: any;
   userDetails: any = {};
-  
+
   imageUrl: string = '';
   imageModal: boolean = false;
-  showWarningModal: boolean = false; 
-  backHref: string = '/tabs/classlist'; 
-  
-  // 🟢 التحكم بالاشتراكات لتجنب التكرار وتسريب الذاكرة
-  private authSubscription: Subscription;
-  private isInitialLoadDone = false; 
+  showWarningModal: boolean = false;
+  backHref: string = '/tabs/classlist';
+
+  private destroyRef = inject(DestroyRef);
+  private isInitialLoadDone = false;
 
   constructor(
     public navCtrl: NavController,
@@ -44,19 +45,20 @@ export class ParentconnectPage implements OnInit, OnDestroy {
     public zone: NgZone,
     public network: Network,
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private parentConnectApi: ParentConnectApiService
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
     });
-    this.dataProvider.language.subscribe((resq) => {
+    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq) => {
       this.translate.get("alertmessages").subscribe((res) => {
         this.lang = res;
       });
     });
 
     // 🟢 الاشتراك بحدث تبديل المستخدم لتحديث الصفحة (يُفعل فقط إذا لم يكن هذا هو الدخول الأول)
-    this.authSubscription = this.authProvider.event.subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       if (res && res.changeUser && this.isInitialLoadDone) {
         this.reloadData();
       }
@@ -64,12 +66,6 @@ export class ParentconnectPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {}
-
-  ngOnDestroy() {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
-  }
 
   // 🟢 جلب البيانات عند دخول الصفحة بشكل آمن وسريع
   async ionViewWillEnter() {
@@ -128,7 +124,7 @@ export class ParentconnectPage implements OnInit, OnDestroy {
       this.dataProvider.showLoading();
     }
     
-    this.dataProvider.getConnectChatList(data).then((response: any) => {
+    this.parentConnectApi.getConnectChatList(data).then((response: any) => {
       if (showLoader) {
         this.dataProvider.hideLoading();
       }
@@ -224,9 +220,7 @@ export class ParentconnectPage implements OnInit, OnDestroy {
               chat_list_id: chat.id,
               session_id: this.userDetails.session_id
             };
-            this.dataProvider.showLoading();
-            this.dataProvider.closeParentConnectChat(data).then((response: any) => {
-              this.dataProvider.hideLoading();
+            this.dataProvider.run(() => this.parentConnectApi.closeParentConnectChat(data)).then((response: any) => {
               if (response.session) {
                 chat.ticket_status = '1';
                 this.dataProvider.showToast(response.message);
@@ -234,7 +228,6 @@ export class ParentconnectPage implements OnInit, OnDestroy {
                 this.dataProvider.errorALertMessage(response.message);
               }
             }).catch(error => {
-              this.dataProvider.hideLoading();
               this.dataProvider.errorALertMessage(error);
             });
           }
@@ -260,9 +253,7 @@ export class ParentconnectPage implements OnInit, OnDestroy {
               chat_list_id: chat.id,
               session_id: this.userDetails.session_id
             };
-            this.dataProvider.showLoading();
-            this.dataProvider.reopenParentConnectChat(data).then((response: any) => {
-              this.dataProvider.hideLoading();
+            this.dataProvider.run(() => this.parentConnectApi.reopenParentConnectChat(data)).then((response: any) => {
               if (response.session) {
                 chat.ticket_status = '0';
                 this.dataProvider.showToast(response.message);
@@ -270,7 +261,6 @@ export class ParentconnectPage implements OnInit, OnDestroy {
                 this.dataProvider.errorALertMessage(response.message);
               }
             }).catch(error => {
-              this.dataProvider.hideLoading();
               this.dataProvider.errorALertMessage(error);
             });
           }
@@ -293,12 +283,9 @@ export class ParentconnectPage implements OnInit, OnDestroy {
   }
 
   downloadImage(imageUrl: string) {
-    this.dataProvider.showLoading();
-    this.dataProvider.downloadImage(imageUrl).then((res) => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.dataProvider.downloadImage(imageUrl)).then((res) => {
       this.dataProvider.showToast(this.lang.download_complete || 'تم التنزيل بنجاح');
     }).catch((error) => {
-      this.dataProvider.hideLoading();
       this.dataProvider.errorALertMessage(error);
     });
   }

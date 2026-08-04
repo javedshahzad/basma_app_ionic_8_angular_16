@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import "cordova-plugin-purchase/www/store";
 import { PlanReceiptComponent } from '../../plan-receipt/plan-receipt.component';
 import { FcmService } from '../fcm.service';
+import { StorageService } from '../storage.service';
+import { PlanApiService } from '../plan-api/plan-api.service';
 const env = environment; 
 
 @Injectable({
@@ -147,14 +149,17 @@ public products_ios = [
         private router:Router,
         private fcmService:FcmService,
         private modalController:ModalController,
-        public zone:NgZone) {
+        public zone:NgZone,
+        private storageSr: StorageService,
+        private planApi: PlanApiService) {
 
-            this.platform.ready().then(() => {
-              if (localStorage.getItem("userloggedin")) {
-                this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+            this.platform.ready().then(async () => {
+              const userData = await this.storageSr.get("userloggedin");
+              if (userData) {
+                this.userDetails = userData;
                 //this.setup();
               }
-           
+
             })
         }
 
@@ -210,7 +215,7 @@ public products_ios = [
   }
 
   checkoutSSS(p,PlanData?) {
-    this.fcmService.getPlan.emit(true);
+    this.fcmService.getPlan.next(true);
   }
   checkout(p,PlanData?) {
       this.dataService.showLoading();
@@ -294,9 +299,9 @@ public products_ios = [
               school:this.userDetails.details.school_id
           }
             console.log(data, "dattaaaa")
-          this.dataService.purchase(data).then(res=>{
+          this.planApi.purchase(data).then(res=>{
               this.paymentDone=true;
-                this.fcmService.getPlan.emit(true);
+                this.fcmService.getPlan.next(true);
               this.showreceiptModal(PlanData,receipt);
               this.iap2.refresh();
 
@@ -320,10 +325,10 @@ public products_ios = [
               school:this.userDetails.details.school_id
           }
           console.log(data, "dattaaaa")
-          this.dataService.purchase(data).then(res=>{
+          this.planApi.purchase(data).then(res=>{
               this.paymentDone=true;
               this.dataService.showToast('Plan subscribed Successfully');
-                this.fcmService.getPlan.emit(true);
+                this.fcmService.getPlan.next(true);
               this.showreceiptModal(PlanData,receipt);
               this.iap2.refresh();
            

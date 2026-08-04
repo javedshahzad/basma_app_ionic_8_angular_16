@@ -8,6 +8,8 @@ import { DatabaseService } from '../../service/database/database.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { StorageService } from '../../service/storage.service';
+import { UserManagementApiService } from '../../service/user-management-api/user-management-api.service';
 
 @Component({
   selector: 'app-student-details',
@@ -34,12 +36,14 @@ export class StudentDetailsComponent implements OnInit {
         private dataProvider:DataService,
         public translate: TranslateService, 
         public dbProvider: DatabaseService,
-      public modalController: ModalController) { }
+      public modalController: ModalController,
+      private storageSr: StorageService,
+      private userManagementApi: UserManagementApiService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log(this.student);
     console.log(this.data)
-    this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+    this.userDetails = await this.storageSr.get("userloggedin");
     this.userType = this.userDetails.details.user_type;
     this.phone = this.student.phone_no;
     this.phone_no_two = this.student.phone_no_two;
@@ -56,20 +60,28 @@ export class StudentDetailsComponent implements OnInit {
   	this.modalController.dismiss(null, actionRole);
   }
 
-  saveChanges(){
+  async saveChanges(){
     let updateData={
       sid: this.student.sid,
       phone_no: this.phone,
       phone_no_two: this.phone_no_two,
       medical_condition: this.medical_condition
     }
-    
-    this.dataProvider.updateStudentPhone(updateData, res => {
-     setTimeout(() => {
-      // 🔴 نرسل البيانات المحدثة (updateData) مع أمر الإغلاق (save)
-      this.modalController.dismiss(updateData, 'save');
-    }, 1000);
-    })
+
+    try {
+      const res: any = await this.userManagementApi.updateStudentPhone(updateData);
+      if (!res.response) {
+        this.dataProvider.errorALertMessage(res.msg);
+      } else {
+        this.dataProvider.showToast(this.dataProvider.lang.edit_student_success_msg);
+        setTimeout(() => {
+          // 🔴 نرسل البيانات المحدثة (updateData) مع أمر الإغلاق (save)
+          this.modalController.dismiss(updateData, 'save');
+        }, 1000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
   
 }

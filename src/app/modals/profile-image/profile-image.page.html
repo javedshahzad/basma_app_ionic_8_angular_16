@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar class="bg-black border-b border-white/10">
     <ion-buttons slot="start" class="ml-2 w-10">
       <!-- 🟢 استخدام الدالة النظيفة للإغلاق -->
@@ -20,7 +20,7 @@
   <div class="h-full w-full flex justify-center items-center bg-black/95 p-4">
     <pinch-zoom [limit-zoom]="100" class="w-full">
       <!-- 🟢 إضافة onerror كحماية إضافية للصور التالفة -->
-      <img [src]="pic ? pic : 'assets/imgs/default_avatar.png'" 
+      <img loading="lazy" [src]="pic ? pic : 'assets/imgs/default_avatar.png'" 
            onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
            class="max-w-full max-h-[85vh] object-contain mx-auto rounded-2xl shadow-2xl" />
     </pinch-zoom>

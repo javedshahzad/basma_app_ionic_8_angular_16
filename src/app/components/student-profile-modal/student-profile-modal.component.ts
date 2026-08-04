@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController, IonicModule } from '@ionic/angular';
-import { DataService } from '../../service/data/data.service'; 
+import { DataService } from '../../service/data/data.service';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,7 +11,8 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './student-profile-modal.component.html',
   styleUrls: ['./student-profile-modal.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StudentProfileModalComponent implements OnInit {
 

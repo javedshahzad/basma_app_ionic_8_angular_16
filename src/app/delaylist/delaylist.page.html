@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="menu-btn-container">
       <ion-menu-toggle auto-hide="false">
@@ -21,7 +21,7 @@
     
     <!-- 🟢 تأثير التحميل الوهمي (Skeleton Loading) -->
     <div class="space-y-3 mt-2" *ngIf="isLoading">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 animate-pulse" *ngFor="let dummy of [1,2,3,4]">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 animate-pulse" *ngFor="let dummy of [1,2,3,4]; trackBy: trackByIndex">
         <div class="w-14 h-14 bg-slate-200 rounded-2xl shrink-0"></div>
         <div class="flex-1 space-y-3">
           <div class="h-4 bg-slate-200 rounded-md w-1/2"></div>
@@ -33,7 +33,7 @@
     <!-- 🟢 عرض الفصول في حالة توفر البيانات -->
     <div *ngIf="!isLoading && classes?.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
       
-      <div *ngFor="let course of classes" 
+      <div *ngFor="let course of classes; trackBy: trackByIndex" 
            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer hover:border-indigo-300 hover:shadow-md transition-all active:scale-[0.98] group"
            (click)="openClassStudents(course)">
         

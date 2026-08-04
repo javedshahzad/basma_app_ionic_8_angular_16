@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border" mode="md">
+﻿<ion-header class="ion-no-border" mode="md">
   <ion-toolbar style="--background: #f8fafc;" class="relative text-center">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
       <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
@@ -69,7 +69,7 @@
             <div>
               <span class="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wider">{{'absent_students.Sems' | translate}}</span>
               <div class="flex flex-wrap gap-1.5">
-                <span *ngFor="let sem of formattedSeminars" class="block text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">
+                <span *ngFor="let sem of formattedSeminars; trackBy: trackByIndex" class="block text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">
                   {{sem}}
                 </span>
               </div>
@@ -106,7 +106,7 @@
           </div>
           <div class="rounded-2xl border-2 border-slate-100 overflow-hidden shadow-sm bg-slate-50 p-1 relative group cursor-pointer active:scale-95 transition-all"
                (click)="openFullscreenImage(AppData.pic_url)">
-            <img [src]="AppData.pic_url" class="w-full h-auto object-cover max-h-72 rounded-xl transition-transform duration-300 group-hover:scale-[1.02]" alt="مرفق الطلب">
+            <img loading="lazy" [src]="AppData.pic_url" class="w-full h-auto object-cover max-h-72 rounded-xl transition-transform duration-300 group-hover:scale-[1.02]" alt="مرفق الطلب">
             <div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
                 <ion-icon name="search-outline" class="text-white text-3xl"></ion-icon>
             </div>
@@ -124,7 +124,7 @@
     </button>
     
     <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
-      <img [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+      <img loading="lazy" [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
     </div>
   </div>
 

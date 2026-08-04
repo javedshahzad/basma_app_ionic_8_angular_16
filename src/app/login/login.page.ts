@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+﻿import { Component, OnInit, NgZone } from "@angular/core";
 import { ModalController, NavController, Platform, PopoverController } from "@ionic/angular";
 import { AuthService } from "../service/auth/auth.service";
 import { DataService } from "../service/data/data.service";
@@ -12,6 +12,8 @@ import { SubscribePlanComponent } from "../components/subscribe-plan/subscribe-p
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from "../service/storage.service";
+import { DeviceApiService } from "../service/device-api/device-api.service";
+import { PlanApiService } from "../service/plan-api/plan-api.service";
 
 @Component({
   selector: "app-login",
@@ -19,6 +21,7 @@ import { StorageService } from "../service/storage.service";
   styleUrls: ["./login.page.scss"],
 })
 export class LoginPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   loggedinUser: any[] = [];
   user: LoginModel = <LoginModel>{};
   rememberMe: boolean = false;
@@ -38,7 +41,9 @@ export class LoginPage implements OnInit {
     private router: Router,
     public dbProvider: DatabaseService,
     public modalController: ModalController,
-    private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private deviceApi: DeviceApiService,
+    private planApi: PlanApiService
   ) {}
 
   ngOnInit() {}
@@ -149,7 +154,7 @@ export class LoginPage implements OnInit {
         this.storageSr.get("language").then((lang) => {
             let currentLang = lang ? lang : 'ar';
             this.translate.use(currentLang);
-            this.dataProvider.language.emit(currentLang); 
+            this.dataProvider.language.next(currentLang);
         });
         // =========================================================
         
@@ -215,7 +220,7 @@ export class LoginPage implements OnInit {
   async getUserPlan(user_no: string, school_id: string) { 
     let data = { user_no: user_no, school_id: school_id };
     
-    this.dataProvider.getUserPlan(data).then(async (res: any) => {
+    this.planApi.getUserPlan(data).then(async (res: any) => {
       if (res && res.response) {
         let availablePlan = res.response;
         await this.storageSr.set("availablePlan", availablePlan);
@@ -240,7 +245,7 @@ export class LoginPage implements OnInit {
       "device_id": this.uniqueDeviceId 
     };
     
-    this.dataProvider.LogInSingleDevice(data).then(res => {
+    this.deviceApi.LogInSingleDevice(data).then(res => {
       console.log("Device officially registered:", res);  
     }).catch(error => {
       console.error("Failed to register device:", error);

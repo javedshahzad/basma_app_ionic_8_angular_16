@@ -1,16 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { Router } from '@angular/router';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { DeviceApiService } from '../service/device-api/device-api.service';
+import { StorageService } from '../service/storage.service';
 
 @Component({
   selector: 'app-all-devices',
   templateUrl: './all-devices.page.html',
   styleUrls: ['./all-devices.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AllDevicesPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   userDetails: any;
   All_available_devices=[];
 
@@ -26,11 +30,15 @@ export class AllDevicesPage implements OnInit {
     public dataProvider: DataService,
     public authProvider: AuthService, 
     private router:Router,
-    public deviceSr : Device
+    public deviceSr : Device,
+    private deviceApi: DeviceApiService,
+    private storageSr: StorageService,
+    private cdr: ChangeDetectorRef
   ) { }
 
-  ngOnInit() {
-    this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+  async ngOnInit() {
+    this.userDetails = await this.storageSr.get("userloggedin");
+    this.cdr.markForCheck();
   }
 
   ionViewWillEnter(){
@@ -38,23 +46,21 @@ export class AllDevicesPage implements OnInit {
   }
 
   GetAlldevices(){
-    this.dataProvider.showLoading();
     let data = {
       "user_no": this.userDetails.details.user_no,
     };
-    this.dataProvider.GetAllDevices(data).then(res => {
+    this.dataProvider.run(() => this.deviceApi.GetAllDevices(data)).then(res => {
       console.log(res);
-      
-      // 🔴 التعديل السحري هنا: 
+
+      // 🔴 التعديل السحري هنا:
       // نتحقق من وجود res.data، وإذا لم تكن موجودة نضع مصفوفة فارغة []
       this.All_available_devices = (res && res.data) ? res.data : [];
-      
-      this.dataProvider.hideLoading();
+      this.cdr.markForCheck();
     },error=>{
       // 🔴 تأمين المتغير أيضاً في حال حدوث خطأ في الاتصال
       this.All_available_devices = [];
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast("حدث خطأ في جلب الأجهزة");
+      this.cdr.markForCheck();
     })
   }
 
@@ -80,12 +86,11 @@ export class AllDevicesPage implements OnInit {
 
   // عملية الحذف الفعلية
   executeDeleteDevice(device) {
-    this.dataProvider.showLoading();
     let data = {
       "user_no": this.userDetails.details.user_no,
       "device_id": device.device_id
     };
-    this.dataProvider.Delete_device(data).then(res => {
+    this.dataProvider.run(() => this.deviceApi.Delete_device(data)).then(res => {
       console.log(res);
       if(device.device_id == this.deviceSr.uuid){
         this.logout();
@@ -93,7 +98,6 @@ export class AllDevicesPage implements OnInit {
         this.GetAlldevices();
       }
     },error=>{
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast("error");
     })
   }
@@ -116,31 +120,22 @@ export class AllDevicesPage implements OnInit {
 
   // عملية الخروج من الجميع الفعلية
   executeLogoutAll() {
-    this.dataProvider.showLoading();
     let data = {
       "user_no": this.userDetails.details.user_no
     };
-    
-    if (this.dataProvider.LogOutAllDevice) {
-      this.dataProvider.LogOutAllDevice(data).then(res => {
-        this.GetAlldevices();
-        this.dataProvider.hideLoading();
-      }).catch(error => {
-        this.dataProvider.hideLoading();
-        this.dataProvider.showToast("حدث خطأ أثناء تسجيل الخروج من الجميع");
-      });
-    } else {
-      this.dataProvider.hideLoading();
-      console.warn("LogOutAllDevice is not defined in DataService");
-      this.dataProvider.showToast("عذراً، دالة الحذف للجميع غير متوفرة حالياً في ملف الخدمات");
-    }
+
+    this.dataProvider.run(() => this.deviceApi.LogOutAllDevice(data)).then(res => {
+      this.GetAlldevices();
+    }).catch(error => {
+      this.dataProvider.showToast("حدث خطأ أثناء تسجيل الخروج من الجميع");
+    });
   }
 
   // ==========================================
   // 3️⃣ تسجيل الخروج العادي
   // ==========================================
-  logout() {
-    let userDetail = JSON.parse(localStorage.getItem("userloggedin"));
+  async logout() {
+    let userDetail = await this.storageSr.get("userloggedin");
     let data = {
       "user_no": userDetail.details.user_no,
       "session_id": userDetail.session_id

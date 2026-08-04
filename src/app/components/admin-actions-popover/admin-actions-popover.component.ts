@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,7 +9,8 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './admin-actions-popover.component.html',
   styleUrls: ['./admin-actions-popover.component.scss'],
   standalone: true, // إضافة هذا السطر
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminActionsPopoverComponent implements OnInit {
 

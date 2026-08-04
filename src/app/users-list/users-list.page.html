@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     
     <ion-buttons slot="start" class="menu-btn-container">
@@ -30,12 +30,12 @@
     </div>
 
     <div class="px-4 pb-4 flex flex-col gap-3 mt-2" *ngIf="trimmedUsers?.length > 0">
-      <div *ngFor="let list of trimmedUsers | userSearch : userSearchValue" 
+      <div *ngFor="let list of trimmedUsers | userSearch : userSearchValue; trackBy: trackByUser"
            (click)="openEditPage(list)"
            class="flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm transition-all cursor-pointer hover:shadow-md hover:border-indigo-100 active:scale-[0.98]">
         
         <div class="w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg shadow-sm bg-indigo-50 text-indigo-600 border border-indigo-100 shrink-0 overflow-hidden relative">
-          <img *ngIf="list.pic" [src]="list.pic" class="w-full h-full object-cover" onerror="this.style.display='none'">
+          <img loading="lazy" *ngIf="list.pic" [src]="list.pic" class="w-full h-full object-cover" onerror="this.style.display='none'">
           <span *ngIf="!list.pic">{{ list.first_name ? list.first_name.charAt(0).toUpperCase() : 'U' }}</span>
         </div>
         
@@ -49,7 +49,7 @@
     </div>
 
     <div *ngIf="!trimmedUsers.length || show_loading" class="px-4 pb-4 flex flex-col gap-3 mt-2">
-      <div *ngFor="let dummy of [1,2,3,4,5,6,7,8]" class="flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+      <div *ngFor="let dummy of [1,2,3,4,5,6,7,8]; trackBy: trackByIndex" class="flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
         <ion-skeleton-text animated style="width: 48px; height: 48px; border-radius: 16px; margin: 0;"></ion-skeleton-text>
         <div class="flex-1">
           <ion-skeleton-text animated style="width: 60%; height: 16px; border-radius: 4px; margin-bottom: 8px;"></ion-skeleton-text>

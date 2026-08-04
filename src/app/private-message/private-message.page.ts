@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -14,6 +15,8 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./private-message.page.scss'],
 })
 export class PrivateMessagePage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  private destroyRef = inject(DestroyRef);
   notifications: any = [];
   noRecordFound: string = '';
   lang: any = {};
@@ -36,7 +39,7 @@ export class PrivateMessagePage implements OnInit {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
     });
-    this.authProvider.event.subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       if (res.changeUser) {
         this.reloadData();
       }
@@ -57,9 +60,7 @@ export class PrivateMessagePage implements OnInit {
         "session_id": this.userDetails.session_id
       };
       
-      this.dataProvider.showLoading();
-      this.dataProvider.getNotifications(data).then(response => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.dataProvider.getNotifications(data)).then(response => {
         if (response.session) {
           this.dataProvider.private_message = false;
           this.notifications = response.data;
@@ -72,7 +73,6 @@ export class PrivateMessagePage implements OnInit {
           this.router.navigate(['login'], { replaceUrl: true });
         }
       }).catch(error => {
-        this.dataProvider.hideLoading();
       });
     } else {
       this.dataProvider.hideLoading();
@@ -127,14 +127,12 @@ export class PrivateMessagePage implements OnInit {
           text: this.lang.yes || 'نعم، احذف',
           cssClass: 'text-rose-500 font-bold',
           handler: () => {
-            this.dataProvider.showLoading();
             let data = {
               user_no: this.userDetails.details.user_no,
               nid: notificationId,
               session_id: this.userDetails.session_id
             }
-            this.dataProvider.deleteNotification(data).then((response) => {
-              this.dataProvider.hideLoading();
+            this.dataProvider.run(() => this.dataProvider.deleteNotification(data)).then((response) => {
               if (response.session) {
                 this.dataProvider.showToast(response.message);
                 this.notifications.splice(index, 1);
@@ -144,7 +142,6 @@ export class PrivateMessagePage implements OnInit {
                 this.router.navigate(['login'], { replaceUrl: true });
               }
             }).catch((error) => {
-              this.dataProvider.hideLoading();
               this.dataProvider.errorALertMessage(error);
             })
           }
@@ -168,12 +165,9 @@ export class PrivateMessagePage implements OnInit {
   }
 
   downloadImage(imageUrl){
-    this.dataProvider.showLoading();
-    this.dataProvider.downloadImage(imageUrl).then((res)=>{
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.dataProvider.downloadImage(imageUrl)).then((res)=>{
       this.dataProvider.showToast(this.lang.download_complete || 'تم التحميل بنجاح');
     }).catch((error)=>{
-      this.dataProvider.hideLoading();
       this.dataProvider.errorALertMessage(error);
     });
   }

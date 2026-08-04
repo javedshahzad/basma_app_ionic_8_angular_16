@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone } from '@angular/core';
 import { NavController, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { GamificationEngineService } from '../service/gamification-engine/gamification-engine.service';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
 
 @Component({
   selector: 'app-student-titles',
@@ -15,6 +16,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./student-titles.page.scss'],
 })
 export class StudentTitlesPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   lang: any;
   userDetails: any;
   userType: any;
@@ -53,7 +55,8 @@ export class StudentTitlesPage implements OnInit {
               public zone: NgZone,
               private router: Router,
               private gamification: GamificationEngineService,
-              private storageSr: StorageService // 🟢 2. حقن خدمة التخزين الجديدة
+              private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
+              private gamificationApi: GamificationApiService
              ) {
                 
     this.translate.get("alertmessages").subscribe((res) => {
@@ -123,23 +126,22 @@ export class StudentTitlesPage implements OnInit {
 
   async loadAllDataSequentially(sid: any) {
     this.isLoadingData = true;
-    this.dataProvider.showLoading();
 
     try {
-      if (!this.studentDetails) {
-        await this.fetchStudentProfile(sid);
-      }
-      
-      await this.fetchStudentSkills(sid);
-      await this.fetchInventory(sid);
-      
-      this.mapDataToUI(); 
+      await this.dataProvider.run(async () => {
+        if (!this.studentDetails) {
+          await this.fetchStudentProfile(sid);
+        }
 
+        await this.fetchStudentSkills(sid);
+        await this.fetchInventory(sid);
+
+        this.mapDataToUI();
+      });
     } catch (error) {
       console.error("Error loading data", error);
     } finally {
       this.isLoadingData = false;
-      this.dataProvider.hideLoading();
     }
   }
 
@@ -162,7 +164,7 @@ export class StudentTitlesPage implements OnInit {
   fetchInventory(sid: any): Promise<void> {
     return new Promise((resolve) => {
       let body = { sid: String(sid), userId: String(this.userDetails.details.user_no) };
-      this.dataProvider.getStudentInventory(body).then((res: any) => {
+      this.gamificationApi.getStudentInventory(body).then((res: any) => {
         if (res && res.success) {
           let rawWallet = res.wallet || (res.data && res.data.wallet) || {};
           this.studentWallet = Array.isArray(rawWallet) ? (rawWallet[0] || {}) : rawWallet;
@@ -229,56 +231,49 @@ export class StudentTitlesPage implements OnInit {
     if(!this.canCraft(title.cost)) {
       this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.'); return;
     }
-    this.dataProvider.showLoading();
-    
-    let sid = this.userDetails.details.stu_id; 
-    
-    let body = { 
-      sid: String(sid), 
-      title_code: title.code, 
+    let sid = this.userDetails.details.stu_id;
+
+    let body = {
+      sid: String(sid),
+      title_code: title.code,
       cost: JSON.stringify(title.cost),
       userId: String(this.userDetails.details.user_no)
     };
-    
+
     try {
-      let res: any = await this.dataProvider.craftSkillTitle(body);
-      this.dataProvider.hideLoading();
+      let res: any = await this.dataProvider.run(() => this.gamificationApi.craftSkillTitle(body));
       if (res.success) {
         this.dataProvider.showToast(res.msg);
-        await this.fetchInventory(sid); 
-        
+        await this.fetchInventory(sid);
+
         // 🟢 4. استدعاء هذه الدالة إجباري لكي تتحدث حالة الأزرار في الواجهة (من دمج إلى استخدام)
-        this.mapDataToUI(); 
-        
+        this.mapDataToUI();
+
       } else {
         this.dataProvider.errorALertMessage(res.msg);
       }
     } catch(e) {
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
     }
   }
 
   async toggleTitle(titleCode: string | null) {
-    this.dataProvider.showLoading();
     let sid = this.userDetails.details.stu_id;
-    
-    let body = { 
-      sid: String(sid), 
+
+    let body = {
+      sid: String(sid),
       title_code: titleCode ? String(titleCode) : '',
       userId: String(this.userDetails.details.user_no)
     };
-    
+
     try {
-      let res: any = await this.dataProvider.equipTitle(body);
-      this.dataProvider.hideLoading();
+      let res: any = await this.dataProvider.run(() => this.gamificationApi.equipTitle(body));
       if (res.success) {
         this.activeCraftedTitle = titleCode;
         this.dataProvider.showToast(res.msg);
         this.updateStudentTitle();
       }
     } catch(e) {
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
     }
   }

@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="menu-btn-container w-10"></ion-buttons>
 
@@ -30,7 +30,7 @@
 <ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
   <div class="p-4 flex flex-col gap-3 pb-24">
     
-    <div *ngFor="let user of filteredUsers" 
+    <div *ngFor="let user of filteredUsers; trackBy: trackByIndex" 
          (click)="toggleUserSelection(user)"
          class="flex items-center gap-4 bg-white p-3 rounded-2xl border transition-all cursor-pointer shadow-sm hover:shadow-md"
          [ngClass]="isUserSelected(user) ? 'border-indigo-400 bg-indigo-50/30' : 'border-slate-100'">

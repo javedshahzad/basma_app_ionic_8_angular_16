@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Browser } from '@capacitor/browser';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
@@ -11,7 +11,8 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './duration-subscription.component.html',
   styleUrls: ['./duration-subscription.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DurationSubscriptionComponent implements OnInit {
   

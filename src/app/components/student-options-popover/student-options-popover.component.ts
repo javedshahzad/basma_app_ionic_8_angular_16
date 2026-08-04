@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,7 +9,8 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './student-options-popover.component.html',
   styleUrls: ['./student-options-popover.component.scss'], // أبقه إذا كان موجوداً
   standalone: true,
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StudentOptionsPopoverComponent implements OnInit {
 

@@ -1,16 +1,22 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router'; // 🟢 تأكد من إضافة ActivatedRoute هنا
+import { StorageService } from '../service/storage.service';
+import { RegistrationApiService } from '../service/registration-api/registration-api.service';
 
 @Component({
 	selector: 'app-add-user',
 	templateUrl: './add-user.page.html',
 	styleUrls: ['./add-user.page.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddUserPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+	private destroyRef = inject(DestroyRef);
 	userDetails: any;
 	usersData: any = {};
 	classes: any = [];
@@ -43,10 +49,14 @@ export class AddUserPage implements OnInit {
 		public zone: NgZone,
 		private router: Router,
     private route: ActivatedRoute, // 🟢 تم حقن ActivatedRoute هنا
-		public modalController: ModalController) {
-		
+		public modalController: ModalController,
+		private storageSr: StorageService,
+		private registrationApi: RegistrationApiService,
+		private cdr: ChangeDetectorRef) {
+
     this.translate.get("alertmessages").subscribe((res) => {
 			this.lang = res;
+			this.cdr.markForCheck();
 		});
 
     // إعدادات افتراضية للمستخدم الجديد
@@ -54,44 +64,49 @@ export class AddUserPage implements OnInit {
     this.usersData.attendence_permit = false; // تعطيل تعديل الغياب افتراضياً
 
     // 🟢 [التعديل الجوهري]: التقاط التوجيه الذكي لمعرفة من أي صفحة جئنا
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       if (this.router.getCurrentNavigation()?.extras.state) {
         let state = this.router.getCurrentNavigation().extras.state;
-        
+
         // 1. التقاط مسار العودة (إذا جئنا من manage-teacher سيتم حفظه هنا)
         if (state['returnPath']) {
           this.returnPath = state['returnPath'];
         }
-        
+
         // 2. إذا كان المطلوب إضافة معلم، نثبت نوع المستخدم في الواجهة على "معلم"
         if (state['role'] === 'teacher') {
-          this.usersData.user_type = '2'; 
+          this.usersData.user_type = '2';
         }
       }
+      this.cdr.markForCheck();
     });
 
 	}
 
-	ngOnInit() {
-		if (localStorage.getItem("userloggedin")) {
-			this.userDetails = JSON.parse(localStorage.getItem("userloggedin")); 
+	async ngOnInit() {
+		const userData = await this.storageSr.get("userloggedin");
+		if (userData) {
+			this.userDetails = userData;
 		}
-		this.getCourses(); 
+		this.getCourses();
+		this.cdr.markForCheck();
 	}
 
   // 🟢 جلب الفصول من السيرفر
 	getCourses() {
 		let data = {
-			"user_no": this.userDetails.details.user_no, 
-			"school_id": this.userDetails.details.school_id, 
-			"session_id": this.userDetails.session_id 
+			"user_no": this.userDetails.details.user_no,
+			"school_id": this.userDetails.details.school_id,
+			"session_id": this.userDetails.session_id
 		};
-		this.dataProvider.getCourses(data).then((response: any) => { 
-			if (response.session) { 
-				this.classes = response.data; 
+		this.dataProvider.getCourses(data).then((response: any) => {
+			if (response.session) {
+				this.classes = response.data;
 			}
+			this.cdr.markForCheck();
 		}).catch(error => {
 			console.log(error);
+			this.cdr.markForCheck();
 		});
 	}
 
@@ -165,18 +180,20 @@ export class AddUserPage implements OnInit {
 
 			this.show_save_user_spinner = true; 
       
-			this.dataProvider.registerNewUser(this.usersData).then((res) => { 
-				this.show_save_user_spinner = false; 
-				const navigation: NavigationExtras = { 
-					state: { isUpdated: true } 
+			this.registrationApi.registerNewUser(this.usersData).then((res) => {
+				this.show_save_user_spinner = false;
+				const navigation: NavigationExtras = {
+					state: { isUpdated: true }
 				};
-				this.zone.run(() => { 
+				this.zone.run(() => {
           // 🟢 [التعديل الجوهري الثاني]: العودة للمسار الديناميكي الذي تم التقاطه بدلاً من الثابت
-					this.router.navigate([this.returnPath], navigation) 
+					this.router.navigate([this.returnPath], navigation)
 				});
-			}).catch(e => { 
-        this.show_save_user_spinner = false; 
-				this.dataProvider.showToast(e); 
+				this.cdr.markForCheck();
+			}).catch(e => {
+        this.show_save_user_spinner = false;
+				this.dataProvider.showToast(e);
+				this.cdr.markForCheck();
 			})
 		}
 	}

@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border lineone-header" mode="md">
+﻿<ion-header class="ion-no-border lineone-header" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-button slot="start" *ngIf="userDetails.details.is_school_admin == 1" (click)="openVoucherModal()" fill="clear" class="lineone-icon-btn">
@@ -58,7 +58,7 @@
       <div class="plans-grid">
         
         <div class="lineone-card plan-card animate__animated animate__fadeInUp" 
-             *ngFor="let Singleitem of plans; let i=index" 
+             *ngFor="let Singleitem of plans; let i=index; trackBy: trackByIndex" 
              [ngClass]="{'is-current-plan': Singleitem.slug == availablePlan.plan.slug}">
 
           <div class="current-plan-badge" *ngIf="Singleitem.slug == availablePlan.plan.slug">

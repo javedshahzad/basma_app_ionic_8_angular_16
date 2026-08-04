@@ -190,7 +190,7 @@ const routes: Routes = [
   },
   {
     path: 'edit-teacher-profile',
-    loadChildren: () => import('./edit-teacher-profile (deleted)/edit-teacher-profile.module').then( m => m.EditTeacherProfilePageModule)
+    loadChildren: () => import('./edit-teacher-profile/edit-teacher-profile.module').then( m => m.EditTeacherProfilePageModule)
   },
   {
     path: 'follow-bulletins',
@@ -266,7 +266,7 @@ const routes: Routes = [
   },
   {
     path: 'add-teacher',
-    loadChildren: () => import('./add-teacher (deleted)/add-teacher.module').then( m => m.AddTeacherPageModule)
+    loadChildren: () => import('./add-teacher/add-teacher.module').then( m => m.AddTeacherPageModule)
   },
   {
     path: 'add-parent',

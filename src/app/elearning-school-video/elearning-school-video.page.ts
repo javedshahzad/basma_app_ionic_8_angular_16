@@ -7,6 +7,7 @@ import { GeoServiceProvider } from '../service/geo-service/geo-service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { ElearningApiService } from '../service/elearning-api/elearning-api.service';
 
 @Component({
   selector: 'app-elearning-school-video',
@@ -15,6 +16,7 @@ import { StorageService } from '../service/storage.service';
 })
 export class ElearningSchoolVideoPage implements OnInit {
 
+  trackByIndex(index: number): number { return index; }
   categories: any = [];
   school: any = {};
   country_code: any;
@@ -35,7 +37,8 @@ export class ElearningSchoolVideoPage implements OnInit {
     private geo: GeoServiceProvider,
     private router: Router,
     public zone: NgZone,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private elearningApi: ElearningApiService
   ) {
     this.translate.get("location").subscribe((res) => {
       this.location_lang = res;
@@ -75,7 +78,7 @@ export class ElearningSchoolVideoPage implements OnInit {
 
   getElerningMaterials(c_dode) {
     this.show_loading = true;
-    this.dataProvider.getElearningMaterials(this.school.id, c_dode).then((materialList) => {
+    this.elearningApi.getElearningMaterials(this.school.id, c_dode).then((materialList) => {
       this.show_loading = false;
       // 🟢 إضافة متغير 'isOpen' للتحكم بفتح وإغلاق القوائم بطريقة Angular صحيحة بدلاً من DOM
       this.categories = materialList.map((cat: any) => {

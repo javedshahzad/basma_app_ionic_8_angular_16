@@ -1,4 +1,4 @@
-import { Component, OnInit,NgZone,Input } from '@angular/core';
+﻿import { Component, OnInit,NgZone,Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController,ModalController, MenuController, ToastController, AlertController,
          LoadingController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -6,13 +6,16 @@ import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+import { StorageService } from '../service/storage.service';
 
 @Component({
   selector: 'app-create-class',
   templateUrl: './create-class.page.html',
   styleUrls: ['./create-class.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CreateClassPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   @Input() classes:any;
   class:any = {};
   lang:any = {};
@@ -26,29 +29,32 @@ export class CreateClassPage implements OnInit {
    * @param dataProvider Use for getting data from the API
    */
   constructor(public navCtrl: NavController, public translate: TranslateService,
-              public viewCtrl: ModalController, public dataProvider: DataService) {
+              public viewCtrl: ModalController, public dataProvider: DataService,
+              private storageSr: StorageService, private cdr: ChangeDetectorRef) {
                 this.translate.get("alertmessages").subscribe((res)=>{
                   this.lang = res;
+                  this.cdr.markForCheck();
                 })
   }
 
-  ionViewWillEnter() {
-    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan')); 
+  async ionViewWillEnter() {
+    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan'));
     console.log('ionViewDidLoad CreateClassPage');
-    if(localStorage.getItem("userloggedin")){
-      let user = JSON.parse(localStorage.getItem("userloggedin"));
+    const user = await this.storageSr.get("userloggedin");
+    if(user){
       this.class['school_id'] = user.details.school_id;
       this.class['user_no'] = user.details.user_no;
     }else{
       this.viewCtrl.dismiss(false);
     }
+    this.cdr.markForCheck();
   }
 
   getSeminars(){
     return Array(8);
   }
 
-  registerClass() {
+  async registerClass() {
     let cleanPostData = {
       code: String(this.class.code || '').trim(),
       name: String(this.class.name || '').trim(),
@@ -58,27 +64,25 @@ export class CreateClassPage implements OnInit {
       user_no: String(this.class.user_no || '').trim()
     };
 
-    this.dataProvider.showLoading();
-    this.dataProvider.createNewCourse(cleanPostData).then((response: any) => {
-      this.dataProvider.hideLoading();
-      
+    try {
+      const response: any = await this.dataProvider.run(() => this.dataProvider.createNewCourse(cleanPostData));
+
       // 🔴 قراءة session ليتطابق مع السيرفر
       if (response && (response.session === true || response.success === true)) {
-        
+
         // 1. عرض رسالة سريعة تختفي تلقائياً في الأسفل (بدون نافذة منبثقة)
         this.dataProvider.showToast(response.msg || response.message || "تم إنشاء الصف بنجاح");
-        
+
         // 2. إغلاق هذه النافذة فوراً، مما سيحفز صفحة classlist لتحديث قائمة الصفوف
         this.viewCtrl.dismiss(true);
-        
+
       } else {
         // هذه النافذة المنبثقة المزعجة لن تظهر الآن إلا في حالات الفشل الحقيقية
         this.dataProvider.errorALertMessage(response.msg || response.message || "فشل في تسجيل البيانات");
       }
-    }).catch(error => {
-      this.dataProvider.hideLoading();
+    } catch (error) {
       this.dataProvider.errorALertMessage("خطأ في الاتصال بقاعدة البيانات.");
-    });
+    }
   }
 
   ngOnInit() {

@@ -1,4 +1,4 @@
-<div class="flex flex-col h-full bg-slate-50 md:max-w-4xl md:mx-auto md:rounded-3xl md:overflow-hidden md:shadow-2xl" dir="rtl">
+﻿<div class="flex flex-col h-full bg-slate-50 md:max-w-4xl md:mx-auto md:rounded-3xl md:overflow-hidden md:shadow-2xl" dir="rtl">
   
   <div class="bg-white p-5 flex justify-between items-center shadow-sm z-10 border-b border-slate-100">
     <h2 class="text-xl font-bold text-slate-800 flex items-center gap-3">
@@ -13,12 +13,12 @@
   <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
     <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6 pb-10">
       
-      <div *ngFor="let i of imageList" 
+      <div *ngFor="let i of imageList; trackBy: trackByIndex" 
            class="relative aspect-square bg-white rounded-[2rem] shadow-sm border-2 p-3 flex items-center justify-center cursor-pointer transition-all duration-300 group"
            [ngClass]="selectedImageId === i ? 'border-indigo-500 ring-8 ring-indigo-50 scale-90' : 'border-white hover:border-indigo-200 hover:shadow-xl hover:-translate-y-1'"
            (click)="onSelectImage(i)">
         
-        <img [src]="DocUrl + '/uploads/avatar/Asset-' + i + '.png'" 
+        <img loading="lazy" [src]="DocUrl + '/uploads/avatar/Asset-' + i + '.png'" 
              class="w-full h-full object-contain drop-shadow-lg group-hover:scale-110 transition-transform">
         
         <div *ngIf="selectedImageId === i" 

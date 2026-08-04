@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border" mode="md">
+﻿<ion-header class="ion-no-border" mode="md">
   <ion-toolbar style="--background: #f8fafc;" class="relative text-center border-b border-slate-100">
     
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
@@ -25,12 +25,12 @@
   <div class="px-4 py-6 max-w-3xl mx-auto space-y-3 pb-20">
     
     <ng-container *ngIf="allStudents?.length > 0">
-      <div *ngFor="let student of allStudents" 
+      <div *ngFor="let student of allStudents; trackBy: trackByIndex" 
            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md" 
            (click)="openStudentDetails(student)">
           
           <div class="shrink-0 relative">
-              <img *ngIf="student.pic" [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 shadow-sm">
+              <img loading="lazy" *ngIf="student.pic" [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 shadow-sm">
               <div *ngIf="!student.pic" class="w-14 h-14 rounded-full bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center text-indigo-400 shadow-sm">
                   <ion-icon name="person" class="text-2xl"></ion-icon>
               </div>

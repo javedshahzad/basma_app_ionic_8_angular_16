@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -13,6 +13,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-share-bulletins',
   templateUrl: './share-bulletins.page.html',
   styleUrls: ['./share-bulletins.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ShareBulletinsPage implements OnInit {
   lang: any = {};
@@ -33,10 +34,12 @@ export class ShareBulletinsPage implements OnInit {
     private router: Router,
     public zone: NgZone,
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن الخدمة
+    private storageSr: StorageService, // 🟢 حقن الخدمة
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
 
     // 🟢 إصلاح لغم الـ Router: التقاط البيانات مع الحماية من undefined
@@ -69,6 +72,7 @@ export class ShareBulletinsPage implements OnInit {
         // إذا لم يكن هناك أي بيانات، العودة للصفحة السابقة
         this.navCtrl.back();
       }
+      this.cdr.markForCheck();
     }
   }
 

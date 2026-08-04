@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -8,6 +8,8 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { SearchApiService } from '../service/search-api/search-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
   selector: 'app-manage-student',
@@ -15,6 +17,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./manage-student.page.scss'],
 })
 export class ManageStudentPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   userdata: any;
   lang: any;
   students = <any>[];
@@ -34,7 +37,9 @@ export class ManageStudentPage implements OnInit {
     private router: Router,
     public zone: NgZone, 
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private searchApi: SearchApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
@@ -70,7 +75,7 @@ export class ManageStudentPage implements OnInit {
       this.userdata = userLoggedIn;
       let data = { 'school_id': this.userdata.details.school_id };
       
-      this.dataProvider.getSchoolStudents(data).then(res => {
+      this.schoolDirectoryApi.getSchoolStudents(data).then(res => {
         if (res.data) {
           this.students = res.data;
           if (this.students.length > 20) {
@@ -90,7 +95,7 @@ export class ManageStudentPage implements OnInit {
     
     this.show_loading = true;
     
-    this.dataProvider.getSchoolStudents(data).then(res => {
+    this.schoolDirectoryApi.getSchoolStudents(data).then(res => {
       this.show_loading = false;
       if (res && res.data) {
         this.students = res.data;
@@ -129,7 +134,7 @@ export class ManageStudentPage implements OnInit {
         'search_str': input.trim()
       };
       
-      this.dataProvider.serachStudent(data).then(res => {
+      this.searchApi.serachStudent(data).then(res => {
         this.show_loading = false;
         if (res && res.data && res.data.response) {
           this.students = res.data.response;

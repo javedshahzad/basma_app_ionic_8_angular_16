@@ -10,6 +10,7 @@ import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor
 
 // 🟢 1. استيراد خدمة التخزين الآمنة
 import { StorageService } from '../service/storage.service';
+import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
 
 @Component({
   selector: 'app-connect-chat',
@@ -41,7 +42,8 @@ export class ConnectChatPage implements OnInit, OnDestroy {
     private photoViewer: PhotoViewer,
     private router: Router,
     private route: ActivatedRoute,
-    private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private parentConnectApi: ParentConnectApiService
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
@@ -115,12 +117,15 @@ export class ConnectChatPage implements OnInit, OnDestroy {
     }
   }
 
+  trackByMessage(index: number, message: any): any {
+    return message?.id ?? index;
+  }
+
   showPhoto(url: string){
     this.photoViewer.show(url);
   }
 
   getInitialChat() {
-    this.dataProvider.showLoading();
     let data = {
       user_no: this.userDetails.details.user_no,
       school_id: this.userDetails.details.school_id,
@@ -129,9 +134,8 @@ export class ConnectChatPage implements OnInit, OnDestroy {
       chat_id: this.chat.id,
       last_msg_id: 0
     };
-    
-    this.dataProvider.getParentConnectChatMessages(data).then((response: any) => {
-      this.dataProvider.hideLoading();
+
+    this.dataProvider.run(() => this.parentConnectApi.getParentConnectChatMessages(data)).then((response: any) => {
       if (response.session) {
         let length = response.chat.length;
         if (length > 0) {
@@ -146,7 +150,6 @@ export class ConnectChatPage implements OnInit, OnDestroy {
         this.router.navigate(['login'], { replaceUrl: true });
       }
     }).catch((error) => {
-      this.dataProvider.hideLoading();
     });
   }
 
@@ -160,7 +163,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
       last_msg_id: lastMessageId
     };
     
-    this.dataProvider.getParentConnectChatMessages(data).then((response: any) => {
+    this.parentConnectApi.getParentConnectChatMessages(data).then((response: any) => {
       if (response.session) {
         let length = response.chat.length;
         if (length > 0) {
@@ -208,8 +211,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
         this.dataProvider.showToast(this.lang.max_body || "النص طويل جداً");
       } else {
         this.image = '';
-        this.dataProvider.showLoading();
-        
+
         let data = {};
         if (this.userDetails.details.user_type == '4' || this.userDetails.details.user_type == '8') {
           data = {
@@ -240,8 +242,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
           };
         }
         
-        this.dataProvider.sendParentConnectChatMsg(data).then((response: any) => {
-          this.dataProvider.hideLoading();
+        this.dataProvider.run(() => this.parentConnectApi.sendParentConnectChatMsg(data)).then((response: any) => {
           if (response.session) {
             this.dataProvider.showToast(response.message);
             if (this.lastMessageId < response.msg_id) {
@@ -268,7 +269,6 @@ export class ConnectChatPage implements OnInit, OnDestroy {
             this.router.navigate(['login'], { replaceUrl: true });
           }
         }).catch((error) => {
-          this.dataProvider.hideLoading();
           this.dataProvider.errorALertMessage(error);
         });
       }
@@ -323,12 +323,9 @@ export class ConnectChatPage implements OnInit, OnDestroy {
   }
 
   downloadImage(imageUrl: string){
-    this.dataProvider.showLoading();
-    this.dataProvider.downloadImage(imageUrl).then((res) => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.dataProvider.downloadImage(imageUrl)).then((res) => {
       this.dataProvider.showToast(this.lang.download_complete || "تم التنزيل");
     }).catch((error) => {
-      this.dataProvider.hideLoading();
       this.dataProvider.errorALertMessage(error);
     });
   }

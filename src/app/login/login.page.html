@@ -1,4 +1,4 @@
-<ion-content class="bg-[#f8fafc]" mode="md">
+﻿<ion-content class="bg-[#f8fafc]" mode="md">
   
   <div class="min-h-screen flex flex-col justify-center items-center p-5" dir="rtl">
     
@@ -12,10 +12,10 @@
 
     <!-- 🟢 قسم الحسابات المحفوظة (يظهر فقط إذا كان هناك حسابات سابقة) -->
     <div *ngIf="loggedinUser.length > 0" class="w-full max-w-md mb-6 flex gap-3 overflow-x-auto pb-2 scrollbar-hide" dir="rtl">
-      <div *ngFor="let u of loggedinUser" 
+      <div *ngFor="let u of loggedinUser; trackBy: trackByIndex" 
            class="flex flex-col items-center justify-center bg-white p-3 rounded-2xl shadow-sm border border-slate-200 min-w-[90px] cursor-pointer hover:border-indigo-300 hover:shadow-md transition-all active:scale-95"
            (click)="user.email_id = u.email_id; user.password = u.password; login()">
-        <img [src]="u.image" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-full object-cover border border-slate-100 shadow-inner mb-2 bg-slate-50">
+        <img loading="lazy" [src]="u.image" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-full object-cover border border-slate-100 shadow-inner mb-2 bg-slate-50">
         <span class="text-[11px] font-bold text-slate-700 truncate w-full text-center">{{u.name || 'مستخدم'}}</span>
       </div>
     </div>

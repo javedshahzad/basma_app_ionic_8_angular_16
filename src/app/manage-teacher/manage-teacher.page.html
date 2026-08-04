@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border lineone-header" mode="md">
+﻿<ion-header class="ion-no-border lineone-header" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="mr-2">
       <ion-button (click)="addTeacher()" class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 shadow-sm hover:bg-indigo-100 transition-all flex items-center justify-center">
@@ -33,11 +33,11 @@
       
       <div id="teacher" class="space-y-3" *ngIf="trimmedTeacher?.length > 0">
         <div class="bg-white rounded-2xl p-3 flex items-center gap-4 border border-slate-100 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all cursor-pointer active:scale-[0.98] animate-fade-in-up" 
-             *ngFor="let list of trimmedTeacher; let i=index" 
+             *ngFor="let list of trimmedTeacher; let i=index; trackBy: trackByIndex" 
              (click)="openEditPage(list)">
           
           <div class="relative shrink-0">
-            <img *ngIf="list.pic" [src]="list.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
+            <img loading="lazy" *ngIf="list.pic" [src]="list.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
                  class="w-14 h-14 rounded-xl object-cover border border-slate-200 bg-slate-50 shadow-sm">
             
             <div *ngIf="!list.pic" class="w-14 h-14 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center border border-indigo-100 shadow-sm">
@@ -65,7 +65,7 @@
       </div>
 
       <div class="space-y-3" *ngIf="!trimmedTeacher?.length && !show_loading">
-        <div class="bg-white rounded-2xl p-4 flex items-center gap-4 border border-slate-100 shadow-sm" *ngFor="let dummy of '12345678'.split('')">
+        <div class="bg-white rounded-2xl p-4 flex items-center gap-4 border border-slate-100 shadow-sm" *ngFor="let dummy of '12345678'.split(''); trackBy: trackByIndex">
           <ion-skeleton-text animated class="w-14 h-14 rounded-xl shrink-0 m-0"></ion-skeleton-text>
           <div class="flex-1 space-y-2">
             <ion-skeleton-text animated class="w-2/3 h-4 rounded-lg m-0"></ion-skeleton-text>

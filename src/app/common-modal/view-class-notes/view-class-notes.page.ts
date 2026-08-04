@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,NgZone } from '@angular/core';
+﻿import { Component, OnInit, Input,NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DataService } from '../../service/data/data.service';
@@ -8,12 +8,15 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import {CreateClassPage } from '../../create-class/create-class.page';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import {DocumentService} from '../../service/document/document.service';
+import { NotesApiService } from '../../service/notes-api/notes-api.service';
+import { StorageService } from '../../service/storage.service';
 @Component({
   selector: 'app-view-class-notes',
   templateUrl: './view-class-notes.page.html',
   styleUrls: ['./view-class-notes.page.scss'],
 })
 export class ViewClassNotesPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
 	@Input() data;
   @Input() state;
 	lang:any;
@@ -34,7 +37,9 @@ export class ViewClassNotesPage implements OnInit {
               private photoViewer: PhotoViewer,
               public zone:NgZone,
               private router:Router,
-              public modalController: ModalController) {
+              public modalController: ModalController,
+              private notesApi: NotesApiService,
+              private storageSr: StorageService) {
                 this.translate.get("alertmessages").subscribe((res)=>{
                   this.lang = res;
                 })
@@ -56,9 +61,10 @@ export class ViewClassNotesPage implements OnInit {
     console.log(url);
     this.photoViewer.show(url);
   }
-  ionViewWillEnter(){
-      if (localStorage.getItem("userloggedin")) {
-      this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+  async ionViewWillEnter(){
+      const userData = await this.storageSr.get("userloggedin");
+      if (userData) {
+      this.userDetails = userData;
       this.userType = this.userDetails.details.user_type;
     }
   }
@@ -122,7 +128,7 @@ export class ViewClassNotesPage implements OnInit {
         "course_id": course.cid,
         "school_id": this.userDetails.details.school_id,
       }
-      this.dataProvider.getAllClassNotes(studentData).then(res=>{
+      this.notesApi.getAllClassNotes(studentData).then(res=>{
         console.log(res);
         if(res){
          // this.dataProvider.viewNotes(res);

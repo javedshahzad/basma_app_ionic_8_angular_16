@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="menu-btn-container">
     </ion-buttons>
@@ -80,7 +80,7 @@
         </div>
 
         <div class="flex flex-wrap gap-2 mt-4" *ngIf="mail.selected_users?.length > 0">
-          <span *ngFor="let user of mail.selected_users" class="bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center shadow-sm">
+          <span *ngFor="let user of mail.selected_users; trackBy: trackByIndex" class="bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center shadow-sm">
             {{user.first_name}}
           </span>
         </div>
@@ -101,7 +101,7 @@
 
       <div class="p-4 flex items-center gap-3 bg-white border-b border-slate-100" *ngIf="ticketImage != ''">
         <div class="w-16 h-16 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm relative">
-          <img [src]="'data:image/jpeg;base64,' + ticketImage" class="w-full h-full object-cover"/>
+          <img loading="lazy" [src]="'data:image/jpeg;base64,' + ticketImage" class="w-full h-full object-cover"/>
         </div>
         <div class="flex-1 overflow-hidden">
           <span class="block text-sm font-bold text-slate-800">الصورة المرفقة</span>

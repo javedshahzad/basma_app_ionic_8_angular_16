@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavController, Platform } from '@ionic/angular';
 
@@ -6,6 +6,7 @@ import { NavController, Platform } from '@ionic/angular';
   selector: 'app-pdfviewer',
   templateUrl: './pdfviewer.page.html',
   styleUrls: ['./pdfviewer.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PdfviewerPage implements OnInit {
   

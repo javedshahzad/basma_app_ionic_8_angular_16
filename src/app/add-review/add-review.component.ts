@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../service/data/data.service';
@@ -12,9 +12,11 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './add-review.component.html',
   styleUrls: ['./add-review.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddReviewComponent implements OnInit {
+  trackByIndex(index: number): number { return index; }
   ratingStars: number;
   // @Input() lang;
   @Input() data;
@@ -50,7 +52,7 @@ export class AddReviewComponent implements OnInit {
   showImageViewer: boolean = false;
   viewImageUrl: string = '';
 
-  constructor(public modalController: ModalController, public dataProvider: DataService,public translate: TranslateService,) { }
+  constructor(public modalController: ModalController, public dataProvider: DataService,public translate: TranslateService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     console.log(this.data,this.student);
@@ -62,6 +64,7 @@ export class AddReviewComponent implements OnInit {
     // this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
     this.translate.get("alertmessages").subscribe((val)=>{
       this.lang = val;
+      this.cdr.markForCheck();
     });
     if(this.data){
       if(this.data.note){

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, EventEmitter } from '@angular/core';
+import { Component, OnInit, NgZone, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -12,9 +12,11 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-elearning-schools',
   templateUrl: './elearning-schools.page.html',
   styleUrls: ['./elearning-schools.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ElearningSchoolsPage implements OnInit {
-  public language: EventEmitter<any> = new EventEmitter();  
+  trackByIndex(index: number): number { return index; }
+  public language: EventEmitter<any> = new EventEmitter();
 
   schools: any = [];
   noDataFound: string = '';
@@ -40,13 +42,16 @@ export class ElearningSchoolsPage implements OnInit {
     public alertController: AlertController,
     private geo: GeoServiceProvider,
     public zone: NgZone,
-    private storageSr: StorageService 
+    private storageSr: StorageService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
     this.translate.get("location").subscribe((res) => {
       this.location_lang = res;
+      this.cdr.markForCheck();
     });
   }
 
@@ -54,7 +59,7 @@ export class ElearningSchoolsPage implements OnInit {
 
   async ionViewWillEnter() {
     this.show_loading = true;
-    this.schools = []; 
+    this.schools = [];
 
     // 🟢 قراءة اللغة الحالية وجلب مصفوفة الدول
     const currentLang = this.translate.currentLang || this.translate.getDefaultLang();
@@ -79,6 +84,7 @@ export class ElearningSchoolsPage implements OnInit {
       this.show_loading = false;
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   getSchool(location) {
@@ -88,10 +94,12 @@ export class ElearningSchoolsPage implements OnInit {
       if (this.schools.length === 0) {
         this.noDataFound = this.lang.no_schools_found || 'لا توجد مدارس متاحة حالياً.';
       }
+      this.cdr.markForCheck();
     }).catch((err) => {
       this.show_loading = false;
       this.noDataFound = this.lang.no_schools_found || 'حدث خطأ في جلب البيانات.';
       console.log(err);
+      this.cdr.markForCheck();
     });
   }
 

@@ -39,6 +39,15 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['Chrome'],
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    // الافتراضي (30 ثانية) غير كافٍ: عدد كبير من الصفحات ينشئ setInterval حقيقياً
+    // في المُنشئ (constructor)، ولا يوجد استدعاء تلقائي لـ ngOnDestroy بين اختبار
+    // وآخر في TestBed، فتتراكم المؤقتات عبر الجلسة الواحدة وتُبطئ التنفيذ تدريجياً
+    browserNoActivityTimeout: 120000,
+    // مع تراكم عشرات المكوّنات المُصيَّرة فعلياً (أشجار Ionic معقدة) ضمن نفس
+    // جلسة المتصفح الواحدة، قد ينهار Chrome Headless لضغط الذاكرة قرب نهاية
+    // التشغيل الكامل. السماح بإعادة اتصال محدودة بدل فشل التشغيل بالكامل
+    browserDisconnectTolerance: 3,
+    browserDisconnectTimeout: 30000
   });
 };

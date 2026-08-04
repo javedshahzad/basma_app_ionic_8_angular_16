@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import { environment } from '../../../environments/environment';
 
 import { TranslateService } from '@ngx-translate/core';
 
@@ -763,7 +764,7 @@ export class GeoServiceProvider {
      * @returns {Observable<Object>}
      */
     getMyLocation(): Promise<any> {
-        return this.http.get(`https://ipinfo.io?token=eebb6806073dbe`).toPromise()
+        return this.http.get(`https://ipinfo.io?token=${environment.ipinfoToken}`).toPromise()
             .then((data : any) => {
                
                 if (data && data.hasOwnProperty('country')) {

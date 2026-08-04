@@ -91,26 +91,24 @@ export class ParentRegisterPage implements OnInit {
     }, 500);
   }
 
-  registerparent() {
-    this.dataProvider.showLoading();
-    this.dataProvider.registerNewParent({
-      "user_no": this.user_no,
-      "school_id": this.school_id,
-      "parentId": this.parent.parentId,
-      "parentName": this.parent.name,
-      "studentId": this.parent.studentId,
-      "password": this.parent.password
-    }).then((response) => {
-      this.dataProvider.hideLoading();
+  async registerparent() {
+    try {
+      const response = await this.dataProvider.run(() => this.dataProvider.registerNewParent({
+        "user_no": this.user_no,
+        "school_id": this.school_id,
+        "parentId": this.parent.parentId,
+        "parentName": this.parent.name,
+        "studentId": this.parent.studentId,
+        "password": this.parent.password
+      }));
       this.dataProvider.showToast(response);
-      
+
       this.user.email_id = this.parent.parentId;
       this.user.password = this.parent.password;
       this.login(); // تسجيل الدخول مباشرة بعد نجاح التسجيل
-    }).catch((err) => {
-      this.dataProvider.hideLoading();
+    } catch (err) {
       this.dataProvider.errorALertMessage(err);
-    });
+    }
   }
 
   // 🟢 دالة تسجيل الدخول المحدثة والآمنة

@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="mr-2">
       <button *ngIf="userType == '8'" 
@@ -36,13 +36,13 @@
     
     <div *ngIf="chats?.length > 0" class="space-y-4">
       <div class="bg-white rounded-3xl p-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 transition-all hover:shadow-md cursor-pointer relative overflow-hidden" 
-           *ngFor="let chatuser of chats" 
+           *ngFor="let chatuser of chats; trackBy: trackByIndex" 
            (click)="openChat(chatuser)">
         
         <div class="flex items-start gap-4">
           
           <div class="relative shrink-0">
-            <img [src]="chatuser.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
+            <img loading="lazy" [src]="chatuser.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
                  class="w-14 h-14 rounded-2xl object-cover border border-slate-200 shadow-sm bg-slate-50">
             <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white" 
                   [ngClass]="chatuser.ticket_status == '0' ? 'bg-emerald-500' : 'bg-rose-500'"></span>
@@ -114,7 +114,7 @@
   </button>
   
   <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
-    <img [src]="imageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+    <img loading="lazy" [src]="imageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
   </div>
 </div>
 

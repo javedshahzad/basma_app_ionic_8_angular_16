@@ -7,6 +7,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 import { CameraResultType , Camera , ImageOptions, CameraSource } from '@capacitor/camera';
+import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
+import { StorageService } from '../service/storage.service';
 
 @Component({
   selector: 'app-connect-new-message',
@@ -29,38 +31,39 @@ export class ConnectNewMessagePage implements OnInit {
               public authProvider: AuthService, 
               public translate: TranslateService, 
               public alertCtrl: AlertController,
-              private router: Router) {
-              
+              private router: Router,
+              private parentConnectApi: ParentConnectApiService,
+              private storageSr: StorageService) {
+
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
     });
   }
 
-  ionViewWillEnter() {
-    this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+  async ionViewWillEnter() {
+    this.userDetails = await this.storageSr.get("userloggedin");
   }
 
   dismiss() {
     this.viewCtrl.dismiss();
   }
   
-  sendMessage() {
+  async sendMessage() {
     // التأكد من عدم تجاوز الحد الأقصى
     if (this.message.title.length > 35) {
       this.dataProvider.showToast(this.lang.max_title);
     } else if (this.message.message.length > 140) {
       this.dataProvider.showToast(this.lang.max_body);
     } else {
-      this.dataProvider.showLoading();
       let data = {
         user_no: this.userDetails.details.user_no,
         school_id: this.userDetails.details.school_id,
         session_id: this.userDetails.session_id,
         message: this.message
       };
-      
-      this.dataProvider.createParentConnectChat(data).then((response) => {
-        this.dataProvider.hideLoading();
+
+      try {
+        const response = await this.dataProvider.run(() => this.parentConnectApi.createParentConnectChat(data));
         if (response.session) {
           this.dataProvider.showToast(response.message);
           this.viewCtrl.dismiss(true);
@@ -70,10 +73,9 @@ export class ConnectNewMessagePage implements OnInit {
           this.viewCtrl.dismiss(true);
           this.router.navigate(['login'], { replaceUrl: true });
         }
-      }).catch(error => {
-        this.dataProvider.hideLoading();
+      } catch (error) {
         this.dataProvider.errorALertMessage(error);
-      });
+      }
     }
   }
 

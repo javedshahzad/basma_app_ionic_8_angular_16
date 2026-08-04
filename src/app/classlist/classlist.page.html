@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     
     <ion-buttons slot="start" class="menu-btn-container">
@@ -70,7 +70,7 @@
   <div class="main-container">
 
     <div class="space-y-4 mt-2" *ngIf="isLoading">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 animate-pulse" *ngFor="let dummy of [1,2,3,4,5]">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 animate-pulse" *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex">
         <div class="w-14 h-14 bg-slate-200 rounded-2xl"></div>
         <div class="flex-1 space-y-3">
           <div class="h-4 bg-slate-200 rounded-md w-2/3"></div>
@@ -97,7 +97,7 @@
           
           <ng-container *ngIf="classes?.length > 0; else noClasses">
             <ion-reorder-group [disabled]="canReorder" (ionItemReorder)="doReorder($event)" class="w-full flex flex-wrap">
-              <ion-col size="12" size-md="6" size-lg="4" *ngFor="let course of classes; let i = index">
+              <ion-col size="12" size-md="6" size-lg="4" *ngFor="let course of classes; let i = index; trackBy: trackByCourse">
                 
                 <ion-card class="lineone-card" (click)="canReorder ? openClassStudents(course) : null" [ngClass]="!canReorder ? 'cursor-grab active:cursor-grabbing' : 'cursor-pointer'">
                   <div class="card-content-flex flex items-center p-4">
@@ -139,7 +139,7 @@
         <ion-grid class="ion-no-padding">
           <ion-row *ngIf="dashBoard?.length > 0; else noDash">
             
-            <ion-col size="12" size-md="6" size-lg="4" *ngFor="let seminar of dashBoard; let i = index">
+            <ion-col size="12" size-md="6" size-lg="4" *ngFor="let seminar of dashBoard; let i = index; trackBy: trackByIndex">
               <ion-card class="lineone-card dashboard-card" (click)="openSeminar(i+1)">
                 
                 <div class="dash-header">

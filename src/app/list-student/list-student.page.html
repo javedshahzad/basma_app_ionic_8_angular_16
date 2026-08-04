@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border bg-slate-50">
+﻿<ion-header class="ion-no-border bg-slate-50">
   <ion-toolbar class="--bg-transparent">
     
     <ion-buttons slot="end" class="mr-2">
@@ -35,7 +35,7 @@
             style="--padding-start: 0; --padding-end: 0; --padding-top: 0; --padding-bottom: 0;"
           >
             <ion-select-option
-              *ngFor="let dummy of totalSemArray; let i = index"
+              *ngFor="let dummy of totalSemArray; let i = index; trackBy: trackByIndex"
              [value]="i + 1"
             >
               الحصة {{ i + 1 }} {{ lockedPeriods.includes(i + 1) && currentActivePeriod !== (i + 1) ? '(للمعاينة 👁️)' : '' }}
@@ -83,7 +83,7 @@
 <ion-content class="bg-slate-50" mode="md">
   
   <div *ngIf="show_loading" class="p-4 space-y-4">
-    <div *ngFor="let dummy of [1,2,3,4,5]" class="h-20 bg-slate-200 rounded-2xl animate-pulse"></div>
+    <div *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex" class="h-20 bg-slate-200 rounded-2xl animate-pulse"></div>
   </div>
 
   <div *ngIf="!show_loading">
@@ -180,7 +180,7 @@
       </button>
 
       <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
-        <img [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+        <img loading="lazy" [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
       </div>
 
     </div>

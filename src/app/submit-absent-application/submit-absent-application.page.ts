@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NavController, AlertController, Platform } from '@ionic/angular';
@@ -9,6 +9,7 @@ import { Camera, CameraResultType, CameraSource, ImageOptions } from '@capacitor
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { AbsentApplicationApiService } from '../service/absent-application-api/absent-application-api.service';
 
 @Component({
   selector: 'app-submit-absent-application',
@@ -16,6 +17,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./submit-absent-application.page.scss'],
 })
 export class SubmitAbsentApplicationPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   UserData: any;
   absentDates: any;
   absentSeminars: any;
@@ -37,8 +39,9 @@ export class SubmitAbsentApplicationPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private platform: Platform, // 🟢 لحماية التقاط الصور
-    private storageSr: StorageService // 🟢 2. حقن الخدمة
-  ) { 
+    private storageSr: StorageService, // 🟢 2. حقن الخدمة
+    private absentApplicationApi: AbsentApplicationApiService
+  ) {
     // 🟢 3. استخراج البيانات من الـ Router بشكل متزامن قبل ضياعها
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
@@ -127,22 +130,18 @@ export class SubmitAbsentApplicationPage implements OnInit {
       "imageData": this.ImgData
     };
 
-    this.dataProvider.showLoading();
-    
     try {
-      let res: any = await this.dataProvider.saveAbsentApplication(data);
-      this.dataProvider.hideLoading();
+      let res: any = await this.dataProvider.run(() => this.absentApplicationApi.saveAbsentApplication(data));
       this.dataProvider.showToast(res.msg);
-      
+
       if (res.success) {
         // تنظيف البيانات المؤقتة بعد الإرسال الناجح
         await this.storageSr.remove('submitAppData');
         setTimeout(() => {
-          this.navCtrl.back(); 
+          this.navCtrl.back();
         }, 1000);
       }
     } catch (error) {
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast("حدث خطأ أثناء الاتصال بالخادم");
     }
   }

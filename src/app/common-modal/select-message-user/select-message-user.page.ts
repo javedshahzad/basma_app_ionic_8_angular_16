@@ -1,17 +1,22 @@
-import { Component, OnInit,NgZone,Input } from '@angular/core'; 
+﻿import { Component, OnInit,NgZone,Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, NavParams, AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DataService } from '../../service/data/data.service';
 import { Location } from '@angular/common';
+import { SearchApiService } from '../../service/search-api/search-api.service';
+import { StorageService } from '../../service/storage.service';
+import { SchoolDirectoryApiService } from '../../service/school-directory-api/school-directory-api.service';
 
 
 @Component({
   selector: 'app-select-message-user',
   templateUrl: './select-message-user.page.html',
   styleUrls: ['./select-message-user.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectMessageUserPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
 	userDetails:any;
   selectedUsers:any=[];
   selectedUsersShow:any=[];
@@ -27,7 +32,11 @@ export class SelectMessageUserPage implements OnInit {
 			        private router:Router,
 			        public zone:NgZone, 
 			        private location:Location,
-		          public platform: Platform) {
+		          public platform: Platform,
+          private searchApi: SearchApiService,
+          private storageSr: StorageService,
+          private schoolDirectoryApi: SchoolDirectoryApiService,
+          private cdr: ChangeDetectorRef) {
   	this.route.queryParams.subscribe((params:any) => {
       this.selectedUsers = params.selectedUsers ? params.selectedUsers : [];
       this.selectedUsersShow = params.selectedUsersShow;
@@ -35,38 +44,40 @@ export class SelectMessageUserPage implements OnInit {
 	     //  		 this.users = this.router.getCurrentNavigation().extras.state;
 	  			// this.allUsers = this.allUsers.concat(this.users.splice(0, 20));
 	      }
+	      this.cdr.markForCheck();
 	    });
 	    this.translate.get("alertmessages").subscribe((response) => {
 	      this.lang = response;
+	      this.cdr.markForCheck();
 	    });
 
    }
 
-  ngOnInit() {
-  	 	if(localStorage.getItem("userloggedin")){
-	      this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+  async ngOnInit() {
+  	 	const userData = await this.storageSr.get("userloggedin");
+	  	if(userData){
+	      this.userDetails = userData;
 	      this.getUsers();
 	  	}
 	  	console.log(this.users)
+	  	this.cdr.markForCheck();
   }
-    getUsers(){
+    async getUsers(){
     let data={
       'school_id':this.userDetails.details.school_id
     }
-    this.dataProvider.showLoading();
-    this.dataProvider.getAllSchoolUsers(data).then(res => {
-    this.dataProvider.hideLoading();
-        console.log('seminar class',res);
-        if(res.data){
-          this.users=res.data;
-          this.allUsers = this.allUsers.concat(this.users.splice(0, 20));
-        }
-     
-  }).catch(error=>{
-    this.dataProvider.hideLoading();
-    this.dataProvider.showToast(error);
-    console.log(error)
-  })
+    try {
+      const res = await this.dataProvider.run(() => this.schoolDirectoryApi.getAllSchoolUsers(data));
+      console.log('seminar class',res);
+      if(res.data){
+        this.users=res.data;
+        this.allUsers = this.allUsers.concat(this.users.splice(0, 20));
+      }
+    } catch (error) {
+      this.dataProvider.showToast(error);
+      console.log(error)
+    }
+    this.cdr.markForCheck();
   }
 
   filterList(event){
@@ -78,7 +89,7 @@ export class SelectMessageUserPage implements OnInit {
     	input:input,
     	school_id:this.userDetails.details.school_id
     }
-    this.dataProvider.searchAllUser(data).then(resp=>{
+    this.searchApi.searchAllUser(data).then(resp=>{
     	if(resp.data){
         	this.users=resp.data;
           if(this.users.length > 1){
@@ -87,8 +98,10 @@ export class SelectMessageUserPage implements OnInit {
             this.allUsers = this.users;
           }
         }
+        this.cdr.markForCheck();
     }).catch(arr=>{
     	console.log(arr)
+    	this.cdr.markForCheck();
     })
   }
 
@@ -159,7 +172,7 @@ export class SelectMessageUserPage implements OnInit {
      'selectedUsers':this.selectedUsers,
      'selectedUsersShow':this.selectedUsersShow
    }
-   this.dataProvider.selectedUsers.emit(data);
+   this.dataProvider.selectedUsers.next(data);
    this.location.back();
   }
 

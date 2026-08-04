@@ -9,7 +9,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,html,scss}\""
   },
   "private": true,
   "dependencies": {
@@ -52,6 +54,8 @@
     "@mtnair/ngx-pinch-zoom": "^2.5.10",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
+    "@sentry/angular": "^10.60.0",
+    "@sentry/capacitor": "^4.2.0",
     "@types/swiper": "^4.4.3",
     "com-badrit-base64": "^0.2.0",
     "cordova-plugin-apprate": "^1.8.0",
@@ -110,6 +114,7 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
     "postcss": "^8.5.8",
+    "prettier": "^3.9.6",
     "protractor": "~7.0.0",
     "tailwindcss": "^3.4.19",
     "ts-node": "~8.3.0",

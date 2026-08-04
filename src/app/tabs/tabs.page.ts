@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatabaseService } from '../service/database/database.service';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
 // 🟢 1. استيراد خدمة التخزين الجديدة
-import { StorageService } from '../service/storage.service'; 
+import { StorageService } from '../service/storage.service';
 
 @Component({
   selector: 'app-tabs',
@@ -12,6 +13,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./tabs.page.scss'],
 })
 export class TabsPage implements OnInit {
+  private destroyRef = inject(DestroyRef);
   loggedin: boolean = false;
   activePage: any;
   isParent = false;
@@ -33,7 +35,7 @@ export class TabsPage implements OnInit {
     private router: Router,
     private storageSr: StorageService 
   ) { 
-    this.authProvider.event.subscribe(async (res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async (res) => {
         if (res) {
            await this.dbProvider.openDataBase();
            // 🟢 إضافة مهلة صغيرة جداً لضمان تحديث الـ Storage قبل قراءته

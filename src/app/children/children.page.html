@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="mr-2">
       <ion-menu-button class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-700 shadow-sm flex items-center justify-center">
@@ -17,7 +17,7 @@
   <div class="p-4 md:p-6 max-w-2xl mx-auto space-y-4 pb-20" dir="rtl">
     
     <div *ngIf="students?.length > 0" class="space-y-4">
-      <div *ngFor="let student of students" 
+      <div *ngFor="let student of students; trackBy: trackByIndex" 
      (click)="openStudentDetail(student)"
      class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 relative overflow-hidden active:scale-[0.97] transition-all cursor-pointer">
         

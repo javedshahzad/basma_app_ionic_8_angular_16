@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar class="--bg-transparent">
     <ion-buttons slot="start" class="mr-2 w-10"></ion-buttons>
 
@@ -44,7 +44,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١۔ حضور المتعلم ومواظبته والتزامه بالمواعيد أثناء الحصة الدراسية</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(0, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(0, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[0] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -55,7 +55,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٢۔ التعاون مع الزملاء المتعلمين أثناء الحصة الدراسية</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(1, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(1, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[1] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -66,7 +66,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٣۔ يعتمد سلوك المتعلم على احترام زملائه</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(2, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(2, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[2] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -77,7 +77,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٤۔ ترتبط العلاقة بين المتعلم والمعلم على أساس الاحترام المتبادل</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(3, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(3, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[3] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -88,7 +88,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٥۔ الالتزام بضوابط المحافظة على الممتلكات العامة</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(4, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(4, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[4] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -99,7 +99,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٦۔ مدى إدراك المتعلم بحقوقه والتزامه بواجباته</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(5, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(5, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[5] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -110,7 +110,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٧۔ مدى فهم واستيعاب المتعلم للنظم واللوائح داخل المؤسسة التعليمية</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(6, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(6, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[6] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -121,7 +121,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٨۔ الاهتمام والتركيز في المشاركة أثناء الحصة الدراسية</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(7, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(7, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[7] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -132,7 +132,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٩۔ قدرة المتعلم على الاستيعاب الذهني أثناء الحصة الدراسية</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(8, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(8, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[8] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -143,7 +143,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٠۔ قدرة المتعلم على القراءة بطلاقة مع الفهم الدقيق للمعاني</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(9, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(9, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[9] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -154,7 +154,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١١۔ قدرة المتعلم على تنظيم الأفكار والتعبير عنها كتابياً</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(10, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(10, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[10] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -165,7 +165,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٢۔ يُظهر المتعلم موقفاً مسؤولاً ولديه قدرة على اتخاذ القرار بالاعتماد على نفسة</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(11, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(11, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[11] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -176,7 +176,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٣۔ مدى الاستفادة من حصيلة المعارف والمهارات السابقة في الاختبار العملي</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(12, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(12, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[12] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -187,7 +187,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٤۔ مستوى تحصيل المتعلم دراسياً قياساً بأهداف المادة الدراسية</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(13, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(13, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[13] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -198,7 +198,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٥۔ قدرة المتعلم على اجراء العمليات بهدف حل المشكلات والتفكير الناقد</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(14, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(14, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[14] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -209,7 +209,7 @@
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
       <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٦۔ مهارات الابتكار والتخطيط في أداء المشاريع</h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index;" (click)="selectStarsForRating(15, i)"
+        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(15, i)"
              class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
              [ngClass]="postData[15] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
           <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
@@ -253,6 +253,6 @@
     <ion-icon name="close" class="text-xl"></ion-icon>
   </button>
   <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
-    <img [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+    <img loading="lazy" [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
   </div>
 </div>

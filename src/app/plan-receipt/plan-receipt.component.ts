@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController, Platform, IonicModule } from '@ionic/angular';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,8 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './plan-receipt.component.html',
   styleUrls: ['./plan-receipt.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanReceiptComponent implements OnInit {
   @Input() selectedPlan: any;

@@ -1,17 +1,21 @@
-
-import { Component, OnInit } from '@angular/core';
+﻿
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { NavController, AlertController, PopoverController, ModalController, ActionSheetController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatePipe } from '@angular/common';
+import { AbsentApplicationApiService } from '../service/absent-application-api/absent-application-api.service';
+import { StorageService } from '../service/storage.service';
 
 @Component({
   selector: 'app-all-application-list',
   templateUrl: './all-application-list.page.html',
   styleUrls: ['./all-application-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AllApplicationListPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   userDetails: any;
   AllAvailableApplications=[];
   SelectedDate: any;
@@ -29,38 +33,40 @@ export class AllApplicationListPage implements OnInit {
                     public popoverController: PopoverController,
                     private router:Router,
                     public modalCtrl: ModalController,
-                    public actionSheet: ActionSheetController
+                    public actionSheet: ActionSheetController,
+                    private absentApplicationApi: AbsentApplicationApiService,
+                    private storageSr: StorageService,
+                    private cdr: ChangeDetectorRef
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     // 🌟 توليد التاريخ المحلي الصافي YYYY-MM-DD لمنع مشكلة قفز الأشهر
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
-    
+
     this.calendarDate = `${year}-${month}-${day}`;
     this.SelectedDate = this.calendarDate;
 
-    this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+    this.userDetails = await this.storageSr.get("userloggedin");
     this.getAbsentApplication();
   }
-  
-  getAbsentApplication(){
-    if(localStorage.getItem("userloggedin")){
+
+  async getAbsentApplication(){
+    if(this.userDetails){
       let data = {
         "school_id":this.userDetails.details.school_id,
         "datetime":this.SelectedDate
       };
-      this.dataProvider.showLoading();
-      this.dataProvider.getAbsentApplication(data).then(res => {
+      try {
+        const res = await this.dataProvider.run(() => this.absentApplicationApi.getAbsentApplication(data));
         console.log(res)
         this.AllAvailableApplications = res.data;
-        this.dataProvider.hideLoading();
-      },error=>{
-        this.dataProvider.hideLoading();
+        this.cdr.markForCheck();
+      } catch (error) {
         this.dataProvider.showToast("error");
-      })  
+      }
     }
   }
 
@@ -73,7 +79,7 @@ export class AllApplicationListPage implements OnInit {
       "application_id":application.id
     };
     
-    this.dataProvider.AcceptAndRejectApplication(data).then(res => {
+    this.absentApplicationApi.AcceptAndRejectApplication(data).then(res => {
       console.log(res)
       if(res.success){
         this.getAbsentApplication()

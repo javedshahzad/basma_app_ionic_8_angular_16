@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border" mode="md">
+﻿<ion-header class="ion-no-border" mode="md">
   <ion-toolbar style="--background: #f8fafc;" class="relative text-center">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
       <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
@@ -78,11 +78,11 @@
       <h2 class="text-sm font-extrabold text-slate-800 mb-3 px-1">تفاصيل الحضور والغياب</h2>
       <div class="space-y-4">
         
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden" *ngFor="let group of seminarList.records">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden" *ngFor="let group of seminarList.records; trackBy: trackByIndex">
           
           <!-- قائمة الفصول داخل المجموعة -->
           <div class="p-2">
-            <div class="flex items-center justify-between p-3 border-b border-slate-100 last:border-0" *ngFor="let class of group.classess">
+            <div class="flex items-center justify-between p-3 border-b border-slate-100 last:border-0" *ngFor="let class of group.classess; trackBy: trackByIndex">
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
                 <span class="text-sm font-bold text-slate-700">{{class.class_name}}</span>

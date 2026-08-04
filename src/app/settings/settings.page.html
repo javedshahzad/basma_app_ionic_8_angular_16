@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border bg-white border-b border-slate-200" mode="md">
+﻿<ion-header class="ion-no-border bg-white border-b border-slate-200" mode="md">
   <ion-toolbar class="--bg-transparent">
     <ion-buttons slot="start" class="ml-2">
       <ion-menu-toggle auto-hide="false">
@@ -39,7 +39,7 @@
     
     <div class="flex flex-col items-center justify-center mb-8">
       <div class="relative">
-        <img [src]="displayPic" class="w-28 h-28 rounded-3xl object-cover border-4 border-white shadow-md bg-slate-100" onerror="this.onerror=null;this.src='assets/imgs/user-icon.PNG';">
+        <img loading="lazy" [src]="displayPic" class="w-28 h-28 rounded-3xl object-cover border-4 border-white shadow-md bg-slate-100" onerror="this.onerror=null;this.src='assets/imgs/user-icon.PNG';">
         
         <button *ngIf="userType != '8'"
                 class="absolute -bottom-2 -left-2 w-10 h-10 bg-indigo-600 text-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center hover:bg-indigo-700 transition-colors active:scale-95" 
@@ -165,7 +165,7 @@
           <label class="block text-xs font-bold text-slate-600 mb-2">{{'setting.country' | translate}}</label>
           <div class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
             <ion-select [(ngModel)]="selectedCountyCode" (ionChange)="assignCountry()" interface="action-sheet" [placeholder]="user.country" class="w-full text-sm font-bold text-slate-800 py-2">
-              <ion-select-option *ngFor="let c of countries" [value]="c.code">{{c.name}}</ion-select-option>
+              <ion-select-option *ngFor="let c of countries; trackBy: trackByIndex" [value]="c.code">{{c.name}}</ion-select-option>
             </ion-select>
           </div>
         </div>

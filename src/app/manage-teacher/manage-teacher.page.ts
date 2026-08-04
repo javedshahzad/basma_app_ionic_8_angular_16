@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -7,6 +7,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { SearchApiService } from '../service/search-api/search-api.service';
 
 @Component({
   selector: 'app-manage-teacher',
@@ -14,6 +15,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./manage-teacher.page.scss'],
 })
 export class ManageTeacherPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   course: any;
   userDetails: any;
   lang: any;
@@ -37,7 +39,8 @@ export class ManageTeacherPage implements OnInit {
     public zone: NgZone,
     private router: Router,
     public modalController: ModalController,
-    private storageSr: StorageService // 🟢 حقن الخدمة
+    private storageSr: StorageService, // 🟢 حقن الخدمة
+    private searchApi: SearchApiService
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
@@ -160,7 +163,7 @@ export class ManageTeacherPage implements OnInit {
         'pageno': 0
       };
         
-      this.dataProvider.searTeacher(data).then((res: any) => {
+      this.searchApi.searTeacher(data).then((res: any) => {
         if (res && res.data) {
           let teacher = res.data.profile ? res.data.profile : (Array.isArray(res.data) ? res.data : []);
           

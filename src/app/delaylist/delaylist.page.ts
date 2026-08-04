@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -8,7 +9,7 @@ import { PopoverController } from '@ionic/angular';
 import { LoaderComponent } from '../components/loader/loader.component';
 
 // 🟢 استيراد خدمة التخزين الموحدة
-import { StorageService } from '../service/storage.service'; 
+import { StorageService } from '../service/storage.service';
 
 @Component({
   selector: 'app-delaylist',
@@ -16,6 +17,8 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./delaylist.page.scss'],
 })
 export class DelaylistPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  private destroyRef = inject(DestroyRef);
 
   classes: any = [];
   noDataFound: string = "";
@@ -41,13 +44,13 @@ export class DelaylistPage implements OnInit {
     public alertCtrl: AlertController,
     private storageSr: StorageService // 🟢 حقن خدمة التخزين
   ) {
-    this.authProvider.event.subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       if (res.changeUser) {
         this.loadClasses();
       }
     });
 
-    this.dataProvider.language.subscribe((resq) => {
+    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq) => {
       this.translate.get("alertmessages").subscribe((res) => {
         this.lang = res;
       });

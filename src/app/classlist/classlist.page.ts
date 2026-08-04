@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, ItemReorderEventDetail, Platform, ActionSheetController, PopoverController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -16,7 +17,9 @@ dayjs.extend(duration);
 
 import { ClasslistOptionsPopoverComponent } from '../components/classlist-options-popover/classlist-options-popover.component';
 import { EditClassModalComponent } from '../components/edit-class-modal/edit-class-modal.component';
-import { StorageService } from '../service/storage.service'; 
+import { StorageService } from '../service/storage.service';
+import { SyncService } from '../service/sync/sync.service';
+import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 
 @Component({
   selector: 'app-classlist',
@@ -25,6 +28,7 @@ import { StorageService } from '../service/storage.service';
 })
 export class ClasslistPage implements OnInit {
   isLoading: boolean = true;
+  private destroyRef = inject(DestroyRef);
 
   @ViewChild(IonReorderGroup) reorderGroup: IonReorderGroup;
   classes:any = [];
@@ -61,10 +65,12 @@ export class ClasslistPage implements OnInit {
               public modalCtrl: ModalController,
               public actionSheet: ActionSheetController,
               public platform: Platform,
-              private storageSr: StorageService 
-              ) { 
+              private storageSr: StorageService,
+              private syncService: SyncService,
+              private userManagementApi: UserManagementApiService
+              ) {
         
-        this.authProvider.event.subscribe((res)=>{
+        this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res)=>{
           if(res.changeUser){
             this.ngOnInit();
           }
@@ -76,7 +82,7 @@ export class ClasslistPage implements OnInit {
           this.lang1 = res;
         })
         this.category="list";
-        this.dataProvider.language.subscribe((resq)=>{
+        this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq)=>{
           this.translate.get("alertmessages").subscribe((res)=>{
             this.lang = res;
             this.ngOnInit(false);
@@ -177,20 +183,20 @@ export class ClasslistPage implements OnInit {
 
   async ngOnInit(loader:boolean=true) {
     this.editMode = false;
-    
-    let userLoggedIn = await this.storageSr.get("userloggedin"); 
-    
+
+    let userLoggedIn = await this.storageSr.get("userloggedin");
+
     if(userLoggedIn){
       this.userDetails = userLoggedIn;
       this.userType = String(this.userDetails.details.user_type);
       this.is_school_admin = this.userDetails.details.is_school_admin;
-      
+
       this.getCourse(loader);
-      
+
       if (this.userType == '1' || this.userType == '3' || this.userType == '7') {
         this.getTodayDeshboard(false);
       }
-      
+
     }else{
       this.dataProvider.hideLoading();
       this.authProvider.flushLocalStorage();
@@ -205,18 +211,15 @@ export class ClasslistPage implements OnInit {
   }
 
   revertSchoolDeletion(){
-    this.dataProvider.showLoading();
     let data = {
       school_id: this.userDetails.details.school_id,
       user_no: this.userDetails.details.user_no
     }
-    this.dataProvider.revertDeletedSchoolSettings(data).then((response:any)=>{
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.dataProvider.revertDeletedSchoolSettings(data)).then((response:any)=>{
         this.dataProvider.errorALertMessage(response.msg);
         this.deactivate_date = '';
         this.dataProvider.deactivate_date = '';
     }).catch(error =>{
-        this.dataProvider.hideLoading();
         this.dataProvider.errorALertMessage(error.msg);
       })
   }
@@ -246,7 +249,7 @@ export class ClasslistPage implements OnInit {
       if(loader) this.isLoading = false; 
       
       if(response.session){
-        this.dataProvider.syncOffileData();
+        this.syncService.syncOffileData();
         let courses = response.data;
         
         if(response.linkData != undefined){
@@ -334,7 +337,6 @@ export class ClasslistPage implements OnInit {
 
   confirmUpdateClass() {
     if ((this.editingClass.desc && this.editingClass.desc.trim() != "") && (this.editingClass.name && this.editingClass.name.trim() != "")) {
-      this.dataProvider.showLoading();
       let postData = {
         cid: this.editingClass.cid,
         user_no: this.userDetails.details.user_no,
@@ -345,18 +347,16 @@ export class ClasslistPage implements OnInit {
         }
       };
 
-      this.dataProvider.updateCourseDesc(postData).then((response) => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.dataProvider.updateCourseDesc(postData)).then((response) => {
         if (response.session) {
-          this.getCourse(false); 
-          this.editingClass = {}; 
+          this.getCourse(false);
+          this.editingClass = {};
           this.dataProvider.showToast("تم تحديث بيانات الصف بنجاح");
         } else {
           this.authProvider.flushLocalStorage();
           this.router.navigate(['login'], { replaceUrl: true });
         }
       }).catch((error) => {
-        this.dataProvider.hideLoading();
         this.dataProvider.errorALertMessage(error);
       });
     } else {
@@ -374,24 +374,20 @@ export class ClasslistPage implements OnInit {
   }
 
   deletClass(course) {
-    this.dataProvider.showLoading();
     let data = {
       'class_id': course.cid,
       'school_id': this.userDetails.details.school_id,
-      'user_no': this.userDetails.details.user_no 
+      'user_no': this.userDetails.details.user_no
     };
 
-    this.dataProvider.deleteClass(data).then(res => {
-      this.dataProvider.hideLoading();
-      
+    this.dataProvider.run(() => this.dataProvider.deleteClass(data)).then(res => {
       if (res && (res.session || res.response)) {
         this.dataProvider.showToast(res.data || "تم حذف الصف بنجاح");
-        this.getCourse(false); 
+        this.getCourse(false);
       } else {
         this.dataProvider.showToast(res.message || "فشل في حذف الصف");
       }
     }).catch(error => {
-      this.dataProvider.hideLoading();
       console.error("Delete Error:", error);
       this.dataProvider.errorALertMessage("حدث خطأ في الاتصال بالسيرفر، يرجى المحاولة لاحقاً.");
     });
@@ -485,20 +481,26 @@ export class ClasslistPage implements OnInit {
     else if (action === 'reorder') this.toogleReorder();
   }
 
-  checkAndDeleteAccount(){
+  async checkAndDeleteAccount(){
       let data = {
         school_id: this.userDetails.details.school_id,
         user_no: this.userDetails.details.user_no
       }
-      this.dataProvider.deleteSchoolPermanentlyRequest(data, async (response) => {
-         var responseData = response;
-         this.dataProvider.hideLoading();
-         
+      try {
+        const response: any = await this.userManagementApi.deleteSchoolPermanentlyRequest(data);
+        // 🟢 الخدمة الأصلية كانت تتجاهل الاستجابة بالكامل عندما response.response غير صحيحة
+        if (!response.response) {
+          return;
+        }
+
+        var responseData = response;
+        this.dataProvider.hideLoading();
+
         if(responseData.success){
           this.dataProvider.showToast(response.msg);
-          
-          let userDetail = await this.storageSr.get("userloggedin"); 
-          
+
+          let userDetail = await this.storageSr.get("userloggedin");
+
           if(userDetail){
             let logoutData = {
               "user_no": userDetail.details.user_no,
@@ -516,10 +518,18 @@ export class ClasslistPage implements OnInit {
           this.deactivate_date = responseData.response.deactivate_date;
           this.dataProvider.deactivate_date = responseData.response.deactivate_date;
         }
-      });
+      } catch (error) {
+        console.log(error);
+      }
   }
 
   // 🟢 استبدال moment بـ dayjs (بطريقة آمنة وصحيحة)
+  trackByCourse(index: number, course: any): any {
+    return course?.cid ?? index;
+  }
+
+  trackByIndex(index: number): number { return index; }
+
   getDeactivateTime(){
     let myDayjs = dayjs(this.dataProvider.deactivate_date, "YYYY-MM-DD HH:mm:ss");
     let now = dayjs();

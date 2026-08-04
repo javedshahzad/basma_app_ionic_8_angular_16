@@ -1,4 +1,4 @@
-<ion-header>
+﻿<ion-header>
   <ion-toolbar>
     <ion-buttons slot="end">
   		<ion-back-button></ion-back-button>
@@ -21,7 +21,7 @@
       Select Plan
     </ion-label>
     <ion-select [(ngModel)]="plan_id" mode="ios"  interface="action-sheet" >
-      <ion-select-option *ngFor="let item of plans" [value]="item.id"  >
+      <ion-select-option *ngFor="let item of plans; trackBy: trackByIndex" [value]="item.id"  >
         {{item.name}}
       </ion-select-option>
     </ion-select>

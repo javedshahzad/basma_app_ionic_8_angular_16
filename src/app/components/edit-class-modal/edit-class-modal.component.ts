@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-class-modal',
   templateUrl: './edit-class-modal.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditClassModalComponent {
   

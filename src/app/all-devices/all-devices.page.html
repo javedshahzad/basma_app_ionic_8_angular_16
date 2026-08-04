@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border">
+﻿<ion-header class="ion-no-border">
   <ion-toolbar class="lineone-toolbar">
     <ion-buttons slot="start">
     </ion-buttons>
@@ -33,7 +33,7 @@
     </ng-container>
 
     <div class="device-grid" *ngIf="All_available_devices.length > 0">
-      <div *ngFor="let device of All_available_devices; let i=index" class="device-card lineone-card animate__animated animate__fadeInUp">
+      <div *ngFor="let device of All_available_devices; let i=index; trackBy: trackByIndex" class="device-card lineone-card animate__animated animate__fadeInUp">
         
         <div class="card-header-area">
           <div class="device-icon-wrapper">

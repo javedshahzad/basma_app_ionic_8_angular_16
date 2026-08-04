@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -16,8 +16,10 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-student-report-classes',
   templateUrl: './student-report-classes.page.html',
   styleUrls: ['./student-report-classes.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentReportClassesPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   classes: any = [];
   noDataFound: string = "";
   userType: any;
@@ -42,10 +44,12 @@ export class StudentReportClassesPage implements OnInit {
     public zone: NgZone,
     private router: Router,
     public modalCtrl: ModalController,
-    private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
   }
 
@@ -92,6 +96,7 @@ export class StudentReportClassesPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   getCourse(loader: boolean = true) {
@@ -129,11 +134,13 @@ export class StudentReportClassesPage implements OnInit {
         this.authProvider.flushLocalStorage();
         this.router.navigate(['login'], { replaceUrl: true });
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       if (loader) {
         this.dissmissPopOver();
         this.isLoading = false;
       }
+      this.cdr.markForCheck();
     });
   }
 

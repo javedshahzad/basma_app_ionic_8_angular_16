@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border bg-slate-50" mode="md">
+﻿<ion-header class="ion-no-border bg-slate-50" mode="md">
   <ion-toolbar class="--bg-transparent">
     
     <!-- زر الرجوع -->
@@ -55,12 +55,12 @@
   <div class="p-4 max-w-3xl mx-auto" dir="rtl">
 
     <div class="space-y-4" *ngIf="attendanceResponse.students?.length > 0">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all" *ngFor="let student of attendanceResponse.students; let sno = index;">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all" *ngFor="let student of attendanceResponse.students; let sno = index; trackBy: trackByStudent">
         
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="relative cursor-pointer" (click)="openUserImageModal(student)">
-              <img [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 shadow-sm">
+              <img loading="lazy" [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 shadow-sm">
             </div>
             <div>
               <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1 m-0">
@@ -98,7 +98,7 @@
         <!-- حقول إدخال الدرجات -->
         <div class="bg-slate-50 p-3 rounded-xl border border-slate-100" *ngIf="student.sheet.length">
           <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
-            <div *ngFor="let sheet of student.sheet" class="flex flex-col">
+            <div *ngFor="let sheet of student.sheet; trackBy: trackByIndex" class="flex flex-col">
               <label class="text-[10px] font-bold text-slate-500 mb-1 text-center leading-tight px-1 h-7 flex items-end justify-center break-words line-clamp-2" title="{{sheet.field_name}}">{{sheet.field_name}}</label>
               <div class="bg-white border border-slate-200 rounded-lg focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-9 flex items-center justify-center overflow-hidden">
                 <ion-input type="number" 
@@ -118,7 +118,7 @@
 
     <!-- شاشة التحميل -->
     <div class="space-y-4" *ngIf="show_loading">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 animate-pulse" *ngFor="let dummy of [1,2,3,4,5]">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 animate-pulse" *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex">
         <div class="flex items-center gap-3 mb-4">
           <div class="w-12 h-12 bg-slate-200 rounded-full"></div>
           <div class="flex-1 space-y-2">

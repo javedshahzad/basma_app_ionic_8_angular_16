@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar class="--bg-transparent">
     
     <!-- زر فارغ على اليمين للحفاظ على توازن المنتصف -->
@@ -7,7 +7,7 @@
     <!-- اسم وصورة المحادثة في المنتصف تماماً -->
     <ion-title class="ion-text-center">
       <div class="flex items-center justify-center gap-2" *ngIf="chat">
-        <img class="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-sm" 
+        <img loading="lazy" class="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-sm" 
              [src]="chat.pic" 
              onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';"/>
         <span class="text-sm font-bold text-slate-800">{{chat.name}}</span>
@@ -24,7 +24,7 @@
 
 <ion-content #contentArea class="bg-slate-50" mode="md" [scrollEvents]="true">
   <div class="p-4 space-y-4 pb-4">
-    <div *ngFor="let message of messages; let i = index">
+    <div *ngFor="let message of messages; let i = index; trackBy: trackByMessage">
       
       <!-- رسائل الطرف الآخر -->
       <div class="flex flex-col items-start w-full" *ngIf="message.receiver == 'false'"
@@ -34,7 +34,7 @@
           <div *ngIf="message.message && message.message != ''" class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
           
           <div *ngIf="message.attachment_url && message.attachment_url != ''" class="mt-2 relative">
-            <img class="rounded-xl w-48 h-auto object-cover border border-indigo-400/30" [src]="message.attachment_url" (click)="showPhoto(message.attachment_url)" />
+            <img loading="lazy" class="rounded-xl w-48 h-auto object-cover border border-indigo-400/30" [src]="message.attachment_url" (click)="showPhoto(message.attachment_url)" />
           </div>
           
           <div class="text-[9px] text-indigo-200 text-left mt-1 font-medium" dir="ltr">
@@ -55,7 +55,7 @@
           <div *ngIf="message.message && message.message != ''" class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
           
           <div *ngIf="message.attachment_url && message.attachment_url != ''" class="mt-2 relative">
-            <img class="rounded-xl w-48 h-auto object-cover border border-slate-200" [src]="message.attachment_url" (click)="showPhoto(message.attachment_url)" />
+            <img loading="lazy" class="rounded-xl w-48 h-auto object-cover border border-slate-200" [src]="message.attachment_url" (click)="showPhoto(message.attachment_url)" />
             <button class="absolute bottom-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-slate-700 shadow-sm backdrop-blur-sm" (click)="downloadImage(message.attachment_url)">
               <ion-icon name="download-outline" class="text-lg"></ion-icon>
             </button>
@@ -75,7 +75,7 @@
 <ion-footer *ngIf="chat && chat.ticket_status == '0'" class="bg-white border-t border-slate-100 p-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
   
   <div class="px-2 pb-2 relative w-fit" *ngIf="image != ''">
-    <img [src]="image" class="h-20 rounded-xl border border-slate-200 object-cover shadow-sm" />
+    <img loading="lazy" [src]="image" class="h-20 rounded-xl border border-slate-200 object-cover shadow-sm" />
     <button class="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-md" (click)="image = ''; attachment = ''">
       <ion-icon name="close-outline"></ion-icon>
     </button>

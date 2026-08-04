@@ -4,6 +4,16 @@
   "compilerOptions": {
     "rootDir": "./",
     "outDir": "./dist/out-tsc",
+    "paths": {
+      "@app/*": ["./src/app/*"],
+      "@env/*": ["./src/environments/*"],
+      "@services/*": ["./src/app/service/*"],
+      "@components/*": ["./src/app/components/*"],
+      "@pipes/*": ["./src/app/pipes/*"],
+      "@guard/*": ["./src/app/guard/*"],
+      "@model/*": ["./src/app/model/*"],
+      "@constants/*": ["./src/app/constants/*"]
+    },
     "strict": false,
     "sourceMap": true,
     "declaration": false,

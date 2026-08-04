@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, PopoverController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -10,13 +10,16 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { BulletinsApiService } from '../service/bulletins-api/bulletins-api.service';
 
 @Component({
   selector: 'app-bulletins',
   templateUrl: './bulletins.page.html',
-  styleUrls: ['./bulletins.page.scss'], 
-}) 
+  styleUrls: ['./bulletins.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
 export class BulletinsPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   lang: any;
   userDetails: any;
   userType: any;
@@ -36,10 +39,13 @@ export class BulletinsPage implements OnInit {
     private router: Router,
     public zone: NgZone,
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private bulletinsApi: BulletinsApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
   }
 
@@ -48,7 +54,7 @@ export class BulletinsPage implements OnInit {
   async ionViewWillEnter() {
     this.isLoading = true;
     this.allBullentins = [];
-    
+
     // 🟢 استخدام StorageService الآمن
     let userLoggedIn = await this.storageSr.get("userloggedin");
     if (userLoggedIn) {
@@ -59,6 +65,7 @@ export class BulletinsPage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   getBulletins() {
@@ -67,7 +74,7 @@ export class BulletinsPage implements OnInit {
       school_id: this.userDetails.details.school_id
     };
     
-    this.dataProvider.getBulletins(data).then(res => {
+    this.bulletinsApi.getBulletins(data).then(res => {
       this.isLoading = false; // إخفاء التحميل
       if (res) {
         this.bulletins = res.data;
@@ -79,9 +86,11 @@ export class BulletinsPage implements OnInit {
           }
         }
       }
+      this.cdr.markForCheck();
     }).catch(e => {
       this.isLoading = false;
       console.log(e);
+      this.cdr.markForCheck();
     });
   }
 
@@ -91,6 +100,7 @@ export class BulletinsPage implements OnInit {
         this.allBullentins = this.allBullentins.concat(this.bulletins.splice(0, 20));
       }
       infiniteScroll.target.complete();
+      this.cdr.markForCheck();
     }, 500);
   }
 

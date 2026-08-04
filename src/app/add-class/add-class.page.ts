@@ -1,18 +1,21 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { DataService } from '../service/data/data.service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
-import { StorageService } from '../service/storage.service'; 
+import { StorageService } from '../service/storage.service';
+import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
 
 @Component({
   selector: 'app-add-class',
   templateUrl: './add-class.page.html',
   styleUrls: ['./add-class.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddClassPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   userDetails: any = { details: {} };
   lang: any = {};
   classes: any = [];
@@ -26,10 +29,13 @@ export class AddClassPage implements OnInit {
     private router: Router,
     public zone: NgZone,
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private followupFieldsApi: FollowupFieldsApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
   }
 
@@ -45,26 +51,26 @@ export class AddClassPage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
-  getClasses() {
+  async getClasses() {
     let data = {
       "user_no": this.userDetails.details.user_no,
       "school_id": this.userDetails.details.school_id,
       "session_id": this.userDetails.session_id
     };
-    
-    this.dataProvider.showLoading();
-    this.dataProvider.getTeachersClass(data).then((res: any) => {
-      this.dataProvider.hideLoading();
+
+    try {
+      const res: any = await this.dataProvider.run(() => this.dataProvider.getTeachersClass(data));
       if (res && res.data) {
         this.classes = res.data;
       }
-    }).catch(error => {
-      this.dataProvider.hideLoading();
+    } catch (error) {
       this.dataProvider.showToast(this.lang.usnexpectedError || 'حدث خطأ غير متوقع');
       console.log(error);
-    });
+    }
+    this.cdr.markForCheck();
   }
 
   changeClass(course: any, eve: any) {
@@ -93,20 +99,17 @@ export class AddClassPage implements OnInit {
       "updates": this.changedData
     };
     
-    this.dataProvider.showLoading();
-    this.dataProvider.setTeachersClass(data).then(res => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.followupFieldsApi.setTeachersClass(data)).then(res => {
       this.dataProvider.showToast(this.lang.class_added || 'تم حفظ الفصول بنجاح');
-      
+
       const navigation: NavigationExtras = {
         state: { isUpdated: true }
       };
-      
+
       this.zone.run(() => {
         this.router.navigate(['tabs/follow-up-student'], navigation);
       });
     }).catch(error => {
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast(this.lang.usnexpectedError || 'حدث خطأ أثناء الحفظ');
       console.log(error);
     });

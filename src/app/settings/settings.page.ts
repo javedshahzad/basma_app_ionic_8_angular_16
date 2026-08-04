@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { NavController, Platform, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -14,6 +14,8 @@ import dayjs from 'dayjs';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { DeviceApiService } from '../service/device-api/device-api.service';
+import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 
 @Component({
   selector: 'app-settings',
@@ -21,6 +23,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./settings.page.scss'],
 })
 export class SettingsPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
 
   user = {
     name: '',
@@ -70,7 +73,9 @@ export class SettingsPage implements OnInit {
           private storage: Storage,
           private geoService:GeoServiceProvider, 
           public alertCtrl: AlertController,
-          private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
+          private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+          private deviceApi: DeviceApiService,
+          private userManagementApi: UserManagementApiService
           ) {
     this.translate.get("alertmessages").subscribe((res)=>{
       this.lang = res;
@@ -212,9 +217,7 @@ export class SettingsPage implements OnInit {
         data.country_ar_name = this.countryDetails.country_ar_name || this.userDetails.details.country_ar_name;
       }
 
-      this.dataProvider.showLoading();
-      this.dataProvider.updateUserSettings(data).then(async (response)=>{
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.dataProvider.updateUserSettings(data)).then(async (response)=>{
         if(response.session){
           this.dataProvider.showToast(response.message);
           
@@ -227,7 +230,7 @@ export class SettingsPage implements OnInit {
           this.userDetails.details.phone_no = this.user.phone_no;
           
           if(this.userDetails.details.is_school_admin==1){
-            this.dataProvider.language.emit('ar');
+            this.dataProvider.language.next('ar');
             this.userDetails.details.school_logo = (response.pic != '') ? response.pic : this.displayPic;
           }else{
             this.userDetails.details.pic = response.pic != '' ? response.pic : this.displayPic;
@@ -266,24 +269,20 @@ export class SettingsPage implements OnInit {
           this.router.navigate(['login'], { replaceUrl: true });
         }
       }).catch(error =>{
-        this.dataProvider.hideLoading();
         this.dataProvider.errorALertMessage(error);
       })
     }
   }
 
   logoutDeviceFromAll(){
-    this.dataProvider.showLoading();
     let data = {
       "user_no": this.userDetails.details.user_no,
     };
-    this.dataProvider.LogOutAllDevice(data).then(res => {
+    this.dataProvider.run(() => this.deviceApi.LogOutAllDevice(data)).then(res => {
       if(res.success){
-        this.logout(); 
+        this.logout();
       }
-      this.dataProvider.hideLoading(); 
     },error=>{
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast("error");
     })
   }
@@ -317,37 +316,39 @@ export class SettingsPage implements OnInit {
     this.showDeleteAlert = false;
   }
 
-  deleteSchool(){
+  async deleteSchool(){
     this.showDeleteAlert = false;
-    this.dataProvider.showLoading();
     let data = {
       school_id: this.userDetails.details.school_id,
       user_no: this.userDetails.details.user_no
     }
-    this.dataProvider.requestTodeleteSchoolAccount(data,response=>{
-      var responseData = response;
-      this.dataProvider.hideLoading();
-      if(responseData.success){
+    try {
+      const response: any = await this.dataProvider.run(() => this.userManagementApi.requestTodeleteSchoolAccount(data));
+      if (!response.response) {
         this.dataProvider.errorALertMessage(response.msg);
-        this.deactivate_date = responseData.response.deactivate_date;
-        this.dataProvider.deactivate_date = responseData.response.deactivate_date;
+      } else {
+        var responseData = response;
+        if(responseData.success){
+          this.dataProvider.errorALertMessage(response.msg);
+          this.deactivate_date = responseData.response.deactivate_date;
+          this.dataProvider.deactivate_date = responseData.response.deactivate_date;
+        }
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   revertSchoolDeletion(){
-      this.dataProvider.showLoading();
       let data = {
         school_id: this.userDetails.details.school_id,
         user_no: this.userDetails.details.user_no
       }
-      this.dataProvider.revertDeletedSchoolSettings(data).then((response)=>{
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.dataProvider.revertDeletedSchoolSettings(data)).then((response)=>{
         this.dataProvider.errorALertMessage(response.msg);
         this.deactivate_date = '';
         this.dataProvider.deactivate_date = '';
       }).catch(error =>{
-          this.dataProvider.hideLoading();
           this.dataProvider.errorALertMessage(error.msg);
         })
   }

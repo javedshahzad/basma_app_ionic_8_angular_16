@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="menu-btn-container">
       <ion-button color="dark" class="custom-menu-btn" *ngIf="userType=='1'" (click)="openCamera()">
@@ -25,7 +25,7 @@
   <div class="p-4 max-w-2xl mx-auto space-y-4 pb-8">
     
     <div *ngIf="isLoading" class="space-y-4">
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4" *ngFor="let dummy of [1,2,3]">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4" *ngFor="let dummy of [1,2,3]; trackBy: trackByIndex">
         <div class="flex items-center gap-3 mb-4">
           <ion-skeleton-text animated class="w-12 h-12 rounded-full m-0"></ion-skeleton-text>
           <div class="flex-1">
@@ -40,7 +40,7 @@
 
     <ng-container *ngIf="!isLoading">
       
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative" *ngFor="let bullet of allBullentins">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative" *ngFor="let bullet of allBullentins; trackBy: trackByIndex">
         
         <div *ngIf="bullet.is_closed == '1'" class="absolute top-4 left-4 w-8 h-8 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center">
           <ion-icon name="checkmark-done" class="text-xl"></ion-icon>
@@ -48,7 +48,7 @@
 
         <div class="p-4 border-b border-slate-100 bg-slate-50/50">
           <div class="flex items-center gap-3 mb-3" *ngIf="bullet.created_by == user_no">
-            <img [src]="bullet.created_by_user_pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-10 h-10 rounded-full object-cover border border-slate-200 bg-white">
+            <img loading="lazy" [src]="bullet.created_by_user_pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-10 h-10 rounded-full object-cover border border-slate-200 bg-white">
             <div>
               <h4 class="text-sm font-bold text-slate-800 m-0">{{bullet.created_by_username}}</h4>
               <p class="text-[11px] font-medium text-slate-500 m-0 mt-0.5 flex items-center gap-1">
@@ -78,7 +78,7 @@
               <span class="text-[10px] font-bold text-rose-700">PDF File</span>
             </div>
 
-            <ng-container *ngFor="let doc of bullet.documents.files">
+            <ng-container *ngFor="let doc of bullet.documents.files; trackBy: trackByIndex">
               
               <div *ngIf="!doc.is_img && doc.extension == 'pdf'" 
                    class="aspect-[4/3] bg-rose-50 rounded-xl border border-rose-100 flex flex-col items-center justify-center cursor-pointer hover:bg-rose-100 transition-colors"
@@ -97,7 +97,7 @@
               <div *ngIf="doc.is_img" 
                    class="aspect-[4/3] rounded-xl border border-slate-200 overflow-hidden cursor-pointer shadow-sm group"
                    (click)="openImage(doc.url_original)">
-                <img [src]="doc.url_original" onerror="this.onerror=null;this.src='assets/imgs/image.png';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                <img loading="lazy" [src]="doc.url_original" onerror="this.onerror=null;this.src='assets/imgs/image.png';" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
               </div>
 
             </ng-container>

@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="ml-2 w-10"></ion-buttons>
 
@@ -73,7 +73,7 @@
         </div>
 
         <div class="flex flex-wrap gap-2 mt-4" *ngIf="f.selected_student.value?.length > 0">
-          <span class="bg-indigo-50 text-indigo-600 pl-2 pr-3 py-1.5 rounded-lg text-xs font-bold border border-indigo-100 flex items-center gap-1.5 animate__animated animate__fadeIn" *ngFor="let st of f.selected_student.value">
+          <span class="bg-indigo-50 text-indigo-600 pl-2 pr-3 py-1.5 rounded-lg text-xs font-bold border border-indigo-100 flex items-center gap-1.5 animate__animated animate__fadeIn" *ngFor="let st of f.selected_student.value; trackBy: trackByIndex">
             <ion-icon name="person-outline"></ion-icon> {{st.name}}
             
             <button type="button" class="ml-1 w-5 h-5 flex items-center justify-center rounded-full hover:bg-rose-100 text-indigo-400 hover:text-rose-500 transition-colors" (click)="removeStudent(st, $event)">
@@ -137,7 +137,7 @@
           <p class="text-slate-600 font-bold text-sm">لا توجد نتائج</p>
         </div>
 
-        <div *ngFor="let student of filteredStudents" class="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors border shadow-inner"
+        <div *ngFor="let student of filteredStudents; trackBy: trackByIndex" class="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors border shadow-inner"
              [ngClass]="isStudentSelected(student) ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-slate-100 hover:bg-slate-50'"
              (click)="toggleStudent(student)">
           <span class="text-sm font-bold" [ngClass]="isStudentSelected(student) ? 'text-indigo-700' : 'text-slate-700'">

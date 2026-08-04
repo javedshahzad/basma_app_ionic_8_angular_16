@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../service/data/data.service';
@@ -12,9 +12,11 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './avatar-images.component.html',
   styleUrls: ['./avatar-images.component.scss'],
   standalone: true, // إضافة هذا السطر
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AvatarImagesComponent implements OnInit {
+  trackByIndex(index: number): number { return index; }
   imageList = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
   DocUrl: string;
   

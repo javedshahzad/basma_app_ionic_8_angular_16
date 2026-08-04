@@ -91,18 +91,16 @@ export class SchoolRegistrationPage implements OnInit {
       return;
     }
 
-    this.dataProvider.showLoading();
     this.school.country_code = this.selected_country.code;
 
-    this.authProvider.registerSchool(this.school).then((response) => {
-      this.dataProvider.hideLoading();
+    try {
+      const response = await this.dataProvider.run(() => this.authProvider.registerSchool(this.school));
       this.presentAlert(response, true);
       // التوجيه لصفحة تسجيل الدخول بعد النجاح
       setTimeout(() => { this.router.navigate(['login']); }, 2000);
-    }).catch((err) => {
-      this.dataProvider.hideLoading();
+    } catch (err) {
       this.dataProvider.errorALertMessage(err);
-    });
+    }
   }
 
   async presentAlert(response, pop = true) {

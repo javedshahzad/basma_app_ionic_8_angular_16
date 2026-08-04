@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NavController, AlertController } from '@ionic/angular';
@@ -13,8 +13,10 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-view-application-details',
   templateUrl: './view-application-details.page.html',
   styleUrls: ['./view-application-details.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewApplicationDetailsPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   AppData: any;
   formattedSeminars: string[] = [];
 
@@ -30,8 +32,9 @@ export class ViewApplicationDetailsPage implements OnInit {
     public network: Network,
     private route: ActivatedRoute,
     private router: Router,
-    private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
-  ) { 
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
+  ) {
       // 🟢 3. قراءة البيانات بشكل آمن ومباشر من الـ Router خارج الـ subscribe لمنع خطأ الـ Null
       const navigation = this.router.getCurrentNavigation();
       if (navigation && navigation.extras && navigation.extras.state) {
@@ -51,6 +54,7 @@ export class ViewApplicationDetailsPage implements OnInit {
       if (savedData) {
         this.AppData = savedData;
         this.processSeminars();
+        this.cdr.markForCheck();
       }
     }
   }

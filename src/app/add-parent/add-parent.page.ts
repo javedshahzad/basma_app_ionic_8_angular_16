@@ -1,15 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';  
+import { Router } from '@angular/router';
+import { ParentManagementApiService } from '../service/parent-management-api/parent-management-api.service';
+import { StorageService } from '../service/storage.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
   selector: 'app-add-parent',
   templateUrl: './add-parent.page.html',
   styleUrls: ['./add-parent.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddParentPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   userdata: any;
   parentForm: FormGroup;
   submitted: boolean = false;
@@ -30,16 +35,22 @@ export class AddParentPage implements OnInit {
     public dataProvider: DataService,
     public translate: TranslateService,
     private router: Router,
-  ) { 
+    private parentManagementApi: ParentManagementApiService,
+    private storageSr: StorageService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private cdr: ChangeDetectorRef,
+  ) {
     this.translate.get("alertmessages").subscribe((res)=>{
       this.lang = res;
+      this.cdr.markForCheck();
     });
     this.translate.get("reg_parent").subscribe((res)=>{
       this.lang1 = res;
+      this.cdr.markForCheck();
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.parentForm = this.formBuilder.group({
       parentID: ['', Validators.required],
       parentName: ['', Validators.required],
@@ -47,8 +58,9 @@ export class AddParentPage implements OnInit {
       selected_student: [[], [Validators.required]], // تم تعديله ليكون مصفوفة افتراضياً
     });
 
-    this.userdata = JSON.parse(localStorage.getItem("userloggedin"));
+    this.userdata = await this.storageSr.get("userloggedin");
     this.getStudents();
+    this.cdr.markForCheck();
   }
 
   get f() { return this.parentForm.controls; }
@@ -59,16 +71,18 @@ export class AddParentPage implements OnInit {
   	let data={
   		'school_id': this.userdata.details.school_id
   	}
-    this.dataProvider.getSchoolStudents(data).then(res => {
+    this.schoolDirectoryApi.getSchoolStudents(data).then(res => {
       this.isFetchingStudents = false;
       if(res.data){
         this.students = res.data;
         this.filteredStudents = [...this.students];
-      }       
+      }
+      this.cdr.markForCheck();
     }).catch(error=>{
       this.isFetchingStudents = false;
       this.dataProvider.showToast(error);
       console.log(error);
+      this.cdr.markForCheck();
     })
   }
 
@@ -166,7 +180,7 @@ export class AddParentPage implements OnInit {
 
       this.show_loading = true; 
       
-      this.dataProvider.createNewParent(this.signUpData).then((response)=>{
+      this.parentManagementApi.createNewParent(this.signUpData).then((response)=>{
         this.show_loading = false;
         this.dataProvider.showToast(response);
         
@@ -175,10 +189,11 @@ export class AddParentPage implements OnInit {
           state: { isUpdated: true }
         };
         this.router.navigate(['requested-parent'], navigationExtras);
-        
+        this.cdr.markForCheck();
       }).catch((err)=>{
         this.show_loading = false;
         this.dataProvider.errorALertMessage(err);
+        this.cdr.markForCheck();
       });
     }
   }

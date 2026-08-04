@@ -1,4 +1,4 @@
-<ion-header mode="md">
+﻿<ion-header mode="md">
   <ion-toolbar>
   	<ion-buttons slot="end">
   		<ion-back-button></ion-back-button>
@@ -13,11 +13,11 @@
 		<ion-list-header class="list-header">
 			{{'edit_class.sub_title' | translate}}
 		</ion-list-header>
-		<ion-card class="card" *ngFor="let list of teacherList; let i=index"> 
+		<ion-card class="card" *ngFor="let list of teacherList; let i=index; trackBy: trackByIndex"> 
 			<ion-card-header class="card-header">
 				<ion-item class="item">
 					<ion-avatar slot="start">
-						<img (click)="dataProvider.openAvatarModel(list.pic)" [src]="list.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';">
+						<img loading="lazy" (click)="dataProvider.openAvatarModel(list.pic)" [src]="list.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';">
 					</ion-avatar>
 					<ion-label>
 						<h2>{{list.first_name}}</h2>

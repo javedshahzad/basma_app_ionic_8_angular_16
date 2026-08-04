@@ -27,14 +27,17 @@ export class DatabaseService {
       await this.platform.ready();
       if (this.isNative) {
         try {
+          await this.ensureEncryptionSecret();
+
           // التحقق مما إذا كان الاتصال موجوداً مسبقاً لتجنب الأخطاء
           const isConn = (await this.sqlite.isConnection('attendance.db', false)).result;
           if (isConn) {
             this.db = await this.sqlite.retrieveConnection('attendance.db', false);
           } else {
-            this.db = await this.sqlite.createConnection('attendance.db', false, 'no-encryption', 1, false);
+            await this.discardUnencryptedDatabase();
+            this.db = await this.sqlite.createConnection('attendance.db', true, 'encryption', 1, false);
           }
-          
+
           await this.db.open();
           resolve(true);
         } catch (error) {
@@ -45,6 +48,41 @@ export class DatabaseService {
         resolve(true); // تخطي في حالة المتصفح
       }
     });
+  }
+
+  /**
+   * Generates a random passphrase and stores it once in the platform's secure
+   * store (iOS Keychain / Android Keystore-backed prefs), which CapacitorSQLite
+   * then uses to encrypt attendance.db. Safe to call on every launch since
+   * isSecretStored() short-circuits after the first run.
+   */
+  private async ensureEncryptionSecret() {
+    const stored = await this.sqlite.isSecretStored();
+    if (!stored.result) {
+      const bytes = new Uint8Array(32);
+      crypto.getRandomValues(bytes);
+      const passphrase = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+      await this.sqlite.setEncryptionSecret(passphrase);
+    }
+  }
+
+  /**
+   * attendance.db is a pure cache (classes/students/messages/news) that gets
+   * fully repopulated from the server after login, so upgrading an existing
+   * unencrypted install just means discarding the old plaintext file rather
+   * than converting it in place.
+   */
+  private async discardUnencryptedDatabase() {
+    const exists = (await this.sqlite.isDatabase('attendance.db')).result;
+    if (!exists) return;
+
+    const encrypted = (await this.sqlite.isDatabaseEncrypted('attendance.db')).result;
+    if (encrypted) return;
+
+    const oldDb = await this.sqlite.createConnection('attendance.db', false, 'no-encryption', 1, false);
+    await oldDb.open();
+    await oldDb.delete();
+    await this.sqlite.closeConnection('attendance.db', false);
   }
 
   /**

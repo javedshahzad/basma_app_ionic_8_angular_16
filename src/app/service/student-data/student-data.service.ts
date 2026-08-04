@@ -8,107 +8,75 @@ import { Storage } from '@ionic/storage';
   providedIn: 'root'
 })
 export class StudentDataService {
-	student:any;
-	studentList:any=[];
-	studentNote:any=[];
-  staticalData:any=[];
+  student: any;
+  studentList: any = [];
+  studentNote: any = [];
+  staticalData: any = [];
+
   constructor(public http: HttpClient, public sqlite: SQLite, public platform: Platform,
-  			  private storage: Storage	) {
-
-  }
-  checkStudent(student){
-	this.platform.ready().then(()=>{
-		this.storage.get('offlineStudent').then((data) => {
-			if(data){
-				this.studentList=data;
-				this.studentList[student.sid]=student;
-			}else{
-				this.studentList[student.sid]=student;
-			}
-				this.storage.set('offlineStudent', this.studentList);
-		});
-	})
-  }  
-  checkStudentNotes(note,student_id){
-	this.platform.ready().then(()=>{
-  	this.storage.get('offlineStudentNote').then((data) => {
-  		if(data){
-  			this.studentNote=data;
-  			this.studentNote[student_id]=note;
-  		}else{
-  			this.studentNote[student_id]=note;
-  		}
-  			this.storage.set('offlineStudentNote', this.studentNote);
-  		//	console.log('offlineStudentNote',this.studentNote)
-  	});
-})
-
+              private storage: Storage) {
   }
 
-  getStudent(student_id, callback:any,error:any){
-		this.platform.ready().then(()=>{
-  	this.storage.get('offlineStudent').then((res) => {
-  		if(res){
-  			this.studentList=res;
-  			//console.log(this.studentList,student_id);
-  			let data=this.studentList[student_id];
-		  		if(data){
-		  			callback(data);
-		  		}else{
-		  			error(data);
-		  		}
-  		}else{
-		  			error('data');
-
-  		}
-	})
-  	});
-  }
-  getStudentNote(student_id, callback:any,error:any){
-	this.platform.ready().then(()=>{
-  		this.storage.get('offlineStudentNote').then((res) => {
-	  		if(res){
-	  			this.studentNote=res;
-	  			let data=this.studentNote[student_id];
-			  		if(data){
-			  			callback(data);
-			  		}else{
-			  			error(data);
-			  		}
-	  		}else{
-			  	error('data');
-	  		}
-
-	  	});
-	})
+  async checkStudent(student) {
+    await this.platform.ready();
+    const data = await this.storage.get('offlineStudent');
+    this.studentList = data || [];
+    this.studentList[student.sid] = student;
+    await this.storage.set('offlineStudent', this.studentList);
   }
 
-  setStaticalData(user_ID,data){
-	this.platform.ready().then(()=>{
-    this.storage.get('offlinestatical').then(res=>{
-      if(res){
-        this.staticalData=res;
-          this.staticalData[user_ID]=data
-      }else{
-          this.staticalData[user_ID]=data
+  async checkStudentNotes(note, student_id) {
+    await this.platform.ready();
+    const data = await this.storage.get('offlineStudentNote');
+    this.studentNote = data || [];
+    this.studentNote[student_id] = note;
+    await this.storage.set('offlineStudentNote', this.studentNote);
+  }
+
+  async getStudent(student_id): Promise<any> {
+    await this.platform.ready();
+    const res = await this.storage.get('offlineStudent');
+    if (res) {
+      this.studentList = res;
+      const data = this.studentList[student_id];
+      if (data) {
+        return data;
       }
-      this.storage.set('offlinestatical',this.staticalData);
-    })
-})
+      throw data;
+    }
+    throw 'data';
   }
 
-  getOfflineStatical(user_ID,callback:any){
-	this.platform.ready().then(()=>{
-    this.storage.get('offlinestatical').then(res=>{
-      if(res){
-        console.log('offlinestaticalGet',res);
-        callback(res[user_ID]);
-      }else{
-        callback([]);
+  async getStudentNote(student_id): Promise<any> {
+    await this.platform.ready();
+    const res = await this.storage.get('offlineStudentNote');
+    if (res) {
+      this.studentNote = res;
+      const data = this.studentNote[student_id];
+      if (data) {
+        return data;
       }
-    })
-})
+      throw data;
+    }
+    throw 'data';
   }
 
+  async setStaticalData(user_ID, data) {
+    await this.platform.ready();
+    const res = await this.storage.get('offlinestatical');
+    this.staticalData = res || [];
+    this.staticalData[user_ID] = data;
+    await this.storage.set('offlinestatical', this.staticalData);
+  }
+
+  async getOfflineStatical(user_ID): Promise<any> {
+    await this.platform.ready();
+    const res = await this.storage.get('offlinestatical');
+    if (res) {
+      console.log('offlinestaticalGet', res);
+      return res[user_ID];
+    }
+    return [];
+  }
 
 }

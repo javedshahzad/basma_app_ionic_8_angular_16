@@ -1,4 +1,4 @@
-<ion-header mode="md">
+﻿<ion-header mode="md">
   <ion-toolbar>
   	<ion-buttons slot="end">
   		<ion-back-button></ion-back-button>
@@ -12,11 +12,11 @@
 <ion-content mode="md">
 	<div class="students" id="students" *ngIf="users" > 
 		<!-- <ion-virtual-scroll [items]="students" approxItemHeight="320px"> -->
-		<ion-card  class="text-left body-font card heigt-min"  *ngFor="let users of allUsers; let i=index">		
+		<ion-card  class="text-left body-font card heigt-min"  *ngFor="let users of allUsers; let i=index; trackBy: trackByIndex">		
 			<ion-item  >
 				<ion-checkbox slot="end" id="ch{{i}}" (ionChange)="selectUser(users,$event,i)" [checked]="selectedUsers.includes(users.user_no)"></ion-checkbox>
 				<ion-avatar slot="start">
-					<img [src]="users.pic"  onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';">
+					<img loading="lazy" [src]="users.pic"  onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';">
 				</ion-avatar>
 			    <ion-label>
 			    	<h4>{{users.first_name}}</h4>

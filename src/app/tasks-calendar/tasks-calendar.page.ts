@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -9,6 +9,8 @@ import { LoaderComponent } from '../components/loader/loader.component';
 import { ActionSheetController } from '@ionic/angular';
 // 🟢 1. استيراد خدمة التخزين الآمنة
 import { StorageService } from '../service/storage.service';
+import { SyncService } from '../service/sync/sync.service';
+import { NotesApiService } from '../service/notes-api/notes-api.service';
 
 @Component({
   selector: 'app-tasks-calendar',
@@ -16,6 +18,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./tasks-calendar.page.scss'],
 })
 export class TasksCalendarPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   classes: any = [];
   selectedClass: any = [];
   noDataFound: string = "";
@@ -43,7 +46,9 @@ export class TasksCalendarPage implements OnInit {
     private router: Router,
     public modalCtrl: ModalController,
     public actionSheet: ActionSheetController,
-    private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private syncService: SyncService,
+    private notesApi: NotesApiService
   ) {
     this.translate.get("sidemenu").subscribe((res) => {
       this.lang = res;
@@ -107,7 +112,7 @@ export class TasksCalendarPage implements OnInit {
       }
       
       if (response.session) {
-        this.dataProvider.syncOffileData();
+        this.syncService.syncOffileData();
         let courses = response.data;
         
         if (response.linkData != undefined) {
@@ -139,30 +144,27 @@ export class TasksCalendarPage implements OnInit {
     });
   }
 
-  openCalendar() {
+  async openCalendar() {
     if (this.selectedClass.length < 1) {
       this.dataProvider.showToast(this.lang1.select_class || 'الرجاء تحديد صف واحد على الأقل');
     } else {
-      
+
       let studentData = {
         "user_no": this.userDetails.details.user_no,
         "session_id": this.userDetails.session_id,
         "course_id": JSON.stringify(this.selectedClass), // 🟢 الإبقاء على JSON للـ API
         "school_id": this.userDetails.details.school_id,
       }
-      
-      this.dataProvider.showLoading();
-      this.dataProvider.getAllClassNotes(studentData).then(res => {
-        this.dataProvider.hideLoading();
-        
+
+      try {
+        const res = await this.dataProvider.run(() => this.notesApi.getAllClassNotes(studentData));
         if (res) {
           // 🟢 5. التوجيه وتمرير البيانات بشكل صحيح
           this.router.navigate(['note-calendar'], { state: { note: res, state: this.selectedClass } });
         }
-      }).catch(error => {
-        this.dataProvider.hideLoading();
+      } catch (error) {
         console.log(error);
-      });
+      }
     }
   }
 

@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 
 @Component({
   selector: 'app-classlist-options-popover',
   templateUrl: './classlist-options-popover.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClasslistOptionsPopoverComponent {
   

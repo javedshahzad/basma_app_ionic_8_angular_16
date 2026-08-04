@@ -1,4 +1,5 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 import {
   Capacitor
 } from '@capacitor/core';
@@ -7,6 +8,7 @@ import { Router } from '@angular/router';
 import { ActionPerformed, PushNotificationSchema, PushNotifications, Token } from '@capacitor/push-notifications';
 import { FCM } from '@capacitor-community/fcm';
 import { Platform } from '@ionic/angular';
+import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +16,8 @@ import { Platform } from '@ionic/angular';
 export class FcmService {
   FcmToken: string;
   userDetails: any;
-public getPlan: EventEmitter<boolean> = new EventEmitter();
-  constructor(private router: Router,private platform:Platform) { }
+public getPlan: Subject<boolean> = new Subject();
+  constructor(private router: Router,private platform:Platform,private storageSr: StorageService) { }
 
   initPush() {
     if (Capacitor.getPlatform() !== 'web') {
@@ -65,7 +67,7 @@ public getPlan: EventEmitter<boolean> = new EventEmitter();
           async (notification: ActionPerformed) => {
             const data = notification.notification.data;
             console.log(data);
-            this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+            this.userDetails = await this.storageSr.get("userloggedin");
             if(this.userDetails.details.user_type == '4' || this.userDetails.details.user_type == '8')
             if(data.type == "PrivateMessage"){
               setTimeout(() => {

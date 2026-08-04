@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -12,8 +12,10 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-student-report-list',
   templateUrl: './student-report-list.page.html',
   styleUrls: ['./student-report-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentReportListPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
 
   noDataFound: string = "";
   userType: string;
@@ -33,7 +35,8 @@ export class StudentReportListPage implements OnInit {
       private router: Router,
       public zone: NgZone, 
       public platform: Platform,
-      private storageSr: StorageService // 🟢 2. حقن الخدمة
+      private storageSr: StorageService, // 🟢 2. حقن الخدمة
+      private cdr: ChangeDetectorRef
   ) {
     // 🟢 3. التقاط البيانات الممررة من הـ Router بشكل متزامن قبل ضياعها
     const navigation = this.router.getCurrentNavigation();
@@ -43,6 +46,7 @@ export class StudentReportListPage implements OnInit {
 
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
   }
 
@@ -74,6 +78,7 @@ export class StudentReportListPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'],{replaceUrl:true});
     }
+    this.cdr.markForCheck();
   }
 
   getStudents(loader:boolean = true) {
@@ -103,9 +108,11 @@ export class StudentReportListPage implements OnInit {
         this.dataProvider.errorALertMessage(res.message);
         this.router.navigate(['login'],{replaceUrl:true});
       }
+      this.cdr.markForCheck();
     }).catch(err => {
       if(loader) this.dataProvider.hideLoading();
       console.error(err);
+      this.cdr.markForCheck();
     });
   }
 

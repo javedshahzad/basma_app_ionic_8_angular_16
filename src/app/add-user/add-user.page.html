@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="ml-2 w-10"></ion-buttons>
 
@@ -167,7 +167,7 @@
           <p class="text-slate-600 font-bold text-sm">لا توجد نتائج</p>
         </div>
 
-        <div *ngFor="let cls of filteredClasses" class="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors border shadow-inner"
+        <div *ngFor="let cls of filteredClasses; trackBy: trackByIndex" class="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors border shadow-inner"
              [ngClass]="isClassSelected(cls) ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-slate-100 hover:bg-slate-50'"
              (click)="toggleSelectedClass(cls)">
           <span class="text-sm font-bold" [ngClass]="isClassSelected(cls) ? 'text-indigo-700' : 'text-slate-700'">

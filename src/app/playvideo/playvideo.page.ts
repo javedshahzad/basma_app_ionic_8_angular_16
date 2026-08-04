@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef, NgZone } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, ElementRef, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { NavController, Platform } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
@@ -7,18 +8,22 @@ import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { ElearningApiService } from '../service/elearning-api/elearning-api.service';
 
 @Component({
   selector: 'app-playvideo',
   templateUrl: './playvideo.page.html',
   styleUrls: ['./playvideo.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayvideoPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   @ViewChild('videoPlayer', { static: false }) mVideoPlayer: ElementRef;
 
   material: any = {};
   flag: boolean = false;
   materialId: any;
+  private destroyRef = inject(DestroyRef);
 
   constructor(
     public navCtrl: NavController,
@@ -29,9 +34,11 @@ export class PlayvideoPage implements OnInit {
     private router: Router,
     public zone: NgZone,
     public screen: ScreenOrientation,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private elearningApi: ElearningApiService,
+    private cdr: ChangeDetectorRef
   ) {
-    this.route.queryParams.subscribe(async params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const nav = this.router.getCurrentNavigation();
       
       // 🟢 الحماية ضد التحديث (Refresh)
@@ -59,22 +66,22 @@ export class PlayvideoPage implements OnInit {
   }
 
   // 🟢 تحميل الفيديو بشكل آمن ومنفصل
-  loadVideo(id: any) {
-    this.dataProvider.showLoading();
-    this.dataProvider.getMaterialDetails(id).then((materialDetail) => {
+  async loadVideo(id: any) {
+    try {
+      const materialDetail = await this.dataProvider.run(() => this.elearningApi.getMaterialDetails(id));
       this.flag = true;
-      this.dataProvider.hideLoading();
       this.material = materialDetail;
-      
+      this.cdr.markForCheck();
+
       // إعطاء المتصفح وقتاً لرسم الفيديو ثم إضافة الأحداث عليه
       setTimeout(() => {
         this.setupNativeVideoEvents();
       }, 500);
 
-    }).catch((err) => {
-      this.dataProvider.hideLoading();
+    } catch (err) {
       this.dataProvider.errorALertMessage(err);
-    });
+      this.cdr.markForCheck();
+    }
   }
 
   // 🟢 تشغيل مقطع ذو صلة

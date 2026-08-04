@@ -1,4 +1,4 @@
-import { Device } from '@awesome-cordova-plugins/device/ngx';
+﻿import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Platform, MenuController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -16,6 +16,9 @@ import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from './service/storage.service';
 import { FcmService } from './service/fcm.service';
+import { SyncService } from './service/sync/sync.service';
+import { DeviceApiService } from './service/device-api/device-api.service';
+import { PlanApiService } from './service/plan-api/plan-api.service';
 import { Browser } from '@capacitor/browser';
 import { PushNotifications } from '@capacitor/push-notifications';
 
@@ -27,6 +30,7 @@ declare var cordova: any;
   styleUrls: ['app.component.scss']
 })
 export class AppComponent implements OnInit {
+  trackByIndex(index: number): number { return index; }
   rootPage: any;
   loggedin: boolean = false;
   activePage: any;
@@ -61,11 +65,14 @@ export class AppComponent implements OnInit {
               private navController: NavController,
               public socialSharing: SocialSharing,
               private fcm: FcmService,
+              private syncService: SyncService,
+              private deviceApi: DeviceApiService,
               public menuCtrl: MenuController,
               public toastController: ToastController,
               public router: Router,
               private device: Device,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private planApi: PlanApiService) {
 
     this.storageSr.init();
 
@@ -105,7 +112,7 @@ export class AppComponent implements OnInit {
       // "first click doesn't work, second click works" bug when switching
       // languages later in the app (see changeLanguage()).
       this.translate.use(this.selectedLanguage).subscribe(() => {
-        this.dataProvider.language.emit(this.selectedLanguage);
+        this.dataProvider.language.next(this.selectedLanguage);
         this.setAppDirection(this.selectedLanguage);
         this.initializeApp();
       });
@@ -372,11 +379,8 @@ export class AppComponent implements OnInit {
       };
 
       clearInterval(this.CheckDeviceInterval);
-      this.dataProvider.showLoading();
 
-      this.auth.doLogout(data).then(async (resp) => {
-        this.dataProvider.hideLoading();
-
+      this.dataProvider.run(() => this.auth.doLogout(data)).then(async (resp) => {
         if (resp) {
           await this.storageSr.remove("userloggedin");
           await this.storageSr.remove("availablePlan");
@@ -387,9 +391,7 @@ export class AppComponent implements OnInit {
         // If the response was "switched" we do nothing — AuthService already
         // logged in the other account and routed correctly.
 
-      }).catch(() => {
-        this.dataProvider.hideLoading();
-      });
+      }).catch(() => {});
     } else {
       await this.storageSr.remove("userloggedin");
       localStorage.removeItem("userloggedin");
@@ -461,14 +463,11 @@ export class AppComponent implements OnInit {
   }
 
   shareApp() {
-    this.dataProvider.showLoading();
-    this.dataProvider.getShareLink('elem').then(response => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.dataProvider.getShareLink('elem')).then(response => {
       this.socialSharing.share(null, null, null, response.short_url)
         .then(() => {}, err => console.log(err));
       this.menuCtrl.close();
     }).catch(e => {
-      this.dataProvider.hideLoading();
       console.log(e);
     });
   }
@@ -510,7 +509,7 @@ export class AppComponent implements OnInit {
         this.changedLanguage = newLang === 'ar' ? 'العربية' : 'English';
         this.translate.setDefaultLang(newLang);
         this.setAppDirection(newLang);
-        this.dataProvider.language.emit(newLang);
+        this.dataProvider.language.next(newLang);
 
         this.translate.get(["sidemenu", "alertmessages", "app_rate"]).subscribe((response) => {
           this.lang = response;
@@ -613,7 +612,7 @@ export class AppComponent implements OnInit {
         school_id: this.userDetails.details.school_id
       };
 
-      this.dataProvider.getUserPlan(data).then(async (res: any) => {
+      this.planApi.getUserPlan(data).then(async (res: any) => {
         if (res && res.response) {
           await this.storageSr.set("availablePlan", res.response);
           localStorage.setItem("availablePlan", JSON.stringify(res.response));
@@ -646,7 +645,7 @@ export class AppComponent implements OnInit {
       user_id: this.userDetails.details.user_no,
       school: this.userDetails.details.school_id
     };
-    this.dataProvider.purchase(data).then(res => {
+    this.planApi.purchase(data).then(res => {
       // success — nothing further needed here
     }, () => {
       this.dataProvider.showToast('Error in processing payment');
@@ -678,7 +677,7 @@ export class AppComponent implements OnInit {
         "device_id": currentDeviceId
       };
 
-      this.dataProvider.CheckDeviceLogInStatus(data).then(res => {
+      this.deviceApi.CheckDeviceLogInStatus(data).then(res => {
         // Only log out on an explicit kick / deactivated account signal.
         if (res.success && res.data && (res.data.is_logged_out == '1' || res.data.user.status == "0")) {
           this.logout();
@@ -715,7 +714,7 @@ export class AppComponent implements OnInit {
         "device_id": currentDeviceId
       };
 
-      this.dataProvider.LogInSingleDevice(data).then(res => {
+      this.deviceApi.LogInSingleDevice(data).then(res => {
         console.log("Device Logged In:", res);
       }, () => {
         this.dataProvider.hideLoading();

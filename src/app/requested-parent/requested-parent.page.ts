@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -7,6 +7,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { ParentManagementApiService } from '../service/parent-management-api/parent-management-api.service';
+import { SearchApiService } from '../service/search-api/search-api.service';
+import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 
 @Component({
   selector: 'app-requested-parent',
@@ -14,6 +17,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./requested-parent.page.scss'],
 })
 export class RequestedParentPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   lang: any;
   lang1: any;
   userDetails: any;
@@ -34,7 +38,10 @@ export class RequestedParentPage implements OnInit {
               public zone: NgZone,
               private router: Router,
               public modalController: ModalController,
-              private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
+              private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+              private parentManagementApi: ParentManagementApiService,
+              private searchApi: SearchApiService,
+              private userManagementApi: UserManagementApiService
              ) {
       
       this.translate.get("alertmessages").subscribe((res)=>{
@@ -83,7 +90,7 @@ export class RequestedParentPage implements OnInit {
   getRequestedParentList(){
     let data = { 'school_id': this.userDetails.details.school_id };
     
-    this.dataProvider.getRequestedParents(data).then(res=>{
+    this.parentManagementApi.getRequestedParents(data).then(res=>{
       if (res.data && res.data.length > 0) {
         // 🟢 تهيئة الخاصية isChecked لتنظيم الـ Toggle دون الاعتماد على getElementById
         this.parentList = res.data.map(parent => ({ ...parent, isChecked: false }));
@@ -100,7 +107,7 @@ export class RequestedParentPage implements OnInit {
   getAllParents(){
     let data = { 'school_id': this.userDetails.details.school_id };
     
-    this.dataProvider.getAllParents(data).then(res=>{
+    this.parentManagementApi.getAllParents(data).then(res=>{
       if (res.data && res.data.length > 0) {
         this.allParentList = res.data;
         if (this.allParentList.length > 1) {
@@ -141,18 +148,15 @@ export class RequestedParentPage implements OnInit {
       'school_id': this.userDetails.details.school_id
     }
     
-    this.dataProvider.showLoading();
-    this.dataProvider.acceptRequestedParents(data).then(res => {
-        this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.parentManagementApi.acceptRequestedParents(data)).then(res => {
         if (res.session) {
           this.getRequestedParentList();
           this.dataProvider.showToast(this.lang.request_accepted);
         } else {
           this.dataProvider.showToast(this.lang.request_not_accepted);
         }
-    }, error => { 
-      this.dataProvider.hideLoading();
-      this.dataProvider.showToast(error); 
+    }, error => {
+      this.dataProvider.showToast(error);
     });
   }
 
@@ -164,9 +168,7 @@ export class RequestedParentPage implements OnInit {
       'school_id': this.userDetails.details.school_id
     }
     
-    this.dataProvider.showLoading();
-    this.dataProvider.changeParentStatus(data).then(res => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.parentManagementApi.changeParentStatus(data)).then(res => {
         if (res.session) {
           this.dataProvider.showToast('تم حفظ التعديلات لولي الأمر بنجاح');
         } else {
@@ -174,7 +176,6 @@ export class RequestedParentPage implements OnInit {
         }
     }, error => {
       this.dataProvider.showToast('حدث خطأ في الاتصال بالسيرفر');
-      this.dataProvider.hideLoading();
     });
   }
 
@@ -184,9 +185,7 @@ export class RequestedParentPage implements OnInit {
       'school_id': this.userDetails.details.school_id
     }
     
-    this.dataProvider.showLoading();
-    this.dataProvider.deleteRequestedParents(data).then(res => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.parentManagementApi.deleteRequestedParents(data)).then(res => {
         if (res.session) {
           this.getRequestedParentList();
           this.dataProvider.showToast(this.lang.request_deleted);
@@ -195,7 +194,6 @@ export class RequestedParentPage implements OnInit {
         }
     }, error => {
       this.dataProvider.showToast(error);
-      this.dataProvider.hideLoading();
     });
   }
 
@@ -219,11 +217,12 @@ export class RequestedParentPage implements OnInit {
                  school_id: this.userDetails.details.school_id,
                  session_id: this.userDetails.session_id
                }
-               this.dataProvider.showLoading();
-               this.dataProvider.deleteParent(deleteData, res => {
-                   this.dataProvider.hideLoading();
+               this.dataProvider.run(() => this.userManagementApi.deleteParent(deleteData)).then((res: any) => {
+                   this.dataProvider.showToast(res.msg);
                    this.getAllParents();
                    this.dataProvider.showToast('تم الحذف بنجاح');
+                 }).catch(error => {
+                   console.log(error);
                  });
               }
         }
@@ -251,7 +250,7 @@ export class RequestedParentPage implements OnInit {
         'search_str': input.trim()
       };
       
-      this.dataProvider.serachParent(data).then(res => {
+      this.searchApi.serachParent(data).then(res => {
           if (res && res.data) {
             this.allParentList = res.data;
             if (this.allParentList.length > 1) {
@@ -293,19 +292,16 @@ export class RequestedParentPage implements OnInit {
               } else {
                 data.parentId = parseInt(data.parentId);
                 if(Number.isInteger(data.parentId)){
-                  this.dataProvider.showLoading();
                   data.user_no = this.userDetails.details.user_no;
                   data.school_id = this.userDetails.details.school_id;
-                  this.dataProvider.registerNewParent(data).then((res)=>{
-                    this.dataProvider.hideLoading();
+                  this.dataProvider.run(() => this.dataProvider.registerNewParent(data)).then((res)=>{
                     if(res.session){
                       this.dataProvider.showToast(res.message);
                     }else{
-                      this.dataProvider.showToast(res.message); 
+                      this.dataProvider.showToast(res.message);
                       return false;
                     }
                   }).catch((err)=>{
-                    this.dataProvider.hideLoading();
                     this.dataProvider.errorALertMessage(err);
                   })
                 } else {

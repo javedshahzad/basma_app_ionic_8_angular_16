@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-profile-image',
   templateUrl: './profile-image.page.html',
   styleUrls: ['./profile-image.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileImagePage implements OnInit {
   

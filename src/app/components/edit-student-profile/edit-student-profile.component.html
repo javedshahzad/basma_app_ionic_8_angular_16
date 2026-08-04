@@ -1,4 +1,4 @@
-<div class="body">
+﻿<div class="body">
 	<ion-icon class="edit-icon" name="close-outline" (click)="closeModal()"></ion-icon>
 	<ion-row class="input-row">
 		<ion-item class="item">
@@ -8,7 +8,7 @@
 		<ion-item class="item">
 			<ion-label>{{'edit_student.class' | translate}}</ion-label>
 			<ion-select placeholder="{{student.course_name}}" value="{{studentSemester}}" id="select" interface="popover">
-				<ion-select-option *ngFor="let c of classes" value={{c.cid}}>{{c.name}}</ion-select-option>
+				<ion-select-option *ngFor="let c of classes; trackBy: trackByIndex" value={{c.cid}}>{{c.name}}</ion-select-option>
 			</ion-select>
 		</ion-item>
 	</ion-row>

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+﻿import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NavController, Platform, AlertController, ModalController } from '@ionic/angular';
 import { Location } from '@angular/common';
 import { DataService } from '../service/data/data.service';
@@ -12,6 +12,7 @@ import { PlanReceiptComponent } from '../plan-receipt/plan-receipt.component';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { PlanApiService } from '../service/plan-api/plan-api.service';
 
 @Component({
   selector: 'app-available-plan',
@@ -19,6 +20,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./available-plan.page.scss'], 
 })
 export class AvailablePlanPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   lang: any;
   plans: any = [];
   
@@ -51,7 +53,8 @@ export class AvailablePlanPage implements OnInit {
     private subscriptionService: SubscriptionService,
     private location: Location,
     public modalController: ModalController,
-    private storageSr: StorageService // 🟢 حقن الخدمة
+    private storageSr: StorageService, // 🟢 حقن الخدمة
+    private planApi: PlanApiService
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
@@ -74,7 +77,7 @@ export class AvailablePlanPage implements OnInit {
 
   getPlan() {
     let data = { userId: '' };
-    this.dataProvider.getPlan(data).then((res: any) => {
+    this.planApi.getPlan(data).then((res: any) => {
       if (res && res.response) {
         this.plans = res.response;
         const sortOrder = ["Basic Plan: Free", "Standard Plan", "Premium Plan"];
@@ -91,9 +94,7 @@ export class AvailablePlanPage implements OnInit {
       school_id: this.userDetails.details.school_id
     };
     
-    this.dataProvider.showLoading();
-    this.dataProvider.getUserPlan(data).then(async (res: any) => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.planApi.getUserPlan(data)).then(async (res: any) => {
       if (res && res.response) {
         this.availablePlan = res.response;
         this.availablePlan.cardColor = res.response.isExpire ? 'rgb(249 169 5)' : '#43a047';
@@ -103,7 +104,6 @@ export class AvailablePlanPage implements OnInit {
         this.availablePlan = { plan: { slug: '' } };
       }
     }).catch(e => {
-      this.dataProvider.hideLoading();
     });
   }
 
@@ -196,11 +196,9 @@ export class AvailablePlanPage implements OnInit {
       return;
     }
 
-    this.dataProvider.showLoading();
-    
     // 🟢 قراءة الخطة الآمنة من خدمة التخزين بدلاً من localStorage
-    let storedPlan = await this.storageSr.get('availablePlan'); 
-    
+    let storedPlan = await this.storageSr.get('availablePlan');
+
     let data = {
       "user_no": this.userDetails.details.user_no,
       "school_id": this.userDetails.details.school_id,
@@ -208,8 +206,7 @@ export class AvailablePlanPage implements OnInit {
       "plan_id": storedPlan?.plan?.id || this.availablePlan?.plan?.id || 1 // تعيين افتراضي لمنع الأخطاء
     };
 
-    this.dataProvider.ApplyVoucherCode(data).then(res => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.dataProvider.ApplyVoucherCode(data)).then(res => {
       if (res.success) {
         this.dataProvider.showToast(res.msg);
         this.closeVoucherModal();
@@ -218,7 +215,6 @@ export class AvailablePlanPage implements OnInit {
         this.dataProvider.showToast(res.msg);
       }
     }).catch(error => {
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast("حدث خطأ في الاتصال، حاول مرة أخرى.");
     });
   }
@@ -235,7 +231,7 @@ export class AvailablePlanPage implements OnInit {
       school: this.userDetails.details.school_id
     };
     
-    this.dataProvider.purchase(data).then((res: any) => {
+    this.planApi.purchase(data).then((res: any) => {
       if (res.success) {
         this.dataProvider.showToast('تم تفعيل الباقة الأساسية المجانية بنجاح');
         this.getUserPlan(); // تحديث الواجهة بدلاً من الانتقال المباشر

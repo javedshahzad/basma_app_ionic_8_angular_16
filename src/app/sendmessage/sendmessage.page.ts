@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone } from "@angular/core";
+﻿import { Component, OnInit, NgZone, DestroyRef, inject } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavController, Platform, AlertController, ModalController } from "@ionic/angular";
 import { DataService } from "../service/data/data.service";
 
@@ -13,6 +14,7 @@ import { environment } from "../../environments/environment";
 import { StorageService } from '../service/storage.service';
 
 import { AuthService } from '../service/auth/auth.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 const env = environment;
 
@@ -22,6 +24,8 @@ const env = environment;
   styleUrls: ["./sendmessage.page.scss"],
 })
 export class SendmessagePage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  private destroyRef = inject(DestroyRef);
   mail: any = {
     send_to: {
       parents: false,
@@ -61,8 +65,9 @@ export class SendmessagePage implements OnInit {
     private modalCtrl: ModalController,
     private storageSr: StorageService,  // 🟢 2. حقن خدمة التخزين
     public authProvider: AuthService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
   ) {
-    this.dataProvider.selectedUsers.subscribe((res) => {
+    this.dataProvider.selectedUsers.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       this.mail.selected_users = res.selectedUsers;
       this.selectedUsersShow = res.selectedUsersShow;
       console.log(this.mail.selected_users);
@@ -141,21 +146,19 @@ export class SendmessagePage implements OnInit {
     this.router.navigate(["tabs/messages"]);
   }
 
-  getUsers() {
+  async getUsers() {
     let data = {
       school_id: this.userDetails.details.school_id,
     };
-    this.dataProvider.showLoading();
-    this.dataProvider.getAllSchoolUsers(data).then((res) => {
-        this.dataProvider.hideLoading();
-        if (res.data) {
-          this.users = res.data;
-        }
-      }).catch((error) => {
-        this.dataProvider.hideLoading();
-        this.dataProvider.showToast(error);
-        console.log(error);
-      });
+    try {
+      const res = await this.dataProvider.run(() => this.schoolDirectoryApi.getAllSchoolUsers(data));
+      if (res.data) {
+        this.users = res.data;
+      }
+    } catch (error) {
+      this.dataProvider.showToast(error);
+      console.log(error);
+    }
   }
 
   sendMessage() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -8,13 +8,17 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { SearchApiService } from '../service/search-api/search-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
   selector: 'app-search-student',
   templateUrl: './search-student.page.html',
   styleUrls: ['./search-student.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchStudentPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   userdata: any;
   lang: any;
   students = <any>[];
@@ -33,9 +37,12 @@ export class SearchStudentPage implements OnInit {
     private router: Router,
     public zone: NgZone,
     public platform: Platform,
-    private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private searchApi: SearchApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private cdr: ChangeDetectorRef
   ) {
-    
+
     // 🟢 3. التقاط البيانات متزامناً وبشكل مباشر من الـ Router لمنع الخطأ
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
@@ -45,6 +52,7 @@ export class SearchStudentPage implements OnInit {
 
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
   }
 
@@ -61,21 +69,20 @@ export class SearchStudentPage implements OnInit {
       } else {
         // العودة للخلف إذا فشل إيجاد البيانات
         this.navCtrl.back();
+        this.cdr.markForCheck();
         return;
       }
     }
+    this.cdr.markForCheck();
   }
 
-  getStudents() {
+  async getStudents() {
     let data = {
       'school_id': this.userdata.school_id
     };
-    
-    this.dataProvider.showLoading();
-    
-    this.dataProvider.getSchoolStudents(data).then(res => {
-      this.dataProvider.hideLoading();
-      
+
+    try {
+      const res = await this.dataProvider.run(() => this.schoolDirectoryApi.getSchoolStudents(data));
       if (res && res.data) {
         this.students = res.data;
         if (this.students.length > 20) {
@@ -84,11 +91,11 @@ export class SearchStudentPage implements OnInit {
           this.allStudents = this.students;
         }
       }
-    }).catch(error => {
-      this.dataProvider.hideLoading();
+    } catch (error) {
       this.dataProvider.showToast(error);
       console.log(error);
-    });
+    }
+    this.cdr.markForCheck();
   }
 
   // 🟢 5. دالة البحث المحدثة والآمنة (مزودة بـ Debounce لمنع انهيار السيرفر)
@@ -100,6 +107,7 @@ export class SearchStudentPage implements OnInit {
     if (!input || input.trim() === '') {
       this.students = [];
       this.allStudents = [];
+      this.cdr.markForCheck();
       return;
     }
 
@@ -114,7 +122,7 @@ export class SearchStudentPage implements OnInit {
         'search_str': input.trim()
       };
       
-      this.dataProvider.serachStudent(data).then(res => {
+      this.searchApi.serachStudent(data).then(res => {
         if (res && res.data && res.data.response) {
           this.students = res.data.response;
           if (this.students.length > 20) {
@@ -127,9 +135,11 @@ export class SearchStudentPage implements OnInit {
           this.students = [];
           this.allStudents = [];
         }
+        this.cdr.markForCheck();
       }).catch(error => {
         this.dataProvider.showToast(error);
         console.log(error);
+        this.cdr.markForCheck();
       });
     }, 500); // ينتظر نصف ثانية بعد آخر حرف يكتبه المستخدم
   }
@@ -155,6 +165,7 @@ export class SearchStudentPage implements OnInit {
         this.allStudents = this.allStudents.concat(this.students.splice(0, 20));
       }
       infiniteScroll.target.complete();
+      this.cdr.markForCheck();
     }, 500);
   }
 }

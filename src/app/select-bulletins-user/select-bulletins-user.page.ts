@@ -6,6 +6,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { BulletinsApiService } from '../service/bulletins-api/bulletins-api.service';
+import { SearchApiService } from '../service/search-api/search-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
   selector: 'app-select-bulletins-user',
@@ -13,6 +16,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./select-bulletins-user.page.scss'],
 })
 export class SelectBulletinsUserPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   userdata: any;
   lang: any;
   allUsers: any = [];
@@ -38,7 +42,10 @@ export class SelectBulletinsUserPage implements OnInit {
     private router: Router,
     public zone: NgZone, 
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن الخدمة
+    private storageSr: StorageService, // 🟢 حقن الخدمة
+    private bulletinsApi: BulletinsApiService,
+    private searchApi: SearchApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService
   ) {
     // 🟢 التقاط بيانات الـ Router متزامناً لمنع الضياع
     const navigation = this.router.getCurrentNavigation();
@@ -94,7 +101,7 @@ export class SelectBulletinsUserPage implements OnInit {
     let data = { 'school_id': this.userDetails.details.school_id };
     
     this.show_loading = true;
-    this.dataProvider.getSchoolUsers(data).then(res => {
+    this.schoolDirectoryApi.getSchoolUsers(data).then(res => {
       this.show_loading = false;
       if (res && res.data) {
         // 🟢 إضافة متغير isChecked لربطه بالـ HTML بأمان لعدم استخدام id
@@ -127,7 +134,7 @@ export class SelectBulletinsUserPage implements OnInit {
         school_id: this.userDetails.details.school_id
       };
       
-      this.dataProvider.searchUser(data).then(resp => {
+      this.searchApi.searchUser(data).then(resp => {
         this.show_loading = false;
         if (resp && resp.data) {
           this.users = resp.data.map(u => {
@@ -181,13 +188,10 @@ export class SelectBulletinsUserPage implements OnInit {
         return;
       }
       this.data.users = this.selectedUsers.join(','); // تحويل المصفوفة لنص مفصول بفواصل حسب المتطلبات الشائعة
-      this.dataProvider.showLoading();
-      this.dataProvider.shareBulletins(this.data).then(res => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.bulletinsApi.shareBulletins(this.data)).then(res => {
         this.dataProvider.showToast(res.message);
         this.router.navigate(['bulletins']);
       }).catch(err => {
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast(err.message || 'خطأ غير متوقع');
       });
     } else if (this.type === 'create') {

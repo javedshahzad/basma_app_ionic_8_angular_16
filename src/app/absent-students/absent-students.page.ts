@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { NavController, AlertController, PopoverController, ModalController, ActionSheetController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatePipe } from '@angular/common';
+import { AbsentApplicationApiService } from '../service/absent-application-api/absent-application-api.service';
+import { StorageService } from '../service/storage.service';
 
 @Component({
   selector: 'app-absent-students',
@@ -11,6 +13,7 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./absent-students.page.scss'],
 })
 export class AbsentStudentsPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   classes=[];
   userDetails: any;
   search_payload:any={
@@ -48,20 +51,22 @@ export class AbsentStudentsPage implements OnInit {
                 private router:Router,
                 private datepipe: DatePipe,
                 public modalCtrl: ModalController,
-                public actionSheet: ActionSheetController) { }
+                public actionSheet: ActionSheetController,
+                private absentApplicationApi: AbsentApplicationApiService,
+                private storageSr: StorageService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     // 🌟 تعديل 2: توليد التاريخ المحلي الصافي بصيغة YYYY-MM-DD لمنع مشكلة قفز الأشهر
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
-    
+
     // الصيغة النقية: مثلاً "2026-04-03" (بدون حرف Z الخاص بتوقيت جرينتش)
     this.calendarDate = `${year}-${month}-${day}`;
     this.search_payload.start_date = this.calendarDate;
 
-    this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+    this.userDetails = await this.storageSr.get("userloggedin");
     this.getCourse();
     this.OnFilterData();
   }
@@ -148,13 +153,13 @@ export class AbsentStudentsPage implements OnInit {
     this.showCalenderModal = false;
   }
 
-  getAbsentStudentsList(){
-    if(localStorage.getItem("userloggedin")){
+  async getAbsentStudentsList(){
+    if(this.userDetails){
       let data = this.search_payload;
-      data.end_date =data.start_date 
+      data.end_date =data.start_date
       data.school_id =this.userDetails.details.school_id;
-      this.dataProvider.showLoading();
-      this.dataProvider.GetAbsentStudents(data).then(res => {
+      try {
+        const res = await this.dataProvider.run(() => this.absentApplicationApi.GetAbsentStudents(data));
         if(res.success){
           this.ResponseData = res.data;
           this.AttendanceDataList = this.ResponseData.attendance;
@@ -162,11 +167,9 @@ export class AbsentStudentsPage implements OnInit {
         else{
           this.AttendanceDataList=[];
         }
-        this.dataProvider.hideLoading();
-      },error=>{
-        this.dataProvider.hideLoading();
+      } catch (error) {
         this.dataProvider.showToast("error");
-      })  
+      }
     }
   }
 

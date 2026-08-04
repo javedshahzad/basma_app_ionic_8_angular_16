@@ -7,6 +7,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
 
 @Component({
   selector: 'app-followup-add-fields',
@@ -14,7 +15,8 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./followup-add-fields.page.scss'],
 })
 export class FollowupAddFieldsPage implements OnInit {
-  
+
+  trackByIndex(index: number): number { return index; }
   userDetails: any = {};
   lang: any = {};
   fields: Array<any> = [];
@@ -31,7 +33,8 @@ export class FollowupAddFieldsPage implements OnInit {
     private router: Router,
     public zone: NgZone, 
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private followupFieldsApi: FollowupFieldsApiService
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
@@ -94,7 +97,7 @@ export class FollowupAddFieldsPage implements OnInit {
     };
 
     // جلب الحقول السابقة من السيرفر
-    this.dataProvider.getFollowupFields(data).then((res: any) => {
+    this.followupFieldsApi.getFollowupFields(data).then((res: any) => {
       this.show_loading = false;
       if (res && res.data) {
         this.fields = res.data;
@@ -149,21 +152,17 @@ export class FollowupAddFieldsPage implements OnInit {
       "id": field.id
     };
     
-    this.dataProvider.showLoading();
-    this.dataProvider.deleteFollowupFields(data).then((res: any) => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.followupFieldsApi.deleteFollowupFields(data)).then((res: any) => {
       this.fields.splice(index, 1);
       this.dataProvider.showToast("تم الحذف بنجاح");
-    }).catch(() => this.dataProvider.hideLoading());
+    }).catch(() => {});
   }
 
   submitFields() {
     if (this.checkField()) {
-      this.dataProvider.showLoading();
-      
-      const courseId = this.navData?.course?.cid || 
-                       this.navData?.course?.course_id || 
-                       this.navData?.course_id || 
+      const courseId = this.navData?.course?.cid ||
+                       this.navData?.course?.course_id ||
+                       this.navData?.course_id ||
                        this.navData?.cid || '';
 
       let data = {
@@ -174,13 +173,12 @@ export class FollowupAddFieldsPage implements OnInit {
         "course_id": courseId
       };
 
-      this.dataProvider.saveFollowupFields(data).then((res: any) => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.followupFieldsApi.saveFollowupFields(data)).then((res: any) => {
         if (res && res.data) {
           this.dataProvider.showToast(this.lang.field_added || 'تم الحفظ بنجاح');
           this.goBackToStudentList();
         }
-      }).catch(() => this.dataProvider.hideLoading());
+      }).catch(() => {});
     }
   }
 

@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, Platform, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -20,6 +21,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
   styleUrls: ['./post-news.page.scss'],
 })
 export class PostNewsPage implements OnInit {
+  private destroyRef = inject(DestroyRef);
   
   news = {
     'title': '',
@@ -62,7 +64,7 @@ export class PostNewsPage implements OnInit {
     private cdr: ChangeDetectorRef
   ) {
                 
-    this.route.queryParams.subscribe(async (res: any) => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async (res: any) => {
       if (res && res.edit && res.news) {
         try {
           this.processIncomingNews(JSON.parse(res.news));

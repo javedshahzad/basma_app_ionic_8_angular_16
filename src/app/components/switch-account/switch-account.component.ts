@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, NgZone, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, Input, NgZone, ChangeDetectorRef } from '@angular/core';
 import { ModalController, PopoverController, IonicModule, NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DatabaseService } from '../../service/database/database.service';
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../service/storage.service';
+import { DeviceApiService } from '../../service/device-api/device-api.service';
 
 @Component({
   selector: 'app-switch-account',
@@ -20,6 +21,7 @@ import { StorageService } from '../../service/storage.service';
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
 })
 export class SwitchAccountComponent implements OnInit {
+  trackByIndex(index: number): number { return index; }
   @Input() lang: any;
   loggedinUser: any[] = []; 
   userDetails: any;
@@ -46,7 +48,8 @@ export class SwitchAccountComponent implements OnInit {
     public dataProvider: DataService,
     public modalController: ModalController,
     private storageSr: StorageService,
-    private cdr: ChangeDetectorRef 
+    private cdr: ChangeDetectorRef,
+    private deviceApi: DeviceApiService
   ) { }
 
   ngOnInit() {
@@ -185,7 +188,7 @@ export class SwitchAccountComponent implements OnInit {
 
     this.authProvider.doLogin(loginPayload).then(async (response) => {
       
-      await this.dataProvider.LogInSingleDevice({
+      await this.deviceApi.LogInSingleDevice({
          user_no: response.details.user_no,
          device_id: systemUuid
       }).catch(e => {});

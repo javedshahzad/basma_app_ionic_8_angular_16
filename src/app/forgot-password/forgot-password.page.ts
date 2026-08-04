@@ -1,14 +1,16 @@
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, IonContent } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { PasswordResetApiService } from '../service/password-reset-api/password-reset-api.service';
 
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.page.html',
   styleUrls: ['./forgot-password.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ForgotPasswordPage implements OnInit {
   
@@ -44,10 +46,13 @@ export class ForgotPasswordPage implements OnInit {
     public translate: TranslateService,
     private route: ActivatedRoute,
     private router: Router,
-    public zone: NgZone
+    public zone: NgZone,
+    private passwordResetApi: PasswordResetApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
     
     // 🟢 استلام البريد الإلكتروني إذا تم تحويله من صفحة الدخول
@@ -79,20 +84,19 @@ export class ForgotPasswordPage implements OnInit {
       this.emailError = '';
       let data = { 'email': this.email.trim() };
       
-      this.dataProvider.showLoading();
-      this.dataProvider.submitEmail(data).then(res => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.passwordResetApi.submitEmail(data)).then(res => {
         if (res.session) {
           this.step++;
           this.canEditEmail = false;
           this.enterOtp = true;
-          this.scrollToBottom(); 
+          this.scrollToBottom();
         } else {
           this.emailError = res.message;
         }
+        this.cdr.markForCheck();
       }).catch(error => {
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast(error);
+        this.cdr.markForCheck();
       });
     }
   }
@@ -107,9 +111,7 @@ export class ForgotPasswordPage implements OnInit {
         'otp': this.otp.trim()
       };
       
-      this.dataProvider.showLoading();
-      this.dataProvider.checkOtp(data).then(res => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.passwordResetApi.checkOtp(data)).then(res => {
         if (res.session) {
           this.canEditOTP = false;
           this.enterPassword = true;
@@ -118,9 +120,10 @@ export class ForgotPasswordPage implements OnInit {
         } else {
           this.otpError = res.message;
         }
+        this.cdr.markForCheck();
       }).catch(error => {
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast(error);
+        this.cdr.markForCheck();
       });
     }
   }
@@ -144,9 +147,7 @@ export class ForgotPasswordPage implements OnInit {
         'c_password': this.confirm_password
       };
       
-      this.dataProvider.showLoading();
-      this.dataProvider.resetPassword(data).then(res => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.passwordResetApi.resetPassword(data)).then(res => {
         if (res.session) {
           this.step++;
           this.canEditPass = false;
@@ -159,9 +160,10 @@ export class ForgotPasswordPage implements OnInit {
         } else {
           this.dataProvider.showToast(res.message);
         }
+        this.cdr.markForCheck();
       }).catch(error => {
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast(error);
+        this.cdr.markForCheck();
       });
     }
   }

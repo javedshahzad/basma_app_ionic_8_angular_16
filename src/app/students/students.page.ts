@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, NavParams, AlertController, Platform, PopoverController, ActionSheetController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
@@ -12,15 +13,18 @@ import { Filesystem } from '@capacitor/filesystem';
 import { FileUploadService } from '../service/file-upload/file-upload.service';
 import { AvatarImagesComponent } from '../components/avatar-images/avatar-images.component';
 import { ImageOptionPopoverComponent } from '../components/image-option-popover/image-option-popover.component';
-import { StudentPointsPopoverComponent } from '../components/student-points-popover (deleted)/student-points-popover.component';
+import { StudentPointsPopoverComponent } from '../components/student-points-popover/student-points-popover.component';
 import { StudentOptionsPopoverComponent } from '../components/student-options-popover/student-options-popover.component';
 import { AddReviewComponent } from '../add-review/add-review.component'; 
 import { StudentProfileModalComponent } from '../components/student-profile-modal/student-profile-modal.component';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
-import { StorageService } from '../service/storage.service'; 
+import { StorageService } from '../service/storage.service';
 import { StudentUiService } from '../service/student-ui/student-ui.service';
 import { ImageProcessingService } from '../service/image-processing/image-processing.service';
+import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
+import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
+import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 
 @Component({
   selector: 'app-students',
@@ -28,6 +32,7 @@ import { ImageProcessingService } from '../service/image-processing/image-proces
   styleUrls: ['./students.page.scss'],
 })
 export class StudentsPage implements OnInit {
+  private destroyRef = inject(DestroyRef);
   showProfileModal: boolean = false;
   students: any = [];
   dateSelected: any;
@@ -80,10 +85,13 @@ export class StudentsPage implements OnInit {
       private storageSr: StorageService,
       private cdr: ChangeDetectorRef,
       private imageService: ImageProcessingService,
-      private studentUi: StudentUiService
+      private studentUi: StudentUiService,
+      private attendanceApi: AttendanceApiService,
+      private holidaysApi: HolidaysApiService,
+      private studentEngagement: StudentEngagementService
     ) {
 
-      this.route.queryParams.subscribe(async params => {
+      this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const nav = this.router.getCurrentNavigation();
       if (nav && nav.extras.state) {
         this.navData = nav.extras.state['course'];
@@ -107,7 +115,7 @@ export class StudentsPage implements OnInit {
           "school_id": this.userDetails.details.school_id,
           "session_id": this.userDetails.session_id
         };
-        this.dataProvider.getHolidays(data).then(response => {
+        this.holidaysApi.getHolidays(data).then(response => {
           if (response && response.holidays.length > 0) {
             this.holidayString = response.holiday_string;
             this.checkIfHoliday();
@@ -136,6 +144,12 @@ export class StudentsPage implements OnInit {
   }
  
   ngOnInit() {}
+
+  trackByStudent(index: number, student: any): any {
+    return student?.sid ?? index;
+  }
+
+  trackByIndex(index: number): number { return index; }
 
   ionViewWillEnter() {
     this.getStudentPoints();
@@ -386,7 +400,7 @@ export class StudentsPage implements OnInit {
       
       if(this.platform.is('cordova') || this.platform.is('capacitor')){ 
         if(this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN){
-          this.dataProvider.markDelayAttendance(data, submittedByUser).then((response) => {
+          this.attendanceApi.markDelayAttendance(data, submittedByUser).then((response) => {
             this.dataProvider.hideLoading();
             if (response) {
               // 🟢 بعد الحفظ بنجاح: أغلق نمط التعديل وأعد تحميل الطلاب
@@ -412,7 +426,7 @@ export class StudentsPage implements OnInit {
           this.getStudents(false); 
         }
       } else {
-        this.dataProvider.markDelayAttendance(data, submittedByUser).then((response) => {
+        this.attendanceApi.markDelayAttendance(data, submittedByUser).then((response) => {
           this.dataProvider.hideLoading();
           if (response) {
             // 🟢 للمتصفح أيضاً
@@ -546,7 +560,7 @@ export class StudentsPage implements OnInit {
       userId: this.userDetails.details.user_no,
       points: point
     }
-    this.dataProvider.addStudentPoints(body).then(res => {
+    this.studentEngagement.awardSkillPoints(body).then(res => {
       if(res.success){
         this.dataProvider.showToast(res.msg);
       }
@@ -601,7 +615,7 @@ export class StudentsPage implements OnInit {
             rating: this.ratingStars,
             new_rating: JSON.stringify(this.ratingStars)
           }
-          this.dataProvider.addStudentNote(data).then((note_id)=>{
+          this.studentEngagement.addNote(data).then((note_id)=>{
             this.noteMessage = '';
             this.showNoteModal = false;
             this.dataProvider.showToast(this.lang.add_review_success_message);
@@ -624,7 +638,6 @@ export class StudentsPage implements OnInit {
     if(this.noteMessage && this.noteMessage.trim() != '') {
       if(this.noteMessage.length <= 45) {
         if(this.canAddStudentNote) {
-          this.dataProvider.showLoading();
           let data = {
             sid: this.studentData.sid,
             note: this.noteMessage,
@@ -632,13 +645,11 @@ export class StudentsPage implements OnInit {
             rating: 0,
             new_rating: JSON.stringify([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
           }
-          this.dataProvider.addStudentNote(data).then((note_id)=>{
-            this.dataProvider.hideLoading();
+          this.dataProvider.run(() => this.studentEngagement.addNote(data)).then((note_id)=>{
             this.noteMessage = '';
             this.showNoteModal = false;
             this.dataProvider.showToast(this.lang.add_note_success_message);
           }).catch(error=>{
-            this.dataProvider.hideLoading();
             this.dataProvider.errorALertMessage(error);
           })
         }else{
@@ -822,33 +833,28 @@ export class StudentsPage implements OnInit {
     }
   }
 
-  ChangeStudentProfileAvatar(base64Data: string) {
+  async ChangeStudentProfileAvatar(base64Data: string) {
     if (!base64Data) {
       this.dataProvider.hideLoading();
       return;
     }
-    
-    let finalImageData = base64Data.includes('data:image') ? base64Data : "data:image/png;base64," + base64Data;
-    
-    let data = {
-      user_no: this.userDetails.details.user_no,
-      session_id: this.userDetails.session_id,
-      imageData: finalImageData, 
-      sid: this.student.sid
-    };
 
     // 🟢 عدنا للدالة الصحيحة الخاصة بك والتي تعمل بامتياز
-    this.dataProvider.updateUserImage(data).then((response: any) => {
+    try {
+      const result = await this.studentEngagement.uploadAvatar(base64Data, {
+        user_no: this.userDetails.details.user_no,
+        session_id: this.userDetails.session_id,
+        sid: this.student.sid
+      });
       this.dataProvider.hideLoading();
-      
-      if (response && response.session) {
-        // كسر الكاش لضمان عرض الصورة من السيرفر
-        let newPicUrl = response.url + '?t=' + new Date().getTime();
+
+      if (result.success) {
+        const newPicUrl = result.url;
 
         this.zone.run(() => {
           // 🟢 التحديث المباشر للمرجع (بدون تدميره) لكي يشعر المودال بالتغيير فوراً
           this.student.pic = newPicUrl;
-          
+
           if (this.students && this.students.length > 0) {
              const idx = this.students.findIndex((s: any) => s.sid === this.student.sid);
              if (idx > -1) {
@@ -862,13 +868,13 @@ export class StudentsPage implements OnInit {
         this.dataProvider.showToast("تم تحديث صورة الطالب بنجاح");
       } else {
         this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(response.message);
+        this.dataProvider.errorALertMessage(result.message);
         this.router.navigate(['login'], { replaceUrl: true });
       }
-    }).catch((error) => {
+    } catch (error) {
       this.dataProvider.hideLoading();
       this.dataProvider.errorALertMessage("حدث خطأ في الاتصال بالخادم.");
-    });
+    }
   }
 
   checkCurrentDate(date: Date) {

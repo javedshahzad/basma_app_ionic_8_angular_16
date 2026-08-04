@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border bg-white border-b border-slate-200" mode="md">
+﻿<ion-header class="ion-no-border bg-white border-b border-slate-200" mode="md">
   <ion-toolbar class="--bg-transparent">
     
     <ion-buttons slot="start" class="mr-2 flex gap-2">
@@ -37,7 +37,7 @@
       
       <div class="flex items-center gap-4 relative z-10 mb-6">
         <div class="relative shrink-0">
-          <img [src]="studentDetails.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
+          <img loading="lazy" [src]="studentDetails.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
                class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-slate-50 shadow-sm cursor-pointer hover:scale-105 transition-transform"
                (click)="$event.stopPropagation(); openFullscreenImage(studentDetails.pic)">
           
@@ -267,7 +267,7 @@
               <h4 class="text-lg font-black text-slate-800 m-0 mt-1 relative z-10">{{studentDetails.medical_days}}</h4>
             </div>
           </div>
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden" *ngFor="let details of studentDetails?.absents">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden" *ngFor="let details of studentDetails?.absents; trackBy: trackByAbsentDate">
             
             <div class="bg-slate-50 border-b border-slate-100 p-3 flex flex-col gap-2.5">
               <div class="flex items-center gap-2 text-sm font-bold text-slate-700">
@@ -289,7 +289,7 @@
             
             <div class="p-3">
               <div class="space-y-2">
-                <div class="flex items-start gap-3 p-2.5 rounded-lg bg-slate-50 border border-slate-100" *ngFor="let note of details.notes; let i = index;">
+                <div class="flex items-start gap-3 p-2.5 rounded-lg bg-slate-50 border border-slate-100" *ngFor="let note of details.notes; let i = index; trackBy: trackByAbsenceNoteId">
                   <div class="mt-0.5 text-slate-400"><ion-icon name="document-text" class="text-lg"></ion-icon></div>
                   <div class="flex-1 text-sm text-slate-700 font-medium leading-relaxed text-right">{{note.note}}</div>
                   <button class="text-rose-400 hover:text-rose-600 p-1 transition-colors bg-white rounded shadow-sm border border-rose-100" 
@@ -327,7 +327,7 @@
           <h4 class="font-bold text-slate-700 text-sm flex items-center gap-2 mb-3 px-1">
             <ion-icon name="call" class="text-indigo-500 bg-indigo-50 p-1.5 rounded-lg"></ion-icon> {{'manage_report.call_off_report' | translate}}
           </h4>
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4" *ngFor="let edays of callOfStudentsReport; let i=index">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4" *ngFor="let edays of callOfStudentsReport; let i=index; trackBy: trackByIndex">
             <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-100">
               <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
               <div class="flex items-center gap-1.5 text-xs font-bold text-slate-600 flex-row-reverse" dir="ltr">
@@ -343,7 +343,7 @@
           <h4 class="font-bold text-slate-700 text-sm flex items-center gap-2 mb-3 px-1">
             <ion-icon name="document-text" class="text-amber-500 bg-amber-50 p-1.5 rounded-lg"></ion-icon> {{'manage_report.student_pledges_report' | translate}}
           </h4>
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4" *ngFor="let edays of AllStudentPledgesReports; let i=index">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4" *ngFor="let edays of AllStudentPledgesReports; let i=index; trackBy: trackByIndex">
             <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-100">
               <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
               <span class="text-xs font-bold text-slate-600 flex items-center gap-1.5 flex-row-reverse" dir="ltr"><ion-icon name="calendar-outline" class="text-sm"></ion-icon> {{edays.date}}</span>
@@ -363,7 +363,7 @@
           <div class="flex flex-col items-center justify-center w-28 border-l border-slate-100 pl-4">
             <h4 class="text-4xl font-extrabold text-slate-800 m-0 leading-none">{{notes.agg_ranking | number:'1.1-1'}}</h4>
             <div class="flex items-center text-amber-400 text-sm my-1.5" dir="ltr">
-              <span *ngFor="let star of getSelectedStars(); let i = index;">
+              <span *ngFor="let star of getSelectedStars(); let i = index; trackBy: trackByIndex">
                 <ion-icon name="star" [ngStyle]="{'color': aggStars[i]}" *ngIf="!halfStar || halfStarPosition != i"></ion-icon>
                 <ion-icon name="star-half" *ngIf="halfStar && halfStarPosition == i" class="text-amber-400" style="transform: scaleX(-1);"></ion-icon>
               </span>
@@ -372,7 +372,7 @@
           </div>
 
           <div class="flex-1 mr-4" dir="ltr">
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5" *ngFor="let rating of ['five', 'four', 'three', 'two', 'one']; let idx = index">
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5" *ngFor="let rating of ['five', 'four', 'three', 'two', 'one']; let idx = index; trackBy: trackByIndex">
               <span class="w-2 text-center">{{5 - idx}}</span>
               <div class="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden">
                 <div class="h-full bg-amber-400 rounded-full" [style.width]="(notes.total_rating[rating + '_stars'] || 0) + '%'"></div>
@@ -389,10 +389,10 @@
         </button>
 
         <div class="space-y-3">
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 relative" *ngFor="let note of notes?.notes; let i = index;" dir="rtl">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 relative" *ngFor="let note of notes?.notes; let i = index; trackBy: trackByNoteId" dir="rtl">
              <div class="flex justify-between items-start mb-3">
                <div class="flex items-center gap-3">
-                 <img [src]="note.display_pic" class="w-10 h-10 rounded-xl object-cover border border-slate-200 bg-slate-50 cursor-pointer hover:scale-105 transition-transform" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" (click)="$event.stopPropagation(); openFullscreenImage(note.display_pic)">
+                 <img loading="lazy" [src]="note.display_pic" class="w-10 h-10 rounded-xl object-cover border border-slate-200 bg-slate-50 cursor-pointer hover:scale-105 transition-transform" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" (click)="$event.stopPropagation(); openFullscreenImage(note.display_pic)">
                  <div class="text-right">
                    <h5 class="text-sm font-bold text-slate-800 m-0">{{note.first_name}} {{note.last_name}}</h5>
                    <p class="text-[10px] font-bold text-slate-400 m-0 mt-1 flex items-center justify-start gap-1">
@@ -408,7 +408,7 @@
              </div>
              
              <div class="flex mb-2 bg-slate-50 w-max px-2 py-1 rounded-lg border border-slate-100" *ngIf="note.selections != undefined">
-                <span *ngFor="let star of getSelectedStars(); let si = index;">
+                <span *ngFor="let star of getSelectedStars(); let si = index; trackBy: trackByIndex">
                   <ion-icon name="star" class="text-sm" [ngStyle]="{'color': note.selections[si]}"></ion-icon>
                 </span>
              </div>
@@ -468,7 +468,7 @@
   </button>
 
   <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
-    <img [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+    <img loading="lazy" [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
   </div>
 </div>
 
@@ -593,7 +593,7 @@
           <h3 class="text-xs font-bold text-slate-500 mb-3 px-1">الألقاب المتاحة للدمج (الوصفات)</h3>
           
           <div class="grid grid-cols-1 gap-3">
-            <div *ngFor="let title of processedTitles" class="bg-white p-3 rounded-2xl shadow-sm border relative overflow-hidden transition-all" [ngClass]="title.isUnlocked ? title.border : 'border-slate-200 opacity-90'">
+            <div *ngFor="let title of processedTitles; trackBy: trackByTitleCode" class="bg-white p-3 rounded-2xl shadow-sm border relative overflow-hidden transition-all" [ngClass]="title.isUnlocked ? title.border : 'border-slate-200 opacity-90'">
               
               <div class="flex gap-3 relative z-10">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" [ngClass]="title.isUnlocked ? title.bg : 'bg-slate-100 grayscale'">
@@ -637,7 +637,7 @@
           </div>
 
           <div class="grid grid-cols-2 gap-3">
-            <div *ngFor="let badge of processedBadges" class="bg-white p-3 rounded-2xl border text-center relative" [ngClass]="badge.isUnlocked ? 'border-amber-300 shadow-md' : 'border-slate-200 border-dashed'">
+            <div *ngFor="let badge of processedBadges; trackBy: trackByBadgeCode" class="bg-white p-3 rounded-2xl border text-center relative" [ngClass]="badge.isUnlocked ? 'border-amber-300 shadow-md' : 'border-slate-200 border-dashed'">
               
               <div *ngIf="!badge.isUnlocked" class="opacity-40 grayscale flex flex-col items-center justify-center h-full">
                 <div class="text-4xl mb-1">❓</div>

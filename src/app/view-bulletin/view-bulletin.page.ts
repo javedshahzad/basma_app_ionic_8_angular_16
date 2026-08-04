@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -13,8 +13,10 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-view-bulletin',
   templateUrl: './view-bulletin.page.html',
   styleUrls: ['./view-bulletin.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewBulletinPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   lang: any = {};
   bulletin: any = {};
   userDetails: any = {};
@@ -34,10 +36,12 @@ export class ViewBulletinPage implements OnInit {
     private router: Router,
     public zone: NgZone,
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
 
     // 🟢 التقاط بيانات الـ Router متزامناً مع الحماية من undefined
@@ -70,6 +74,7 @@ export class ViewBulletinPage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   // 🟢 دالة ذكية لفتح الملفات حسب نوعها

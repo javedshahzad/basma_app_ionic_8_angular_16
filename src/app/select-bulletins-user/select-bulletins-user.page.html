@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="end" class="mr-2 w-10">
       <ion-back-button defaultHref="/" text="" icon="chevron-back-outline" class="custom-back-btn"></ion-back-button>
@@ -25,7 +25,7 @@
     
     <!-- 🟢 شاشة التحميل (Skeleton) -->
     <div *ngIf="show_loading" class="space-y-3">
-      <div *ngFor="let dummy of [1,2,3,4,5,6]" class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between animate-pulse">
+      <div *ngFor="let dummy of [1,2,3,4,5,6]; trackBy: trackByIndex" class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between animate-pulse">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 bg-slate-200 rounded-xl"></div>
           <div class="space-y-2">
@@ -39,13 +39,13 @@
 
     <!-- 🟢 حالة المشاركة والتحديد المتعدد -->
     <div *ngIf="!show_loading && allUsers && bulletinId && type!='create'" class="space-y-3">
-      <div *ngFor="let user of allUsers; let i=index" 
+      <div *ngFor="let user of allUsers; let i=index; trackBy: trackByIndex" 
            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer transition-all hover:shadow-md hover:border-indigo-200"
            (click)="user.isChecked = !user.isChecked; selectUser(user, {detail: {checked: user.isChecked}, stopPropagation: false})">
         
         <div class="flex items-center gap-4">
           <div class="relative shrink-0">
-            <img [src]="user.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-slate-50 shadow-sm">
+            <img loading="lazy" [src]="user.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-slate-50 shadow-sm">
           </div>
           <div>
             <h4 class="font-bold text-sm text-slate-800 m-0 mb-1">{{user.first_name}}</h4>
@@ -60,13 +60,13 @@
 
     <!-- 🟢 حالة الإنشاء المباشر (اختيار شخص واحد) -->
     <div *ngIf="!show_loading && allUsers && type=='create'" class="space-y-3">
-      <div *ngFor="let user of allUsers" 
+      <div *ngFor="let user of allUsers; trackBy: trackByIndex" 
            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer transition-all hover:shadow-md hover:border-indigo-200"
            (click)="uplaodBullentin(user)">
         
         <div class="flex items-center gap-4">
           <div class="relative shrink-0">
-            <img [src]="user.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-slate-50 shadow-sm">
+            <img loading="lazy" [src]="user.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-slate-50 shadow-sm">
           </div>
           <div>
             <h4 class="font-bold text-sm text-slate-800 m-0 mb-1">{{user.first_name}}</h4>

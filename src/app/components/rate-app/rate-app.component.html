@@ -1,4 +1,4 @@
-<!-- <div class="container" *ngIf="lang">
+﻿<!-- <div class="container" *ngIf="lang">
   <div class="feedback">
     <div class="rating">
       <input type="radio" name="rating" id="rating-5">
@@ -122,7 +122,7 @@
     </div>
 
     <div class="custom-note-content">
-      <span *ngFor="let star of getSelectedStars();let i = index;">
+      <span *ngFor="let star of getSelectedStars();let i = index;; trackBy: trackByIndex">
         <ion-icon name="star" class="rating-star" [ngStyle]="{'color':selections[i]}" (click)="selectStarsForRating(i)"></ion-icon>
       </span>
       <div class="note-desc">

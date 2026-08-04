@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="end" class="mr-2">
       <ion-back-button defaultHref="/" text="" class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-100 transition-all flex items-center justify-center"></ion-back-button>
@@ -31,13 +31,13 @@
         
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
           
-          <div *ngFor="let doc of selectedDocument; let i=index" class="relative group">
+          <div *ngFor="let doc of selectedDocument; let i=index; trackBy: trackByIndex" class="relative group">
             <div class="aspect-square bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden relative cursor-pointer" (click)="openImgPreview(doc.currentImgSrc)">
               
-              <img src="assets/imgs/pdf.png" *ngIf="doc.extention=='pdf'" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
-              <img src="assets/imgs/doc.png" *ngIf="['docx','doc','txt'].includes(doc.extention)" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
-              <img [src]="doc.currentImgSrc" *ngIf="['png','jpg','jpeg'].includes(doc.extention)" class="w-full h-full object-cover">
-              <img src="assets/imgs/pdssf.png" *ngIf="!['png','jpg','jpeg','docx','doc','txt','pdf'].includes(doc.extention)" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
+              <img loading="lazy" src="assets/imgs/pdf.png" *ngIf="doc.extention=='pdf'" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
+              <img loading="lazy" src="assets/imgs/doc.png" *ngIf="['docx','doc','txt'].includes(doc.extention)" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
+              <img loading="lazy" [src]="doc.currentImgSrc" *ngIf="['png','jpg','jpeg'].includes(doc.extention)" class="w-full h-full object-cover">
+              <img loading="lazy" src="assets/imgs/pdssf.png" *ngIf="!['png','jpg','jpeg','docx','doc','txt','pdf'].includes(doc.extention)" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
               
               <div class="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm p-1.5 truncate text-white text-[10px] font-medium text-center">
                 {{doc.name}}
@@ -76,7 +76,7 @@
       </div>
 
       <div *ngIf="show_loading" class="space-y-3">
-        <div *ngFor="let dummy of [1,2,3,4,5]" class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3 animate-pulse">
+        <div *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex" class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-3 animate-pulse">
           <div class="w-12 h-12 bg-slate-200 rounded-full"></div>
           <div class="flex-1 space-y-2">
             <div class="h-4 bg-slate-200 rounded w-1/2"></div>
@@ -87,9 +87,9 @@
       </div>
 
       <div *ngIf="!uploadStaus && !show_loading" class="space-y-3">
-        <div *ngFor="let users of allUsers" class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow cursor-pointer">
+        <div *ngFor="let users of allUsers; trackBy: trackByIndex" class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow cursor-pointer">
           <div class="flex items-center gap-3">
-            <img [src]="users.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-full object-cover border border-slate-100 shadow-sm bg-slate-50">
+            <img loading="lazy" [src]="users.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-full object-cover border border-slate-100 shadow-sm bg-slate-50">
             <div>
               <h4 class="text-sm font-bold text-slate-800 m-0 mb-0.5">{{users.first_name}}</h4>
               <p class="text-xs font-medium text-slate-500 m-0" dir="ltr">{{users.username}}</p> 

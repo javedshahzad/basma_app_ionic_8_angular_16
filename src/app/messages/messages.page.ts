@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -16,6 +17,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./messages.page.scss'],
 })
 export class MessagesPage implements OnInit {
+  private destroyRef = inject(DestroyRef);
 
   notifications: any = [];
   userType: any;
@@ -46,13 +48,13 @@ export class MessagesPage implements OnInit {
       this.lang = res;
     });
 
-    this.dataProvider.language.subscribe(() => {
+    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.translate.get("alertmessages").subscribe((res) => {
         this.lang = res;
       });
     });
 
-    this.authProvider.event.subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       if (res.changeUser) {
         this.reloadData();
       }
@@ -60,6 +62,10 @@ export class MessagesPage implements OnInit {
   }
 
   ngOnInit() {}
+
+  trackByNotification(index: number, notification: any): any {
+    return notification?.ID ?? index;
+  }
 
   // 🟢 1. دالة async للتعامل مع الذاكرة وجلب الرسائل بأمان
   async ionViewWillEnter() {

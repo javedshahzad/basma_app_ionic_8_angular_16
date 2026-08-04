@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ActionSheetController, PopoverController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -8,6 +9,8 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { DeviceApiService } from '../service/device-api/device-api.service';
+import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 
 @Component({
   selector: 'app-edit-user-profile',
@@ -15,6 +18,8 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./edit-user-profile.page.scss'],
 })
 export class EditUserProfilePage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  private destroyRef = inject(DestroyRef);
   navData: any;
   lang: any = {};
   userDetails: any;
@@ -50,14 +55,16 @@ export class EditUserProfilePage implements OnInit {
     public zone: NgZone,
     public platform: Platform,
     public actionSheetController: ActionSheetController,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private deviceApi: DeviceApiService,
+    private userManagementApi: UserManagementApiService
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
     });
 
     // 🟢 التقاط البيانات عبر Router مع التخزين للحماية من الـ Refresh
-    this.route.queryParams.subscribe(async params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const navigation = this.router.getCurrentNavigation();
       if (navigation && navigation.extras && navigation.extras.state) {
         this.navData = navigation.extras.state['user'];
@@ -284,21 +291,16 @@ export class EditUserProfilePage implements OnInit {
     return `تم تحديد (${this.user.class.length}) صفوف`;
   }
 
-  logoutDeviceFromAll(): Promise<void> {
-    return new Promise((resolve) => {
-      this.dataProvider.showLoading();
-      let data = {
-        "user_no": this.navData.user_no,
-      };
-      this.dataProvider.LogOutAllDevice(data).then(res => {
-        this.dataProvider.hideLoading(); 
-        resolve(); // 🟢 إخبار النظام بأن عملية الطرد انتهت بنجاح
-      }, error => {
-        this.dataProvider.hideLoading();
-        this.dataProvider.showToast("error");
-        resolve(); // 🟢 نكمل العملية حتى لو فشل الطرد لتتم عملية الحفظ
-      });
-    });
+  async logoutDeviceFromAll(): Promise<void> {
+    let data = {
+      "user_no": this.navData.user_no,
+    };
+    try {
+      await this.dataProvider.run(() => this.deviceApi.LogOutAllDevice(data));
+    } catch (error) {
+      this.dataProvider.showToast("error");
+    }
+    // 🟢 نكمل العملية حتى لو فشل الطرد لتتم عملية الحفظ
   }
 
   async saveUserProfile() { // 🟢 إضافة كلمة async هنا ضروري جداً
@@ -333,7 +335,8 @@ export class EditUserProfilePage implements OnInit {
       // 🟢 الآن وبعد استقرار قاعدة البيانات، نقوم بإرسال التعديل براحة تامة
       this.show_save_user_spinner = false;
       
-      this.dataProvider.updateUserProfile(this.user, (res: any) => {
+      // 🟢 السلوك الأصلي يكمل التوجيه دائماً بغض النظر عن نجاح/فشل الطلب
+      this.userManagementApi.updateUserProfile(this.user).finally(() => {
         const navigation: NavigationExtras = {
           state: {
             isUpdated: true
@@ -346,22 +349,20 @@ export class EditUserProfilePage implements OnInit {
     }
   }
 
-  getClasses() {
+  async getClasses() {
     let data = {
       "user_no": this.userDetails?.details?.user_no,
       "school_id": this.userDetails?.details?.school_id,
       "session_id": this.userDetails?.session_id
     };
-    this.dataProvider.showLoading();
-    this.dataProvider.getCourses(data).then(response => {
-      this.dataProvider.hideLoading();
+    try {
+      const response = await this.dataProvider.run(() => this.dataProvider.getCourses(data));
       if (response.session) {
         this.classes = response.data;
       }
-    }).catch(error => {
-      this.dataProvider.hideLoading();
+    } catch (error) {
       this.dataProvider.errorALertMessage(error);
-    });
+    }
   }
 
   compareClasses(c1: any, c2: any) {
@@ -394,13 +395,16 @@ export class EditUserProfilePage implements OnInit {
     };
 
     // 🟢 الإرجاع للدالة الأصلية بمدخلاتها الصحيحة (data, callback)
-    this.dataProvider.deleteUser(data, (response: any) => {
+    this.userManagementApi.deleteUser(data).then((response: any) => {
       this.show_delete_user_spinner = false;
-      this.closeDeleteModal(); 
-      
+      this.closeDeleteModal();
+
+      // 🟢 الخدمة الأصلية كانت تعرض هذا التوست دائماً عند وجود استجابة، قبل التفرع
+      this.dataProvider.showToast(response.msg);
+
       if (response && (response.success || response.response === true)) {
         this.dataProvider.showToast(response.msg || 'تم الحذف بنجاح');
-        
+
         const navigation: NavigationExtras = {
           state: { isUpdated: true }
         };
@@ -410,6 +414,9 @@ export class EditUserProfilePage implements OnInit {
       } else {
         this.dataProvider.errorALertMessage(response?.msg || 'حدث خطأ أثناء الحذف');
       }
+    }).catch(error => {
+      this.show_delete_user_spinner = false;
+      console.log(error);
     });
   }
 }

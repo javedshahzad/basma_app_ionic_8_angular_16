@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -8,6 +9,7 @@ import { Browser } from '@capacitor/browser';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { NotesApiService } from '../service/notes-api/notes-api.service';
 
 @Component({
   selector: 'app-student-notes',
@@ -15,6 +17,8 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./student-notes.page.scss'],
 })
 export class StudentNotesPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  private destroyRef = inject(DestroyRef);
   lang: any;
   navData: any;
   category: any;
@@ -37,10 +41,11 @@ export class StudentNotesPage implements OnInit {
               private router: Router,
               private platform: Platform, // 🟢 حقن Platform للتحقق من البيئة
               public modalCtrl: ModalController,
-              private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
+              private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+              private notesApi: NotesApiService
              ) {
                 
-    this.authProvider.event.subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       if (res.changeUser) {
         this.ionViewWillEnter();
       }
@@ -50,7 +55,7 @@ export class StudentNotesPage implements OnInit {
       this.lang = res;
     });
 
-    this.dataProvider.language.subscribe((resq) => {
+    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq) => {
       this.translate.get("alertmessages").subscribe((res) => {
         this.lang = res;
       })
@@ -101,7 +106,7 @@ export class StudentNotesPage implements OnInit {
       "school_id": this.userDetails.details.school_id,
       "session_id": this.userDetails.session_id
     };
-    this.dataProvider.getClassNotes(data).then(res => {
+    this.notesApi.getClassNotes(data).then(res => {
       this.notes = res;
       if (this.notes && this.notes.length > 0) {
         this.noData = false;

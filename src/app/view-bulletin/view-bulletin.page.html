@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="end" class="mr-2">
       <ion-back-button defaultHref="/bulletins" text="" class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
@@ -43,7 +43,7 @@
           </h3>
           
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div *ngFor="let file of bulletin.files" 
+            <div *ngFor="let file of bulletin.files; trackBy: trackByIndex" 
                  (click)="viewFile(file)"
                  class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-300 hover:bg-white transition-all cursor-pointer group active:scale-[0.98]">
               
@@ -80,6 +80,6 @@
     <ion-icon name="close" class="text-xl"></ion-icon>
   </button>
   <div class="relative w-11/12 max-w-4xl h-full flex items-center justify-center" (click)="$event.stopPropagation()">
-    <img [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-2xl shadow-2xl object-contain border border-white/10">
+    <img loading="lazy" [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-2xl shadow-2xl object-contain border border-white/10">
   </div>
 </div>

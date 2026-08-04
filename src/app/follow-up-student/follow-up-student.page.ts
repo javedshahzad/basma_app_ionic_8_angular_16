@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,9 +11,11 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-follow-up-student',
   templateUrl: './follow-up-student.page.html',
   styleUrls: ['./follow-up-student.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FollowUpStudentPage implements OnInit {
-  
+
+  trackByIndex(index: number): number { return index; }
   classes: Array<any> = [];
   noDataFound: string = "";
   isLoading: boolean = true;
@@ -29,10 +31,12 @@ export class FollowUpStudentPage implements OnInit {
     public dataProvider: DataService,
     private router: Router,
     public zone: NgZone,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
   }
 
@@ -41,10 +45,10 @@ export class FollowUpStudentPage implements OnInit {
   // 🟢 استدعاء آمن ومتسلسل يضمن جلب بيانات المستخدم أولاً
   async ionViewWillEnter() {
     this.isLoading = true;
-    this.classes = []; 
+    this.classes = [];
 
     let userLoggedIn = await this.storageSr.get("userloggedin");
-    
+
     if (userLoggedIn && userLoggedIn.details) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
@@ -53,6 +57,7 @@ export class FollowUpStudentPage implements OnInit {
       this.isLoading = false;
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   getCourse(loader: boolean = true) {
@@ -84,11 +89,13 @@ export class FollowUpStudentPage implements OnInit {
       } else {
         this.router.navigate(['login'], { replaceUrl: true });
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       if (loader) this.isLoading = false;
       console.log('Error fetching courses:', error);
       this.classes = [];
       this.noDataFound = this.lang.no_record_found || 'حدث خطأ في الاتصال';
+      this.cdr.markForCheck();
     });
   }
 

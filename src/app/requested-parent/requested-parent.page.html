@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="ml-2 w-12" *ngIf="userType == '1'">
       <ion-button routerLink="/add-parent" class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 shadow-sm hover:bg-indigo-100 transition-all flex items-center justify-center">
@@ -44,11 +44,11 @@
       </div>
 
       <div class="space-y-4">
-        <div class="bg-white rounded-3xl p-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 transition-all" *ngFor="let list of parentList">
+        <div class="bg-white rounded-3xl p-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 transition-all" *ngFor="let list of parentList; trackBy: trackByIndex">
           
           <div class="flex items-center gap-4 mb-4">
             <div class="relative shrink-0">
-              <img [src]="list.profile" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 rounded-2xl object-cover border border-slate-200 bg-slate-50 shadow-sm">
+              <img loading="lazy" [src]="list.profile" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 rounded-2xl object-cover border border-slate-200 bg-slate-50 shadow-sm">
             </div>
             <div class="flex-1 overflow-hidden">
               <h3 class="text-base font-bold text-slate-800 m-0 mb-1 truncate">{{list.name}}</h3>
@@ -98,11 +98,11 @@
       </div>
 
       <div class="px-4 space-y-4">
-        <div class="bg-white rounded-3xl p-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 transition-all" *ngFor="let list of allParentFilter">
+        <div class="bg-white rounded-3xl p-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 transition-all" *ngFor="let list of allParentFilter; trackBy: trackByIndex">
           
           <div class="flex items-center gap-4 mb-4">
             <div class="relative shrink-0">
-              <img [src]="list.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
+              <img loading="lazy" [src]="list.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
                    class="w-14 h-14 rounded-2xl object-cover border border-slate-200 bg-slate-50 shadow-sm">
             </div>
             <div class="flex-1 overflow-hidden">
@@ -110,7 +110,7 @@
               <p class="text-[11px] font-bold text-slate-400 m-0 mb-2 truncate" dir="ltr">{{list.username}}</p>
               
               <div class="flex flex-wrap gap-1.5" *ngIf="list.student_info?.length > 0">
-                <span class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-lg text-[10px] font-bold border border-indigo-100 flex items-center gap-1" *ngFor="let st of list.student_info">
+                <span class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-lg text-[10px] font-bold border border-indigo-100 flex items-center gap-1" *ngFor="let st of list.student_info; trackBy: trackByIndex">
                   <ion-icon name="person-outline"></ion-icon> {{st.name}}
                 </span>
               </div>

@@ -1,0 +1,7 @@
+www/
+dist/
+node_modules/
+ios/
+android/
+.angular/
+*.min.js

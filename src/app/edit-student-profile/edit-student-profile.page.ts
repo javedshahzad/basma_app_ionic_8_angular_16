@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { PopoverController, AlertController, NavController, Platform, MenuController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DatabaseService } from '../service/database/database.service';
@@ -9,6 +9,7 @@ import { DataService } from './../service/data/data.service';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 
 @Component({
   selector: 'app-edit-student-profile',
@@ -16,6 +17,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./edit-student-profile.page.scss'],
 })
 export class EditStudentProfilePage implements OnInit {
+  trackByIndex(index: number): number { return index; }
 	student: any = {};
 	classes: any[] = [];
 	loggedinUser: any;
@@ -46,7 +48,8 @@ export class EditStudentProfilePage implements OnInit {
       public menuCtrl: MenuController,
       public dbProvider: DatabaseService,
       private storageSr: StorageService,
-      private cdr: ChangeDetectorRef
+      private cdr: ChangeDetectorRef,
+      private userManagementApi: UserManagementApiService
   ) {
     this.translate.get("alertmessages").subscribe((val) => {
       this.lang = val;
@@ -170,7 +173,7 @@ export class EditStudentProfilePage implements OnInit {
     });
   }
 
-  saveChanges() {
+  async saveChanges() {
     let updateData = {
       sid: this.student.sid,
       cid: this.studentSemester,       // 🟢 إرسال قيمة القائمة المنسدلة الجديدة
@@ -182,16 +185,22 @@ export class EditStudentProfilePage implements OnInit {
       session_id: this.userDetails.session_id
     };
 
-    this.dataProvider.showLoading();
-    this.dataProvider.updateStudentProfile(updateData, (res: any) => {
-      this.dataProvider.hideLoading();
-      const navigation: NavigationExtras = {
-        state: { isUpdated: true }
-      };
-      this.zone.run(() => {
-        this.router.navigate(['manage-student'], navigation);
-      });
-    });
+    try {
+      const res: any = await this.dataProvider.run(() => this.userManagementApi.updateStudentProfile(updateData));
+      if (!res.response) {
+        this.dataProvider.errorALertMessage(res.msg);
+      } else {
+        this.dataProvider.showToast(this.lang.edit_student_success_msg);
+        const navigation: NavigationExtras = {
+          state: { isUpdated: true }
+        };
+        this.zone.run(() => {
+          this.router.navigate(['manage-student'], navigation);
+        });
+      }
+    } catch (error: any) {
+      this.dataProvider.errorALertMessage(error?.message || this.lang.usnexpectedError);
+    }
   }
 
   deleteStudent() {
@@ -202,9 +211,8 @@ export class EditStudentProfilePage implements OnInit {
     this.showDeleteModal = false;
   }
 
-  confirmDelete() {
+  async confirmDelete() {
     this.showDeleteModal = false;
-    this.dataProvider.showLoading();
     let deleteData = {
       sid: this.student.sid,
       cid: this.student.cid,
@@ -212,19 +220,22 @@ export class EditStudentProfilePage implements OnInit {
       school_id: this.userDetails.details.school_id,
       session_id: this.userDetails.session_id
     };
-    
-    this.dataProvider.deleteStudent(deleteData, (res: any) => {
-      this.dataProvider.hideLoading();
+
+    try {
+      const res: any = await this.dataProvider.run(() => this.userManagementApi.deleteStudent(deleteData));
+      this.dataProvider.showToast(res.msg);
       const navigation: NavigationExtras = {
         state: { isUpdated: true }
       };
       this.zone.run(() => {
         this.router.navigate(['manage-student'], navigation);
       });
-    });
+    } catch (error: any) {
+      this.dataProvider.errorALertMessage(error?.message || this.lang.usnexpectedError);
+    }
   }
 
-  deleteClass() {
+  async deleteClass() {
   	let deleteData = {
       sid: this.student.sid,
       cid: this.student.cid,
@@ -232,11 +243,14 @@ export class EditStudentProfilePage implements OnInit {
       school_id: this.userDetails.details.school_id,
       session_id: this.userDetails.session_id
     };
-    this.dataProvider.showLoading();
-    this.dataProvider.deleteStudentClass(deleteData, (res: any) => {
-      this.dataProvider.hideLoading();
+
+    try {
+      const res: any = await this.dataProvider.run(() => this.userManagementApi.deleteStudentClass(deleteData));
+      this.dataProvider.showToast(res.msg);
       this.router.navigate(['manage-student']);
-    });
+    } catch (error: any) {
+      this.dataProvider.errorALertMessage(error?.message || this.lang.usnexpectedError);
+    }
   }
 
   // 🟢 دالة ذكية لمقارنة القيم بغض النظر عما إذا كانت نصاً أم رقماً

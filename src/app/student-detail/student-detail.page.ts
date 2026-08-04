@@ -23,6 +23,11 @@ import { EditDeleteNotePopoverComponent } from '../components/edit-delete-note-p
 
 import { GamificationEngineService } from '../service/gamification-engine/gamification-engine.service';
 import { SkillTreeModalComponent } from '../components/skill-tree-modal/skill-tree-modal.component';
+import { NotesApiService } from '../service/notes-api/notes-api.service';
+import { ReportsApiService } from '../service/reports-api/reports-api.service';
+import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
+import { StorageService } from '../service/storage.service';
+import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 
 const env = environment;
 
@@ -33,6 +38,12 @@ const env = environment;
 })
 export class StudentDetailPage implements OnInit {
 
+  trackByIndex(index: number): number { return index; }
+  trackByAbsentDate(index: number, details: any): any { return details?.date ?? index; }
+  trackByAbsenceNoteId(index: number, note: any): any { return note?.ID ?? index; }
+  trackByNoteId(index: number, note: any): any { return note?.id ?? index; }
+  trackByTitleCode(index: number, title: any): any { return title?.code ?? index; }
+  trackByBadgeCode(index: number, badge: any): any { return badge?.code ?? index; }
   absenceDetail: any = []
   notes: any = [];
   category: string;
@@ -115,6 +126,11 @@ export class StudentDetailPage implements OnInit {
         public actionSheetController: ActionSheetController,
         private imageService: ImageProcessingService,
         public gamification: GamificationEngineService,
+        private notesApi: NotesApiService,
+        private reportsApi: ReportsApiService,
+        private gamificationApi: GamificationApiService,
+        private storageSr: StorageService,
+        private studentEngagement: StudentEngagementService,
         ) {
       
       // 🟢 الإصلاح الأول: صيد البيانات فوراً بدون التورط في subscribe لـ queryParams
@@ -155,21 +171,18 @@ export class StudentDetailPage implements OnInit {
   }
 
   async awardSkillPoints(skillType: string, point: number) {
-    this.dataProvider.showLoading();
-    
-    let formattedPoint = "+" + point; 
+    let formattedPoint = "+" + point;
 
     let body = {
       sid: String(this.studentDetails.sid),
-      userId: String(this.userDetails.details.user_no), 
+      userId: String(this.userDetails.details.user_no),
       points: formattedPoint,
       skill_type: skillType
     };
 
     try {
-      const res: any = await this.dataProvider.addStudentPoints(body);
-      this.dataProvider.hideLoading();
-      
+      const res: any = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
+
       this.zone.run(() => {
         if (res && res.success) {
           this.dataProvider.showToast(`تمت إضافة ${point} نقطة بنجاح!`);
@@ -189,8 +202,6 @@ export class StudentDetailPage implements OnInit {
         }
       });
     } catch (err: any) {
-      this.dataProvider.hideLoading();
-      
       this.zone.run(() => {
         setTimeout(() => {
           let errorDetails = typeof err === 'string' ? err : (err?.message || JSON.stringify(err));
@@ -280,9 +291,9 @@ export class StudentDetailPage implements OnInit {
       }else{
         if(this.navData.student_id){
           this.getOfflineNote();
-          this.studentService.getStudent(this.navData.student_id,response=>{
+          this.studentService.getStudent(this.navData.student_id).then(response=>{
             this.studentDetails = response;
-           
+
               if(this.studentDetails.can_view_absent){
                 this.category = "absence";
               }else{
@@ -294,7 +305,7 @@ export class StudentDetailPage implements OnInit {
               if(this.studentDetails.absents.length == 0){
                 this.noAbsenceFound = this.lang.no_absent;
               }
-          },error=>{
+          }).catch(error=>{
             this.dataProvider.showToast(this.lang.no_internet);
           })
         }else{
@@ -318,7 +329,7 @@ export class StudentDetailPage implements OnInit {
   }
 
   getOfflineNote(){
-    this.studentService.getStudentNote(this.navData.student_id,response=>{
+    this.studentService.getStudentNote(this.navData.student_id).then(response=>{
       this.aggStars = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
       this.notes = response;
       if(response.agg_ranking > 0 && response.agg_ranking < 2.6){
@@ -375,16 +386,17 @@ export class StudentDetailPage implements OnInit {
         }
       }else{
         this.noNotesFound = this.lang.no_note;
-      } 
-    },error=>{this.dataProvider.showToast(this.lang.no_internet);})
+      }
+    }).catch(error=>{this.dataProvider.showToast(this.lang.no_internet);})
   }
 
   // 🟢 الإصلاح الثاني: تأمين دالة الجلب بـ try..finally لضمان إغلاق التحميل اللانهائي!
    async checkProfile() {
-    this.dataProvider.showLoading();
     try {
-      if (localStorage.getItem("userloggedin")) {
-        this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+      await this.dataProvider.run(async () => {
+      const userData = await this.storageSr.get("userloggedin");
+      if (userData) {
+        this.userDetails = userData;
         this.userType = this.userDetails.details.user_type;
 
         let data = {
@@ -412,7 +424,7 @@ export class StudentDetailPage implements OnInit {
             "userId": String(this.userDetails.details.user_no)
           };
 
-          const dashRes: any = await this.dataProvider.getStudentProfileDashboard(dashboardData);
+          const dashRes: any = await this.gamificationApi.getStudentProfileDashboard(dashboardData);
 
           if (dashRes && dashRes.success) {
             let rawTitle = dashRes.inventory?.active_title;
@@ -442,11 +454,9 @@ export class StudentDetailPage implements OnInit {
         this.authProvider.flushLocalStorage();
         this.router.navigate(['login'], { replaceUrl: true });
       }
+      });
     } catch (error) {
       console.error("Critical Profile Error:", error);
-    } finally {
-      // 🟢 السحر هنا: هذا السطر سيغلق التحميل حتماً مهما حدث من أخطاء في السيرفر!
-      this.dataProvider.hideLoading(); 
     }
   }
 
@@ -461,7 +471,7 @@ export class StudentDetailPage implements OnInit {
         "sid": this.navData.student_id
       };
       
-      this.dataProvider.getStudentNotes(data).then((response)=>{
+      this.notesApi.getStudentNotes(data).then((response)=>{
         this.studentService.checkStudentNotes(response,this.navData.student_id);
         this.aggStars = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
         this.notes = response;
@@ -552,7 +562,6 @@ export class StudentDetailPage implements OnInit {
   }
 
   saveNote(noteData:any, notes:any, date:any){
-    this.dataProvider.showLoading();
     let data = {
       sid: this.studentDetails.sid,
       cid: this.navData.course_id,
@@ -562,9 +571,8 @@ export class StudentDetailPage implements OnInit {
       session_id: this.userDetails.session_id
     }
 
-    this.dataProvider.saveAbsenceNote(data).then((response)=>{
+    this.dataProvider.run(() => this.dataProvider.saveAbsenceNote(data)).then((response)=>{
       if(response.session){
-        this.dataProvider.hideLoading();
         notes.push({
           note: noteData.note,
           ID: response.note_id,
@@ -572,12 +580,10 @@ export class StudentDetailPage implements OnInit {
         });
         this.dataProvider.showToast(response.message)
       }else{
-        this.dataProvider.hideLoading();
         this.authProvider.flushLocalStorage();
         this.dataProvider.errorALertMessage(response.message);
       }
     }).catch(error=>{
-      this.dataProvider.hideLoading();
       this.dataProvider.errorALertMessage(error);
     })
   }
@@ -599,39 +605,33 @@ export class StudentDetailPage implements OnInit {
 
   confirmDelete() {
     if (!this.deletePayload) return;
-    
-    this.dataProvider.showLoading();
+
     let data = {
       user_no: this.userDetails.details.user_no,
       session_id:  this.userDetails.session_id
     };
 
     if (this.deletePayload.type === 'note') {
-      this.dataProvider.deleteStudentNote(data, this.deletePayload.id).then((response) => {
+      this.dataProvider.run(() => this.notesApi.deleteStudentNote(data, this.deletePayload.id)).then((response) => {
         this.canAddStudentNote = true;
         this.getNotes();
-        this.dataProvider.hideLoading();
         this.hideDeleteConfirmModal();
       }).catch(error => {
-        this.dataProvider.hideLoading();
         this.dataProvider.errorALertMessage(error);
         this.hideDeleteConfirmModal();
       });
-    } 
+    }
     else if (this.deletePayload.type === 'absence') {
-      this.dataProvider.deleteAbsenceNote(data, this.deletePayload.id).then((response) => {
+      this.dataProvider.run(() => this.dataProvider.deleteAbsenceNote(data, this.deletePayload.id)).then((response) => {
         if(response.session){
-          this.dataProvider.hideLoading();
           this.deletePayload.notesArray.splice(this.deletePayload.index, 1);
           this.dataProvider.showToast(response.message);
         }else{
-          this.dataProvider.hideLoading();
           this.authProvider.flushLocalStorage();
           this.dataProvider.errorALertMessage(response.message);
         }
         this.hideDeleteConfirmModal();
       }).catch(error => {
-        this.dataProvider.hideLoading();
         this.dataProvider.errorALertMessage(error);
         this.hideDeleteConfirmModal();
       });
@@ -642,7 +642,6 @@ export class StudentDetailPage implements OnInit {
     if(this.noteMessage && this.noteMessage.trim() != '') {
       if(this.noteMessage.length <= 45) {
         if(this.canAddStudentNote) {
-          this.dataProvider.showLoading();
           let data = {
             sid: this.navData.student_id,
             note: this.noteMessage,
@@ -650,19 +649,17 @@ export class StudentDetailPage implements OnInit {
             rating: this.ratingStars,
             new_rating: JSON.stringify(this.ratingStars)
           }
-          this.dataProvider.addStudentNote(data).then((note_id)=>{
-            this.dataProvider.hideLoading();
+          this.dataProvider.run(() => this.studentEngagement.addNote(data)).then((note_id)=>{
             this.getNotes();
             this.noteMessage = '';
             this.showNoteModal = false;
             this.dataProvider.showToast(this.lang.add_review_success_message);
 
           }).catch(error=>{
-            this.dataProvider.hideLoading();
             this.dataProvider.errorALertMessage(error);
           })
         }else{
-          this.dataProvider.showToast(this.lang.already_submit_note);  
+          this.dataProvider.showToast(this.lang.already_submit_note);
         }
       }else {
         this.dataProvider.showToast(this.lang.max_note_length);
@@ -677,7 +674,6 @@ export class StudentDetailPage implements OnInit {
     if(this.noteMessage && this.noteMessage.trim() != '') {
       if(this.noteMessage.length <= 45) {
         if(this.canAddStudentNote) {
-          this.dataProvider.showLoading();
           let data = {
             sid: this.navData.student_id,
             note: this.noteMessage,
@@ -686,19 +682,17 @@ export class StudentDetailPage implements OnInit {
             id : this.id,
             new_rating: JSON.stringify([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
           }
-          this.dataProvider.EditStudentNote(data).then((note_id)=>{
-            this.dataProvider.hideLoading();
+          this.dataProvider.run(() => this.studentEngagement.editNote(data)).then((note_id)=>{
             this.getNotes();
             this.noteMessage = '';
             this.showNoteModal = false;
             this.id = '';
             this.dataProvider.showToast(this.lang.add_note_success_message);
           }).catch(error=>{
-            this.dataProvider.hideLoading();
             this.dataProvider.errorALertMessage(error);
           })
         }else{
-          this.dataProvider.showToast(this.lang.already_submit_note);  
+          this.dataProvider.showToast(this.lang.already_submit_note);
         }
       }else {
         this.dataProvider.showToast(this.lang.max_note_length);
@@ -713,7 +707,6 @@ export class StudentDetailPage implements OnInit {
     if(this.noteMessage && this.noteMessage.trim() != '') {
       if(this.noteMessage.length <= 45) {
         if(this.canAddStudentNote) {
-          this.dataProvider.showLoading();
           let data = {
             sid: this.navData.student_id,
             note: this.noteMessage,
@@ -722,14 +715,12 @@ export class StudentDetailPage implements OnInit {
             user_type : this.userDetails.details.user_type,
             new_rating: JSON.stringify([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
           }
-          this.dataProvider.addStudentNote(data).then((note_id)=>{
-            this.dataProvider.hideLoading();
+          this.dataProvider.run(() => this.studentEngagement.addNote(data)).then((note_id)=>{
             this.getNotes();
             this.noteMessage = '';
             this.showNoteModal = false;
             this.dataProvider.showToast(this.lang.add_note_success_message);
           }).catch(error=>{
-            this.dataProvider.hideLoading();
             this.dataProvider.errorALertMessage(error);
           })
         }else{
@@ -920,37 +911,29 @@ export class StudentDetailPage implements OnInit {
     return await modal.present();
   }
 
-  ChangeStudentProfileAvatar(base64Data: string) {
+  async ChangeStudentProfileAvatar(base64Data: string) {
     if (!base64Data) {
       this.dataProvider.hideLoading();
       return;
     }
 
-    let finalImageData = base64Data.includes('data:image') 
-                         ? base64Data 
-                         : "data:image/png;base64," + base64Data;
+    try {
+      const result = await this.dataProvider.run(() => this.studentEngagement.uploadAvatar(base64Data, {
+        user_no: this.userDetails.details.user_no,
+        session_id: this.userDetails.session_id,
+        sid: this.navData.student_id
+      }));
 
-    this.dataProvider.showLoading();
-    let data = {
-      user_no: this.userDetails.details.user_no,
-      session_id: this.userDetails.session_id,
-      imageData: finalImageData, 
-      sid: this.navData.student_id
-    };
-
-    this.dataProvider.updateUserImage(data).then((response: any) => {
-      this.dataProvider.hideLoading();
-      if (response.session) {
-        this.studentDetails.pic = response.url;
+      if (result.success) {
+        this.studentDetails.pic = result.url;
         this.dataProvider.showToast("تم تحديث الصورة بنجاح");
       } else {
         this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(response.message);
+        this.dataProvider.errorALertMessage(result.message);
       }
-    }).catch((error) => {
-      this.dataProvider.hideLoading();
+    } catch (error: any) {
       this.dataProvider.errorALertMessage(error?.message || "حدث خطأ في الاتصال");
-    });
+    }
   }
 
   getSelectedStars(){
@@ -1217,7 +1200,7 @@ export class StudentDetailPage implements OnInit {
           });
         } 
         else {
-          this.dataProvider.getStudentReport(studentData).then(async (res: any) => {
+          this.reportsApi.getStudentReport(studentData).then(async (res: any) => {
             this.dataProvider.hideLoading();
             if (res && res.data) {
                 let splitUrl = res.data.split("/");
@@ -1377,7 +1360,7 @@ export class StudentDetailPage implements OnInit {
       "student_id": this.navData.student_id,
       "school_id":this.userDetails.details.school_id
     };
-    this.dataProvider.GetAllCallOfStudentReport(data).then(res => {
+    this.reportsApi.GetAllCallOfStudentReport(data).then(res => {
       this.callOfStudentsReport = res.data;
     },error=>{
       this.dataProvider.hideLoading();
@@ -1392,7 +1375,7 @@ export class StudentDetailPage implements OnInit {
       "student_id": this.navData.student_id,
       "school_id":this.userDetails.details.school_id
     };
-    this.dataProvider.GetStudentPledgesReport(data).then(res => {
+    this.reportsApi.GetStudentPledgesReport(data).then(res => {
       this.AllStudentPledgesReports = res.data;
     },error=>{
       this.dataProvider.hideLoading();
@@ -1408,9 +1391,7 @@ export class StudentDetailPage implements OnInit {
         "student_id": this.navData.student_id,
         "school_id":this.userDetails.details.school_id
       };
-      this.dataProvider.showLoading();
-      this.dataProvider.generateStudentPledgesReportPDF(data).then(res => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.reportsApi.generateStudentPledgesReportPDF(data)).then(res => {
         let data = res.data;
       let options: PrintOptions = { orientation: 'portrait'};
       this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then((onSuccess:any)=>{
@@ -1418,7 +1399,6 @@ export class StudentDetailPage implements OnInit {
       this.dataProvider.showToast(this.lang.report_error);
       });
       },error=>{
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast(this.lang.report_error);
       })
     }
@@ -1429,9 +1409,7 @@ export class StudentDetailPage implements OnInit {
         "student_id": this.navData.student_id,
         "school_id":this.userDetails.details.school_id
       };
-      this.dataProvider.showLoading();
-      this.dataProvider.generateCallOfStudentPDF(data).then(res => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.reportsApi.generateCallOfStudentPDF(data)).then(res => {
         let data = res.data;
       let options: PrintOptions = { orientation: 'portrait'};
       this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then((onSuccess:any)=>{
@@ -1439,7 +1417,6 @@ export class StudentDetailPage implements OnInit {
       this.dataProvider.showToast(this.lang.report_error);
       });
       },error=>{
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast(this.lang.report_error);
       })
     }
@@ -1472,7 +1449,7 @@ export class StudentDetailPage implements OnInit {
         userId: String(this.userDetails.details.user_no)
       };
       
-      this.dataProvider.getStudentInventory(body).then((res: any) => {
+      this.gamificationApi.getStudentInventory(body).then((res: any) => {
         if (res && res.success) {
           this.studentWallet = res.wallet;
           this.unlockedTitles = res.unlocked_titles || [];
@@ -1519,53 +1496,47 @@ export class StudentDetailPage implements OnInit {
     if(!this.canCraft(title.cost)) {
       this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.'); return;
     }
-    this.dataProvider.showLoading();
-    
+
     let sid = this.studentDetails?.sid || this.navData?.student_id;
-    
-    let body = { 
-      sid: String(sid), 
-      title_code: title.code, 
-      cost: JSON.stringify(title.cost), 
+
+    let body = {
+      sid: String(sid),
+      title_code: title.code,
+      cost: JSON.stringify(title.cost),
       userId: String(this.userDetails.details.user_no)
     };
-    
+
     try {
-      let res: any = await this.dataProvider.craftSkillTitle(body);
-      this.dataProvider.hideLoading();
+      let res: any = await this.dataProvider.run(() => this.studentEngagement.craftSkillTitle(body));
       if (res.success) {
         this.dataProvider.showToast(res.msg);
-        await this.fetchInventory(); 
-        this.fetchStudentSkills(sid); 
+        await this.fetchInventory();
+        this.fetchStudentSkills(sid);
       } else {
         this.dataProvider.errorALertMessage(res.msg);
       }
     } catch(e) {
-      this.dataProvider.hideLoading();
     }
   }
 
   async toggleTitle(titleCode: string | null) {
-    this.dataProvider.showLoading();
     let sid = this.studentDetails?.sid || this.navData?.student_id;
-    
-    let body = { 
-      sid: String(sid), 
+
+    let body = {
+      sid: String(sid),
       title_code: titleCode ? String(titleCode) : '',
       userId: String(this.userDetails.details.user_no)
     };
-    
+
     try {
-      let res: any = await this.dataProvider.equipTitle(body);
-      this.dataProvider.hideLoading();
+      let res: any = await this.dataProvider.run(() => this.studentEngagement.equipTitle(body));
       if (res.success) {
         this.activeCraftedTitle = titleCode;
         this.dataProvider.showToast(res.msg);
-        
+
         this.studentTitle = this.gamification.getFinalStudentTitle(titleCode, this.studentSkillData, this.studentTotalPoints);
       }
     } catch(e) {
-      this.dataProvider.hideLoading();
     }
   }
 
@@ -1573,8 +1544,6 @@ export class StudentDetailPage implements OnInit {
     this.category = selectedCategory;
 
     if (this.category === 'absence' && !this.isAbsenceLoaded) {
-      this.dataProvider.showLoading(); 
-      
       let followUpData = {
         "date": this.navData.dateSelected || new Date().toISOString().split('T')[0],
         "user_no": this.userDetails.details.user_no,
@@ -1582,57 +1551,53 @@ export class StudentDetailPage implements OnInit {
         "course_id": this.navData.course_id,
         "school_id": this.userDetails.details.school_id
       };
-      
-      try {
-        const followUpRes: any = await this.dataProvider.getFollowUpStudentList(followUpData);
-        if (followUpRes && followUpRes.data && followUpRes.data.students) {
-          let matched = followUpRes.data.students.find((s: any) => s.sid === this.navData.student_id);
-          if (matched) {
-            this.zone.run(() => {
-              this.studentDetails.unacceptable_absent_days = matched.unacceptable_absent_days !== undefined ? matched.unacceptable_absent_days : 0;
-              this.studentDetails.suspend_days = matched.suspend_days !== undefined ? matched.suspend_days : 0;
-              this.studentDetails.medical_days = matched.medical_days !== undefined ? matched.medical_days : 0;
-            });
-          }
-        }
-        
-        let agg_ranking = this.notes && this.notes.agg_ranking ? Number(this.notes.agg_ranking) : 5;
-        if((Number(this.studentDetails.unacceptable_absent_days) == 10 || Number(this.studentDetails.unacceptable_absent_days) == 15) && agg_ranking < 4){
-           let message = `عزيزي ولي الأمر، نحيطكم علماً بأن المتعلم ${this.studentDetails.name} معرض لخطر التعثر الدراسي.`;
-           this.sendPushMessageToStudentParent(message);
-        }
 
-        this.isAbsenceLoaded = true; 
+      try {
+        await this.dataProvider.run(async () => {
+          const followUpRes: any = await this.dataProvider.getFollowUpStudentList(followUpData);
+          if (followUpRes && followUpRes.data && followUpRes.data.students) {
+            let matched = followUpRes.data.students.find((s: any) => s.sid === this.navData.student_id);
+            if (matched) {
+              this.zone.run(() => {
+                this.studentDetails.unacceptable_absent_days = matched.unacceptable_absent_days !== undefined ? matched.unacceptable_absent_days : 0;
+                this.studentDetails.suspend_days = matched.suspend_days !== undefined ? matched.suspend_days : 0;
+                this.studentDetails.medical_days = matched.medical_days !== undefined ? matched.medical_days : 0;
+              });
+            }
+          }
+
+          let agg_ranking = this.notes && this.notes.agg_ranking ? Number(this.notes.agg_ranking) : 5;
+          if((Number(this.studentDetails.unacceptable_absent_days) == 10 || Number(this.studentDetails.unacceptable_absent_days) == 15) && agg_ranking < 4){
+             let message = `عزيزي ولي الأمر، نحيطكم علماً بأن المتعلم ${this.studentDetails.name} معرض لخطر التعثر الدراسي.`;
+             this.sendPushMessageToStudentParent(message);
+          }
+
+          this.isAbsenceLoaded = true;
+        });
       } catch(e) {
         console.error(e);
-      } finally {
-        this.dataProvider.hideLoading();
       }
     }
-    
+
     else if (this.category === 'pledgesAndCallOffParent' && !this.isReportsLoaded) {
-      this.dataProvider.showLoading();
-      
       try {
-        this.getStudentCallOfReports(); 
-        this.isReportsLoaded = true; 
+        await this.dataProvider.run(async () => {
+          this.getStudentCallOfReports();
+          this.isReportsLoaded = true;
+        });
       } catch(e) {
         console.log(e);
-      } finally {
-        this.dataProvider.hideLoading();
       }
     }
 
     else if (this.category === 'notes' && !this.isNotesLoaded) {
-      this.dataProvider.showLoading(); 
-      
       try {
-        await this.getNotes(); 
-        this.isNotesLoaded = true; 
+        await this.dataProvider.run(async () => {
+          await this.getNotes();
+          this.isNotesLoaded = true;
+        });
       } catch(e) {
         console.error(e);
-      } finally {
-        this.dataProvider.hideLoading();
       }
     }
   }

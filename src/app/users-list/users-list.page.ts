@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -11,8 +12,10 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-users-list',
   templateUrl: './users-list.page.html',
   styleUrls: ['./users-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsersListPage implements OnInit {
+  private destroyRef = inject(DestroyRef);
   allUsers: any = [];
   userDetails: any;
   selectedUsers: any = [];
@@ -32,10 +35,11 @@ export class UsersListPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public modalController: ModalController,
-    private storageSr: StorageService // 🟢 2. حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
   ) {
     // 🟢 3. جعل الاشتراك (subscribe) async لجلب البيانات بأمان عند العودة
-    this.route.queryParams.subscribe(async params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
         let isUpdated = this.router.getCurrentNavigation().extras.state['isUpdated'];
         if (isUpdated) {
@@ -46,12 +50,15 @@ export class UsersListPage implements OnInit {
           }
         }
       }
+      this.cdr.markForCheck();
     });
 
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
   }
+
 
   // 🟢 4. استخدام التزامن للتخلص من الـ localStorage عند فتح الصفحة لأول مرة
   async ngOnInit() {
@@ -66,7 +73,14 @@ export class UsersListPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
+
+  trackByUser(index: number, user: any): any {
+    return user?.user_no ?? index;
+  }
+
+  trackByIndex(index: number): number { return index; }
 
   closeModal() {
     this.modalController.dismiss({
@@ -102,11 +116,12 @@ export class UsersListPage implements OnInit {
         this.noUser = true;
         console.log('err', res);
       }
-
+      this.cdr.markForCheck();
     }, error => {
       this.noUser = true;
       this.show_loading = false;
       console.log(error);
+      this.cdr.markForCheck();
     });
   }
 
@@ -114,6 +129,7 @@ export class UsersListPage implements OnInit {
     setTimeout(() => {
       this.trimmedUsers = this.trimmedUsers.concat(this.selectedUsers.splice(0, 20));
       infiniteScroll.target.complete();
+      this.cdr.markForCheck();
     }, 1000);
   }
 

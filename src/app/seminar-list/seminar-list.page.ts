@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ElementRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -10,6 +10,7 @@ import domtoimage from 'dom-to-image';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 
 @Component({
   selector: 'app-seminar-list',
@@ -17,6 +18,7 @@ import { StorageService } from '../service/storage.service';
   styleUrls: ['./seminar-list.page.scss'],
 })
 export class SeminarListPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   navData: any;
   lang: any;
   userDetails: any;
@@ -43,8 +45,9 @@ export class SeminarListPage implements OnInit {
     private router: Router,
     public zone: NgZone, 
     public platform: Platform,
-    private storageSr: StorageService // 🟢 2. حقن خدمة التخزين الجديدة
-  ) { 
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
+    private holidaysApi: HolidaysApiService
+  ) {
     // 🟢 3. استخراج البيانات من الـ Router بشكل متزامن قبل ضياعها
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
@@ -90,7 +93,7 @@ export class SeminarListPage implements OnInit {
         "session_id": this.userDetails.session_id
       };
 
-      this.dataProvider.getHolidays(data).then(response => {
+      this.holidaysApi.getHolidays(data).then(response => {
         if (response) {
           this.holidayString = response.holiday_string || '';
 
@@ -186,11 +189,7 @@ export class SeminarListPage implements OnInit {
       return;
     }
 
-    this.dataProvider.showLoading();
-    
-    domtoimage.toPng(printSection).then((dataUrl) => {
-      this.dataProvider.hideLoading();
-      
+    this.dataProvider.run<string>(() => domtoimage.toPng(printSection)).then((dataUrl) => {
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
         let printUrl = dataUrl.replace("data:image/png;base64,","base64://");
         let options: PrintOptions = { orientation: 'portrait' };
@@ -228,7 +227,6 @@ export class SeminarListPage implements OnInit {
         }
       }
     }).catch((error) => {
-      this.dataProvider.hideLoading();
       console.error('oops, something went wrong!', error);
       this.dataProvider.showToast('تعذر إنشاء صورة للطباعة');
     });

@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../service/data/data.service';
+import { StorageService } from '../service/storage.service';
+import { PlanApiService } from '../service/plan-api/plan-api.service';
 
 @Component({
   selector: 'app-apply-vouches-code',
   templateUrl: './apply-vouches-code.page.html',
   styleUrls: ['./apply-vouches-code.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplyVouchesCodePage implements OnInit {
+  trackByIndex(index: number): number { return index; }
   plans=[];
   plan_id:any;
   code:any;
@@ -18,19 +22,21 @@ export class ApplyVouchesCodePage implements OnInit {
   constructor(
         public navCtrl: NavController, 
         public translate: TranslateService, 
-        public dataProvider: DataService, 
+        public dataProvider: DataService,
+        private storageSr: StorageService,
+        private planApi: PlanApiService,
   ) { }
 
-  ngOnInit() {
-    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan')); 
-    this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
+  async ngOnInit() {
+    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan'));
+    this.userDetails = await this.storageSr.get("userloggedin");
     //this.getPlan();
   }
   getPlan(){
   	let data={
   		userId:''
   	}
-  	this.dataProvider.getPlan(data).then(res=>{
+  	this.planApi.getPlan(data).then(res=>{
   		this.plans=res.response;
   	}).catch(e=>{
   		console.log(e);

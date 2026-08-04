@@ -1,4 +1,4 @@
-<ion-header class="lineone-header ion-no-border" mode="md">
+﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="end" class="mr-2 w-10">
       <ion-back-button defaultHref="/" text="" icon="chevron-back-outline" class="custom-back-btn"></ion-back-button>
@@ -51,7 +51,7 @@
       </h3>
       
       <div class="space-y-3">
-        <div *ngFor="let relatedVideo of material.related_videos" 
+        <div *ngFor="let relatedVideo of material.related_videos; trackBy: trackByIndex" 
              (click)="playRelatedVideo(relatedVideo.id)"
              class="bg-white rounded-2xl p-3 border border-slate-100 flex items-start gap-3 shadow-sm hover:shadow-md cursor-pointer transition-all active:scale-[0.98]">
           
@@ -59,7 +59,7 @@
           <div class="w-32 h-20 rounded-xl overflow-hidden bg-slate-100 shrink-0 relative border border-slate-200">
             
             <!-- صورة مصغرة مرفوعة يدوياً -->
-            <img *ngIf="relatedVideo.video_thumb && relatedVideo.video_thumb.length > 0" 
+            <img loading="lazy" *ngIf="relatedVideo.video_thumb && relatedVideo.video_thumb.length > 0" 
                  [src]="relatedVideo.video_thumb" 
                  class="w-full h-full object-cover">
                  

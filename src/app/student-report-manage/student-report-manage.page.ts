@@ -14,6 +14,8 @@ import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { ReportsApiService } from '../service/reports-api/reports-api.service';
+import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 
 const env = environment;
 
@@ -23,6 +25,8 @@ const env = environment;
   styleUrls: ['./student-report-manage.page.scss'],
 })
 export class StudentReportManagePage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  trackById(index: number, item: any): any { return item?.id ?? index; }
   navData: any = {};
   lang: any;
   reportType: any;
@@ -92,7 +96,9 @@ export class StudentReportManagePage implements OnInit {
               private popover: PopoverController,
               public platform: Platform,
               private storage: Storage,
-              private storageSr: StorageService // 🟢 حقن خدمة التخزين
+              private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+              private reportsApi: ReportsApiService,
+              private holidaysApi: HolidaysApiService
              ) {
 
     const navigation = this.router.getCurrentNavigation();
@@ -165,20 +171,16 @@ export class StudentReportManagePage implements OnInit {
       session_id: this.userDetails.session_id
     };
 
-    this.dataProvider.showLoading();
-    
-    this.dataProvider.submitStudentReports(submitData).then(data => {
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.reportsApi.submitStudentReports(submitData)).then(data => {
       if(data){
         this.dataProvider.showToast(this.lang.report_generated);
         this.getReports(false);
       }
     }).catch(er => {
-      this.dataProvider.hideLoading();
       let errorMsg = typeof er === 'string' ? er : 'تم الحفظ بنجاح (مع وجود ملاحظة في السيرفر)';
       this.dataProvider.showToast(errorMsg);
       console.error('Server Status:', er);
-      this.getReports(false); 
+      this.getReports(false);
     });
   }
 
@@ -192,7 +194,7 @@ export class StudentReportManagePage implements OnInit {
     }
     if(loader) this.dataProvider.showLoading();
 
-    this.dataProvider.getStudentReports(data).then(res=>{
+    this.reportsApi.getStudentReports(data).then(res=>{
       if(loader) this.dataProvider.hideLoading();
       if(res.session){
         if(res.data){
@@ -266,11 +268,9 @@ export class StudentReportManagePage implements OnInit {
       school_id: this.userDetails.details.school_id,
       session_id: this.userDetails.session_id
     }
-    this.dataProvider.showLoading();
-    this.dataProvider.GetAllDegrees(data).then(res=>{
+    this.dataProvider.run(() => this.reportsApi.GetAllDegrees(data)).then(res=>{
       console.log(res)
       this.AllDegrees = res.data;
-      this.dataProvider.hideLoading();
     })
   }
 
@@ -284,7 +284,7 @@ export class StudentReportManagePage implements OnInit {
     }
     this.dataProvider.showLoading();
     
-    this.dataProvider.GetAllDegreeViolations(data).then(res=>{
+    this.reportsApi.GetAllDegreeViolations(data).then(res=>{
       let violations = res.data;
       violations.forEach((element,index) => {
         violations[index].description = `${element.desc_number}-${element.description}`
@@ -293,7 +293,7 @@ export class StudentReportManagePage implements OnInit {
       this.filteredViolations = violations; 
     });
 
-    this.dataProvider.GetAllDegreeActions(data).then(res=>{
+    this.reportsApi.GetAllDegreeActions(data).then(res=>{
       let actions = res.data;
       actions.forEach((element,index) => {
         actions[index].description = `${element.action_number}-${element.description}`
@@ -337,7 +337,7 @@ export class StudentReportManagePage implements OnInit {
       school_id: this.userDetails.details.school_id,
     }
 
-    this.dataProvider.removeStudentReportByType(data).then(data=>{
+    this.reportsApi.removeStudentReportByType(data).then(data=>{
       this.dataProvider.hideLoading();
       if(data){
         this.dataProvider.showToast(this.lang.report_deleted);
@@ -354,7 +354,7 @@ export class StudentReportManagePage implements OnInit {
     let data={
       id:id,
     }
-    this.dataProvider.deleteCallOfParentReport(data).then(data=>{
+    this.reportsApi.deleteCallOfParentReport(data).then(data=>{
       this.dataProvider.hideLoading();
       if(data.success){
         this.dataProvider.showToast(this.lang.report_deleted);
@@ -371,7 +371,7 @@ export class StudentReportManagePage implements OnInit {
     let data={
       id:id,
     }
-    this.dataProvider.deletePledgesReport(data).then(data=>{
+    this.reportsApi.deletePledgesReport(data).then(data=>{
       this.dataProvider.hideLoading();
       if(data.success){
         this.dataProvider.showToast(this.lang.report_deleted);
@@ -393,9 +393,7 @@ export class StudentReportManagePage implements OnInit {
       report_type: reportType
     }
     
-    this.dataProvider.showLoading(); 
-    this.dataProvider.printAllReports(data).then(res=>{
-      this.dataProvider.hideLoading();
+    this.dataProvider.run(() => this.reportsApi.printAllReports(data)).then(res=>{
       if(res && res.data){
         let printContent = res.data.toString().replace(/(\r\n|\n|\r)/gm, '');
         
@@ -421,7 +419,6 @@ export class StudentReportManagePage implements OnInit {
         this.dataProvider.showToast(this.lang.report_error);
       }
     }).catch(er=>{
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast(er);
       console.log(er);
     })
@@ -435,9 +432,7 @@ export class StudentReportManagePage implements OnInit {
         "student_id": this.navData.student_id,
         "school_id":this.userDetails.details.school_id
       };
-      this.dataProvider.showLoading();
-      this.dataProvider.generateStudentPledgesReportPDF(data).then(res => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.reportsApi.generateStudentPledgesReportPDF(data)).then(res => {
         if(res.success && res.data){
           let printContent = res.data.toString().replace(/(\r\n|\n|\r)/gm, '');
           
@@ -463,11 +458,10 @@ export class StudentReportManagePage implements OnInit {
           this.dataProvider.showToast(this.lang.report_error);
         }
       },error=>{
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast(this.lang.report_error);
       })
     }
-    
+
     if(type == "callOfParent"){
       let data = {
         "user_no": this.userDetails.details.user_no,
@@ -475,9 +469,7 @@ export class StudentReportManagePage implements OnInit {
         "student_id": this.navData.student_id,
         "school_id":this.userDetails.details.school_id
       };
-      this.dataProvider.showLoading();
-      this.dataProvider.generateCallOfStudentPDF(data).then(res => {
-        this.dataProvider.hideLoading();
+      this.dataProvider.run(() => this.reportsApi.generateCallOfStudentPDF(data)).then(res => {
         if(res.success && res.data){
           let printContent = res.data.toString().replace(/(\r\n|\n|\r)/gm, '');
           
@@ -503,7 +495,6 @@ export class StudentReportManagePage implements OnInit {
           this.dataProvider.showToast(this.lang.report_error);
         }
       },error=>{
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast(this.lang.report_error);
       })
     }
@@ -539,7 +530,7 @@ export class StudentReportManagePage implements OnInit {
       "student_id": this.navData.student_id,
       "school_id":this.userDetails.details.school_id
     };
-    this.dataProvider.GetAllCallOfStudentReport(data).then(res => {
+    this.reportsApi.GetAllCallOfStudentReport(data).then(res => {
       console.log(res);
       this.callOfStudentsReport = res.data;
     },error=>{
@@ -556,7 +547,7 @@ export class StudentReportManagePage implements OnInit {
       "student_id": this.navData.student_id,
       "school_id":this.userDetails.details.school_id
     };
-    this.dataProvider.GetStudentPledgesReport(data).then(res => {
+    this.reportsApi.GetStudentPledgesReport(data).then(res => {
       console.log(res);
       this.AllStudentPledgesReports = res.data;
     },error=>{
@@ -572,7 +563,7 @@ export class StudentReportManagePage implements OnInit {
         "school_id": this.userDetails.details.school_id,
         "session_id": this.userDetails.session_id
       };
-      this.dataProvider.getHolidays(data).then(response => {
+      this.holidaysApi.getHolidays(data).then(response => {
         if(response){
           if (response.holidays.length > 0) {
             this.holidayString = response.holiday_string;

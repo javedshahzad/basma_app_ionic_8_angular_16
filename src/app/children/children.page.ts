@@ -1,4 +1,5 @@
-import { Component, OnInit,NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -14,6 +15,8 @@ import { StorageService } from "../service/storage.service";
   styleUrls: ['./children.page.scss'],
 })
 export class ChildrenPage implements OnInit {
+  trackByIndex(index: number): number { return index; }
+  private destroyRef = inject(DestroyRef);
 
   /**
    * @member student: Contains information about the student selected
@@ -53,13 +56,13 @@ export class ChildrenPage implements OnInit {
               this.translate.get("alertmessages").subscribe((response) => {
                 this.lang = response;
               })
-              this.dataProvider.language.subscribe((resq)=>{
+              this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq)=>{
                 this.translate.get("alertmessages").subscribe((res)=>{
                    // console.log(this.lang);
                   this.lang = res;
                 })
               })
-              this.authProvider.event.subscribe(async (res)=>{
+              this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async (res)=>{
               if(res.changeUser){
                 // 🟢 حماية: لا تقم بتحديث صفحة الأبناء إلا إذا كان المستخدم الجديد هو ولي أمر فعلاً (user_type == 4)
                 let checkUser = await this.storageSr.get("userloggedin");

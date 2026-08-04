@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController, ActionSheetController, PopoverController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -17,6 +18,9 @@ import { StudentOptionsPopoverComponent } from '../components/student-options-po
 import { AddReviewComponent } from '../add-review/add-review.component';
 import { Browser } from '@capacitor/browser';
 import { environment } from '../../environments/environment';
+import { ReportsApiService } from '../service/reports-api/reports-api.service';
+import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
+import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 
 @Component({
   selector: 'app-followup-student-list',
@@ -24,6 +28,7 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./followup-student-list.page.scss'],
 })
 export class FollowupStudentListPage implements OnInit {
+  private destroyRef = inject(DestroyRef);
   
   courseInfo: any;
   dateSelected: any;
@@ -79,15 +84,18 @@ export class FollowupStudentListPage implements OnInit {
     public imageService: ImageProcessingService,
     public studentUi: StudentUiService, 
     private storageSr: StorageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private reportsApi: ReportsApiService,
+    private holidaysApi: HolidaysApiService,
+    private studentEngagement: StudentEngagementService
   ) {
-    this.route.queryParams.subscribe(async params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const navigation = this.router.getCurrentNavigation();
       if (navigation && navigation.extras && navigation.extras.state) {
         this.navData = navigation.extras.state['course'];
         this.dateSelected = new Date();
         await this.storageSr.set('followUpCourseContext', this.navData);
-        
+
         if (navigation.extras.state['update']) {
            this.initData(false);
         }
@@ -106,6 +114,12 @@ export class FollowupStudentListPage implements OnInit {
   }
 
   ngOnInit() {}
+
+  trackByStudent(index: number, student: any): any {
+    return student?.sid ?? index;
+  }
+
+  trackByIndex(index: number): number { return index; }
 
   async ionViewWillEnter() {
     this.initData(true);
@@ -134,7 +148,7 @@ export class FollowupStudentListPage implements OnInit {
       "session_id": this.userDetails.session_id
     };
     
-    this.dataProvider.getHolidays(data).then(response => {
+    this.holidaysApi.getHolidays(data).then(response => {
       if (response && response.holidays && response.holidays.length > 0) {
         this.holidayString = response.holiday_string;
         let day = this.dateSelected.getDate().toString().padStart(2, '0');
@@ -280,7 +294,7 @@ export class FollowupStudentListPage implements OnInit {
         "report_type": type
       };
 
-      this.dataProvider.getMarksReport(studentData).then(async (res: any) => {
+      this.reportsApi.getMarksReport(studentData).then(async (res: any) => {
         this.dataProvider.hideLoading();
         if (res && res.data) {
           let fileUrl = res.data;
@@ -336,7 +350,6 @@ export class FollowupStudentListPage implements OnInit {
 
   confirmDeleteMarks() {
     this.showDeleteConfirmModal = false;
-    this.dataProvider.showLoading();
     let follwData = {
       "user_no": this.userDetails.details.user_no,
       "school_id": this.userDetails.details.school_id,
@@ -344,9 +357,8 @@ export class FollowupStudentListPage implements OnInit {
       "course_id": this.navData?.cid || this.navData?.course_id,
       "date": this.dataProvider.getFormatedDate(this.dateSelected),
     };
-    
-    this.dataProvider.deleteFollowUpStudentList(follwData).then(response => {
-      this.dataProvider.hideLoading();
+
+    this.dataProvider.run(() => this.dataProvider.deleteFollowUpStudentList(follwData)).then(response => {
       if (response.session) {
         this.dataProvider.showToast(response.message);
         this.getStudents();
@@ -354,7 +366,6 @@ export class FollowupStudentListPage implements OnInit {
         this.dataProvider.errorALertMessage(response.message);
       }
     }).catch(error => {
-      this.dataProvider.hideLoading();
     });
   }
 
@@ -406,9 +417,8 @@ export class FollowupStudentListPage implements OnInit {
   }
 
   submitMarks() {
-    this.dataProvider.showLoading();
     let isAllComplete = true;
-    
+
     this.attendanceResponse.students.forEach((student: any) => {
       student.sheet.forEach((sheet: any) => {
         if (sheet.marks && parseFloat(sheet.marks) > parseFloat(sheet.field_max_marks)) {
@@ -425,10 +435,9 @@ export class FollowupStudentListPage implements OnInit {
         "course_id": this.navData?.cid || this.navData?.course_id,
         "date": this.dataProvider.getFormatedDate(this.dateSelected),
       };
-      
+
       if (this.markSheet.length > 0) {
-        this.dataProvider.submitMarks(data, this.markSheet).then((response) => {
-          this.dataProvider.hideLoading();
+        this.dataProvider.run(() => this.dataProvider.submitMarks(data, this.markSheet)).then((response) => {
           if (response.session) {
             this.dataProvider.showToast(this.lang.marks_added || "تم حفظ الدرجات");
             this.getStudents(false);
@@ -436,15 +445,12 @@ export class FollowupStudentListPage implements OnInit {
             this.dataProvider.errorALertMessage(this.lang.marks_added_error);
           }
         }).catch(error => {
-          this.dataProvider.hideLoading();
           this.dataProvider.errorALertMessage(error);
         });
       } else {
-        this.dataProvider.hideLoading();
         this.dataProvider.showToast("لا توجد تعديلات لحفظها");
       }
     } else {
-      this.dataProvider.hideLoading();
       this.dataProvider.showToast("الرجاء مراجعة الدرجات، بعض القيم تتجاوز الحد الأقصى.");
     }
   }
@@ -521,7 +527,6 @@ export class FollowupStudentListPage implements OnInit {
     if(this.noteMessage && this.noteMessage.trim() != '') { 
       if(this.noteMessage.length <= 45) {
         if(this.canAddStudentNote) {
-          this.dataProvider.showLoading();
           let data = {
             sid: this.studentData.sid,
             note: this.noteMessage,
@@ -529,17 +534,15 @@ export class FollowupStudentListPage implements OnInit {
             rating: this.ratingStars,
             new_rating: JSON.stringify(this.ratingStars)
           };
-          this.dataProvider.addStudentNote(data).then((note_id)=>{
-            this.dataProvider.hideLoading();
+          this.dataProvider.run(() => this.studentEngagement.addNote(data)).then((note_id)=>{
             this.noteMessage = '';
             this.showNoteModal = false;
             this.dataProvider.showToast(this.lang.add_review_success_message);
           }).catch(error => {
-            this.dataProvider.hideLoading();
             this.dataProvider.errorALertMessage(error);
           });
         } else {
-          this.dataProvider.showToast(this.lang.already_submit_note);  
+          this.dataProvider.showToast(this.lang.already_submit_note);
         }
       } else {
         this.dataProvider.showToast(this.lang.max_note_length);
@@ -553,7 +556,6 @@ export class FollowupStudentListPage implements OnInit {
     if(this.noteMessage && this.noteMessage.trim() != '') {
       if(this.noteMessage.length <= 45) {
         if(this.canAddStudentNote) {
-          this.dataProvider.showLoading();
           let data = {
             sid: this.studentData.sid,
             note: this.noteMessage,
@@ -561,13 +563,11 @@ export class FollowupStudentListPage implements OnInit {
             rating: 0,
             new_rating: JSON.stringify([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
           };
-          this.dataProvider.addStudentNote(data).then((note_id)=>{
-            this.dataProvider.hideLoading();
+          this.dataProvider.run(() => this.studentEngagement.addNote(data)).then((note_id)=>{
             this.noteMessage = '';
             this.showNoteModal = false;
             this.dataProvider.showToast(this.lang.add_note_success_message);
           }).catch(error => {
-            this.dataProvider.hideLoading();
             this.dataProvider.errorALertMessage(error);
           });
         } else {
@@ -589,17 +589,15 @@ export class FollowupStudentListPage implements OnInit {
   }
 
   async awardSkillPoints(student: any, skillType: string, point: number) {
-    this.dataProvider.showLoading();
     let body = {
       sid: String(student.sid),
-      userId: String(this.userDetails.details.user_no), 
-      points: "+" + point, 
+      userId: String(this.userDetails.details.user_no),
+      points: "+" + point,
       skill_type: skillType
     };
 
     try {
-      const res: any = await this.dataProvider.addStudentPoints(body);
-      this.dataProvider.hideLoading();
+      const res: any = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
       this.zone.run(() => {
         if (res && res.success) {
           this.dataProvider.showToast(`تمت إضافة ${point} نقطة بنجاح!`);
@@ -612,7 +610,6 @@ export class FollowupStudentListPage implements OnInit {
         }
       });
     } catch (err: any) {
-      this.dataProvider.hideLoading();
       this.zone.run(() => {
         this.warningType = 'warning';
         this.warningMessage = `خطأ: ${typeof err === 'string' ? err : err?.message}`;
@@ -641,18 +638,11 @@ export class FollowupStudentListPage implements OnInit {
 
   async takePicture(student: any, event?: any) {
     this.studentData = student;
-    const action = await this.studentUi.presentImageOptions(event, this.lang);
-    this.zone.run(() => {
-      if (action === 'camera') this.handleImageSelection('camera');
-      if (action === 'gallery') this.handleImageSelection('gallery');
-      if (action === 'avatar') this.handleAvatarSelection();
-    });
-  }
-
-  async handleImageSelection(source: 'camera' | 'gallery') {
-    const base64Image = await this.imageService.takePicture(source);
-    if (base64Image) {
-      this.ChangeStudentProfileAvatar(base64Image); 
+    const result = await this.studentEngagement.captureAvatarImage(event, this.lang);
+    if (result.base64) {
+      this.zone.run(() => this.ChangeStudentProfileAvatar(result.base64));
+    } else if (result.action === 'avatar') {
+      this.zone.run(() => this.handleAvatarSelection());
     }
   }
 
@@ -692,29 +682,22 @@ export class FollowupStudentListPage implements OnInit {
     }
   }
 
-  ChangeStudentProfileAvatar(base64Data: string) {
+  async ChangeStudentProfileAvatar(base64Data: string) {
     if (!base64Data) return;
-    let finalImageData = base64Data.includes('data:image') ? base64Data : "data:image/png;base64," + base64Data;
-    
-    this.dataProvider.showLoading();
-    let data = {
-      user_no: this.userDetails.details.user_no,
-      session_id: this.userDetails.session_id,
-      imageData: finalImageData, 
-      sid: this.studentData.sid
-    };
 
-    // 🟢 التصحيح الأهم: استخدام updateUserImage (والتي هي بالداخل تقوم بالنداء الصحيح كما اتفقنا سابقاً)
-    this.dataProvider.updateUserImage(data).then((response: any) => {
-      this.dataProvider.hideLoading();
-      
-      if (response && response.session) {
-        // 🟢 كسر الكاش لضمان عرض الصورة المعتمدة
-        let newPicUrl = response.url + '?t=' + new Date().getTime();
+    try {
+      const result = await this.dataProvider.run(() => this.studentEngagement.uploadAvatar(base64Data, {
+        user_no: this.userDetails.details.user_no,
+        session_id: this.userDetails.session_id,
+        sid: this.studentData.sid
+      }));
 
-        this.zone.run(() => { 
-          this.studentData.pic = newPicUrl; 
-          
+      if (result.success) {
+        const newPicUrl = result.url;
+
+        this.zone.run(() => {
+          this.studentData.pic = newPicUrl;
+
           if (this.attendanceResponse && this.attendanceResponse.students) {
             const index = this.attendanceResponse.students.findIndex((s: any) => s.sid === this.studentData.sid);
             if (index > -1) {
@@ -723,15 +706,14 @@ export class FollowupStudentListPage implements OnInit {
           }
           this.cdr.detectChanges();
         });
-        
+
         this.dataProvider.showToast("تم تحديث صورة الطالب بنجاح");
       } else {
-        this.dataProvider.errorALertMessage(response.message);
+        this.dataProvider.errorALertMessage(result.message);
       }
-    }).catch(() => {
-      this.dataProvider.hideLoading();
+    } catch {
       this.dataProvider.errorALertMessage("حدث خطأ في الاتصال");
-    });
+    }
   }
 
   openFullscreenImage(url: string) {
