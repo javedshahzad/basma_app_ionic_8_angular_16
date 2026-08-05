@@ -53,7 +53,7 @@
               [disabled]="editMode" 
               [ngClass]="editMode ? 'opacity-40 cursor-not-allowed bg-slate-100 border-slate-200 text-slate-400' : 'bg-indigo-50 hover:bg-indigo-100'" 
               (click)="viewNote()" 
-              *ngIf="userType == '1' || userType == '2' || userType == '3' || userType == '7'">
+              *ngIf="isAdmin || isTeacherUser || isModerator || isViewer">
         <ion-icon name="document-text-outline" class="text-xl"></ion-icon>
       </button>
 
@@ -61,7 +61,7 @@
               [disabled]="editMode" 
               [ngClass]="editMode ? 'opacity-40 cursor-not-allowed bg-slate-400 border-slate-400' : 'bg-indigo-600 hover:bg-indigo-700'" 
               (click)="registerNewStudent()" 
-              *ngIf="userType == '1' || canAddStudent">
+              *ngIf="canAddStudentRole">
         <ion-icon name="person-add" class="text-xl"></ion-icon>
       </button>
 

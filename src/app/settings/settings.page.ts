@@ -16,6 +16,7 @@ import dayjs from 'dayjs';
 import { StorageService } from '../service/storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-settings',
@@ -25,6 +26,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
 })
 export class SettingsPage implements OnInit {
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
 
   user = {
     name: '',
@@ -118,7 +120,7 @@ export class SettingsPage implements OnInit {
       this.userType = this.userDetails.details.user_type;
       this.is_school_admin = this.userDetails.details.is_school_admin;
       
-      if(this.userType==1){
+      if(this.userType==UserType.Admin){
         this.getAllRules();
       }
     }else{

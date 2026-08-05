@@ -10,6 +10,7 @@ import { DocumentService } from '../service/document/document.service';
 import { StorageService } from '../service/storage.service';
 import { NotesApiService } from '../service/notes-api/notes-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-view-notes',
@@ -19,6 +20,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
 })
 export class ViewNotesPage implements OnInit {
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
   data: any = [];
   state: any;

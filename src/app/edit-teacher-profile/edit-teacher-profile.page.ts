@@ -11,6 +11,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { UserType } from '../constants/user-type';
 
 
 @Component({
@@ -21,6 +22,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
 })
 export class EditTeacherProfilePage implements OnInit {
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
 	navData:any;
 	lang:any;
 	userDetails:any;

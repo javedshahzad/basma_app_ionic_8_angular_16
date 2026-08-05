@@ -178,7 +178,7 @@
 		</ion-radio-group>
 	  </ion-list>
 
-	  <ion-list *ngIf="userType == '1'">
+	  <ion-list *ngIf="userType == UserType.Admin">
 		<ion-radio-group [value]="teacher.is_show_absent_students" [(ngModel)]="teacher.is_show_absent_students" >
 		  <ion-list-header>
 			<h3>{{'teacher_profile.absent_students'| translate}}</h3>

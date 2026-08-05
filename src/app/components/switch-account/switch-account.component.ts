@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../service/storage.service';
 import { DeviceApiService } from '../../service/device-api/device-api.service';
+import { UserType } from '../../constants/user-type';
 
 @Component({
   selector: 'app-switch-account',
@@ -202,9 +203,9 @@ export class SwitchAccountComponent implements OnInit {
       this.authProvider.changeUser(true);
 
       // 🟢 التوجيه الاحترافي المباشر بالأنيميشن
-      if (response.details.user_type == '4') {
+      if (response.details.user_type == UserType.Parent) {
         this.navCtrl.navigateRoot('/tabs/children', { animated: true, animationDirection: 'forward' });
-      } else if (response.details.user_type == '8') {
+      } else if (response.details.user_type == UserType.Student) {
         this.navCtrl.navigateRoot('/tabs/student-titles', { animated: true, animationDirection: 'forward' });
       } else {
         this.navCtrl.navigateRoot('/tabs', { animated: true, animationDirection: 'forward' });

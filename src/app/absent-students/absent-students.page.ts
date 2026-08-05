@@ -6,6 +6,7 @@ import { DataService } from '../service/data/data.service';
 import { DatePipe } from '@angular/common';
 import { AbsentApplicationApiService } from '../service/absent-application-api/absent-application-api.service';
 import { StorageService } from '../service/storage.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-absent-students',
@@ -15,6 +16,7 @@ import { StorageService } from '../service/storage.service';
 })
 export class AbsentStudentsPage implements OnInit {
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
   classes=[];
   userDetails: any;
   search_payload:any={

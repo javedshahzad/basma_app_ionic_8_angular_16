@@ -40,19 +40,19 @@
             
             <ion-select mode="md" interface="action-sheet" cancelText="إلغاء" [(ngModel)]="formData.reportType" placeholder="{{'manage_report.report_type' |translate}}" (ionChange)="$any($event.target).offsetWidth > 0 ? changeReportType($event) : null" class="w-full text-sm font-bold text-slate-800 py-3 md:hidden">
               <!-- 🟢 الدرع الثاني: إضافة ? لمعامل الأمان -->
-              <ion-select-option class="ion-text-center" value="medical" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type=='1'">{{'manage_report.medical_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" value="suspend" *ngIf="userDetails?.details?.user_type=='3' || userDetails?.details?.user_type=='1'">{{'manage_report.suspension_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" value="exit" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type=='1'">{{'manage_report.exit_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="callofstudents" *ngIf="userDetails?.details?.user_type=='3' || userDetails?.details?.user_type=='7' || userDetails?.details?.user_type=='1'">{{'manage_report.call_off_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="studentspledges" *ngIf="userDetails?.details?.user_type=='3' || userDetails?.details?.user_type=='7' || userDetails?.details?.user_type=='1'">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" value="medical" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.medical_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" value="suspend" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.suspension_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" value="exit" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.exit_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="callofstudents" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.call_off_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="studentspledges" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
             </ion-select>
 
             <ion-select mode="md" interface="popover" [(ngModel)]="formData.reportType" placeholder="{{'manage_report.report_type' |translate}}" (ionChange)="$any($event.target).offsetWidth > 0 ? changeReportType($event) : null" class="w-full text-sm font-bold text-slate-800 py-3 hidden md:block">
-              <ion-select-option class="ion-text-center" value="medical" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type=='1'">{{'manage_report.medical_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" value="suspend" *ngIf="userDetails?.details?.user_type=='3' || userDetails?.details?.user_type=='1'">{{'manage_report.suspension_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" value="exit" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type=='1'">{{'manage_report.exit_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="callofstudents" *ngIf="userDetails?.details?.user_type=='3' || userDetails?.details?.user_type=='7' || userDetails?.details?.user_type=='1'">{{'manage_report.call_off_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="studentspledges" *ngIf="userDetails?.details?.user_type=='3' || userDetails?.details?.user_type=='7' || userDetails?.details?.user_type=='1'">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" value="medical" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.medical_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" value="suspend" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.suspension_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" value="exit" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.exit_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="callofstudents" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.call_off_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="studentspledges" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
             </ion-select>
 
           </div>
@@ -317,7 +317,7 @@
     </div>
 
 
-    <div *ngIf="(userDetails?.details?.user_type=='3' || userDetails?.details?.user_type=='1') && suspend.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.2s;">
+    <div *ngIf="(userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Admin) && suspend.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.2s;">
       <div class="flex items-center justify-between mb-4 px-1">
         <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.suspension_days' | translate}}</h3>
         <button class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-orange-100" (click)="printReport('suspend')">
@@ -344,7 +344,7 @@
       </div>
     </div>
 
-    <div *ngIf="(userDetails?.details?.user_type=='6' || userDetails?.details?.user_type=='1') && medical.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.3s;">
+    <div *ngIf="(userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin) && medical.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.3s;">
       <div class="flex items-center justify-between mb-4 px-1">
         <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.medical_days' | translate}}</h3>
         <button class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-emerald-100" (click)="printReport('medical')">
@@ -371,7 +371,7 @@
       </div>
     </div>
 
-    <div *ngIf="(userDetails?.details?.user_type=='6' || userDetails?.details?.user_type=='1') && exitdays.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.4s;">
+    <div *ngIf="(userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin) && exitdays.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.4s;">
       <div class="flex items-center justify-between mb-4 px-1">
         <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.exit_days' | translate}}</h3>
         <button class="bg-cyan-50 text-cyan-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-cyan-100" (click)="printReport('exit')">
@@ -394,7 +394,7 @@
       </div>
     </div>
 
-    <ng-container *ngIf="userDetails?.details?.user_type =='7' || userDetails?.details?.user_type=='1' || userDetails?.details?.user_type=='3'">
+    <ng-container *ngIf="userDetails?.details?.user_type ==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin || userDetails?.details?.user_type==UserType.Moderator">
       <div *ngIf="callOfStudentsReport.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.5s;">
         <div class="flex items-center justify-between mb-4 px-1">
           <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.call_off_report' | translate}}</h3>

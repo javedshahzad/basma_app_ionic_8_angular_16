@@ -15,7 +15,7 @@
 
     <ion-buttons slot="end" class="ml-2 w-10">
       <ion-button color="dark" class="custom-menu-btn"
-                  *ngIf="userType=='1' || userType=='7'" 
+                  *ngIf="userType==UserType.Admin || userType==UserType.Viewer" 
                   (click)="openComposer()">
         <ion-icon name="add-outline"></ion-icon>
       </ion-button>
@@ -54,7 +54,7 @@
             </div>
             
             <button (click)="openDeleteModal(notification.ID, i)" 
-                    class="w-8 h-8 rounded-lg bg-rose-50 text-rose-400 border border-rose-100 hover:text-rose-600 hover:bg-rose-100 hover:border-rose-200 transition-colors flex items-center justify-center" *ngIf="userType=='1'">
+                    class="w-8 h-8 rounded-lg bg-rose-50 text-rose-400 border border-rose-100 hover:text-rose-600 hover:bg-rose-100 hover:border-rose-200 transition-colors flex items-center justify-center" *ngIf="userType==UserType.Admin">
               <ion-icon name="trash" class="text-xl"></ion-icon>
             </button>
 

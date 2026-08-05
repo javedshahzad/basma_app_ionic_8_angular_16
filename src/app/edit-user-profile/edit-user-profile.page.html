@@ -64,7 +64,7 @@
           </div>
         </div>
 
-        <div class="mb-4 animate-fade-in-up" *ngIf="user.user_type == '2'">
+        <div class="mb-4 animate-fade-in-up" *ngIf="user.user_type == UserType.Teacher">
           <label class="block text-sm font-bold text-slate-700 mb-2">نوع المعلم <span class="text-rose-500">*</span></label>
           
           <div class="bg-slate-100/70 border border-slate-200 rounded-xl p-1.5 flex gap-1.5">
@@ -103,7 +103,7 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100" *ngIf="user.user_type != '1' && user.user_type != '4'">
+    <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100" *ngIf="user.user_type != UserType.Admin && user.user_type != UserType.Parent">
       <h3 class="font-bold text-slate-800 text-base mb-5 flex items-center gap-2">
         <ion-icon name="settings-outline" class="text-indigo-600 text-xl"></ion-icon> إعدادات النظام
       </h3>
@@ -127,7 +127,7 @@
           <ion-toggle color="primary" mode="md" [checked]="user.attendence_permit" class="pointer-events-none m-0"></ion-toggle>
         </div>
 
-        <div class="bg-indigo-50/50 border border-indigo-100 rounded-xl p-4 transition-all duration-300" *ngIf="user.user_type == '2' && user.attendence_permit">
+        <div class="bg-indigo-50/50 border border-indigo-100 rounded-xl p-4 transition-all duration-300" *ngIf="user.user_type == UserType.Teacher && user.attendence_permit">
           <label class="block text-sm font-bold text-indigo-700 mb-2">{{'user_profile.time'|translate}}</label>
           <div class="bg-white border border-indigo-200 rounded-xl px-3 py-1 focus-within:border-indigo-400 transition-all">
             <ion-input [(ngModel)]="user.time" type="number" placeholder="{{'user_profile.time'|translate}}" class="text-sm text-slate-800 bg-transparent font-bold"></ion-input>
@@ -170,7 +170,7 @@
           <ion-toggle color="success" mode="md" [checked]="user.status == '1'" class="pointer-events-none m-0"></ion-toggle>
         </div>
 
-        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 hover:border-slate-200 transition-all" *ngIf="userType == '1' && user.user_type != '4'" [class.opacity-50]="user.status == '0'" [class.cursor-not-allowed]="user.status == '0'" (click)="user.status == '1' ? user.is_show_absent_students = user.is_show_absent_students == '1' ? '0' : '1' : null">
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 hover:border-slate-200 transition-all" *ngIf="userType == UserType.Admin && user.user_type != UserType.Parent" [class.opacity-50]="user.status == '0'" [class.cursor-not-allowed]="user.status == '0'" (click)="user.status == '1' ? user.is_show_absent_students = user.is_show_absent_students == '1' ? '0' : '1' : null">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-full flex items-center justify-center transition-colors" [ngClass]="user.is_show_absent_students == '1' ? 'bg-amber-50 text-amber-500' : 'bg-slate-200 text-slate-400'">
               <ion-icon name="people-outline" class="text-2xl"></ion-icon>
@@ -185,7 +185,7 @@
           <ion-toggle color="warning" mode="md" [checked]="user.is_show_absent_students == '1'" [disabled]="user.status == '0'" class="pointer-events-none m-0"></ion-toggle>
         </div>
 
-        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 hover:border-slate-200 transition-all" *ngIf="user.is_show_absent_students == '1' && user.user_type != '4'" [class.opacity-50]="user.status == '0'" [class.cursor-not-allowed]="user.status == '0'" (click)="user.status == '1' ? user.is_show_absent_application_list = user.is_show_absent_application_list == '1' ? '0' : '1' : null">
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 hover:border-slate-200 transition-all" *ngIf="user.is_show_absent_students == '1' && user.user_type != UserType.Parent" [class.opacity-50]="user.status == '0'" [class.cursor-not-allowed]="user.status == '0'" (click)="user.status == '1' ? user.is_show_absent_application_list = user.is_show_absent_application_list == '1' ? '0' : '1' : null">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-full flex items-center justify-center transition-colors" [ngClass]="user.is_show_absent_application_list == '1' ? 'bg-emerald-50 text-emerald-500' : 'bg-slate-200 text-slate-400'">
               <ion-icon name="document-text-outline" class="text-2xl"></ion-icon>

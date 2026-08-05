@@ -11,6 +11,7 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { BulletinsApiService } from '../service/bulletins-api/bulletins-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-bulletins',
@@ -20,6 +21,7 @@ import { BulletinsApiService } from '../service/bulletins-api/bulletins-api.serv
 })
 export class BulletinsPage implements OnInit {
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
   lang: any;
   userDetails: any;
   userType: any;

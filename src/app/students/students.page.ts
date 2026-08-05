@@ -25,6 +25,7 @@ import { ImageProcessingService } from '../service/image-processing/image-proces
 import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-students',
@@ -32,6 +33,7 @@ import { StudentEngagementService } from '../service/student-engagement/student-
   styleUrls: ['./students.page.scss'],
 })
 export class StudentsPage implements OnInit {
+  readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
   showProfileModal: boolean = false;
   students: any = [];
@@ -223,7 +225,7 @@ export class StudentsPage implements OnInit {
 
   // 🟢 دالة التبديل الذكية المطابقة لصفحة الغياب
   toggleEditMode() {
-    if (this.userType == '1') {
+    if (this.userType == UserType.Admin) {
       this.editMode = !this.editMode;
       if (!this.editMode) {
         // إذا قام بإلغاء التعديل، نصفر التغييرات ونعيد تحميل البيانات
@@ -251,13 +253,13 @@ export class StudentsPage implements OnInit {
       return;
     }
 
-    if (this.userType == '1') {
+    if (this.userType == UserType.Admin) {
       if (this.editMode) {
         this.toggleAttendance(student);
       } else {
         this.dataProvider.showToast("يرجى تفعيل وضع التعديل من الزر بالأسفل أولاً");
       }
-    } else if (this.userType == '3' && this.checkDateSelected(new Date())) {
+    } else if (this.userType == UserType.Moderator && this.checkDateSelected(new Date())) {
       // 🟢 المشرف الإداري لا يحتاج لتفعيل نمط التعديل
       this.toggleAttendance(student);
     } else {
@@ -396,7 +398,7 @@ export class StudentsPage implements OnInit {
         data.sheet["cem-1"][key] = this.attendanceSheet[key];
       });
       
-      let submittedByUser = (this.userType == '1') ? 1 : (this.userType == '3' ? 2 : 0);
+      let submittedByUser = (this.userType == UserType.Admin) ? 1 : (this.userType == UserType.Moderator ? 2 : 0);
       
       if(this.platform.is('cordova') || this.platform.is('capacitor')){ 
         if(this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN){

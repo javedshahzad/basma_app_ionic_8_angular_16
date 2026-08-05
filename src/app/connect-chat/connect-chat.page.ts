@@ -11,6 +11,7 @@ import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor
 // 🟢 1. استيراد خدمة التخزين الآمنة
 import { StorageService } from '../service/storage.service';
 import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-connect-chat',
@@ -86,7 +87,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
         this.messages.push({
           datetime: this.chat.created,
           message: this.chat.message,
-          receiver: this.userDetails.details.user_type == '1' ? 'true' : 'false',
+          receiver: this.userDetails.details.user_type == UserType.Admin ? 'true' : 'false',
           msg_from: this.chat.parent_user_no,
           msg_to: this.chat.school_id,
           attachment_url: this.chat.message_image,
@@ -219,7 +220,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
         this.image = '';
 
         let data = {};
-        if (this.userDetails.details.user_type == '4' || this.userDetails.details.user_type == '8') {
+        if (this.userDetails.details.user_type == UserType.Parent || this.userDetails.details.user_type == UserType.Student) {
           data = {
             session_id: this.userDetails.session_id,
             user_no: this.userDetails.details.user_no,
@@ -232,7 +233,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
               attachment_url: this.attachment
             }
           };
-        } else if (this.userDetails.details.user_type == '1') {
+        } else if (this.userDetails.details.user_type == UserType.Admin) {
           data = {
             session_id: this.userDetails.session_id,
             user_no: this.userDetails.details.user_no,

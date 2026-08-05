@@ -28,6 +28,7 @@ import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
 import { StorageService } from '../service/storage.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
+import { UserType } from '../constants/user-type';
 
 const env = environment;
 
@@ -38,6 +39,7 @@ const env = environment;
 })
 export class StudentDetailPage implements OnInit {
 
+  readonly UserType = UserType;
   trackByIndex(index: number): number { return index; }
   trackByAbsentDate(index: number, details: any): any { return details?.date ?? index; }
   trackByAbsenceNoteId(index: number, note: any): any { return note?.ID ?? index; }
@@ -299,7 +301,7 @@ export class StudentDetailPage implements OnInit {
               }else{
                 this.category = "notes";
               }
-              if(this.userType == '2'){
+              if(this.userType == UserType.Teacher){
                 this.category = "notes";
               }
               if(this.studentDetails.absents.length == 0){
@@ -361,8 +363,8 @@ export class StudentDetailPage implements OnInit {
           }
           note.display_pic = picToUse;
 
-          if((this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) || this.userDetails.details.user_type != '2'){
-            if(this.userDetails.details.user_type === '2'){
+          if((this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) || this.userDetails.details.user_type != UserType.Teacher){
+            if(this.userDetails.details.user_type === UserType.Teacher){
                this.canAddStudentNote = false;
              }
           }
@@ -492,8 +494,8 @@ export class StudentDetailPage implements OnInit {
 
             note.display_pic = picToUse;
 
-            if((this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) || this.userDetails.details.user_type != '2'){
-              if(this.userDetails.details.user_type === '2'){
+            if((this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) || this.userDetails.details.user_type != UserType.Teacher){
+              if(this.userDetails.details.user_type === UserType.Teacher){
                  this.canAddStudentNote = false;
                }
             }
@@ -1650,7 +1652,7 @@ export class StudentDetailPage implements OnInit {
   // 🟢 دالة للتعامل مع زر العودة بناءً على نوع المستخدم
   goBack() {
     // إذا كان المستخدم ولي أمر (userType == '4')
-    if (this.userType == '4' || this.userDetails?.details?.user_type == '4') {
+    if (this.userType == UserType.Parent || this.userDetails?.details?.user_type == UserType.Parent) {
       this.zone.run(() => {
         // تم إضافة مسار الصفحة هنا بشكل صحيح
         // ملاحظة: إذا كان المسار مختلفاً في ملف التوجيه (routing)، قم بتغييره، مثلاً

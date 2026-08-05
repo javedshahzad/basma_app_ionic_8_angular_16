@@ -21,6 +21,7 @@ import { environment } from '../../environments/environment';
 import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-followup-student-list',
@@ -29,6 +30,7 @@ import { StudentEngagementService } from '../service/student-engagement/student-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FollowupStudentListPage implements OnInit {
+  readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
   
   courseInfo: any;

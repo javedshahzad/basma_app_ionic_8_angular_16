@@ -1,5 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { UserType } from '../../constants/user-type';
 
 @Component({
   selector: 'app-classlist-options-popover',
@@ -7,7 +8,8 @@ import { PopoverController } from '@ionic/angular';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClasslistOptionsPopoverComponent {
-  
+  readonly UserType = UserType;
+
   // المتغيرات التي سنستقبلها من الصفحة الرئيسية
   @Input() userType: string = '';
   @Input() editMode: boolean = false;

@@ -1,11 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
+import { UserType } from '../../constants/user-type';
 
 @Component({
   selector: 'app-supervisor-view',
   templateUrl: './supervisor-view.component.html',
 })
 export class SupervisorViewComponent {
+  readonly UserType = UserType;
   @Input() attendanceResponse: any = {};
   @Input() showAll: boolean = true;
   @Input() userType: string = '';

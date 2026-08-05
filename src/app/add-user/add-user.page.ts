@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router'; // 🟢 تأكد من إضافة ActivatedRoute هنا
 import { StorageService } from '../service/storage.service';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
 	selector: 'app-add-user',
@@ -16,6 +17,7 @@ import { RegistrationApiService } from '../service/registration-api/registration
 })
 export class AddUserPage implements OnInit {
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
 	private destroyRef = inject(DestroyRef);
 	userDetails: any;
 	usersData: any = {};
@@ -173,7 +175,7 @@ export class AddUserPage implements OnInit {
 			this.usersData.school_id = this.userDetails.details.school_id; 
 			
       // החماية البرمجية: إرسال مصفوفة فارغة في حالة المدير أو ولي الأمر
-      if (this.usersData.user_type === '1' || this.usersData.user_type === '4') {
+      if (this.usersData.user_type === UserType.Admin || this.usersData.user_type === UserType.Parent) {
         this.usersData.class = JSON.stringify([]);
         this.usersData.attendence_permit = false; 
         this.usersData.time = ''; 

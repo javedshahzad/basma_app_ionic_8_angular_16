@@ -10,6 +10,7 @@ import { StorageService } from '../service/storage.service';
 import { ParentManagementApiService } from '../service/parent-management-api/parent-management-api.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-requested-parent',
@@ -19,6 +20,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
 })
 export class RequestedParentPage implements OnInit {
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
   lang: any;
   lang1: any;
   userDetails: any;

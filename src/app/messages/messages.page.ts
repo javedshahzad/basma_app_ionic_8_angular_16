@@ -10,6 +10,7 @@ import { LoaderComponent } from '../components/loader/loader.component';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-messages',
@@ -18,6 +19,7 @@ import { StorageService } from '../service/storage.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessagesPage implements OnInit {
+  readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
 
   notifications: any = [];

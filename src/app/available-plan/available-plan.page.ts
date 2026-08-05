@@ -13,6 +13,7 @@ import { PlanReceiptComponent } from '../plan-receipt/plan-receipt.component';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-available-plan',
@@ -68,7 +69,7 @@ export class AvailablePlanPage implements OnInit {
     let userLoggedIn = await this.storageSr.get("userloggedin");
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      if (this.userDetails.details.user_type === '1') {
+      if (this.userDetails.details.user_type === UserType.Admin) {
         this.monthly_plan_ammount = 5.99;
         this.yearly_plan_ammount = 39.99;
       }
@@ -116,7 +117,7 @@ export class AvailablePlanPage implements OnInit {
 
   subscribe(data: any, i: number) {
     var p = 0;
-    if (this.userDetails.details.user_type === '1') {
+    if (this.userDetails.details.user_type === UserType.Admin) {
       if (data.slug == "standard") {
         p = 0;
         this.durationSubscription('Standard', p, data);

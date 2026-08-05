@@ -14,7 +14,7 @@
 
     <ion-buttons slot="end" class="ml-2 w-10">
       <ion-button color="dark" class="custom-menu-btn"
-                  *ngIf="userDetails.details && userDetails?.details.is_school_admin && userDetails.details.user_type != '4'" 
+                  *ngIf="userDetails.details && userDetails?.details.is_school_admin && userDetails.details.user_type != UserType.Parent"
                   (click)="addNews()">
         <ion-icon name="add-outline"></ion-icon>
       </ion-button>

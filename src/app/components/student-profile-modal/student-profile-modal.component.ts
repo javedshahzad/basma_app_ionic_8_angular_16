@@ -5,6 +5,7 @@ import { GamificationEngineService } from '../../service/gamification-engine/gam
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { UserType } from '../../constants/user-type';
 
 @Component({
   selector: 'app-student-profile-modal',
@@ -15,6 +16,7 @@ import { FormsModule } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StudentProfileModalComponent implements OnInit {
+  readonly UserType = UserType;
 
   // استقبال البيانات من الصفحة الأم
   @Input() student: any;

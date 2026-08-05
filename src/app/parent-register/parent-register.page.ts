@@ -11,6 +11,7 @@ import { Device } from '@awesome-cordova-plugins/device/ngx';
 
 // 🟢 استيراد خدمة التخزين الموحدة
 import { StorageService } from '../service/storage.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-parent-register',
@@ -154,9 +155,9 @@ export class ParentRegisterPage implements OnInit {
       this.authProvider.publishEvent(true);
       this.authProvider.changeUser(true);
       
-      if (response.details.user_type == '4') {
+      if (response.details.user_type == UserType.Parent) {
         this.router.navigate(['tabs/children'], { replaceUrl: true });
-      } else if (response.details.user_type == '8') {
+      } else if (response.details.user_type == UserType.Student) {
         this.router.navigate(['tabs/student-notes'], { replaceUrl: true });
       } else {
         this.router.navigate(['tabs'], { replaceUrl: true });

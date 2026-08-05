@@ -11,6 +11,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { StorageService } from '../service/storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-edit-user-profile',
@@ -20,6 +21,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
 })
 export class EditUserProfilePage implements OnInit {
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
   navData: any;
   lang: any = {};
@@ -327,7 +329,7 @@ export class EditUserProfilePage implements OnInit {
       this.user.moderatorAttenEditPower = permitValue;
       this.user.TeacherAttenEditPower = permitValue;
 
-      this.user.teacher_type = this.user.user_type == '2' ? this.user.teacher_type : '';
+      this.user.teacher_type = this.user.user_type == UserType.Teacher ? this.user.teacher_type : '';
 
       // 🟢 ضمان إرسال الحالة كنص صريح ('0' أو '1') لمنع أخطاء السيرفر
       this.user.status = (this.user.status == '1' || this.user.status == 1) ? '1' : '0';

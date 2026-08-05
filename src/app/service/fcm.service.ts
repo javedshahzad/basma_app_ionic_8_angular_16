@@ -9,6 +9,7 @@ import { ActionPerformed, PushNotificationSchema, PushNotifications, Token } fro
 import { FCM } from '@capacitor-community/fcm';
 import { Platform } from '@ionic/angular';
 import { StorageService } from './storage.service';
+import { UserType } from '../constants/user-type';
 
 @Injectable({
   providedIn: 'root'
@@ -68,14 +69,14 @@ public getPlan: Subject<boolean> = new Subject();
             const data = notification.notification.data;
             console.log(data);
             this.userDetails = await this.storageSr.get("userloggedin");
-            if(this.userDetails.details.user_type == '4' || this.userDetails.details.user_type == '8')
+            if(this.userDetails.details.user_type == UserType.Parent || this.userDetails.details.user_type == UserType.Student)
             if(data.type == "PrivateMessage"){
               setTimeout(() => {
                 this.router.navigate(['tabs/private-message']);
               }, 2500);
             }
             if(data.type == 'ClassNotes'){
-              if(this.userDetails.details.user_type == '4' || this.userDetails.details.user_type == '8')
+              if(this.userDetails.details.user_type == UserType.Parent || this.userDetails.details.user_type == UserType.Student)
               {
                 setTimeout(() => {
                   this.router.navigate(['/tabs/student-notes']);
@@ -83,7 +84,7 @@ public getPlan: Subject<boolean> = new Subject();
               }
             }
             if(data.type == 'FromStudentParent'){
-              if(this.userDetails.details.user_type == '4' || this.userDetails.details.user_type == '8')
+              if(this.userDetails.details.user_type == UserType.Parent || this.userDetails.details.user_type == UserType.Student)
               {
                 setTimeout(() => {
                   this.router.navigate(['/parentconnect']);
@@ -91,7 +92,7 @@ public getPlan: Subject<boolean> = new Subject();
               }
             }
             if(data.type == 'FromAdminToParentStudent'){
-              if(this.userDetails.details.user_type == '4' || this.userDetails.details.user_type == '8')
+              if(this.userDetails.details.user_type == UserType.Parent || this.userDetails.details.user_type == UserType.Student)
               {
                 setTimeout(() => {
                   this.router.navigate(['/tabs/parentconnect']);

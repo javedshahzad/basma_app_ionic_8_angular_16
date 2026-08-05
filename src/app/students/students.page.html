@@ -102,14 +102,14 @@
                    'bg-emerald-500 border-emerald-600 text-white': student.sheet['cem-1'] == true,
                    'bg-rose-500 border-rose-600 text-white': student.suspend_leave == true || student.medical_leave == true,
                    'bg-white border-slate-200 text-slate-400 hover:bg-slate-50': student.sheet['cem-1'] == 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave),
-                   'opacity-50': userType == '1' && !editMode
+                   'opacity-50': userType == UserType.Admin && !editMode
                  }">
               <ion-icon name="checkmark-circle" *ngIf="student.sheet['cem-1'] == true" class="text-2xl"></ion-icon>
               <ion-icon name="close-circle" *ngIf="student.suspend_leave || student.medical_leave" class="text-2xl"></ion-icon>
               <ion-icon name="add-circle-outline" *ngIf="student.sheet['cem-1'] == 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave)" class="text-2xl opacity-40"></ion-icon>
 
               <!-- طبقة حماية تمنع النقر وتوحي بالتعطيل إذا لم يتم تفعيل وضع التعديل -->
-              <div *ngIf="userType == '1' && !editMode" class="absolute inset-0 bg-white/20 backdrop-blur-[1px]"></div>
+              <div *ngIf="userType == UserType.Admin && !editMode" class="absolute inset-0 bg-white/20 backdrop-blur-[1px]"></div>
             </div>
           </div>
 
@@ -142,11 +142,11 @@
 </ion-content>
 
 <!-- 🟢 الفوتر الذكي المطابق لتصميم صفحة تسجيل غياب الحصص -->
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="(userType == '1' || userType == '3') && !isHoliday && students?.length > 0">
+<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="(userType == UserType.Admin || userType == UserType.Moderator) && !isHoliday && students?.length > 0">
   <div class="p-5 max-w-6xl mx-auto transition-all duration-300">
     
     <!-- زر تفعيل التعديل (يظهر لمشرف النظام فقط إذا لم يكن النمط مفعلاً) -->
-    <button *ngIf="userType == '1' && !editMode" 
+    <button *ngIf="userType == UserType.Admin && !editMode" 
             class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex justify-center items-center gap-2"
             (click)="toggleEditMode()">
       <ion-icon name="create-outline" class="text-xl"></ion-icon>
@@ -154,7 +154,7 @@
     </button>
 
     <!-- زر الحفظ (يظهر بعد تفعيل التعديل، أو دائماً للإداري userType 3) -->
-    <button *ngIf="(userType == '1' && editMode) || userType == '3'" 
+    <button *ngIf="(userType == UserType.Admin && editMode) || userType == UserType.Moderator" 
             class="w-full font-bold text-base py-3.5 rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2 active:scale-95"
             [ngClass]="attMarkBegin ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-200' : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed shadow-none'"
             [disabled]="!attMarkBegin"

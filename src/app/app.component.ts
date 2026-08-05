@@ -1,4 +1,5 @@
 ﻿import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { UserType } from './constants/user-type';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Platform, MenuController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -420,20 +421,20 @@ export class AppComponent implements OnInit {
       this.user.school_image = userDetail.details.school_logo;
       this.user.is_school_admin = userDetail.details.is_school_admin;
 
-      if (userDetail.details.user_type == '1') {
+      if (userDetail.details.user_type == UserType.Admin) {
         if (userDetail.details.school_details != '') {
           this.user.description = userDetail.details.is_school_admin != 1 ? '' : userDetail.details.school_details;
         }
         this.user.userType = 'admin';
-      } else if (userDetail.details.user_type == '2') {
+      } else if (userDetail.details.user_type == UserType.Teacher) {
         this.user.userType = 'teacher';
-      } else if (userDetail.details.user_type == '3') {
+      } else if (userDetail.details.user_type == UserType.Moderator) {
         this.user.userType = 'moderator';
-      } else if (userDetail.details.user_type == '4') {
+      } else if (userDetail.details.user_type == UserType.Parent) {
         this.user.userType = 'parent';
-      } else if (userDetail.details.user_type == '7') {
+      } else if (userDetail.details.user_type == UserType.Viewer) {
         this.user.userType = 'viewer';
-      } else if (userDetail.details.user_type == '8') {
+      } else if (userDetail.details.user_type == UserType.Student) {
         this.user.userType = 'student';
       }
     }

@@ -8,6 +8,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 import { GamificationEngineService } from '../service/gamification-engine/gamification-engine.service';
 import { StorageService } from "../service/storage.service";
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-children',
@@ -70,7 +71,7 @@ export class ChildrenPage implements OnInit {
               if(res.changeUser){
                 // 🟢 حماية: لا تقم بتحديث صفحة الأبناء إلا إذا كان المستخدم الجديد هو ولي أمر فعلاً (user_type == 4)
                 let checkUser = await this.storageSr.get("userloggedin");
-                if (checkUser && checkUser.details && checkUser.details.user_type == '4') {
+                if (checkUser && checkUser.details && checkUser.details.user_type == UserType.Parent) {
                     this.ionViewWillEnter();
                 }
               }
@@ -86,7 +87,7 @@ export class ChildrenPage implements OnInit {
     if (userLoggedIn && userLoggedIn.details) {
       this.userDetails = userLoggedIn;
 
-      if (this.userDetails.details.user_type != '4') {
+      if (this.userDetails.details.user_type != UserType.Parent) {
         return; 
       }
 

@@ -290,7 +290,7 @@ export class ListStudentPage implements OnInit {
       this.show_loading = false;
       if (res.session) {
         
-        this.canAddStudent = (this.userType == '3' && res.data.canAddStudent);
+        this.canAddStudent = (this.userType == UserRole.Moderator && res.data.canAddStudent);
         this.attMarkBegin = false;
         this.canEdit = false;
         this.selectedSem = -1;
@@ -636,7 +636,7 @@ export class ListStudentPage implements OnInit {
   }
 
   async presentAdminActions(event: any) {
-    const showAdd = (this.userType == '1' || this.canAddStudent);
+    const showAdd = (this.userType == UserRole.Admin || this.canAddStudent);
     const action = await this.studentUi.presentAdminActions(event, showAdd);
     
     this.zone.run(() => {

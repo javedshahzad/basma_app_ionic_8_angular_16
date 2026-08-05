@@ -20,6 +20,7 @@ import { EditClassModalComponent } from '../components/edit-class-modal/edit-cla
 import { StorageService } from '../service/storage.service';
 import { SyncService } from '../service/sync/sync.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-classlist',
@@ -27,6 +28,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
   styleUrls: ['./classlist.page.scss'],
 })
 export class ClasslistPage implements OnInit {
+  readonly UserType = UserType;
   isLoading: boolean = true;
   private destroyRef = inject(DestroyRef);
 
@@ -193,7 +195,7 @@ export class ClasslistPage implements OnInit {
 
       this.getCourse(loader);
 
-      if (this.userType == '1' || this.userType == '3' || this.userType == '7') {
+      if (this.userType == UserType.Admin || this.userType == UserType.Moderator || this.userType == UserType.Viewer) {
         this.getTodayDeshboard(false);
       }
 
@@ -205,7 +207,7 @@ export class ClasslistPage implements OnInit {
   }
 
   ionViewWillEnter(){
-    if(this.is_school_admin || this.userType == '1' || this.userType == '3' || this.userType == '7' || this.userType == '2'){
+    if(this.is_school_admin || this.userType == UserType.Admin || this.userType == UserType.Moderator || this.userType == UserType.Viewer || this.userType == UserType.Teacher){
       this.checkAndDeleteAccount();
     }
   }
@@ -454,13 +456,13 @@ export class ClasslistPage implements OnInit {
       
     } else {
       let buttons = [];      
-      if (this.userType == '1' || this.userType == '3' || this.userType == '7') {
+      if (this.userType == UserType.Admin || this.userType == UserType.Moderator || this.userType == UserType.Viewer) {
         buttons.push({ text: this.lang1.search || 'بحث', icon: 'search', cssClass: 'text-slate-700 font-bold', handler: () => { this.openSearchPage(); } });
       }
-      if (this.userType == '1') {
+      if (this.userType == UserType.Admin) {
         buttons.push({ text: this.lang1.create_class || 'إضافة صف جديد', icon: 'add-circle-outline', cssClass: 'text-indigo-600 font-bold', handler: () => { this.createClass(); } });
       }
-      if (this.userType == '1' && !this.editMode) {
+      if (this.userType == UserType.Admin && !this.editMode) {
         buttons.push({ text: this.lang1.edit_class || 'تعديل الصف', icon: 'pencil-sharp', cssClass: 'text-indigo-600 font-bold', handler: () => { this.enableEditMode(); } });
       }
       if (this.canReorder) {

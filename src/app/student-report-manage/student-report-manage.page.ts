@@ -16,6 +16,7 @@ import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 import { StorageService } from '../service/storage.service';
 import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
+import { UserType } from '../constants/user-type';
 
 const env = environment;
 
@@ -28,6 +29,7 @@ const env = environment;
 export class StudentReportManagePage implements OnInit {
   trackByIndex(index: number): number { return index; }
   trackById(index: number, item: any): any { return item?.id ?? index; }
+  readonly UserType = UserType;
   navData: any = {};
   lang: any;
   reportType: any;

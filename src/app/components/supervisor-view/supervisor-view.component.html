@@ -1,6 +1,6 @@
 ﻿<div class="space-y-4" *ngIf="attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0">
   
-  <div class="bg-indigo-50 rounded-2xl p-4 shadow-sm border border-indigo-100" *ngIf="showAll && (userType == '1' || userType == '3' || userType == '7')">
+  <div class="bg-indigo-50 rounded-2xl p-4 shadow-sm border border-indigo-100" *ngIf="showAll && (userType == UserType.Admin || userType == UserType.Moderator || userType == UserType.Viewer)">
 
     <div class="flex items-center justify-between  rounded-xl border border-indigo-100/50 mb-3" dir="rtl">
       <div class="flex items-center gap-2.5">
@@ -68,8 +68,8 @@
       </button>
     </div>
     <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100" dir="rtl">
-      <div *ngFor="let sem of totalSemArray; let i = index; trackBy: trackByPeriod" (click)="onChangeAttendanceStatus.emit({student: student, sem: i, index: student.sno})" class="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-lg sm:rounded-xl cursor-pointer shadow-sm transition-all text-xs sm:text-base relative" [ngClass]="{'pointer-events-none opacity-50': userType == '3' && !canEdit && student.sheet && student.sheet['entered_by-'+(i+1)], 'bg-emerald-500 text-white shadow-emerald-100 scale-105': student.sheet && student.sheet['cem-'+ (i+1)] == '1', 'bg-rose-500 text-white shadow-rose-100 scale-105': student.sheet && student.sheet['cem-'+ (i+1)] == '0', 'bg-orange-500 text-white shadow-orange-100 scale-105': student.sheet && student.sheet['cem-'+ (i+1)] == '3', 'bg-white border border-slate-200 text-slate-400 hover:bg-slate-100': !student.sheet || student.sheet['cem-'+ (i+1)] == 'undefined' || !student.sheet['cem-'+ (i+1)]}">
-        <div class="absolute -top-1.5 -right-1.5 bg-slate-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-sm" *ngIf="userType == '3' && !canEdit && student.sheet && student.sheet['entered_by-'+(i+1)]">
+      <div *ngFor="let sem of totalSemArray; let i = index; trackBy: trackByPeriod" (click)="onChangeAttendanceStatus.emit({student: student, sem: i, index: student.sno})" class="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-lg sm:rounded-xl cursor-pointer shadow-sm transition-all text-xs sm:text-base relative" [ngClass]="{'pointer-events-none opacity-50': userType == UserType.Moderator && !canEdit && student.sheet && student.sheet['entered_by-'+(i+1)], 'bg-emerald-500 text-white shadow-emerald-100 scale-105': student.sheet && student.sheet['cem-'+ (i+1)] == '1', 'bg-rose-500 text-white shadow-rose-100 scale-105': student.sheet && student.sheet['cem-'+ (i+1)] == '0', 'bg-orange-500 text-white shadow-orange-100 scale-105': student.sheet && student.sheet['cem-'+ (i+1)] == '3', 'bg-white border border-slate-200 text-slate-400 hover:bg-slate-100': !student.sheet || student.sheet['cem-'+ (i+1)] == 'undefined' || !student.sheet['cem-'+ (i+1)]}">
+        <div class="absolute -top-1.5 -right-1.5 bg-slate-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-sm" *ngIf="userType == UserType.Moderator && !canEdit && student.sheet && student.sheet['entered_by-'+(i+1)]">
           <ion-icon name="lock-closed" class="text-[9px]"></ion-icon>
         </div>
         <ion-icon name="checkmark" *ngIf="student.sheet && student.sheet['cem-'+ (i+1)] == '1'" class="text-lg"></ion-icon>

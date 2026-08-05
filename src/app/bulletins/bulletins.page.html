@@ -1,7 +1,7 @@
 ﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="menu-btn-container">
-      <ion-button color="dark" class="custom-menu-btn" *ngIf="userType=='1'" (click)="openCamera()">
+      <ion-button color="dark" class="custom-menu-btn" *ngIf="userType==UserType.Admin" (click)="openCamera()">
         <ion-icon name="add-outline"></ion-icon>
       </ion-button>
     </ion-buttons>

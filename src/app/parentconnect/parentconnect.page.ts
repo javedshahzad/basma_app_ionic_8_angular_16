@@ -11,6 +11,7 @@ import { ConnectNewMessagePage } from '../connect-new-message/connect-new-messag
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-parentconnect',
@@ -20,6 +21,7 @@ import { ParentConnectApiService } from '../service/parent-connect-api/parent-co
 })
 export class ParentconnectPage implements OnInit {
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
   lang: any = {};
   chats: any = [];
   noDataFound: string = '';
@@ -80,9 +82,9 @@ export class ParentconnectPage implements OnInit {
       this.userType = this.userDetails.details.user_type;
       
       // 🟢 تحديد مسار العودة الصحيح بناءً على نوع المستخدم
-      if (this.userType == '1') {
+      if (this.userType == UserType.Admin) {
         this.backHref = '/tabs/classlist'; 
-      } else if (this.userType == '8') {
+      } else if (this.userType == UserType.Student) {
         this.backHref = '/tabs/student-titles'; 
       } else {
         this.backHref = '/tabs/children'; 

@@ -14,6 +14,7 @@ import { GeoServiceProvider } from '../service/geo-service/geo-service';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { NewsApiService } from '../service/news-api/news-api.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
   selector: 'app-news',
@@ -24,6 +25,7 @@ import { NewsApiService } from '../service/news-api/news-api.service';
 export class NewsPage implements OnInit {
 
   trackByIndex(index: number): number { return index; }
+  readonly UserType = UserType;
   @ViewChild('videoPlayer') mVideoPlayer: ElementRef;
   private destroyRef = inject(DestroyRef);
 
@@ -269,7 +271,7 @@ export class NewsPage implements OnInit {
 
     let currentUser = this.userDetails.details;
     
-    let isSuperAdmin = (currentUser.user_type == '1' || currentUser.is_school_admin == '1');
+    let isSuperAdmin = (currentUser.user_type == UserType.Admin || currentUser.is_school_admin == '1');
     let isSameSchool = (news.school_id == currentUser.school_id || news.user_id == currentUser.user_no);
     let isCreator = (news.user_no == currentUser.user_no || news.created_by == currentUser.user_no);
 
