@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
+import { ApiResponse } from '../../model/api-response.model';
 
 /**
  * Subscription plan HTTP calls, split out of DataService. Depends on
@@ -16,10 +17,10 @@ export class PlanApiService {
     private dataService: DataService
   ) { }
 
-  getPlan(data): Promise<any> {
+  getPlan(data: Record<string, unknown>): Promise<ApiResponse<any[]>> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getPlan').then((response: any) => {
+      this.apiClient.postRequest<ApiResponse<any[]>>(data, 'getPlan').then((response) => {
         if (response) {
           if(response.response){
             resolve(response);
@@ -40,10 +41,10 @@ export class PlanApiService {
     })
   }
 
-  getUserPlan(data): Promise<any> {
+  getUserPlan(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getUserPlan').then((response: any) => {
+      this.apiClient.postRequest(data, 'getUserPlan').then((response) => {
         if (response) {
             resolve(response);
         } else {
@@ -60,10 +61,10 @@ export class PlanApiService {
     })
   }
 
-  purchase(data): Promise<any> {
+  purchase(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'purchase').then((response: any) => {
+      this.apiClient.postRequest(data, 'purchase').then((response) => {
         if (response) {
           if(response.response){
             resolve(response);

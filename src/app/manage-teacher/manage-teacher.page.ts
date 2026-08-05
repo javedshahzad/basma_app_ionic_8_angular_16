@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -13,6 +13,7 @@ import { SearchApiService } from '../service/search-api/search-api.service';
   selector: 'app-manage-teacher',
   templateUrl: './manage-teacher.page.html',
   styleUrls: ['./manage-teacher.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageTeacherPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -40,10 +41,12 @@ export class ManageTeacherPage implements OnInit {
     private router: Router,
     public modalController: ModalController,
     private storageSr: StorageService, // 🟢 حقن الخدمة
-    private searchApi: SearchApiService
+    private searchApi: SearchApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
 
     // 🟢 استقبال إشارة التحديث بأمان
@@ -67,6 +70,7 @@ export class ManageTeacherPage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   async refreshData() {
@@ -75,6 +79,7 @@ export class ManageTeacherPage implements OnInit {
       this.userDetails = userLoggedIn;
       this.getTeacher(false); // تحديث بدون Loading
     }
+    this.cdr.markForCheck();
   }
 
   getTeacher(loader = true) {
@@ -83,13 +88,13 @@ export class ManageTeacherPage implements OnInit {
       'school_id': this.userDetails.details.school_id,
       'user_no': this.userDetails.details.user_no
     };
-    
+
     if (loader) this.dataProvider.showLoading();
-    
+
     this.dataProvider.getTeachers(data).then(res => {
       if (loader) this.dataProvider.hideLoading();
       this.show_loading = true;
-      
+
       if (res.session) {
         this.selectedTeacher = res.data;
         if (this.selectedTeacher.length > 20) {
@@ -101,10 +106,12 @@ export class ManageTeacherPage implements OnInit {
       } else {
         this.noTeacher = true;
       }
+      this.cdr.markForCheck();
     }, error => {
       this.noTeacher = true;
       if (loader) this.dataProvider.hideLoading();
       console.log(error);
+      this.cdr.markForCheck();
     });
   }
 
@@ -114,6 +121,7 @@ export class ManageTeacherPage implements OnInit {
         this.trimmedTeacher = this.trimmedTeacher.concat(this.selectedTeacher.splice(0, 20));
       }
       infiniteScroll.target.complete();
+      this.cdr.markForCheck();
     }, 500);
   }
 
@@ -148,6 +156,7 @@ export class ManageTeacherPage implements OnInit {
     if (!input || input.trim() === '') {
       this.trimmedTeacher = [...this.selectedTeacher].slice(0, 20);
       this.noTeacher = this.trimmedTeacher.length === 0;
+      this.cdr.markForCheck();
       return;
     }
 
@@ -178,9 +187,11 @@ export class ManageTeacherPage implements OnInit {
           this.trimmedTeacher = [];
           this.noTeacher = true;
         }
+        this.cdr.markForCheck();
       }).catch(err => {
         this.trimmedTeacher = [];
         this.noTeacher = true;
+        this.cdr.markForCheck();
       });
     }, 500); // الانتظار نصف ثانية بعد توقف المستخدم عن الطباعة
   }

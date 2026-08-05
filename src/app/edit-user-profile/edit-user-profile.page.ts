@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ActionSheetController, PopoverController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -16,6 +16,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
   selector: 'app-edit-user-profile',
   templateUrl: './edit-user-profile.page.html',
   styleUrls: ['./edit-user-profile.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditUserProfilePage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -57,10 +58,12 @@ export class EditUserProfilePage implements OnInit {
     public actionSheetController: ActionSheetController,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private deviceApi: DeviceApiService,
-    private userManagementApi: UserManagementApiService
+    private userManagementApi: UserManagementApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
 
     // 🟢 التقاط البيانات عبر Router مع التخزين للحماية من الـ Refresh
@@ -89,6 +92,7 @@ export class EditUserProfilePage implements OnInit {
             this.initUserData();
         }
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -104,6 +108,7 @@ export class EditUserProfilePage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   // 🟢 استرجاع منطق تهيئة بيانات المستخدم (تم إعادته بالكامل)
@@ -334,7 +339,8 @@ export class EditUserProfilePage implements OnInit {
       
       // 🟢 الآن وبعد استقرار قاعدة البيانات، نقوم بإرسال التعديل براحة تامة
       this.show_save_user_spinner = false;
-      
+      this.cdr.markForCheck();
+
       // 🟢 السلوك الأصلي يكمل التوجيه دائماً بغض النظر عن نجاح/فشل الطلب
       this.userManagementApi.updateUserProfile(this.user).finally(() => {
         const navigation: NavigationExtras = {
@@ -363,6 +369,7 @@ export class EditUserProfilePage implements OnInit {
     } catch (error) {
       this.dataProvider.errorALertMessage(error);
     }
+    this.cdr.markForCheck();
   }
 
   compareClasses(c1: any, c2: any) {
@@ -414,9 +421,11 @@ export class EditUserProfilePage implements OnInit {
       } else {
         this.dataProvider.errorALertMessage(response?.msg || 'حدث خطأ أثناء الحذف');
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       this.show_delete_user_spinner = false;
       console.log(error);
+      this.cdr.markForCheck();
     });
   }
 }

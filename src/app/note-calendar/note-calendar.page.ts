@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 import { ModalController, Platform } from '@ionic/angular';
@@ -12,6 +12,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-note-calendar',
   templateUrl: './note-calendar.page.html',
   styleUrls: ['./note-calendar.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NoteCalendarPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -39,7 +40,8 @@ export class NoteCalendarPage implements OnInit {
     private printer: Printer,
     private translate: TranslateService,
     public platform: Platform,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
   ) {
     // 🟢 التقاط البيانات متزامناً
     const navigation = this.router.getCurrentNavigation();
@@ -51,6 +53,7 @@ export class NoteCalendarPage implements OnInit {
 
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
   }
 
@@ -80,6 +83,7 @@ export class NoteCalendarPage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   // تلوين الأيام التي تحتوي على ملاحظات امتحانات

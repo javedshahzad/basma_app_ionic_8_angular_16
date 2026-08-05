@@ -9,6 +9,8 @@ import { of, NEVER } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { DummyRouteComponent } from '@app/testing/dummy-route.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AddParentPage } from './add-parent.page';
 
@@ -19,7 +21,7 @@ describe('AddParentPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AddParentPage ],
-      imports: [IonicModule.forRoot(), HttpClientTestingModule, TranslateModule.forRoot(), RouterTestingModule],
+      imports: [IonicModule.forRoot(), HttpClientTestingModule, TranslateModule.forRoot(), RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }]), ReactiveFormsModule],
       providers: [
         { provide: Network, useValue: { onDisconnect: () => NEVER, onConnect: () => NEVER, type: 'wifi', Connection: { UNKNOWN: 'unknown', NONE: 'none' } } },
         { provide: Device, useValue: { uuid: 'test-uuid', platform: 'browser' } },

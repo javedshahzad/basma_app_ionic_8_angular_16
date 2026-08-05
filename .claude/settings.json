@@ -57,7 +57,13 @@
       "Bash(grep -rlB2 \"^\\\\s*schemas:\" src/app --include=\"*.spec.ts\")",
       "Bash(grep -E \"FAILED$\")",
       "Bash(grep \"FAILED$\" /tmp/karma_out.txt)",
-      "Bash(awk -F: '$2>0')"
+      "Bash(awk -F: '$2>0')",
+      "Bash(node \"C:\\\\Users\\\\FSWORX\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-FSWORX-Desktop-basma-app-ionic-angular16\\\\38c30046-9fc8-48b9-8489-c4a4c1cfd9ff\\\\scratchpad\\\\smoke_onpush.js\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\\\\n\" https://basmapp.com/BasmaCP)",
+      "Bash(curl -s -m 5 -o /dev/null -w \"HTTP %{http_code}\\\\n\" https://basmapp.com)",
+      "Bash(node \"C:\\\\Users\\\\FSWORX\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-FSWORX-Desktop-basma-app-ionic-angular16\\\\38c30046-9fc8-48b9-8489-c4a4c1cfd9ff\\\\scratchpad\\\\smoke_debug.js\")",
+      "Bash(node \"C:\\\\Users\\\\FSWORX\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-FSWORX-Desktop-basma-app-ionic-angular16\\\\38c30046-9fc8-48b9-8489-c4a4c1cfd9ff\\\\scratchpad\\\\smoke_nav.js\")",
+      "Bash(node \"C:\\\\Users\\\\FSWORX\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-FSWORX-Desktop-basma-app-ionic-angular16\\\\38c30046-9fc8-48b9-8489-c4a4c1cfd9ff\\\\scratchpad\\\\smoke_nav2.js\")"
     ],
     "additionalDirectories": [
       "\\tmp"

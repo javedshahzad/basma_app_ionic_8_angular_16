@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, NavParams, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -17,6 +17,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
   selector: 'app-edit-teacher-profile',
   templateUrl: './edit-teacher-profile.page.html',
   styleUrls: ['./edit-teacher-profile.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditTeacherProfilePage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -41,10 +42,12 @@ export class EditTeacherProfilePage implements OnInit {
 		    public platform: Platform,
         private deviceApi: DeviceApiService,
         private storageSr: StorageService,
-        private userManagementApi: UserManagementApiService) {
+        private userManagementApi: UserManagementApiService,
+        private cdr: ChangeDetectorRef) {
   		this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-	      if (this.router.getCurrentNavigation().extras.state) {
-	      		 this.navData = this.router.getCurrentNavigation().extras.state['teacher'];
+	      const navigation = this.router.getCurrentNavigation();
+	      if (navigation && navigation.extras && navigation.extras.state) {
+	      		 this.navData = navigation.extras.state['teacher'];
             console.log(this.navData);
             this.teacher.email=this.navData.email_id;
             this.teacher.name=this.navData.first_name;
@@ -62,10 +65,12 @@ export class EditTeacherProfilePage implements OnInit {
             // نقسم على 60 لنعيد الوقت لشكله الأصلي (1) بدلاً من (60)
             this.teacher.time = this.navData.editTimeForTeacher ? (this.navData.editTimeForTeacher / 60) : 0;
             this.teacher.action='active'
+            this.cdr.markForCheck();
 	      }
 	    });
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     })
 
   }
@@ -80,6 +85,7 @@ export class EditTeacherProfilePage implements OnInit {
       this.userType = this.userDetails.details.user_type;
       this.getClasses();
   	}
+    this.cdr.markForCheck();
   }
   check(){
   	console.log(this.teacher.attendence_permit);
@@ -183,8 +189,10 @@ export class EditTeacherProfilePage implements OnInit {
         this.classes=response.data;
         // this.classes.splice(0, 0, {name: 'Select All', cid: all_classes_cid});
       }
+      this.cdr.markForCheck();
     }).catch(error =>{
       this.dataProvider.errorALertMessage(error);
+      this.cdr.markForCheck();
     })
   }
   

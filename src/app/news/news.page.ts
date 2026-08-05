@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, NgZone, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Platform, AlertController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -19,6 +19,7 @@ import { NewsApiService } from '../service/news-api/news-api.service';
   selector: 'app-news',
   templateUrl: './news.page.html',
   styleUrls: ['./news.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NewsPage implements OnInit {
 
@@ -63,14 +64,15 @@ export class NewsPage implements OnInit {
     public sanitizer: DomSanitizer,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private zone: NgZone,
-    private newsApi: NewsApiService
+    private newsApi: NewsApiService,
+    private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => { this.lang = res; });
-    this.translate.get("location").subscribe((res) => { this.location_lang = res; });
+    this.translate.get("alertmessages").subscribe((res) => { this.lang = res; this.cdr.markForCheck(); });
+    this.translate.get("location").subscribe((res) => { this.location_lang = res; this.cdr.markForCheck(); });
 
     this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.translate.get("alertmessages").subscribe((res) => { this.lang = res; });
-      this.translate.get("location").subscribe((res) => { this.location_lang = res; });
+      this.translate.get("alertmessages").subscribe((res) => { this.lang = res; this.cdr.markForCheck(); });
+      this.translate.get("location").subscribe((res) => { this.location_lang = res; this.cdr.markForCheck(); });
     });
 
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
@@ -93,6 +95,7 @@ export class NewsPage implements OnInit {
           } else {
             this.getNews(0, 0, this.country_code, false);
           }
+          this.cdr.markForCheck();
         }
       });
     }
@@ -140,6 +143,7 @@ export class NewsPage implements OnInit {
       this.show_loading = false;
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   viewPhoto(url: string) {
@@ -149,7 +153,7 @@ export class NewsPage implements OnInit {
 
   closeFullscreenImage() {
     this.showImageViewer = false;
-    setTimeout(() => { this.viewImageUrl = ''; }, 300);
+    setTimeout(() => { this.viewImageUrl = ''; this.cdr.markForCheck(); }, 300);
   }
 
   addNews() {
@@ -212,10 +216,12 @@ export class NewsPage implements OnInit {
         } else {
           this.noDataFound = this.lang.no_news || 'لا توجد أخبار';
         }
+        this.cdr.markForCheck();
         resolve(true);
       }).catch((err) => {
         this.show_loading = false;
         this.dataProvider.errorALertMessage(err);
+        this.cdr.markForCheck();
         resolve(false);
       });
     });
@@ -227,6 +233,7 @@ export class NewsPage implements OnInit {
         this.allNews = this.allNews.concat(this.originalNews.splice(0, 20));
       }
       infiniteScroll.target.complete();
+      this.cdr.markForCheck();
     }, 500);
   }
 
@@ -282,6 +289,7 @@ export class NewsPage implements OnInit {
             news.already_like = 'false';
             news.total_likes = parseInt(news.total_likes) - 1;
           }
+          this.cdr.markForCheck();
         });
       } else {
         this.newsApi.likeNewsPost({
@@ -293,6 +301,7 @@ export class NewsPage implements OnInit {
             news.already_like = 'true';
             news.total_likes = parseInt(news.total_likes) + 1;
           }
+          this.cdr.markForCheck();
         });
       }
     } else {
@@ -319,7 +328,8 @@ export class NewsPage implements OnInit {
     setTimeout(() => {
       this.newsToDelete = null;
       this.newsToDeleteIndex = -1;
-    }, 300); 
+      this.cdr.markForCheck();
+    }, 300);
   }
 
   async confirmDelete() {
@@ -341,9 +351,11 @@ export class NewsPage implements OnInit {
         this.dataProvider.errorALertMessage(response.message);
         this.closeDeleteModal();
       }
+      this.cdr.markForCheck();
     } catch (error) {
       this.dataProvider.errorALertMessage(error);
       this.closeDeleteModal();
+      this.cdr.markForCheck();
     }
   }
 

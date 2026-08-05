@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController, ActionSheetController, PopoverController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -26,6 +26,7 @@ import { StudentEngagementService } from '../service/student-engagement/student-
   selector: 'app-followup-student-list',
   templateUrl: './followup-student-list.page.html',
   styleUrls: ['./followup-student-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FollowupStudentListPage implements OnInit {
   private destroyRef = inject(DestroyRef);
@@ -106,11 +107,12 @@ export class FollowupStudentListPage implements OnInit {
           this.dateSelected = new Date();
         }
       }
+      this.cdr.markForCheck();
     });
 
-    this.translate.get("alertmessages").subscribe(res => { this.lang = res; });
-    this.translate.get("plan").subscribe(val => { this.planLang = val; });
-    this.translate.get("student-details").subscribe(val => { this.student_detailse = val; });
+    this.translate.get("alertmessages").subscribe(res => { this.lang = res; this.cdr.markForCheck(); });
+    this.translate.get("plan").subscribe(val => { this.planLang = val; this.cdr.markForCheck(); });
+    this.translate.get("student-details").subscribe(val => { this.student_detailse = val; this.cdr.markForCheck(); });
   }
 
   ngOnInit() {}
@@ -123,14 +125,16 @@ export class FollowupStudentListPage implements OnInit {
 
   async ionViewWillEnter() {
     this.initData(true);
-    this.getStudentPoints(); 
-    this.AvailablePlan = await this.storageSr.get('availablePlan'); 
+    this.getStudentPoints();
+    this.AvailablePlan = await this.storageSr.get('availablePlan');
+    this.cdr.markForCheck();
   }
 
   async initData(loader: boolean = true) {
     this.show_loading = true;
-    let userLoggedIn = await this.storageSr.get("userloggedin"); 
-    
+    this.cdr.markForCheck();
+    let userLoggedIn = await this.storageSr.get("userloggedin");
+
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
@@ -139,6 +143,7 @@ export class FollowupStudentListPage implements OnInit {
       this.show_loading = false;
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   checkHolidays(loader: boolean) {
@@ -147,7 +152,7 @@ export class FollowupStudentListPage implements OnInit {
       "school_id": this.userDetails.details.school_id,
       "session_id": this.userDetails.session_id
     };
-    
+
     this.holidaysApi.getHolidays(data).then(response => {
       if (response && response.holidays && response.holidays.length > 0) {
         this.holidayString = response.holiday_string;
@@ -156,16 +161,18 @@ export class FollowupStudentListPage implements OnInit {
         let string_date = `${this.dateSelected.getFullYear()}-${month}-${day}`;
         this.isHoliday = this.holidayString.includes(string_date);
       }
+      this.cdr.markForCheck();
       this.getStudents(loader);
     }).catch(error => {
-      this.getStudents(loader); 
+      this.getStudents(loader);
     });
   }
 
   getStudentPoints() {
     this.dataProvider.getPointsValue().then(res => {
       this.student_points = res.points;
-    });   
+      this.cdr.markForCheck();
+    });
   }
 
   getStudents(loader: boolean = true) {
@@ -210,9 +217,11 @@ export class FollowupStudentListPage implements OnInit {
         this.dataProvider.errorALertMessage(res.message);
         this.router.navigate(['login'], { replaceUrl: true });
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       this.show_loading = false;
       this.dataProvider.errorALertMessage(error);
+      this.cdr.markForCheck();
     });
   }
 
@@ -495,6 +504,7 @@ export class FollowupStudentListPage implements OnInit {
     this.studentData = student;
     if(mode === 'note'){
       this.showNoteModal = true;
+      this.cdr.markForCheck();
     } else {
       const modal = await this.modalController.create({
         component: AddReviewComponent,
@@ -506,6 +516,7 @@ export class FollowupStudentListPage implements OnInit {
           this.noteMessage = data.data.noteMessage;
           this.addNotesNote();
         }
+        this.cdr.markForCheck();
       });
       return await modal.present();
     }
@@ -538,6 +549,7 @@ export class FollowupStudentListPage implements OnInit {
             this.noteMessage = '';
             this.showNoteModal = false;
             this.dataProvider.showToast(this.lang.add_review_success_message);
+            this.cdr.markForCheck();
           }).catch(error => {
             this.dataProvider.errorALertMessage(error);
           });
@@ -567,6 +579,7 @@ export class FollowupStudentListPage implements OnInit {
             this.noteMessage = '';
             this.showNoteModal = false;
             this.dataProvider.showToast(this.lang.add_note_success_message);
+            this.cdr.markForCheck();
           }).catch(error => {
             this.dataProvider.errorALertMessage(error);
           });
@@ -608,12 +621,14 @@ export class FollowupStudentListPage implements OnInit {
           this.warningMessage = msg;
           this.showWarningPopup = true;
         }
+        this.cdr.markForCheck();
       });
     } catch (err: any) {
       this.zone.run(() => {
         this.warningType = 'warning';
         this.warningMessage = `خطأ: ${typeof err === 'string' ? err : err?.message}`;
         this.showWarningPopup = true;
+        this.cdr.markForCheck();
       });
     }
   }
@@ -638,6 +653,7 @@ export class FollowupStudentListPage implements OnInit {
 
   async takePicture(student: any, event?: any) {
     this.studentData = student;
+    this.cdr.markForCheck();
     const result = await this.studentEngagement.captureAvatarImage(event, this.lang);
     if (result.base64) {
       this.zone.run(() => this.ChangeStudentProfileAvatar(result.base64));
@@ -719,10 +735,11 @@ export class FollowupStudentListPage implements OnInit {
   openFullscreenImage(url: string) {
     this.viewImageUrl = url;
     this.showImageViewer = true;
+    this.cdr.markForCheck();
   }
 
   closeFullscreenImage() {
     this.showImageViewer = false;
-    setTimeout(() => { this.viewImageUrl = ''; }, 300); 
+    setTimeout(() => { this.viewImageUrl = ''; this.cdr.markForCheck(); }, 300);
   }
 }

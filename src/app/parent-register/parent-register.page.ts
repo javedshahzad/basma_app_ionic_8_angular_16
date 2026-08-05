@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';  
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -16,6 +16,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-parent-register',
   templateUrl: './parent-register.page.html',
   styleUrls: ['./parent-register.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParentRegisterPage implements OnInit {
   parent: any = {};
@@ -34,7 +35,8 @@ export class ParentRegisterPage implements OnInit {
     public popoverController: PopoverController,
     public platform: Platform, 
     public dbProvider: DatabaseService,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
   ) {
     // 🟢 التقاط البيانات متزامناً
     const navigation = this.router.getCurrentNavigation();
@@ -69,6 +71,7 @@ export class ParentRegisterPage implements OnInit {
       let fcmToken = await this.storageSr.get("FcmToken");
       this.user.registration_id = fcmToken || 'empty_token';
     }
+    this.cdr.markForCheck();
   }
 
   async presentPopover() {
@@ -158,9 +161,11 @@ export class ParentRegisterPage implements OnInit {
       } else {
         this.router.navigate(['tabs'], { replaceUrl: true });
       }
+      this.cdr.markForCheck();
     }).catch((error) => {
       this.dissmissPopOver();
       this.dataProvider.errorALertMessage(error);
+      this.cdr.markForCheck();
     });
   }
 }

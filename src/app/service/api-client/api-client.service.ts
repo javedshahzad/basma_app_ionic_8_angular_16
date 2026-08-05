@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { environment } from '../../../environments/environment';
+import { ApiResponse } from '../../model/api-response.model';
 
 /**
  * Generic HTTP plumbing shared by the domain services: network-status
@@ -45,10 +46,10 @@ export class ApiClient {
    * @param {Object} data - contains the properties to post to API
    * @returns Param string
   */
-  makeObjectToUrlParams(data: any) {
+  makeObjectToUrlParams(data: Record<string, unknown>) {
     let body = new HttpParams();
     Object.keys(data).forEach(function (key) {
-      body = body.append(key, data[key]);
+      body = body.append(key, data[key] as string | number | boolean);
     });
     return body;
   }
@@ -58,7 +59,7 @@ export class ApiClient {
    * @param {String} slug - contains the API method to call
    * @returns Success or error
    */
-  postRequest(data: any, slug: string): Promise<any> {
+  postRequest<T = ApiResponse>(data: Record<string, unknown>, slug: string): Promise<T | false> {
     return new Promise((resolve, reject) => {
       this.getNetworkInformation().then((isNetworkAvailable) => {
         if (isNetworkAvailable) {
@@ -67,7 +68,7 @@ export class ApiClient {
 
           let body: HttpParams = this.makeObjectToUrlParams(data);
           header.append('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-          this.http.post(environment.serverURL + slug, body, { headers: header }).subscribe((response: any) => {
+          this.http.post<T>(environment.serverURL + slug, body, { headers: header }).subscribe((response) => {
             if (response) {
               if (response['_body'] != '') {
                 let resObj = response;

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -14,6 +14,7 @@ import { ReportsApiService } from '../service/reports-api/reports-api.service';
   selector: 'app-warning-report',
   templateUrl: './warning-report.page.html',
   styleUrls: ['./warning-report.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WarningReportPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -38,7 +39,8 @@ export class WarningReportPage implements OnInit {
               private platform: Platform, // 🟢 حقن المنصة للتحقق من بيئة العمل
               public modalCtrl: ModalController,
               private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
-              private reportsApi: ReportsApiService
+              private reportsApi: ReportsApiService,
+              private cdr: ChangeDetectorRef
              ) {
   }
 
@@ -56,6 +58,7 @@ export class WarningReportPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   doRefresh(event) {
@@ -78,14 +81,16 @@ export class WarningReportPage implements OnInit {
       this.show_loading = true;
     }
     
-    this.dataProvider.getAllWarning(data).then(res => { 
+    this.dataProvider.getAllWarning(data).then(res => {
       this.show_loading = false;
       if (res) {
         this.reportData = res;
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       this.show_loading = false;
       console.log(error);
+      this.cdr.markForCheck();
     });
   }
 
@@ -152,8 +157,10 @@ export class WarningReportPage implements OnInit {
     };
     this.reportsApi.GetAllCallOfStudentReport(data).then(res => {
       this.callOfStudentsReport = res.data;
+      this.cdr.markForCheck();
     }).catch(error => {
       console.log(error);
+      this.cdr.markForCheck();
     });
     this.GetStudentPledgesReport();
   }
@@ -167,8 +174,10 @@ export class WarningReportPage implements OnInit {
     };
     this.reportsApi.GetStudentPledgesReport(data).then(res => {
       this.AllStudentPledgesReports = res.data;
+      this.cdr.markForCheck();
     }).catch(error => {
       console.log(error);
+      this.cdr.markForCheck();
     });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatabaseService } from '../service/database/database.service';
 import { AuthService } from '../service/auth/auth.service';
@@ -11,6 +11,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-tabs',
   templateUrl: './tabs.page.html',
   styleUrls: ['./tabs.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TabsPage implements OnInit {
   private destroyRef = inject(DestroyRef);
@@ -33,29 +34,32 @@ export class TabsPage implements OnInit {
     private authProvider: AuthService, 
     public dataProvider: DataService, 
     private router: Router,
-    private storageSr: StorageService 
-  ) { 
+    private storageSr: StorageService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async (res) => {
         if (res) {
            await this.dbProvider.openDataBase();
            // 🟢 إضافة مهلة صغيرة جداً لضمان تحديث الـ Storage قبل قراءته
            setTimeout(async () => {
-             let userLoggedIn = await this.storageSr.get("userloggedin"); 
+             let userLoggedIn = await this.storageSr.get("userloggedin");
              if (userLoggedIn) {
                this.loggedin = true;
                await this.setUserdetails();
-               this.processUserType(); 
+               this.processUserType();
+               this.cdr.markForCheck();
              }
            }, 100);
         }
     });
 
     this.dbProvider.openDataBase().then(async () => {
-      let userLoggedIn = await this.storageSr.get("userloggedin"); 
+      let userLoggedIn = await this.storageSr.get("userloggedin");
       if (userLoggedIn) {
         this.loggedin = true;
         await this.setUserdetails();
-        this.processUserType(); 
+        this.processUserType();
+        this.cdr.markForCheck();
       }
     });
   }

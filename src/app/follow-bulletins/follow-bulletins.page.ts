@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -18,6 +18,7 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
   selector: 'app-follow-bulletins',
   templateUrl: './follow-bulletins.page.html',
   styleUrls: ['./follow-bulletins.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FollowBulletinsPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -53,15 +54,18 @@ export class FollowBulletinsPage implements OnInit {
     public platform: Platform,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private searchApi: SearchApiService,
-    private schoolDirectoryApi: SchoolDirectoryApiService
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private cdr: ChangeDetectorRef
   ) {
 
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
 
     this.dataProvider.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       this.uploadStaus = res;
+      this.cdr.markForCheck();
     });
 
     // 🟢 تأمين التقاط بيانات الكاميرا لمنع الانهيار
@@ -79,8 +83,10 @@ export class FollowBulletinsPage implements OnInit {
           file['imgBlob'] = inputFile.imgBlob;
           file['currentImgSrc'] = (<any>window).Ionic.WebView.convertFileSrc(this.cameraImage64);
           this.selectedDocument.push(file);
+          this.cdr.markForCheck();
         }).catch((e: any) => {
           console.log('getImageToFile ERROR', e);
+          this.cdr.markForCheck();
         });
       }
     }
@@ -97,6 +103,7 @@ export class FollowBulletinsPage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   async openImgPreview(image) {
@@ -164,6 +171,7 @@ export class FollowBulletinsPage implements OnInit {
         const reader = new FileReader();
         reader.onloadend = (e) => {
           file['currentImgSrc'] = reader.result;
+          this.cdr.markForCheck();
         }
         reader.readAsDataURL(file);
         
@@ -192,9 +200,11 @@ export class FollowBulletinsPage implements OnInit {
           this.allUsers = this.users;
         }
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       this.show_loading = false;
       this.dataProvider.showToast(error);
+      this.cdr.markForCheck();
     })
   }
 
@@ -204,6 +214,7 @@ export class FollowBulletinsPage implements OnInit {
          this.allUsers = this.allUsers.concat(this.users.splice(0, 20));
       }
       infiniteScroll.target.complete();
+      this.cdr.markForCheck();
     }, 500);
   }
 
@@ -233,8 +244,10 @@ export class FollowBulletinsPage implements OnInit {
             this.allUsers = this.users;
           }
         }
+        this.cdr.markForCheck();
       }).catch(err => {
         this.show_loading = false;
+        this.cdr.markForCheck();
       })
     }, 500); // تأخير نصف ثانية لحماية السيرفر
   }

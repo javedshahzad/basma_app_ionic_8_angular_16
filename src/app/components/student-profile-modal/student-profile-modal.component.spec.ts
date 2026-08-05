@@ -1,4 +1,4 @@
-﻿import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
@@ -17,8 +17,8 @@ describe('StudentProfileModalComponent', () => {
   let component: StudentProfileModalComponent;
   let fixture: ComponentFixture<StudentProfileModalComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       declarations: [ ],
       imports: [StudentProfileModalComponent, IonicModule.forRoot(), HttpClientTestingModule, TranslateModule.forRoot(), RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }])],
       providers: [
@@ -33,7 +33,7 @@ describe('StudentProfileModalComponent', () => {
     fixture = TestBed.createComponent(StudentProfileModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   afterEach(() => {
     fixture.destroy();

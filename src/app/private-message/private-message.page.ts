@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -13,6 +13,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-private-message',
   templateUrl: './private-message.page.html',
   styleUrls: ['./private-message.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PrivateMessagePage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -34,10 +35,12 @@ export class PrivateMessagePage implements OnInit {
     private router: Router,
     public zone: NgZone, 
     public alertCtrl: AlertController,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       if (res.changeUser) {
@@ -72,13 +75,16 @@ export class PrivateMessagePage implements OnInit {
           this.dataProvider.errorALertMessage(response.message);
           this.router.navigate(['login'], { replaceUrl: true });
         }
+        this.cdr.markForCheck();
       }).catch(error => {
+        this.cdr.markForCheck();
       });
     } else {
       this.dataProvider.hideLoading();
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   doRefresh(event) {
@@ -109,7 +115,10 @@ export class PrivateMessagePage implements OnInit {
           this.dataProvider.errorALertMessage(response.message);
           this.router.navigate(['login'], { replaceUrl: true });
         }
-      }).catch(error => {});
+        this.cdr.markForCheck();
+      }).catch(error => {
+        this.cdr.markForCheck();
+      });
     } else {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
@@ -141,8 +150,10 @@ export class PrivateMessagePage implements OnInit {
                 this.dataProvider.errorALertMessage(response.message);
                 this.router.navigate(['login'], { replaceUrl: true });
               }
+              this.cdr.markForCheck();
             }).catch((error) => {
               this.dataProvider.errorALertMessage(error);
+              this.cdr.markForCheck();
             })
           }
         }

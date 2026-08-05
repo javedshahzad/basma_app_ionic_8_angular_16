@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiClient } from '../api-client/api-client.service';
+import { ApiResponse } from '../../model/api-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,13 +9,13 @@ export class DeviceApiService {
 
   constructor(private apiClient: ApiClient) { }
 
-  GetAllDevices(data): Promise<any> {
+  GetAllDevices(data: Record<string, unknown>): Promise<ApiResponse<any[]>> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'get_devices_by_user_no').then((response: any) => {
+      this.apiClient.postRequest<ApiResponse<any[]>>(data, 'get_devices_by_user_no').then((response) => {
         if (response) {
             resolve({ session: true, data: response.data,success:true});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
       }).catch((error) => {
         console.log(error);
@@ -22,13 +23,13 @@ export class DeviceApiService {
     })
   }
 
-  LogInSingleDevice(data): Promise<any> {
+  LogInSingleDevice(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'update_device_by_id_and_user_no').then((response: any) => {
+      this.apiClient.postRequest(data, 'update_device_by_id_and_user_no').then((response) => {
         if (response) {
             resolve({ session: response.session, msg: response.msg,success:response.success});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
       }).catch((error) => {
         console.log(error);
@@ -36,13 +37,13 @@ export class DeviceApiService {
     })
   }
 
-  LogOutAllDevice(data): Promise<any> {
+  LogOutAllDevice(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'update_device_logout_status').then((response: any) => {
+      this.apiClient.postRequest(data, 'update_device_logout_status').then((response) => {
         if (response) {
             resolve({ session: response.session, data: response.data,success:response.success});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
       }).catch((error) => {
         console.log(error);
@@ -50,13 +51,13 @@ export class DeviceApiService {
     })
   }
 
-  CheckDeviceLogInStatus(data): Promise<any> {
+  CheckDeviceLogInStatus(data: Record<string, unknown>): Promise<ApiResponse<{ is_logged_out?: string; user?: { status?: string } }>> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'get_device_by_id_and_user_no').then((response: any) => {
+      this.apiClient.postRequest<ApiResponse<{ is_logged_out?: string; user?: { status?: string } }>>(data, 'get_device_by_id_and_user_no').then((response) => {
         if (response) {
             resolve({ session: response.session, msg: response.msg,success:response.success,data:response.data});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
       }).catch((error) => {
         console.log(error);
@@ -64,13 +65,13 @@ export class DeviceApiService {
     })
   }
 
-  Delete_device(data): Promise<any> {
+  Delete_device(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'Delete_device').then((response: any) => {
+      this.apiClient.postRequest(data, 'Delete_device').then((response) => {
         if (response) {
             resolve({ session: response.session, msg: response.msg,success:response.success});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
       }).catch((error) => {
         console.log(error);

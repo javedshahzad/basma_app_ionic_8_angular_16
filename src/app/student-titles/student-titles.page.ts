@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -14,6 +14,7 @@ import { GamificationApiService } from '../service/gamification-api/gamification
   selector: 'app-student-titles',
   templateUrl: './student-titles.page.html',
   styleUrls: ['./student-titles.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentTitlesPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -56,11 +57,13 @@ export class StudentTitlesPage implements OnInit {
               private router: Router,
               private gamification: GamificationEngineService,
               private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
-              private gamificationApi: GamificationApiService
+              private gamificationApi: GamificationApiService,
+              private cdr: ChangeDetectorRef
              ) {
-                
+
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
   }
 
@@ -86,6 +89,7 @@ export class StudentTitlesPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   fetchStudentProfile(sid: any): Promise<void> {
@@ -126,6 +130,7 @@ export class StudentTitlesPage implements OnInit {
 
   async loadAllDataSequentially(sid: any) {
     this.isLoadingData = true;
+    this.cdr.markForCheck();
 
     try {
       await this.dataProvider.run(async () => {
@@ -142,6 +147,7 @@ export class StudentTitlesPage implements OnInit {
       console.error("Error loading data", error);
     } finally {
       this.isLoadingData = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -255,6 +261,7 @@ export class StudentTitlesPage implements OnInit {
     } catch(e) {
       this.dataProvider.showToast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
     }
+    this.cdr.markForCheck();
   }
 
   async toggleTitle(titleCode: string | null) {
@@ -276,6 +283,7 @@ export class StudentTitlesPage implements OnInit {
     } catch(e) {
       this.dataProvider.showToast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
     }
+    this.cdr.markForCheck();
   }
 
   openParentConnect() {

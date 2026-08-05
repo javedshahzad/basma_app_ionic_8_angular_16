@@ -1,10 +1,10 @@
-﻿import { CUSTOM_ELEMENTS_SCHEMA, NgZone } from '@angular/core';
+﻿import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject } from 'rxjs';
 
 import { Platform, MenuController, NavController, ToastController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { HttpClient } from '@angular/common/http';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
@@ -56,7 +56,7 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [RouterTestingModule.withRoutes([])],
+      imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot()],
       providers: [
         { provide: Platform, useValue: jasmine.createSpyObj('Platform', { ready: Promise.resolve(), is: false }) },
         { provide: StorageService, useValue: storageSrSpy },
@@ -69,7 +69,6 @@ describe('AppComponent', () => {
             createTable: undefined
           }) },
         { provide: Network, useValue: {} },
-        { provide: NgZone, useValue: { run: (fn: any) => fn() } },
         { provide: IonicStorage, useValue: { create: () => Promise.resolve({ get: () => Promise.resolve(null), set: () => Promise.resolve(), remove: () => Promise.resolve(), clear: () => Promise.resolve() }) } },
         { provide: NavController, useValue: jasmine.createSpyObj('NavController', ['navigateRoot']) },
         { provide: SocialSharing, useValue: {} },

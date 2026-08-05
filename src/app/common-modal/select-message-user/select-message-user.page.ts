@@ -40,8 +40,9 @@ export class SelectMessageUserPage implements OnInit {
   	this.route.queryParams.subscribe((params:any) => {
       this.selectedUsers = params.selectedUsers ? params.selectedUsers : [];
       this.selectedUsersShow = params.selectedUsersShow;
-	      if (this.router.getCurrentNavigation().extras.state) {
-	     //  		 this.users = this.router.getCurrentNavigation().extras.state;
+	      const navigation = this.router.getCurrentNavigation();
+	      if (navigation && navigation.extras && navigation.extras.state) {
+	     //  		 this.users = navigation.extras.state;
 	  			// this.allUsers = this.allUsers.concat(this.users.splice(0, 20));
 	      }
 	      this.cdr.markForCheck();

@@ -54,73 +54,77 @@
   <button (click)="toggleEditMode()" class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm">إلغاء التعديل</button>
 </div>
 
-<ion-content class="bg-[#f8fafc]" mode="md">
-  <div class="p-4 max-w-4xl mx-auto space-y-3 pb-6" dir="rtl">
-    
+<ion-content class="bg-[#f8fafc]" mode="md" [scrollY]="!(students?.length > 0)">
+  <div class="h-full flex flex-col max-w-4xl mx-auto" dir="rtl">
+
     <ng-container *ngIf="students?.length > 0">
-      <div class="bg-white rounded-xl p-3 shadow-sm border border-slate-200 flex items-center justify-between hover:border-indigo-200 transition-colors" *ngFor="let student of students; let sno = index; trackBy: trackByStudent">
-        
-        <div class="flex items-center gap-3 flex-1 text-right cursor-pointer" (click)="openStudentDetail(student.sid, student)">
-          <div class="relative flex-shrink-0" (click)="$event.stopPropagation(); openUserImageModal(student)">
-            <img loading="lazy" [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-xl object-cover bg-slate-100 border border-slate-200">
-            <div class="absolute -bottom-1 -left-1 bg-rose-500 text-white text-[10px] font-bold rounded-md px-1 py-0.5 border border-white" *ngIf="student.medical_leave">M</div>
-          </div>
+      <!-- 🟢 Virtual scroll: يعرض فقط الصفوف الظاهرة على الشاشة بدل رسم القائمة كاملة دفعة واحدة،
+           مهم لمدارس ذات أعداد طلاب كبيرة. itemSize يطابق ارتفاع الصف الفعلي (p-3 + الصورة 48px + الهامش). -->
+      <cdk-virtual-scroll-viewport itemSize="88" style="height: 100%;" class="px-4 pt-4 pb-6">
+        <div class="bg-white rounded-xl p-3 mb-3 shadow-sm border border-slate-200 flex items-center justify-between hover:border-indigo-200 transition-colors" *cdkVirtualFor="let student of students; let sno = index; trackBy: trackByStudent">
 
-          <div class="flex-1 overflow-hidden">
-            <h4 class="font-semibold text-slate-800 text-sm flex items-center gap-1.5 whitespace-nowrap">
-              <span class="text-slate-400 text-xs min-w-[18px]">{{sno+1}}.</span> 
-              <span class="truncate">{{student.name}}</span>
-            </h4>
-            <div class="mt-1 flex flex-wrap gap-2">
-              <span class="bg-slate-50 text-slate-500 px-2 py-0.5 rounded border border-slate-200 text-[10px] font-bold flex items-center gap-1">
-                إجمالي التأخير: {{student.total_delay}}
-              </span>
+          <div class="flex items-center gap-3 flex-1 text-right cursor-pointer" (click)="openStudentDetail(student.sid, student)">
+            <div class="relative flex-shrink-0" (click)="$event.stopPropagation(); openUserImageModal(student)">
+              <img loading="lazy" [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-xl object-cover bg-slate-100 border border-slate-200">
+              <div class="absolute -bottom-1 -left-1 bg-rose-500 text-white text-[10px] font-bold rounded-md px-1 py-0.5 border border-white" *ngIf="student.medical_leave">M</div>
             </div>
-          </div>
-        </div>
 
-        <div class="flex items-center gap-2 mr-2">
-          
-          <div class="flex flex-col items-center justify-center bg-slate-50 border border-slate-200 rounded-xl w-12 h-11 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
-            <span class="text-[9px] font-bold text-slate-400 mb-0.5">{{'delay_stu_list.a_d' | translate}}</span>
-            <div class="flex items-center text-xs font-bold" dir="ltr">
-              <span class="text-rose-500" title="أيام الغياب بسبب التأخير">
-                {{ delayRule > 0 ? (student.useedforabsent.one / delayRule | number:'1.0-0') : 0 }}
-              </span>
-              <span class="text-slate-300 mx-1">/</span>
-              <span class="text-orange-500" title="مرات التأخير الحالية">{{student.useedforabsent.zero}}</span>
+            <div class="flex-1 overflow-hidden">
+              <h4 class="font-semibold text-slate-800 text-sm flex items-center gap-1.5 whitespace-nowrap">
+                <span class="text-slate-400 text-xs min-w-[18px]">{{sno+1}}.</span>
+                <span class="truncate">{{student.name}}</span>
+              </h4>
+              <div class="mt-1 flex flex-wrap gap-2">
+                <span class="bg-slate-50 text-slate-500 px-2 py-0.5 rounded border border-slate-200 text-[10px] font-bold flex items-center gap-1">
+                  إجمالي التأخير: {{student.total_delay}}
+                </span>
+              </div>
             </div>
           </div>
 
-          <!-- 🟢 زر التأخير (متعطل بصرياً إذا لم يكن نمط التعديل مفعلاً للإدارة) -->
-          <div (click)="changeAttendanceStatus(student)" 
-               class="w-11 h-11 flex items-center justify-center rounded-xl cursor-pointer transition-all border shadow-sm flex-shrink-0 relative overflow-hidden"
-               [ngClass]="{
-                 'bg-emerald-500 border-emerald-600 text-white': student.sheet['cem-1'] == true,
-                 'bg-rose-500 border-rose-600 text-white': student.suspend_leave == true || student.medical_leave == true,
-                 'bg-white border-slate-200 text-slate-400 hover:bg-slate-50': student.sheet['cem-1'] == 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave),
-                 'opacity-50': userType == '1' && !editMode
-               }">
-            <ion-icon name="checkmark-circle" *ngIf="student.sheet['cem-1'] == true" class="text-2xl"></ion-icon>
-            <ion-icon name="close-circle" *ngIf="student.suspend_leave || student.medical_leave" class="text-2xl"></ion-icon>
-            <ion-icon name="add-circle-outline" *ngIf="student.sheet['cem-1'] == 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave)" class="text-2xl opacity-40"></ion-icon>
-            
-            <!-- طبقة حماية تمنع النقر وتوحي بالتعطيل إذا لم يتم تفعيل وضع التعديل -->
-            <div *ngIf="userType == '1' && !editMode" class="absolute inset-0 bg-white/20 backdrop-blur-[1px]"></div>
-          </div>
-        </div>
+          <div class="flex items-center gap-2 mr-2">
 
-      </div>
+            <div class="flex flex-col items-center justify-center bg-slate-50 border border-slate-200 rounded-xl w-12 h-11 shadow-[inset_0_2px_4px_rgba(0,0,0,0.02)]">
+              <span class="text-[9px] font-bold text-slate-400 mb-0.5">{{'delay_stu_list.a_d' | translate}}</span>
+              <div class="flex items-center text-xs font-bold" dir="ltr">
+                <span class="text-rose-500" title="أيام الغياب بسبب التأخير">
+                  {{ delayRule > 0 ? (student.useedforabsent.one / delayRule | number:'1.0-0') : 0 }}
+                </span>
+                <span class="text-slate-300 mx-1">/</span>
+                <span class="text-orange-500" title="مرات التأخير الحالية">{{student.useedforabsent.zero}}</span>
+              </div>
+            </div>
+
+            <!-- 🟢 زر التأخير (متعطل بصرياً إذا لم يكن نمط التعديل مفعلاً للإدارة) -->
+            <div (click)="changeAttendanceStatus(student)"
+                 class="w-11 h-11 flex items-center justify-center rounded-xl cursor-pointer transition-all border shadow-sm flex-shrink-0 relative overflow-hidden"
+                 [ngClass]="{
+                   'bg-emerald-500 border-emerald-600 text-white': student.sheet['cem-1'] == true,
+                   'bg-rose-500 border-rose-600 text-white': student.suspend_leave == true || student.medical_leave == true,
+                   'bg-white border-slate-200 text-slate-400 hover:bg-slate-50': student.sheet['cem-1'] == 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave),
+                   'opacity-50': userType == '1' && !editMode
+                 }">
+              <ion-icon name="checkmark-circle" *ngIf="student.sheet['cem-1'] == true" class="text-2xl"></ion-icon>
+              <ion-icon name="close-circle" *ngIf="student.suspend_leave || student.medical_leave" class="text-2xl"></ion-icon>
+              <ion-icon name="add-circle-outline" *ngIf="student.sheet['cem-1'] == 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave)" class="text-2xl opacity-40"></ion-icon>
+
+              <!-- طبقة حماية تمنع النقر وتوحي بالتعطيل إذا لم يتم تفعيل وضع التعديل -->
+              <div *ngIf="userType == '1' && !editMode" class="absolute inset-0 bg-white/20 backdrop-blur-[1px]"></div>
+            </div>
+          </div>
+
+        </div>
+      </cdk-virtual-scroll-viewport>
     </ng-container>
 
-    <div class="text-center py-20" *ngIf="students?.length == 0 && !show_loading">
+    <div class="text-center py-20 px-4" *ngIf="students?.length == 0 && !show_loading">
       <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-200">
         <ion-icon name="people-outline" class="text-3xl text-slate-400"></ion-icon>
       </div>
       <p class="text-slate-500 font-bold text-base">{{noDataFound}}</p>
     </div>
 
-    <div class="space-y-3 mt-2" *ngIf="show_loading">
+    <div class="space-y-3 mt-2 px-4 pb-6" *ngIf="show_loading">
       <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 flex items-center gap-4 animate-pulse" *ngFor="let dummy of [1,2,3,4,5,6,7,8]; trackBy: trackByIndex">
         <div class="flex gap-2">
           <div class="w-11 h-11 bg-slate-100 rounded-xl"></div>

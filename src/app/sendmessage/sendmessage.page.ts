@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject } from "@angular/core";
+﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { NavController, Platform, AlertController, ModalController } from "@ionic/angular";
 import { DataService } from "../service/data/data.service";
@@ -22,6 +22,7 @@ const env = environment;
   selector: "app-sendmessage",
   templateUrl: "./sendmessage.page.html",
   styleUrls: ["./sendmessage.page.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SendmessagePage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -66,16 +67,19 @@ export class SendmessagePage implements OnInit {
     private storageSr: StorageService,  // 🟢 2. حقن خدمة التخزين
     public authProvider: AuthService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.dataProvider.selectedUsers.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       this.mail.selected_users = res.selectedUsers;
       this.selectedUsersShow = res.selectedUsersShow;
       console.log(this.mail.selected_users);
       console.log(res);
+      this.cdr.markForCheck();
     });
 
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
 
     this.translate.get("sendmsg").subscribe((res) => {
@@ -87,6 +91,7 @@ export class SendmessagePage implements OnInit {
       this.sendToUers.push({ name: res.students, value: true, user_id: "students" });
       this.sendToUers.push({ name: res.users, value: true, user_id: "others" });
       this.sendTo = this.sendToUers;
+      this.cdr.markForCheck();
     });
   }
 
@@ -104,6 +109,7 @@ export class SendmessagePage implements OnInit {
       this.authProvider.flushLocalStorage(); // تأكد من وجود دالة flushLocalStorage في authProvider أو قم بتغييرها
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   get isAnyCheckboxSelected(): boolean {
@@ -127,6 +133,7 @@ export class SendmessagePage implements OnInit {
     if (data) {
       this.mail.selected_users = data;
     }
+    this.cdr.markForCheck();
   }
 
   async selectUserpage() {
@@ -159,6 +166,7 @@ export class SendmessagePage implements OnInit {
       this.dataProvider.showToast(error);
       console.log(error);
     }
+    this.cdr.markForCheck();
   }
 
   sendMessage() {
@@ -243,12 +251,14 @@ export class SendmessagePage implements OnInit {
         this.dataProvider.showToast(this.lang.msg_sent_success);
         this.resetForm();
         this.router.navigate(["tabs/messages"]);
+        this.cdr.markForCheck();
       },
       (e) => {
         this.show_spinner = false;
         this.resetForm();
         this.router.navigate(["tabs/messages"]);
         this.dataProvider.showToast(this.lang.usnexpectedError);
+        this.cdr.markForCheck();
       }
     );
   }
@@ -338,6 +348,7 @@ export class SendmessagePage implements OnInit {
         this.ticketImage = imageData.base64String;
         this.mediaType = "image/jpg";
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -353,6 +364,7 @@ export class SendmessagePage implements OnInit {
         this.ticketImage = imageData.base64String;
         this.mediaType = "image/jpg";
       }
+      this.cdr.markForCheck();
     });
   }
 

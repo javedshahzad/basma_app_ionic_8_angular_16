@@ -44,10 +44,10 @@ export class StudentDetailsComponent implements OnInit {
     console.log(this.student);
     console.log(this.data)
     this.userDetails = await this.storageSr.get("userloggedin");
-    this.userType = this.userDetails.details.user_type;
-    this.phone = this.student.phone_no;
-    this.phone_no_two = this.student.phone_no_two;
-    this.medical_condition = this.student.medical_condition;
+    this.userType = this.userDetails?.details?.user_type;
+    this.phone = this.student?.phone_no;
+    this.phone_no_two = this.student?.phone_no_two;
+    this.medical_condition = this.student?.medical_condition;
     if(Number(this.userType) == 1 || Number(this.userType) == 2 || Number(this.userType) == 7){
       this.disabledFileds = false;
     }else{

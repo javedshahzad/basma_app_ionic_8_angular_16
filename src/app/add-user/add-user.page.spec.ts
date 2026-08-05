@@ -9,6 +9,7 @@ import { of, NEVER } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { DummyRouteComponent } from '@app/testing/dummy-route.component';
 
 import { AddUserPage } from './add-user.page';
 
@@ -19,7 +20,7 @@ describe('AddUserPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AddUserPage ],
-      imports: [IonicModule.forRoot(), HttpClientTestingModule, TranslateModule.forRoot(), RouterTestingModule],
+      imports: [IonicModule.forRoot(), HttpClientTestingModule, TranslateModule.forRoot(), RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }])],
       providers: [
         { provide: Network, useValue: { onDisconnect: () => NEVER, onConnect: () => NEVER, type: 'wifi', Connection: { UNKNOWN: 'unknown', NONE: 'none' } } },
         { provide: Device, useValue: { uuid: 'test-uuid', platform: 'browser' } },

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
+import { ApiResponse } from '../../model/api-response.model';
 
 /**
  * Teacher/user registration HTTP calls, split out of DataService.
@@ -16,10 +17,10 @@ export class RegistrationApiService {
     private dataService: DataService
   ) { }
 
-  registerTeacher(data): Promise<any> {
+  registerTeacher(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'createNewTeacher').then((response: any) => {
+      this.apiClient.postRequest(data, 'createNewTeacher').then((response) => {
         if (response) {
           if(response.response){
             resolve(response);
@@ -42,10 +43,10 @@ export class RegistrationApiService {
 
   /*=================create new user except teacher,parent and student======================*/
 
-  registerNewUser(data): Promise<any> {
+  registerNewUser(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'addNewUser').then((response: any) => {
+      this.apiClient.postRequest(data, 'addNewUser').then((response) => {
         if (response) {
           if(response.response){
             resolve(response);

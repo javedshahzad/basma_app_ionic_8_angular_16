@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, Input, NgZone, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, Input, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController, PopoverController, IonicModule, NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DatabaseService } from '../../service/database/database.service';
@@ -18,7 +18,8 @@ import { DeviceApiService } from '../../service/device-api/device-api.service';
   templateUrl: './switch-account.component.html',
   styleUrls: ['./switch-account.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
+  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwitchAccountComponent implements OnInit {
   trackByIndex(index: number): number { return index; }

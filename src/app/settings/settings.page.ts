@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -21,6 +21,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
   selector: 'app-settings',
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -75,13 +76,16 @@ export class SettingsPage implements OnInit {
           public alertCtrl: AlertController,
           private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
           private deviceApi: DeviceApiService,
-          private userManagementApi: UserManagementApiService
+          private userManagementApi: UserManagementApiService,
+          private cdr: ChangeDetectorRef
           ) {
     this.translate.get("alertmessages").subscribe((res)=>{
       this.lang = res;
+      this.cdr.markForCheck();
     })
     this.translate.get("setting").subscribe((res)=>{
       this.delete_translation_text = res;
+      this.cdr.markForCheck();
     })
     this.getCountry();
   }
@@ -122,6 +126,7 @@ export class SettingsPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   getCountry(){
@@ -131,6 +136,7 @@ export class SettingsPage implements OnInit {
      }else{
        this.countries = this.geoService.getArCountries();
      }
+     this.cdr.markForCheck();
    })
   }
 
@@ -177,6 +183,7 @@ export class SettingsPage implements OnInit {
           this.DateLeftTodeleteAccount = this.dataProvider.caclulateHours(this.deactivate_date,addHourtodate);
         }
       }
+      this.cdr.markForCheck();
     }).catch(error=>{
       console.log(error);
     })
@@ -268,8 +275,10 @@ export class SettingsPage implements OnInit {
           this.dataProvider.errorALertMessage(response.message);
           this.router.navigate(['login'], { replaceUrl: true });
         }
+        this.cdr.markForCheck();
       }).catch(error =>{
         this.dataProvider.errorALertMessage(error);
+        this.cdr.markForCheck();
       })
     }
   }
@@ -337,6 +346,7 @@ export class SettingsPage implements OnInit {
     } catch (error) {
       console.log(error);
     }
+    this.cdr.markForCheck();
   }
 
   revertSchoolDeletion(){
@@ -348,6 +358,7 @@ export class SettingsPage implements OnInit {
         this.dataProvider.errorALertMessage(response.msg);
         this.deactivate_date = '';
         this.dataProvider.deactivate_date = '';
+        this.cdr.markForCheck();
       }).catch(error =>{
           this.dataProvider.errorALertMessage(error.msg);
         })
@@ -386,6 +397,7 @@ export class SettingsPage implements OnInit {
         this.displayPic = 'data:image/png;base64,'+imageData.base64String;
         this.user.pic = 'data:image/png;base64,'+imageData.base64String;
       }
+      this.cdr.markForCheck();
     })
   }
 
@@ -401,6 +413,7 @@ export class SettingsPage implements OnInit {
         this.displayPic = 'data:image/png;base64,'+imageData.base64String;
         this.user.pic = 'data:image/png;base64,'+imageData.base64String;
       }
+      this.cdr.markForCheck();
     })
   }
 
@@ -433,8 +446,10 @@ export class SettingsPage implements OnInit {
 
   startCountdownTimer() {
     this.calculateRemainingTime();
+    this.cdr.markForCheck();
     this.timerInterval = setInterval(() => {
       this.calculateRemainingTime();
+      this.cdr.markForCheck();
     }, 60000);
   }
 

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NavController, AlertController, Platform } from '@ionic/angular';
@@ -15,6 +15,7 @@ import { AbsentApplicationApiService } from '../service/absent-application-api/a
   selector: 'app-submit-absent-application',
   templateUrl: './submit-absent-application.page.html',
   styleUrls: ['./submit-absent-application.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SubmitAbsentApplicationPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -40,7 +41,8 @@ export class SubmitAbsentApplicationPage implements OnInit {
     private router: Router,
     private platform: Platform, // 🟢 لحماية التقاط الصور
     private storageSr: StorageService, // 🟢 2. حقن الخدمة
-    private absentApplicationApi: AbsentApplicationApiService
+    private absentApplicationApi: AbsentApplicationApiService,
+    private cdr: ChangeDetectorRef
   ) {
     // 🟢 3. استخراج البيانات من الـ Router بشكل متزامن قبل ضياعها
     const navigation = this.router.getCurrentNavigation();
@@ -55,6 +57,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
   async ngOnInit() {
     this.translate.get("alertmessages").subscribe((val) => {
       this.lang = val;
+      this.cdr.markForCheck();
     });
 
     // جلب بيانات المستخدم بأمان
@@ -84,6 +87,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
         this.navCtrl.back(); // العودة إذا لم يكن هناك أي بيانات
       }
     }
+    this.cdr.markForCheck();
   }
 
   OnchangeDate(event) {
@@ -188,6 +192,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
       if (imageData && imageData.base64String) {
         this.ImgData = 'data:image/jpeg;base64,' + imageData.base64String;
       }
+      this.cdr.markForCheck();
     }).catch(err => console.log('Camera cancelled', err));
   }
 
@@ -204,6 +209,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
       if (imageData && imageData.base64String) {
         this.ImgData = 'data:image/jpeg;base64,' + imageData.base64String;
       }
+      this.cdr.markForCheck();
     }).catch(err => console.log('Gallery cancelled', err));
   }
   

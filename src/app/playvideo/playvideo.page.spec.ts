@@ -4,6 +4,8 @@ import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
+import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -25,6 +27,8 @@ describe('PlayvideoPage', () => {
         { provide: Device, useValue: { uuid: 'test-uuid', platform: 'browser' } },
         { provide: SQLite, useValue: {} },
         { provide: AppRate, useValue: {} },
+        { provide: SocialSharing, useValue: {} },
+        { provide: ScreenOrientation, useValue: { lock: () => Promise.resolve(), unlock: () => {}, ORIENTATIONS: { PORTRAIT: 'portrait' } } },
         { provide: IonicStorage, useValue: { create: () => Promise.resolve({ get: () => Promise.resolve(null), set: () => Promise.resolve(), remove: () => Promise.resolve(), clear: () => Promise.resolve() }) } }
       ]
     }).compileComponents();

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiClient } from '../api-client/api-client.service';
+import { ApiResponse } from '../../model/api-response.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,13 +9,13 @@ export class AbsentApplicationApiService {
 
   constructor(private apiClient: ApiClient) { }
 
-  GetAbsentStudents(data): Promise<any> {
+  GetAbsentStudents(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'getAttendanceData').then((response: any) => {
+      this.apiClient.postRequest(data, 'getAttendanceData').then((response) => {
         if (response) {
             resolve({ session: response.session, msg: response.msg,success:response.success,data:response.data});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
       }).catch((error) => {
         console.log(error);
@@ -22,13 +23,13 @@ export class AbsentApplicationApiService {
     })
   }
 
-  saveAbsentApplication(data): Promise<any> {
+  saveAbsentApplication(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'saveAbsentApplication').then((response: any) => {
+      this.apiClient.postRequest(data, 'saveAbsentApplication').then((response) => {
         if (response) {
             resolve({ session: response.session, msg: response.msg,success:response.success});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
       }).catch((error) => {
         console.log(error);
@@ -36,13 +37,13 @@ export class AbsentApplicationApiService {
     })
   }
 
-  getAbsentApplication(data): Promise<any> {
+  getAbsentApplication(data: Record<string, unknown>): Promise<ApiResponse<any[]>> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'getAbsentApplication').then((response: any) => {
+      this.apiClient.postRequest<ApiResponse<any[]>>(data, 'getAbsentApplication').then((response) => {
         if (response) {
             resolve({ session: response.session, msg: response.msg,success:response.success,data:response.data});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
       }).catch((error) => {
         console.log(error);
@@ -50,13 +51,13 @@ export class AbsentApplicationApiService {
     })
   }
 
-  AcceptAndRejectApplication(data): Promise<any> {
+  AcceptAndRejectApplication(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'AcceptAndRejectApplication').then((response: any) => {
+      this.apiClient.postRequest(data, 'AcceptAndRejectApplication').then((response) => {
         if (response) {
             resolve({ session: response.session, msg: response.msg,success:response.success,data:response.data});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
       }).catch((error) => {
         console.log(error);

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -15,6 +15,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
   selector: 'app-requested-parent',
   templateUrl: './requested-parent.page.html',
   styleUrls: ['./requested-parent.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RequestedParentPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -41,14 +42,17 @@ export class RequestedParentPage implements OnInit {
               private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
               private parentManagementApi: ParentManagementApiService,
               private searchApi: SearchApiService,
-              private userManagementApi: UserManagementApiService
+              private userManagementApi: UserManagementApiService,
+              private cdr: ChangeDetectorRef
              ) {
-      
+
       this.translate.get("alertmessages").subscribe((res)=>{
           this.lang = res;
+          this.cdr.markForCheck();
       })
       this.translate.get("reg_new_parent").subscribe((res)=>{
           this.lang1 = res;
+          this.cdr.markForCheck();
       })
 
       // 🟢 3. التقاط إشارة التحديث بشكل متزامن
@@ -75,16 +79,18 @@ export class RequestedParentPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   // دالة مساعدة لتحديث البيانات بعد تعديلات من صفحات أخرى
   async refreshData() {
-     let userLoggedIn = await this.storageSr.get("userloggedin"); 
+     let userLoggedIn = await this.storageSr.get("userloggedin");
      if (userLoggedIn) {
        this.userDetails = userLoggedIn;
        this.getRequestedParentList();
        this.getAllParents();
      }
+     this.cdr.markForCheck();
   }
 
   getRequestedParentList(){
@@ -99,10 +105,11 @@ export class RequestedParentPage implements OnInit {
         this.parentList = [];
         this.noParants = true;
       }
-    }, error => { 
-      console.log(error); 
+      this.cdr.markForCheck();
+    }, error => {
+      console.log(error);
     });
-  }  
+  }
 
   getAllParents(){
     let data = { 'school_id': this.userDetails.details.school_id };
@@ -121,8 +128,9 @@ export class RequestedParentPage implements OnInit {
         this.allParentFilter = [];
         this.noParants = true;
       }
-    }, error => { 
-      console.log(error); 
+      this.cdr.markForCheck();
+    }, error => {
+      console.log(error);
     });
   }
 
@@ -132,6 +140,7 @@ export class RequestedParentPage implements OnInit {
         this.allParentFilter = this.allParentFilter.concat(this.allParentList.splice(0, 20));
       }
       infiniteScroll.target.complete();
+      this.cdr.markForCheck();
     }, 500);
   }
 
@@ -264,10 +273,12 @@ export class RequestedParentPage implements OnInit {
             this.allParentFilter = [];
             this.noParants = true;
           }
+          this.cdr.markForCheck();
       }).catch(error => {
         this.dataProvider.showToast(error);
+        this.cdr.markForCheck();
       });
-    }, 500); 
+    }, 500);
   }
 
   async presentAlert(){

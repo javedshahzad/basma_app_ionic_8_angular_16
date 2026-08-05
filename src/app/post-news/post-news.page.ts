@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, Platform, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -19,6 +19,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
   selector: 'app-post-news',
   templateUrl: './post-news.page.html',
   styleUrls: ['./post-news.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PostNewsPage implements OnInit {
   private destroyRef = inject(DestroyRef);
@@ -146,6 +147,7 @@ export class PostNewsPage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   moveBack() {
@@ -178,7 +180,7 @@ export class PostNewsPage implements OnInit {
 
   closeFullscreenImage() {
     this.showImageViewer = false;
-    setTimeout(() => { this.viewImageUrl = ''; }, 300);
+    setTimeout(() => { this.viewImageUrl = ''; this.cdr.markForCheck(); }, 300);
   }
 
   sendNews() {
@@ -230,6 +232,7 @@ export class PostNewsPage implements OnInit {
       } else {
         this.dataProvider.showToast(this.lang.usnexpectedError || 'حدث خطأ غير متوقع');
       }
+      this.cdr.markForCheck();
     });
   }
 

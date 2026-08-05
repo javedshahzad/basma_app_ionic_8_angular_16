@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -13,6 +13,7 @@ import { FollowupFieldsApiService } from '../service/followup-fields-api/followu
   selector: 'app-followup-add-fields',
   templateUrl: './followup-add-fields.page.html',
   styleUrls: ['./followup-add-fields.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FollowupAddFieldsPage implements OnInit {
 
@@ -34,10 +35,12 @@ export class FollowupAddFieldsPage implements OnInit {
     public zone: NgZone, 
     public platform: Platform,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private followupFieldsApi: FollowupFieldsApiService
+    private followupFieldsApi: FollowupFieldsApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
 
     // 🟢 1. صيد البيانات فوراً في الـ Constructor (هذا هو الحل الجذري)
@@ -74,6 +77,7 @@ export class FollowupAddFieldsPage implements OnInit {
       this.show_loading = false;
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   getFields() {
@@ -86,6 +90,7 @@ export class FollowupAddFieldsPage implements OnInit {
     if (!courseId) {
        this.show_loading = false;
        this.dataProvider.showToast("عفواً، لم يتم التعرف على الفصل.");
+       this.cdr.markForCheck();
        return;
     }
 
@@ -106,9 +111,11 @@ export class FollowupAddFieldsPage implements OnInit {
           f.absent_marks = (f.absent_marks == 1 || f.absent_marks == '1' || f.absent_marks === true);
         });
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       this.show_loading = false;
       console.error("Error fetching fields:", error);
+      this.cdr.markForCheck();
     });
   }
 
@@ -155,6 +162,7 @@ export class FollowupAddFieldsPage implements OnInit {
     this.dataProvider.run(() => this.followupFieldsApi.deleteFollowupFields(data)).then((res: any) => {
       this.fields.splice(index, 1);
       this.dataProvider.showToast("تم الحذف بنجاح");
+      this.cdr.markForCheck();
     }).catch(() => {});
   }
 

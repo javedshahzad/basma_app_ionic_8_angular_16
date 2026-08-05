@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -16,6 +16,7 @@ import { NotesApiService } from '../service/notes-api/notes-api.service';
   selector: 'app-tasks-calendar',
   templateUrl: './tasks-calendar.page.html',
   styleUrls: ['./tasks-calendar.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TasksCalendarPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -48,13 +49,16 @@ export class TasksCalendarPage implements OnInit {
     public actionSheet: ActionSheetController,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     private syncService: SyncService,
-    private notesApi: NotesApiService
+    private notesApi: NotesApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("sidemenu").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang1 = response;
+      this.cdr.markForCheck();
     });
   }
 
@@ -71,6 +75,7 @@ export class TasksCalendarPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   async presentPopover() {
@@ -136,11 +141,13 @@ export class TasksCalendarPage implements OnInit {
         this.authProvider.flushLocalStorage();
         this.router.navigate(['login'], { replaceUrl: true });
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       if (loader) {
         this.dissmissPopOver();
         this.isLoading = false;
       }
+      this.cdr.markForCheck();
     });
   }
 

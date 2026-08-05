@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { NavController, AlertController, PopoverController, ModalController, ActionSheetController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -11,6 +11,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-absent-students',
   templateUrl: './absent-students.page.html',
   styleUrls: ['./absent-students.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AbsentStudentsPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -53,7 +54,8 @@ export class AbsentStudentsPage implements OnInit {
                 public modalCtrl: ModalController,
                 public actionSheet: ActionSheetController,
                 private absentApplicationApi: AbsentApplicationApiService,
-                private storageSr: StorageService) { }
+                private storageSr: StorageService,
+                private cdr: ChangeDetectorRef) { }
 
   async ngOnInit() {
     // 🌟 تعديل 2: توليد التاريخ المحلي الصافي بصيغة YYYY-MM-DD لمنع مشكلة قفز الأشهر
@@ -67,8 +69,14 @@ export class AbsentStudentsPage implements OnInit {
     this.search_payload.start_date = this.calendarDate;
 
     this.userDetails = await this.storageSr.get("userloggedin");
-    this.getCourse();
-    this.OnFilterData();
+    if (this.userDetails) {
+      this.getCourse();
+      this.OnFilterData();
+    } else {
+      this.authProvider.flushLocalStorage();
+      this.router.navigate(['login'], { replaceUrl: true });
+    }
+    this.cdr.markForCheck();
   }
 
   getCourse(){
@@ -84,6 +92,7 @@ export class AbsentStudentsPage implements OnInit {
         }else{
           this.classes = [];
         }
+        this.cdr.markForCheck();
     }).catch(error =>{
     })
   }
@@ -98,6 +107,7 @@ export class AbsentStudentsPage implements OnInit {
     }
     this.dataProvider.getClassStudentList(studentData).then(response => {
          this.StudentsList = response.data.students;
+         this.cdr.markForCheck();
     }).catch(error =>{
     })
   }
@@ -170,6 +180,7 @@ export class AbsentStudentsPage implements OnInit {
       } catch (error) {
         this.dataProvider.showToast("error");
       }
+      this.cdr.markForCheck();
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -14,6 +14,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-connect-new-message',
   templateUrl: './connect-new-message.page.html',
   styleUrls: ['./connect-new-message.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectNewMessagePage implements OnInit {
   userDetails: any = {};
@@ -33,15 +34,18 @@ export class ConnectNewMessagePage implements OnInit {
               public alertCtrl: AlertController,
               private router: Router,
               private parentConnectApi: ParentConnectApiService,
-              private storageSr: StorageService) {
+              private storageSr: StorageService,
+              private cdr: ChangeDetectorRef) {
 
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
   }
 
   async ionViewWillEnter() {
     this.userDetails = await this.storageSr.get("userloggedin");
+    this.cdr.markForCheck();
   }
 
   dismiss() {
@@ -120,6 +124,7 @@ export class ConnectNewMessagePage implements OnInit {
         this.message.ticketImage = "data:image/png;base64," + imageData.base64String;
         this.ticketImage = "data:image/png;base64," + imageData.base64String;
       }
+      this.cdr.markForCheck();
     }).catch(e => console.log('Camera Error', e));
   }
 
@@ -138,6 +143,7 @@ export class ConnectNewMessagePage implements OnInit {
         this.message.ticketImage = "data:image/png;base64," + imageData.base64String;
         this.ticketImage = "data:image/png;base64," + imageData.base64String;
       }
+      this.cdr.markForCheck();
     }).catch(e => console.log('Gallery Error', e));
   }
 

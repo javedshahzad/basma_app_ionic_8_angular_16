@@ -44,7 +44,9 @@ export class SubscribePlanComponent implements OnInit {
 
   async ngOnInit() {
     this.userDetails = await this.storageSr.get("userloggedin");
-    this.getPlan();
+    if (this.userDetails) {
+      this.getPlan();
+    }
   }
   closeModal(){
     this.modalController.dismiss();

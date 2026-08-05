@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -15,6 +15,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-delaylist',
   templateUrl: './delaylist.page.html',
   styleUrls: ['./delaylist.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DelaylistPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -42,7 +43,8 @@ export class DelaylistPage implements OnInit {
     public zone: NgZone,
     private router: Router,
     public alertCtrl: AlertController,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
   ) {
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       if (res.changeUser) {
@@ -53,6 +55,7 @@ export class DelaylistPage implements OnInit {
     this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq) => {
       this.translate.get("alertmessages").subscribe((res) => {
         this.lang = res;
+        this.cdr.markForCheck();
       });
       this.loadClasses();
     });
@@ -80,6 +83,7 @@ export class DelaylistPage implements OnInit {
   ngOnInit() {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
     this.loadClasses();
   }
@@ -107,7 +111,7 @@ export class DelaylistPage implements OnInit {
 
       this.dataProvider.getCourses(data).then(response => {
         this.isLoading = false;
-        
+
         if (response.session) {
           let courses = response.data;
           if (courses && courses.length > 0) {
@@ -125,14 +129,17 @@ export class DelaylistPage implements OnInit {
           this.router.navigate(['login'], { replaceUrl: true });
           this.dataProvider.errorALertMessage(response.message);
         }
+        this.cdr.markForCheck();
       }).catch(error => {
         this.isLoading = false;
         this.noDataFound = "حدث خطأ في الاتصال بالسيرفر";
+        this.cdr.markForCheck();
       });
     } else {
       this.isLoading = false;
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
+      this.cdr.markForCheck();
     }
   }
 
@@ -168,8 +175,10 @@ export class DelaylistPage implements OnInit {
                     this.authProvider.flushLocalStorage();
                     this.dataProvider.errorALertMessage(response.message);
                   }
+                  this.cdr.markForCheck();
                 }).catch((error) => {
                   this.dataProvider.errorALertMessage(error);
+                  this.cdr.markForCheck();
                 });
               } else {
                 this.dataProvider.showToast(this.lang.can_not_empty || "لا يمكن ترك الحقول فارغة");

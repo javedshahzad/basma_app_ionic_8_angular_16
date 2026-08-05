@@ -40,8 +40,9 @@ export class EditCalssPage implements OnInit {
                   this.cdr.markForCheck();
                 })
               this.route.queryParams.subscribe(params => {
-                if (this.router.getCurrentNavigation().extras.state) {
-                     this.navData = this.router.getCurrentNavigation().extras.state;
+                const navigation = this.router.getCurrentNavigation();
+                if (navigation && navigation.extras && navigation.extras.state) {
+                     this.navData = navigation.extras.state;
                      this.course=this.navData.course;
                      this.userDetails=this.navData.userDetails;
                   //   console.log(this.navData);

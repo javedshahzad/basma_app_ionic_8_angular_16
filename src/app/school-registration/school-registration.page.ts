@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -13,6 +13,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-school-registration',
   templateUrl: './school-registration.page.html',
   styleUrls: ['./school-registration.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SchoolRegistrationPage implements OnInit {
   school: any = {
@@ -42,10 +43,12 @@ export class SchoolRegistrationPage implements OnInit {
     public dataProvider: DataService,
     public authProvider: AuthService,
     private router: Router,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين الجديدة
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين الجديدة
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
   }
 
@@ -61,6 +64,7 @@ export class SchoolRegistrationPage implements OnInit {
     } else {
       this.countries = this.geo.getArCountries();
     }
+    this.cdr.markForCheck();
   }
 
   assignCountry() {
@@ -158,5 +162,6 @@ export class SchoolRegistrationPage implements OnInit {
       this.school.school_image = finalImage;
       this.school_image = finalImage;
     }
+    this.cdr.markForCheck();
   }
 }

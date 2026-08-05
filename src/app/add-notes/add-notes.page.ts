@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+﻿import { Component, OnInit, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
@@ -26,7 +26,8 @@ import { StorageService } from '../service/storage.service';
     TranslateModule, 
     IonicSelectableComponent,
     PipesModule
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddNotesPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -67,10 +68,12 @@ export class AddNotesPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public alertCtrl: AlertController,
-    private storageSr: StorageService
+    private storageSr: StorageService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
 
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
@@ -80,10 +83,12 @@ export class AddNotesPage implements OnInit {
         this.state = this.router.getCurrentNavigation().extras.state.state;
         this.data = this.router.getCurrentNavigation().extras.state.data;
       }
+      this.cdr.markForCheck();
     });
 
     this.dataProvider.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       this.uploadStaus = res;
+      this.cdr.markForCheck();
     });
 
     this.notes.examNoteDate = dayjs(new Date()).toISOString();
@@ -98,6 +103,7 @@ export class AddNotesPage implements OnInit {
     if(userData) {
       this.userDetails = userData;
     }
+    this.cdr.markForCheck();
   }
 
   sendNotes() {
@@ -153,11 +159,13 @@ export class AddNotesPage implements OnInit {
       if (image && image.base64String) {
         this.notes.pdf = '';
         this.notes.ticketImage = 'data:image/jpeg;base64,' + image.base64String;
-        this.ticketImage = image.base64String; 
+        this.ticketImage = image.base64String;
         this.mediaType = 'image/jpeg';
       }
+      this.cdr.markForCheck();
     } catch (error) {
       console.log('User cancelled or error', error);
+      this.cdr.markForCheck();
     }
   }
 
@@ -225,6 +233,7 @@ export class AddNotesPage implements OnInit {
       this.dataProvider.hideLoading();
       this.dataProvider.showToast(this.lang.usnexpectedError);
       this.uploadStaus = false;
+      this.cdr.markForCheck();
     });
   }
 

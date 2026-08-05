@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
+import { ApiResponse } from '../../model/api-response.model';
+
+export interface HolidaysResponse extends ApiResponse {
+  holidays?: { date: string }[];
+  holiday_string?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +18,9 @@ export class HolidaysApiService {
     private dataService: DataService
   ) { }
 
-  getHolidays(data: any): Promise<any> {
+  getHolidays(data: Record<string, unknown>): Promise<HolidaysResponse | false> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'getHolidays/' + data.school_id).then((response: any) => {
+      this.apiClient.postRequest<HolidaysResponse>(data, 'getHolidays/' + data.school_id).then((response) => {
         if (response) {
           if (response.success) {
             resolve(response);

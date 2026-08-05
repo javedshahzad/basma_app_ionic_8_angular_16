@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, IonContent, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -16,6 +16,7 @@ import { ParentConnectApiService } from '../service/parent-connect-api/parent-co
   selector: 'app-connect-chat',
   templateUrl: './connect-chat.page.html',
   styleUrls: ['./connect-chat.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectChatPage implements OnInit, OnDestroy {
 
@@ -43,10 +44,12 @@ export class ConnectChatPage implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
-    private parentConnectApi: ParentConnectApiService
+    private parentConnectApi: ParentConnectApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
 
     // 🟢 3. صيد بيانات المحادثة القادمة من الصفحة السابقة فوراً
@@ -102,6 +105,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   // 🟢 5. إيقاف مؤقت الرسائل عند الخروج من الصفحة (لمنع تسريب الذاكرة)
@@ -145,6 +149,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
           this.lastMessageId = response.chat[length - 1].id;
           this.scrollToBottom();
         }
+        this.cdr.markForCheck();
       } else {
         this.dataProvider.errorALertMessage(response.message);
         this.router.navigate(['login'], { replaceUrl: true });
@@ -181,6 +186,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
           this.lastMessageId = response.chat[length - 1].id;
           this.scrollToBottom();
         }
+        this.cdr.markForCheck();
       } else {
         this.dataProvider.errorALertMessage(response.message);
         if (this.chatInterval) clearInterval(this.chatInterval);
@@ -268,8 +274,10 @@ export class ConnectChatPage implements OnInit, OnDestroy {
             this.dataProvider.errorALertMessage(response.message);
             this.router.navigate(['login'], { replaceUrl: true });
           }
+          this.cdr.markForCheck();
         }).catch((error) => {
           this.dataProvider.errorALertMessage(error);
+          this.cdr.markForCheck();
         });
       }
     }
@@ -301,6 +309,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
         this.attachment = "data:image/png;base64," + imageData.base64String;
         this.image = 'data:image/jpeg;base64,' + imageData.base64String;
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -319,6 +328,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
         this.attachment = "data:image/png;base64," + imageData.base64String;
         this.image = 'data:image/jpeg;base64,' + imageData.base64String;
       }
+      this.cdr.markForCheck();
     });
   }
 

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -13,6 +13,7 @@ import { StorageService } from "../service/storage.service";
   selector: 'app-children',
   templateUrl: './children.page.html',
   styleUrls: ['./children.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChildrenPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -52,14 +53,17 @@ export class ChildrenPage implements OnInit {
               private storageSr: StorageService,
     		      public zone:NgZone,
             //  public app: App,
-              public translate: TranslateService) {
+              public translate: TranslateService,
+              private cdr: ChangeDetectorRef) {
               this.translate.get("alertmessages").subscribe((response) => {
                 this.lang = response;
+                this.cdr.markForCheck();
               })
               this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq)=>{
                 this.translate.get("alertmessages").subscribe((res)=>{
                    // console.log(this.lang);
                   this.lang = res;
+                  this.cdr.markForCheck();
                 })
               })
               this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async (res)=>{
@@ -115,17 +119,20 @@ export class ChildrenPage implements OnInit {
 
           this.userDetails.details.child = this.students;
           this.ispermit = children.permit;
-          
+
           await this.storageSr.set("userloggedin", this.userDetails);
         }
+        this.cdr.markForCheck();
       }).catch((error) => {
         this.dataProvider.errorALertMessage(error);
+        this.cdr.markForCheck();
       });
 
     } else {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   /**

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, Input,NgZone } from '@angular/core';
+﻿import { Component, OnInit, Input,NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DataService } from '../../service/data/data.service';
@@ -14,6 +14,7 @@ import { StorageService } from '../../service/storage.service';
   selector: 'app-view-class-notes',
   templateUrl: './view-class-notes.page.html',
   styleUrls: ['./view-class-notes.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewClassNotesPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -39,15 +40,19 @@ export class ViewClassNotesPage implements OnInit {
               private router:Router,
               public modalController: ModalController,
               private notesApi: NotesApiService,
-              private storageSr: StorageService) {
+              private storageSr: StorageService,
+              private cdr: ChangeDetectorRef) {
                 this.translate.get("alertmessages").subscribe((res)=>{
                   this.lang = res;
+                  this.cdr.markForCheck();
                 })
       this.route.queryParams.subscribe(params => {
-        if (this.router.getCurrentNavigation().extras.state) {
-             this.navData = this.router.getCurrentNavigation().extras.state['course'];
+        const navigation = this.router.getCurrentNavigation();
+        if (navigation && navigation.extras && navigation.extras.state) {
+             this.navData = navigation.extras.state['course'];
             console.log(this.navData);
         }
+        this.cdr.markForCheck();
       });
               }
 
@@ -67,6 +72,7 @@ export class ViewClassNotesPage implements OnInit {
       this.userDetails = userData;
       this.userType = this.userDetails.details.user_type;
     }
+    this.cdr.markForCheck();
   }
 
     addNotes(){
@@ -134,8 +140,10 @@ export class ViewClassNotesPage implements OnInit {
          // this.dataProvider.viewNotes(res);
          this.notes=res;
         }
+        this.cdr.markForCheck();
       }).catch(error=>{
         console.log(error);
+        this.cdr.markForCheck();
       })
     }
 

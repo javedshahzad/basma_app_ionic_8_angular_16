@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone } from "@angular/core";
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
 import { ModalController, NavController, Platform, PopoverController } from "@ionic/angular";
 import { AuthService } from "../service/auth/auth.service";
 import { DataService } from "../service/data/data.service";
@@ -19,6 +19,7 @@ import { PlanApiService } from "../service/plan-api/plan-api.service";
   selector: "app-login",
   templateUrl: "./login.page.html",
   styleUrls: ["./login.page.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -43,7 +44,8 @@ export class LoginPage implements OnInit {
     public modalController: ModalController,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     private deviceApi: DeviceApiService,
-    private planApi: PlanApiService
+    private planApi: PlanApiService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {}
@@ -78,7 +80,8 @@ export class LoginPage implements OnInit {
           this.user.password = credentials.password;
           this.rememberMe = credentials.rememberMe;
           console.log("✅ تم استعادة البيانات المحفوظة:", this.user.email_id);
-        }, 100); 
+          this.cdr.markForCheck();
+        }, 100);
       });
     }
 
@@ -87,6 +90,7 @@ export class LoginPage implements OnInit {
     if (earlyLoginData) {
       this.zone.run(() => { this.loggedinUser = earlyLoginData; });
     }
+    this.cdr.markForCheck();
   }
 
   togglePass() {
@@ -175,6 +179,7 @@ export class LoginPage implements OnInit {
       }).catch((error) => {
         this.dissmissPopOver();
         this.dataProvider.errorALertMessage(error);
+        this.cdr.markForCheck();
       });
   }
 

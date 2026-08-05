@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -15,6 +15,7 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
   selector: 'app-manage-student',
   templateUrl: './manage-student.page.html',
   styleUrls: ['./manage-student.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageStudentPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -39,10 +40,12 @@ export class ManageStudentPage implements OnInit {
     public platform: Platform,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private searchApi: SearchApiService,
-    private schoolDirectoryApi: SchoolDirectoryApiService
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
 
     // 🟢 التقاط حالة تحديث البيانات بأمان عبر الـ Router
@@ -66,6 +69,7 @@ export class ManageStudentPage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   // 🟢 التحديث الصامت للبيانات بعد العودة من صفحة أخرى
@@ -74,7 +78,7 @@ export class ManageStudentPage implements OnInit {
     if (userLoggedIn) {
       this.userdata = userLoggedIn;
       let data = { 'school_id': this.userdata.details.school_id };
-      
+
       this.schoolDirectoryApi.getSchoolStudents(data).then(res => {
         if (res.data) {
           this.students = res.data;
@@ -84,7 +88,8 @@ export class ManageStudentPage implements OnInit {
             this.allStudents = this.students;
           }
         }
-      }).catch(error => console.log(error));
+        this.cdr.markForCheck();
+      }).catch(error => { console.log(error); this.cdr.markForCheck(); });
     }
   }
 
@@ -92,9 +97,9 @@ export class ManageStudentPage implements OnInit {
     let data = {
       'school_id': this.userdata.details.school_id
     };
-    
+
     this.show_loading = true;
-    
+
     this.schoolDirectoryApi.getSchoolStudents(data).then(res => {
       this.show_loading = false;
       if (res && res.data) {
@@ -105,10 +110,12 @@ export class ManageStudentPage implements OnInit {
           this.allStudents = this.students;
         }
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       this.show_loading = false;
       this.dataProvider.showToast(error);
       console.log(error);
+      this.cdr.markForCheck();
     });
   }
 
@@ -119,6 +126,7 @@ export class ManageStudentPage implements OnInit {
     if (!input || input.trim() === '') {
        this.allStudents = [];
        this.getStudents();
+       this.cdr.markForCheck();
        return;
     }
 
@@ -147,10 +155,12 @@ export class ManageStudentPage implements OnInit {
           this.students = [];
           this.allStudents = [];
         }
+        this.cdr.markForCheck();
       }).catch(error => {
         this.show_loading = false;
         this.dataProvider.showToast(error);
         console.log(error);
+        this.cdr.markForCheck();
       });
     }, 500); // 🟢 نؤخر الطلب نصف ثانية لحماية السيرفر
   }
@@ -181,6 +191,7 @@ export class ManageStudentPage implements OnInit {
         this.allStudents = this.allStudents.concat(this.students.splice(0, 20));
       }
       infiniteScroll.target.complete();
+      this.cdr.markForCheck();
     }, 500);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, NavParams, AlertController, PopoverController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -23,6 +23,7 @@ const env = environment;
   selector: 'app-student-report-manage',
   templateUrl: './student-report-manage.page.html',
   styleUrls: ['./student-report-manage.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentReportManagePage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -98,7 +99,8 @@ export class StudentReportManagePage implements OnInit {
               private storage: Storage,
               private storageSr: StorageService, // 🟢 حقن خدمة التخزين
               private reportsApi: ReportsApiService,
-              private holidaysApi: HolidaysApiService
+              private holidaysApi: HolidaysApiService,
+              private cdr: ChangeDetectorRef
              ) {
 
     const navigation = this.router.getCurrentNavigation();
@@ -106,12 +108,14 @@ export class StudentReportManagePage implements OnInit {
       this.navData = navigation.extras.state;
       console.log(this.navData);
     }
-    
+
     this.translate.get("alertmessages").subscribe((val) => {
       this.lang = val;
+      this.cdr.markForCheck();
     })
     this.translate.get("manage_report").subscribe((val) => {
-      this.lang1 = val;          
+      this.lang1 = val;
+      this.cdr.markForCheck();
     });
   }
 
@@ -139,8 +143,9 @@ export class StudentReportManagePage implements OnInit {
        this.authProvider.flushLocalStorage();
        this.router.navigate(['login'], { replaceUrl: true });
     }
-    
+
     this.getHolidaysForOff();
+    this.cdr.markForCheck();
   }
   
   submitForm(){
@@ -222,7 +227,7 @@ export class StudentReportManagePage implements OnInit {
             this.medical=[];
           }
           this.isExitToday=false;
-          if(res.data.exittoday && res.data.exittoday.length){            
+          if(res.data.exittoday && res.data.exittoday.length){
             this.isExitToday=true;
             this.foundAnyReport = false;
           }
@@ -231,6 +236,7 @@ export class StudentReportManagePage implements OnInit {
         this.authProvider.flushLocalStorage();
         this.router.navigate(['login'],{replaceUrl:true});
       }
+      this.cdr.markForCheck();
     }).catch(er=>{
       if(loader) this.dataProvider.hideLoading();
       console.log(er);
@@ -271,6 +277,7 @@ export class StudentReportManagePage implements OnInit {
     this.dataProvider.run(() => this.reportsApi.GetAllDegrees(data)).then(res=>{
       console.log(res)
       this.AllDegrees = res.data;
+      this.cdr.markForCheck();
     })
   }
 
@@ -290,7 +297,8 @@ export class StudentReportManagePage implements OnInit {
         violations[index].description = `${element.desc_number}-${element.description}`
       });
       this.AllDegreesViolations = violations;
-      this.filteredViolations = violations; 
+      this.filteredViolations = violations;
+      this.cdr.markForCheck();
     });
 
     this.reportsApi.GetAllDegreeActions(data).then(res=>{
@@ -299,8 +307,9 @@ export class StudentReportManagePage implements OnInit {
         actions[index].description = `${element.action_number}-${element.description}`
       });
       this.AllDegreeActions = actions;
-      this.filteredActions = actions; 
+      this.filteredActions = actions;
       this.dataProvider.hideLoading();
+      this.cdr.markForCheck();
     });
   }
 
@@ -533,6 +542,7 @@ export class StudentReportManagePage implements OnInit {
     this.reportsApi.GetAllCallOfStudentReport(data).then(res => {
       console.log(res);
       this.callOfStudentsReport = res.data;
+      this.cdr.markForCheck();
     },error=>{
       this.dataProvider.hideLoading();
       this.dataProvider.showToast(this.lang.report_error);
@@ -550,6 +560,7 @@ export class StudentReportManagePage implements OnInit {
     this.reportsApi.GetStudentPledgesReport(data).then(res => {
       console.log(res);
       this.AllStudentPledgesReports = res.data;
+      this.cdr.markForCheck();
     },error=>{
       this.dataProvider.hideLoading();
       this.dataProvider.showToast(this.lang.report_error);
@@ -594,6 +605,7 @@ export class StudentReportManagePage implements OnInit {
             this.isHoliday = false;
           }
         }
+        this.cdr.markForCheck();
       }).catch(error => {
         this.dataProvider.hideLoading();
         this.dataProvider.errorALertMessage(error);

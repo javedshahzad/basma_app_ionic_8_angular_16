@@ -1,4 +1,4 @@
-import { Component, OnInit, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -15,6 +15,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-messages',
   templateUrl: './messages.page.html',
   styleUrls: ['./messages.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessagesPage implements OnInit {
   private destroyRef = inject(DestroyRef);
@@ -42,15 +43,18 @@ export class MessagesPage implements OnInit {
     public popoverController: PopoverController,
     public alertCtrl: AlertController,
     private router: Router,
-    private storageSr: StorageService // 🟢 حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
 
     this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.translate.get("alertmessages").subscribe((res) => {
         this.lang = res;
+        this.cdr.markForCheck();
       });
     });
 
@@ -95,9 +99,11 @@ export class MessagesPage implements OnInit {
           this.router.navigate(['login'], { replaceUrl: true });
           this.dataProvider.errorALertMessage(response.message);
         }
+        this.cdr.markForCheck();
       }).catch(error => {
         console.log(error);
         this.dissmissPopOver();
+        this.cdr.markForCheck();
       });
     } else {
       this.dissmissPopOver();
@@ -160,8 +166,10 @@ export class MessagesPage implements OnInit {
           this.router.navigate(['login'], { replaceUrl: true });
           this.dataProvider.errorALertMessage(response.message);
         }
+        this.cdr.markForCheck();
       }).catch(error => {
         console.log(error);
+        this.cdr.markForCheck();
       });
     } else {
       this.authProvider.flushLocalStorage();
@@ -184,6 +192,7 @@ export class MessagesPage implements OnInit {
     setTimeout(() => {
       this.notificationToDeleteId = null;
       this.notificationToDeleteIndex = -1;
+      this.cdr.markForCheck();
     }, 300);
   }
 
@@ -208,10 +217,12 @@ export class MessagesPage implements OnInit {
         this.dataProvider.errorALertMessage(response.message);
         this.closeDeleteModal();
       }
+      this.cdr.markForCheck();
     }).catch((error) => {
       this.dissmissPopOver();
       this.dataProvider.errorALertMessage(error);
       this.closeDeleteModal();
+      this.cdr.markForCheck();
     });
   }
 
@@ -224,6 +235,7 @@ export class MessagesPage implements OnInit {
     this.imageModal = false;
     setTimeout(() => {
       this.imageUrl = '';
+      this.cdr.markForCheck();
     }, 300);
   }
 

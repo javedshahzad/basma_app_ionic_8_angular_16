@@ -4,6 +4,7 @@ import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
+import { Printer } from '@awesome-cordova-plugins/printer/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -25,6 +26,7 @@ describe('WarningReportPage', () => {
         { provide: Device, useValue: { uuid: 'test-uuid', platform: 'browser' } },
         { provide: SQLite, useValue: {} },
         { provide: AppRate, useValue: {} },
+        { provide: Printer, useValue: { print: () => Promise.resolve() } },
         { provide: IonicStorage, useValue: { create: () => Promise.resolve({ get: () => Promise.resolve(null), set: () => Promise.resolve(), remove: () => Promise.resolve(), clear: () => Promise.resolve() }) } }
       ]
     }).compileComponents();

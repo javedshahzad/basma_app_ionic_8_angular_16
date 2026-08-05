@@ -12,9 +12,9 @@ export class ContactApiService {
     private dataService: DataService
   ) { }
 
-  sendContact(data: any): Promise<any> {
+  sendContact(data: Record<string, unknown>): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'sendcontact').then((response: any) => {
+      this.apiClient.postRequest(data, 'sendcontact').then((response) => {
         if (response) {
           if (response.success) {
             resolve(true);

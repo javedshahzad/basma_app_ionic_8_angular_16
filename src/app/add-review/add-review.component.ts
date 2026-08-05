@@ -57,7 +57,7 @@ export class AddReviewComponent implements OnInit {
   ngOnInit() {
     console.log(this.data,this.student);
     this.studentDetails = this.student;
-    if(this.studentDetails.pic == 'null' || this.studentDetails.pic == null){
+    if(this.studentDetails && (this.studentDetails.pic == 'null' || this.studentDetails.pic == null)){
       this.studentDetails.pic = 'assets/imgs/default_avatar.png'
     }
     console.log(this.studentDetails,"student details")

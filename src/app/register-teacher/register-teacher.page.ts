@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';  
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -16,6 +16,7 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-register-teacher',
   templateUrl: './register-teacher.page.html',
   styleUrls: ['./register-teacher.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterTeacherPage implements OnInit {
   teacher: any = {};
@@ -34,7 +35,8 @@ export class RegisterTeacherPage implements OnInit {
     public popoverController: PopoverController,
     public platform: Platform, 
     public dbProvider: DatabaseService,
-    private storageSr: StorageService // 🟢 2. حقن الخدمة
+    private storageSr: StorageService, // 🟢 2. حقن الخدمة
+    private cdr: ChangeDetectorRef
   ) {
     // 🟢 التقاط البيانات متزامناً
     const navigation = this.router.getCurrentNavigation();
@@ -64,6 +66,7 @@ export class RegisterTeacherPage implements OnInit {
       let fcmToken = await this.storageSr.get("FcmToken");
       this.user.registration_id = fcmToken || 'empty_token';
     }
+    this.cdr.markForCheck();
   }
 
   _keyPress(event: any) {
@@ -159,9 +162,11 @@ export class RegisterTeacherPage implements OnInit {
       } else {
         this.router.navigate(['tabs'], { replaceUrl: true });
       }
+      this.cdr.markForCheck();
     }).catch((error) => {
       this.dissmissPopOver();
       this.dataProvider.errorALertMessage(error);
+      this.cdr.markForCheck();
     });
   }
 }

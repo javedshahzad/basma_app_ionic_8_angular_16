@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -15,6 +15,7 @@ import { NotesApiService } from '../service/notes-api/notes-api.service';
   selector: 'app-student-notes',
   templateUrl: './student-notes.page.html',
   styleUrls: ['./student-notes.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentNotesPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -42,9 +43,10 @@ export class StudentNotesPage implements OnInit {
               private platform: Platform, // 🟢 حقن Platform للتحقق من البيئة
               public modalCtrl: ModalController,
               private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
-              private notesApi: NotesApiService
+              private notesApi: NotesApiService,
+              private cdr: ChangeDetectorRef
              ) {
-                
+
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       if (res.changeUser) {
         this.ionViewWillEnter();
@@ -53,11 +55,13 @@ export class StudentNotesPage implements OnInit {
 
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
 
     this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq) => {
       this.translate.get("alertmessages").subscribe((res) => {
         this.lang = res;
+        this.cdr.markForCheck();
       })
     });
   }
@@ -91,6 +95,7 @@ export class StudentNotesPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   doRefresh(event) {
@@ -113,8 +118,10 @@ export class StudentNotesPage implements OnInit {
       } else {
         this.noData = true;
       }
+      this.cdr.markForCheck();
     }).catch(Error => {
       console.log(Error);
+      this.cdr.markForCheck();
     })
   }
 

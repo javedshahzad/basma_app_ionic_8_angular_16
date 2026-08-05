@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController, AlertController, NavController, Platform, MenuController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DatabaseService } from '../service/database/database.service';
@@ -15,6 +15,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
   selector: 'app-edit-student-profile',
   templateUrl: './edit-student-profile.page.html',
   styleUrls: ['./edit-student-profile.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditStudentProfilePage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -53,6 +54,7 @@ export class EditStudentProfilePage implements OnInit {
   ) {
     this.translate.get("alertmessages").subscribe((val) => {
       this.lang = val;
+      this.cdr.markForCheck();
     });
 
     // 🟢 3. صيد البيانات المرسلة فوراً في المشيد لحمايتها من الضياع
@@ -86,8 +88,9 @@ export class EditStudentProfilePage implements OnInit {
     }
     
     // 🟢 السحر هنا: بعد أن جهزت كل البيانات، نسمح للقائمة بالظهور!
-    this.isDataReady = true; 
+    this.isDataReady = true;
     this.dataProvider.hideLoading();
+    this.cdr.markForCheck();
   }
 
   ionViewWillLeave() {

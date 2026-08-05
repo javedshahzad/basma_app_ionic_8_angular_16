@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, NgZone, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -16,6 +16,7 @@ import { HolidaysApiService } from '../service/holidays-api/holidays-api.service
   selector: 'app-seminar-list',
   templateUrl: './seminar-list.page.html',
   styleUrls: ['./seminar-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SeminarListPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -46,7 +47,8 @@ export class SeminarListPage implements OnInit {
     public zone: NgZone, 
     public platform: Platform,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
-    private holidaysApi: HolidaysApiService
+    private holidaysApi: HolidaysApiService,
+    private cdr: ChangeDetectorRef
   ) {
     // 🟢 3. استخراج البيانات من الـ Router بشكل متزامن قبل ضياعها
     const navigation = this.router.getCurrentNavigation();
@@ -58,6 +60,7 @@ export class SeminarListPage implements OnInit {
     this.dateSelected = new Date();
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
   }
 
@@ -104,19 +107,22 @@ export class SeminarListPage implements OnInit {
 
           this.isHoliday = this.holidayString.includes(formattedDate);
         }
+        this.cdr.markForCheck();
       }).catch(error => {
         this.dataProvider.hideLoading();
         console.error('API Error:', error);
         this.dataProvider.errorALertMessage(error);
+        this.cdr.markForCheck();
       });
 
-      this.getClasses(); 
-      
+      this.getClasses();
+
     } else {
       this.dataProvider.hideLoading();
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   getClasses(loader: boolean = true) {
@@ -137,11 +143,13 @@ export class SeminarListPage implements OnInit {
         console.log('seminar class', res.data);
         this.seminarList = res.data;
       } else {
-        this.seminarList = []; 
+        this.seminarList = [];
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       if (loader) this.dataProvider.hideLoading();
       console.error('API Error:', error);
+      this.cdr.markForCheck();
     });
   }
 

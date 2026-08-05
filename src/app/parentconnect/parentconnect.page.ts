@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject } from '@angular/core';
+﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -16,6 +16,7 @@ import { ParentConnectApiService } from '../service/parent-connect-api/parent-co
   selector: 'app-parentconnect',
   templateUrl: './parentconnect.page.html',
   styleUrls: ['./parentconnect.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ParentconnectPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -46,14 +47,17 @@ export class ParentconnectPage implements OnInit {
     public network: Network,
     public platform: Platform,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private parentConnectApi: ParentConnectApiService
+    private parentConnectApi: ParentConnectApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
     this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq) => {
       this.translate.get("alertmessages").subscribe((res) => {
         this.lang = res;
+        this.cdr.markForCheck();
       });
     });
 
@@ -97,6 +101,7 @@ export class ParentconnectPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   async reloadData() {
@@ -110,6 +115,7 @@ export class ParentconnectPage implements OnInit {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   getAllChats(showLoader: boolean = true) {
@@ -139,10 +145,12 @@ export class ParentconnectPage implements OnInit {
         this.dataProvider.errorALertMessage(response.message);
         this.router.navigate(['login'], { replaceUrl: true });
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       if (showLoader) {
         this.dataProvider.hideLoading();
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -227,8 +235,10 @@ export class ParentconnectPage implements OnInit {
               } else {
                 this.dataProvider.errorALertMessage(response.message);
               }
+              this.cdr.markForCheck();
             }).catch(error => {
               this.dataProvider.errorALertMessage(error);
+              this.cdr.markForCheck();
             });
           }
         }
@@ -260,8 +270,10 @@ export class ParentconnectPage implements OnInit {
               } else {
                 this.dataProvider.errorALertMessage(response.message);
               }
+              this.cdr.markForCheck();
             }).catch(error => {
               this.dataProvider.errorALertMessage(error);
+              this.cdr.markForCheck();
             });
           }
         }
@@ -279,6 +291,7 @@ export class ParentconnectPage implements OnInit {
     this.imageModal = false;
     setTimeout(() => {
       this.imageUrl = '';
+      this.cdr.markForCheck();
     }, 300);
   }
 

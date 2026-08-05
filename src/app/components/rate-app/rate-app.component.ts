@@ -30,13 +30,13 @@ export class RateAppComponent implements OnInit {
 
     console.log(this.lang, this.data);
     console.log("reate app data::::", this.data);
-    this.noteMessage = this.data.note;
-    this.providedStars = this.data.rating;
+    this.noteMessage = this.data?.note;
+    this.providedStars = this.data?.rating;
     console.log("this.noteMessage:::", this.noteMessage);
 
 
     this.selections = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
-    for (let i = 0; i < this.data.rating; i++) {
+    for (let i = 0; i < (this.data?.rating || 0); i++) {
       this.selections[i] = '#04855f';
     }
 
@@ -93,7 +93,7 @@ export class RateAppComponent implements OnInit {
     if (this.providedStars) {
       stars = this.providedStars;
     } else {
-      stars = this.data.rating;
+      stars = this.data?.rating;
     }
     let data = {
       stars: stars,

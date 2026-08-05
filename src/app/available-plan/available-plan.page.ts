@@ -1,4 +1,4 @@
-﻿import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+﻿import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NavController, Platform, AlertController, ModalController } from '@ionic/angular';
 import { Location } from '@angular/common';
 import { DataService } from '../service/data/data.service';
@@ -17,7 +17,8 @@ import { PlanApiService } from '../service/plan-api/plan-api.service';
 @Component({
   selector: 'app-available-plan',
   templateUrl: './available-plan.page.html',
-  styleUrls: ['./available-plan.page.scss'], 
+  styleUrls: ['./available-plan.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AvailablePlanPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -58,6 +59,7 @@ export class AvailablePlanPage implements OnInit {
   ) {
     this.translate.get("alertmessages").subscribe((res) => {
       this.lang = res;
+      this.ref.markForCheck();
     });
   }
 
@@ -73,6 +75,7 @@ export class AvailablePlanPage implements OnInit {
       this.getUserPlan();
     }
     //this.getPlan();
+    this.ref.markForCheck();
   }
 
   getPlan() {
@@ -83,8 +86,10 @@ export class AvailablePlanPage implements OnInit {
         const sortOrder = ["Basic Plan: Free", "Standard Plan", "Premium Plan"];
         this.plans = this.plans.sort((a, b) => sortOrder.indexOf(a.name) - sortOrder.indexOf(b.name));
       }
+      this.ref.markForCheck();
     }).catch(e => {
       console.log("Error fetching plans:", e);
+      this.ref.markForCheck();
     });
   }
 
@@ -103,7 +108,9 @@ export class AvailablePlanPage implements OnInit {
       } else {
         this.availablePlan = { plan: { slug: '' } };
       }
+      this.ref.markForCheck();
     }).catch(e => {
+      this.ref.markForCheck();
     });
   }
 
@@ -185,7 +192,8 @@ export class AvailablePlanPage implements OnInit {
   closeVoucherModal() {
     this.showVoucherModal = false;
     setTimeout(() => {
-      this.voucherCode = ''; 
+      this.voucherCode = '';
+      this.ref.markForCheck();
     }, 300);
   }
 

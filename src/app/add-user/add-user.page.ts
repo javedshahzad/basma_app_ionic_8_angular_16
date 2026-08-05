@@ -87,8 +87,11 @@ export class AddUserPage implements OnInit {
 		const userData = await this.storageSr.get("userloggedin");
 		if (userData) {
 			this.userDetails = userData;
+			this.getCourses();
+		} else {
+			this.authProvider.flushLocalStorage();
+			this.router.navigate(['login'], { replaceUrl: true });
 		}
-		this.getCourses();
 		this.cdr.markForCheck();
 	}
 

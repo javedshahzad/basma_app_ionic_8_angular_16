@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
   selector: 'app-select-bulletins-user',
   templateUrl: './select-bulletins-user.page.html',
   styleUrls: ['./select-bulletins-user.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectBulletinsUserPage implements OnInit {
   trackByIndex(index: number): number { return index; }
@@ -45,7 +46,8 @@ export class SelectBulletinsUserPage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن الخدمة
     private bulletinsApi: BulletinsApiService,
     private searchApi: SearchApiService,
-    private schoolDirectoryApi: SchoolDirectoryApiService
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private cdr: ChangeDetectorRef
   ) {
     // 🟢 التقاط بيانات الـ Router متزامناً لمنع الضياع
     const navigation = this.router.getCurrentNavigation();
@@ -58,6 +60,7 @@ export class SelectBulletinsUserPage implements OnInit {
 
     this.translate.get("alertmessages").subscribe((response) => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
   }
 
@@ -95,6 +98,7 @@ export class SelectBulletinsUserPage implements OnInit {
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
+    this.cdr.markForCheck();
   }
 
   getUsers() {
@@ -112,9 +116,11 @@ export class SelectBulletinsUserPage implements OnInit {
           this.allUsers = this.users;
         }
       }
+      this.cdr.markForCheck();
     }).catch(error => {
       this.show_loading = false;
       this.dataProvider.showToast(error);
+      this.cdr.markForCheck();
     });
   }
 
@@ -149,11 +155,13 @@ export class SelectBulletinsUserPage implements OnInit {
             this.allUsers = this.users;
           }
         }
+        this.cdr.markForCheck();
       }).catch(err => {
         this.show_loading = false;
         console.log(err);
+        this.cdr.markForCheck();
       });
-    }, 500); 
+    }, 500);
   }
   
   // 🟢 التخلص من الاعتماد على הـ DOM وتحديث الـ Array فقط
@@ -171,7 +179,7 @@ export class SelectBulletinsUserPage implements OnInit {
       } else {
         this.dataProvider.showToast(this.lang.same_user || 'لا يمكنك إرسال النشرة لنفسك');
         // إلغاء الاختيار برمجياً دون الحاجة لـ document.getElementById
-        setTimeout(() => { user.isChecked = false; }, 0); 
+        setTimeout(() => { user.isChecked = false; this.cdr.markForCheck(); }, 0);
       }
     } else {
       let index = this.selectedUsers.indexOf(user.user_no);
@@ -218,6 +226,7 @@ export class SelectBulletinsUserPage implements OnInit {
         this.allUsers = this.allUsers.concat(this.users.splice(0, 20));
       }
       infiniteScroll.target.complete();
+      this.cdr.markForCheck();
     }, 500);
   }
 }

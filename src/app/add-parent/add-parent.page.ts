@@ -59,7 +59,11 @@ export class AddParentPage implements OnInit {
     });
 
     this.userdata = await this.storageSr.get("userloggedin");
-    this.getStudents();
+    if (this.userdata) {
+      this.getStudents();
+    } else {
+      this.router.navigate(['login'], { replaceUrl: true });
+    }
     this.cdr.markForCheck();
   }
 

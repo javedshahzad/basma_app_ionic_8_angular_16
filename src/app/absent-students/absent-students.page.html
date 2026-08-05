@@ -17,7 +17,7 @@
 <ion-content class="lineone-bg" mode="md" dir="rtl">
   <div class="px-3 py-4 pb-12 max-w-lg mx-auto space-y-4">
 
-    <button *ngIf="userDetails.details.user_type == '1' || userDetails.details.is_show_absent_application_list == '1'" 
+    <button *ngIf="userDetails?.details?.user_type == '1' || userDetails?.details?.is_show_absent_application_list == '1'"
             (click)="GotoAllApplications()" 
             class="w-full py-3.5 rounded-xl font-bold text-sm text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all flex items-center justify-center gap-2 border border-indigo-100 border-dashed">
       <ion-icon name="list-circle-outline" class="text-xl"></ion-icon>

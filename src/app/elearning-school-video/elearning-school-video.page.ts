@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, ModalController } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,6 +13,7 @@ import { ElearningApiService } from '../service/elearning-api/elearning-api.serv
   selector: 'app-elearning-school-video',
   templateUrl: './elearning-school-video.page.html',
   styleUrls: ['./elearning-school-video.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ElearningSchoolVideoPage implements OnInit {
 
@@ -38,10 +39,12 @@ export class ElearningSchoolVideoPage implements OnInit {
     private router: Router,
     public zone: NgZone,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private elearningApi: ElearningApiService
+    private elearningApi: ElearningApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.translate.get("location").subscribe((res) => {
       this.location_lang = res;
+      this.cdr.markForCheck();
     });
 
     // 🟢 التقاط البيانات بأمان لمنع الانهيار
@@ -71,6 +74,7 @@ export class ElearningSchoolVideoPage implements OnInit {
 
       this.country = this.geo.getAllCountries();
       this.getElerningMaterials(null);
+      this.cdr.markForCheck();
     });
   }
 
@@ -84,9 +88,11 @@ export class ElearningSchoolVideoPage implements OnInit {
       this.categories = materialList.map((cat: any) => {
         return { ...cat, isOpen: false };
       });
+      this.cdr.markForCheck();
     }).catch((err) => {
       this.show_loading = false;
       this.dataProvider.errorALertMessage(err);
+      this.cdr.markForCheck();
     });
   }
 
