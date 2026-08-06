@@ -6,3 +6,9 @@
 .animate-bounce-subtle {
   animation: bounce-subtle 2s infinite ease-in-out;
 }
+
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+}

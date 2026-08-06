@@ -80,21 +80,22 @@
   <button (click)="toggleEditMode()" class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm">إلغاء التعديل</button>
 </div>
 
-<ion-content class="bg-slate-50" mode="md">
-  
+<ion-content class="bg-slate-50" mode="md" [scrollY]="!(students?.length > 0)">
+
   <div *ngIf="show_loading" class="p-4 space-y-4">
     <div *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex" class="h-20 bg-slate-200 rounded-2xl animate-pulse"></div>
   </div>
 
-  <div *ngIf="!show_loading">
-    
+  <div *ngIf="!show_loading" class="h-full flex flex-col min-h-0">
+
     <div *ngIf="students?.length === 0" class="empty-state text-center p-10">
       <p>{{ noDataFound }}</p>
     </div>
 
     <ng-container *ngIf="students?.length > 0">
-      
-      <app-supervisor-view 
+
+      <app-supervisor-view
+        class="flex-1 min-h-0"
         *ngIf="isAdmin || isModerator || isViewer"
         [attendanceResponse]="attendanceResponse"
         [showAll]="showAll"
@@ -110,7 +111,8 @@
         (onChangeAttendanceStatus)="changeAttendanceStatus($event.student, $event.sem, $event.index)">
       </app-supervisor-view>
 
-      <app-teacher-view 
+      <app-teacher-view
+        class="flex-1 min-h-0"
         *ngIf="isTeacherUser"
         [attendanceResponse]="attendanceResponse"
         [currentActivePeriod]="currentActivePeriod"

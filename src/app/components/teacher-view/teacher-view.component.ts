@@ -1,13 +1,15 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
-import { NgIf, NgFor, NgClass, NgSwitch, NgSwitchCase, NgTemplateOutlet, DecimalPipe } from '@angular/common';
+import { NgIf, NgClass, NgSwitch, NgSwitchCase, NgTemplateOutlet, DecimalPipe } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 
 @Component({
     selector: 'app-teacher-view',
     templateUrl: './teacher-view.component.html',
+    styleUrl: './teacher-view.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgIf, IonicModule, NgFor, NgClass, NgSwitch, NgSwitchCase, NgTemplateOutlet, DecimalPipe]
+    imports: [NgIf, IonicModule, NgClass, NgSwitch, NgSwitchCase, NgTemplateOutlet, DecimalPipe, ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf]
 })
 export class TeacherViewComponent {
   @Input() attendanceResponse: any = {};

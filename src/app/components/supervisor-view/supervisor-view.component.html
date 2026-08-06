@@ -1,6 +1,6 @@
-﻿<div class="space-y-4" *ngIf="attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0">
-  
-  <div class="bg-indigo-50 rounded-2xl p-4 shadow-sm border border-indigo-100" *ngIf="showAll && (userType == UserType.Admin || userType == UserType.Moderator || userType == UserType.Viewer)">
+﻿<div class="h-full flex flex-col min-h-0" *ngIf="attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0">
+
+  <div class="bg-indigo-50 rounded-2xl p-4 mb-4 shadow-sm border border-indigo-100 flex-shrink-0" *ngIf="showAll && (userType == UserType.Admin || userType == UserType.Moderator || userType == UserType.Viewer)">
 
     <div class="flex items-center justify-between  rounded-xl border border-indigo-100/50 mb-3" dir="rtl">
       <div class="flex items-center gap-2.5">
@@ -31,7 +31,10 @@
     </div>
   </div>
 
-  <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all" *ngFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent">
+  <!-- 🟢 Virtual scroll: يعرض فقط الصفوف الظاهرة على الشاشة بدل رسم القائمة كاملة دفعة واحدة،
+       مهم لصفوف بها 30+ طالب. itemSize يطابق ارتفاع الصف الفعلي (padding + قسم الاسم + صف أزرار الحصص + الهامش). -->
+  <cdk-virtual-scroll-viewport itemSize="172" class="flex-1 min-h-0">
+    <div class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all" *cdkVirtualFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent">
     <div class="flex items-center justify-between mb-3">
       <div class="flex items-center gap-4 w-full cursor-pointer" (click)="onStudentClick.emit(student.sid)">
         <div class="relative" (click)="$event.stopPropagation(); onImageClick.emit(student)">
@@ -79,4 +82,5 @@
       </div>
     </div>
   </div>
+  </cdk-virtual-scroll-viewport>
 </div>

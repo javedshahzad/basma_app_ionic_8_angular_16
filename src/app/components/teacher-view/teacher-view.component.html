@@ -1,6 +1,6 @@
-﻿<div *ngIf="attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0">
-  
-  <div *ngIf="canEdit && timeLeft > 0 && isToday && hasSubmitted" class="bg-amber-500 text-white px-4 py-2.5 flex justify-between items-center shadow-md mb-4 rounded-2xl mx-1" dir="rtl">
+﻿<div class="h-full flex flex-col min-h-0" *ngIf="attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0">
+
+  <div *ngIf="canEdit && timeLeft > 0 && isToday && hasSubmitted" class="bg-amber-500 text-white px-4 py-2.5 flex justify-between items-center shadow-md mb-4 rounded-2xl mx-1 flex-shrink-0" dir="rtl">
     <div class="flex items-center gap-2">
       <ion-icon name="time-outline" class="text-2xl animate-pulse"></ion-icon>
       <span class="font-bold text-sm">متبقي لتعديل غيابك:</span>
@@ -8,7 +8,7 @@
     <div class="font-bold text-lg tracking-widest bg-black/20 px-3 py-1 rounded-lg dir-ltr">{{ formattedTimeLeft }}</div>
   </div>
 
-  <div class="bg-indigo-50 rounded-2xl p-4 mb-5 shadow-sm border border-indigo-100" *ngIf="currentActivePeriod">
+  <div class="bg-indigo-50 rounded-2xl p-4 mb-5 shadow-sm border border-indigo-100 flex-shrink-0" *ngIf="currentActivePeriod">
 
     <div class="flex items-center justify-between  rounded-xl border border-indigo-100/50 mb-3" dir="rtl">
       <div class="flex items-center gap-2.5">
@@ -45,8 +45,10 @@
 
   
 
-  <div class="space-y-4">
-    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col transition-all hover:shadow-md" *ngFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent">
+  <!-- 🟢 Virtual scroll: يعرض فقط الصفوف الظاهرة على الشاشة بدل رسم القائمة كاملة دفعة واحدة،
+       مهم لصفوف بها 30+ طالب. itemSize يطابق ارتفاع الصف الفعلي (padding + قسم الاسم + صف أزرار الحضور + الهامش). -->
+  <cdk-virtual-scroll-viewport itemSize="184" class="flex-1 min-h-0">
+    <div class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-slate-100 flex flex-col transition-all hover:shadow-md" *cdkVirtualFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-4 w-full cursor-pointer" (click)="onStudentClick.emit(student.sid)">
           
@@ -127,5 +129,5 @@
         </ng-container>
       </div>
     </div>
-  </div>
+  </cdk-virtual-scroll-viewport>
 </div>

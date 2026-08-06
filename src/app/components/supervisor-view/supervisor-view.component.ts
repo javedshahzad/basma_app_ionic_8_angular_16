@@ -3,12 +3,14 @@ import { GamificationEngineService } from '../../service/gamification-engine/gam
 import { UserType } from '../../constants/user-type';
 import { NgIf, NgFor, NgClass, DecimalPipe } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
+import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 
 @Component({
     selector: 'app-supervisor-view',
     templateUrl: './supervisor-view.component.html',
+    styleUrl: './supervisor-view.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgIf, IonicModule, NgFor, NgClass, DecimalPipe]
+    imports: [NgIf, IonicModule, NgFor, NgClass, DecimalPipe, ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf]
 })
 export class SupervisorViewComponent {
   readonly UserType = UserType;
