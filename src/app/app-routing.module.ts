@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+    loadComponent: () => import('./login/login.page').then(m => m.LoginPage)
   },
   {
     path: '',
@@ -18,27 +18,27 @@ const routes: Routes = [
   },
   {
     path: 'register-teacher',
-    loadChildren: () => import('./register-teacher/register-teacher.module').then( m => m.RegisterTeacherPageModule)
+    loadComponent: () => import('./register-teacher/register-teacher.page').then(m => m.RegisterTeacherPage)
   },
   {
     path: 'school-registration',
-    loadChildren: () => import('./school-registration/school-registration.module').then( m => m.SchoolRegistrationPageModule)
+    loadComponent: () => import('./school-registration/school-registration.page').then(m => m.SchoolRegistrationPage)
   },
   {
     path: 'about-us',
-    loadChildren: () => import('./about-us/about-us.module').then( m => m.AboutUsPageModule)
+    loadComponent: () => import('./about-us/about-us.page').then(m => m.AboutUsPage)
   },
   {
     path: 'contact-us',
-    loadChildren: () => import('./contact-us/contact-us.module').then( m => m.ContactUsPageModule)
+    loadComponent: () => import('./contact-us/contact-us.page').then(m => m.ContactUsPage)
   },
   {
     path: 'news',
-    loadChildren: () => import('./news/news.module').then( m => m.NewsPageModule)
+    loadComponent: () => import('./news/news.page').then(m => m.NewsPage)
   },
   {
     path: 'tabs/news',
-    loadChildren: () => import('./news/news.module').then( m => m.NewsPageModule)
+    loadComponent: () => import('./news/news.page').then(m => m.NewsPage)
   },
   {
     path: 'tabs',
@@ -46,135 +46,135 @@ const routes: Routes = [
   },
   {
     path: 'classlist',
-    loadChildren: () => import('./classlist/classlist.module').then( m => m.ClasslistPageModule)
+    loadComponent: () => import('./classlist/classlist.page').then(m => m.ClasslistPage)
   },
   {
     path: 'tabs/classlist',
-    loadChildren: () => import('./classlist/classlist.module').then( m => m.ClasslistPageModule)
+    loadComponent: () => import('./classlist/classlist.page').then(m => m.ClasslistPage)
   },
   {
     path: 'delaylist',
-    loadChildren: () => import('./delaylist/delaylist.module').then( m => m.DelaylistPageModule)
+    loadComponent: () => import('./delaylist/delaylist.page').then(m => m.DelaylistPage)
   },
   {
     path: 'tabs/delaylist',
-    loadChildren: () => import('./delaylist/delaylist.module').then( m => m.DelaylistPageModule)
+    loadComponent: () => import('./delaylist/delaylist.page').then(m => m.DelaylistPage)
   },
   {
     path: 'messages',
-    loadChildren: () => import('./messages/messages.module').then( m => m.MessagesPageModule)
+    loadComponent: () => import('./messages/messages.page').then(m => m.MessagesPage)
   },
   {
     path: 'tabs/messages',
-    loadChildren: () => import('./messages/messages.module').then( m => m.MessagesPageModule)
+    loadComponent: () => import('./messages/messages.page').then(m => m.MessagesPage)
   },
   {
     path: 'list-student',
-    loadChildren: () => import('./list-student/list-student.module').then( m => m.ListStudentPageModule)
+    loadComponent: () => import('./list-student/list-student.page').then(m => m.ListStudentPage)
   },
   {
     path: 'student-detail',
-    loadChildren: () => import('./student-detail/student-detail.module').then( m => m.StudentDetailPageModule)
+    loadComponent: () => import('./student-detail/student-detail.page').then(m => m.StudentDetailPage)
   },
   {
     path: 'create-class',
-    loadChildren: () => import('./create-class/create-class.module').then( m => m.CreateClassPageModule)
+    loadComponent: () => import('./create-class/create-class.page').then(m => m.CreateClassPage)
   },
   {
     path: 'sendmessage',
-    loadChildren: () => import('./sendmessage/sendmessage.module').then( m => m.SendmessagePageModule)
+    loadComponent: () => import('./sendmessage/sendmessage.page').then(m => m.SendmessagePage)
   },
   {
     path: 'parentconnect',
-    loadChildren: () => import('./parentconnect/parentconnect.module').then( m => m.ParentconnectPageModule)
+    loadComponent: () => import('./parentconnect/parentconnect.page').then(m => m.ParentconnectPage)
   },
   {
     path: 'tabs/parentconnect',
-    loadChildren: () => import('./parentconnect/parentconnect.module').then( m => m.ParentconnectPageModule)
+    loadComponent: () => import('./parentconnect/parentconnect.page').then(m => m.ParentconnectPage)
   },
   {
     path: 'connect-new-message',
-    loadChildren: () => import('./connect-new-message/connect-new-message.module').then( m => m.ConnectNewMessagePageModule)
+    loadComponent: () => import('./connect-new-message/connect-new-message.page').then(m => m.ConnectNewMessagePage)
   },
   {
     path: 'connect-chat',
-    loadChildren: () => import('./connect-chat/connect-chat.module').then( m => m.ConnectChatPageModule)
+    loadComponent: () => import('./connect-chat/connect-chat.page').then(m => m.ConnectChatPage)
   },
   {
     path: 'elearning-schools',
-    loadChildren: () => import('./elearning-schools/elearning-schools.module').then( m => m.ElearningSchoolsPageModule)
+    loadComponent: () => import('./elearning-schools/elearning-schools.page').then(m => m.ElearningSchoolsPage)
   },
   {
     path: 'tabs/elearning-schools',
-    loadChildren: () => import('./elearning-schools/elearning-schools.module').then( m => m.ElearningSchoolsPageModule)
+    loadComponent: () => import('./elearning-schools/elearning-schools.page').then(m => m.ElearningSchoolsPage)
   },
   {
     path: 'elearning-school-video',
-    loadChildren: () => import('./elearning-school-video/elearning-school-video.module').then( m => m.ElearningSchoolVideoPageModule)
+    loadComponent: () => import('./elearning-school-video/elearning-school-video.page').then(m => m.ElearningSchoolVideoPage)
   },
   {
     path: 'playvideo',
-    loadChildren: () => import('./playvideo/playvideo.module').then( m => m.PlayvideoPageModule)
+    loadComponent: () => import('./playvideo/playvideo.page').then(m => m.PlayvideoPage)
   },
   {
     path: 'settings',
-    loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule)
+    loadComponent: () => import('./settings/settings.page').then(m => m.SettingsPage)
   },
   {
     path: 'children',
-    loadChildren: () => import('./children/children.module').then( m => m.ChildrenPageModule), canActivate: [AuthGuard]
+    loadComponent: () => import('./children/children.page').then(m => m.ChildrenPage), canActivate: [AuthGuard]
   },
   {
     path: 'tabs/children',
-    loadChildren: () => import('./children/children.module').then( m => m.ChildrenPageModule), canActivate: [AuthGuard]
+    loadComponent: () => import('./children/children.page').then(m => m.ChildrenPage), canActivate: [AuthGuard]
   },
   {
     path: 'private-message',
-    loadChildren: () => import('./private-message/private-message.module').then( m => m.PrivateMessagePageModule)
+    loadComponent: () => import('./private-message/private-message.page').then(m => m.PrivateMessagePage)
   },
   {
     path: 'tabs/private-message',
-    loadChildren: () => import('./private-message/private-message.module').then( m => m.PrivateMessagePageModule)
+    loadComponent: () => import('./private-message/private-message.page').then(m => m.PrivateMessagePage)
   },
   {
     path: 'students',
-    loadChildren: () => import('./students/students.module').then( m => m.StudentsPageModule)
+    loadComponent: () => import('./students/students.page').then(m => m.StudentsPage)
   },
   {
     path: 'post-news',
-    loadChildren: () => import('./post-news/post-news.module').then( m => m.PostNewsPageModule)
+    loadComponent: () => import('./post-news/post-news.page').then(m => m.PostNewsPage)
   },
   {
     path: 'parent-register',
-    loadChildren: () => import('./parent-register/parent-register.module').then( m => m.ParentRegisterPageModule)
+    loadComponent: () => import('./parent-register/parent-register.page').then(m => m.ParentRegisterPage)
   },
   {
     path: 'edit-calss',
-    loadChildren: () => import('./common-modal/edit-calss/edit-calss.module').then( m => m.EditCalssPageModule)
+    loadComponent: () => import('./common-modal/edit-calss/edit-calss.page').then(m => m.EditCalssPage)
   },
   {
     path: 'requested-parent',
-    loadChildren: () => import('./requested-parent/requested-parent.module').then( m => m.RequestedParentPageModule)
+    loadComponent: () => import('./requested-parent/requested-parent.page').then(m => m.RequestedParentPage)
   },
   {
     path: 'seminar-list',
-    loadChildren: () => import('./seminar-list/seminar-list.module').then( m => m.SeminarListPageModule)
+    loadComponent: () => import('./seminar-list/seminar-list.page').then(m => m.SeminarListPage)
   },
   {
     path: 'forgot-password',
-    loadChildren: () => import('./forgot-password/forgot-password.module').then( m => m.ForgotPasswordPageModule)
+    loadComponent: () => import('./forgot-password/forgot-password.page').then(m => m.ForgotPasswordPage)
   },
   {
     path: 'search-student',
-    loadChildren: () => import('./search-student/search-student.module').then( m => m.SearchStudentPageModule)
+    loadComponent: () => import('./search-student/search-student.page').then(m => m.SearchStudentPage)
   },
   {
     path: 'student-notes',
-    loadChildren: () => import('./student-notes/student-notes.module').then( m => m.StudentNotesPageModule)
+    loadComponent: () => import('./student-notes/student-notes.page').then(m => m.StudentNotesPage)
   },
   {
     path: 'tabs/student-notes',
-    loadChildren: () => import('./student-notes/student-notes.module').then( m => m.StudentNotesPageModule)
+    loadComponent: () => import('./student-notes/student-notes.page').then(m => m.StudentNotesPage)
   },
   {
     path: 'add-notes',
@@ -182,156 +182,156 @@ const routes: Routes = [
   },
   {
     path: 'view-class-notes',
-    loadChildren: () => import('./common-modal/view-class-notes/view-class-notes.module').then( m => m.ViewClassNotesPageModule)
+    loadComponent: () => import('./common-modal/view-class-notes/view-class-notes.page').then(m => m.ViewClassNotesPage)
   },
   {
     path: 'manage-teacher',
-    loadChildren: () => import('./manage-teacher/manage-teacher.module').then( m => m.ManageTeacherPageModule)
+    loadComponent: () => import('./manage-teacher/manage-teacher.page').then(m => m.ManageTeacherPage)
   },
   {
     path: 'edit-teacher-profile',
-    loadChildren: () => import('./edit-teacher-profile/edit-teacher-profile.module').then( m => m.EditTeacherProfilePageModule)
+    loadComponent: () => import('./edit-teacher-profile/edit-teacher-profile.page').then(m => m.EditTeacherProfilePage)
   },
   {
     path: 'follow-bulletins',
-    loadChildren: () => import('./follow-bulletins/follow-bulletins.module').then( m => m.FollowBulletinsPageModule)
+    loadComponent: () => import('./follow-bulletins/follow-bulletins.page').then(m => m.FollowBulletinsPage)
   },
   {
     path: 'bulletins',
-    loadChildren: () => import('./bulletins/bulletins.module').then( m => m.BulletinsPageModule)
+    loadComponent: () => import('./bulletins/bulletins.page').then(m => m.BulletinsPage)
   },
   {
     path: 'manage-student',
-    loadChildren: () => import('./manage-student/manage-student.module').then( m => m.ManageStudentPageModule)
+    loadComponent: () => import('./manage-student/manage-student.page').then(m => m.ManageStudentPage)
   },
   {
     path: 'edit-student-profile',
-    loadChildren: () => import('./edit-student-profile/edit-student-profile.module').then( m => m.EditStudentProfilePageModule)
+    loadComponent: () => import('./edit-student-profile/edit-student-profile.page').then(m => m.EditStudentProfilePage)
   },
   {
     path: 'available-plan',
-    loadChildren: () => import('./available-plan/available-plan.module').then( m => m.AvailablePlanPageModule)
+    loadComponent: () => import('./available-plan/available-plan.page').then(m => m.AvailablePlanPage)
   },
   {
     path: 'select-bulletins-user',
-    loadChildren: () => import('./select-bulletins-user/select-bulletins-user.module').then( m => m.SelectBulletinsUserPageModule)
+    loadComponent: () => import('./select-bulletins-user/select-bulletins-user.page').then(m => m.SelectBulletinsUserPage)
   },
   {
     path: 'share-bulletins',
-    loadChildren: () => import('./share-bulletins/share-bulletins.module').then( m => m.ShareBulletinsPageModule)
+    loadComponent: () => import('./share-bulletins/share-bulletins.page').then(m => m.ShareBulletinsPage)
   },
   {
     path: 'view-notes',
-    loadChildren: () => import('./view-notes/view-notes.module').then( m => m.ViewNotesPageModule)
+    loadComponent: () => import('./view-notes/view-notes.page').then(m => m.ViewNotesPage)
   },
   {
     path: 'view-bulletin',
-    loadChildren: () => import('./view-bulletin/view-bulletin.module').then( m => m.ViewBulletinPageModule)
+    loadComponent: () => import('./view-bulletin/view-bulletin.page').then(m => m.ViewBulletinPage)
   },
   {
     path: 'select-message-user',
-    loadChildren: () => import('./common-modal/select-message-user/select-message-user.module').then( m => m.SelectMessageUserPageModule)
+    loadComponent: () => import('./common-modal/select-message-user/select-message-user.page').then(m => m.SelectMessageUserPage)
   },
   {
     path: 'warning-report',
-    loadChildren: () => import('./warning-report/warning-report.module').then( m => m.WarningReportPageModule)
+    loadComponent: () => import('./warning-report/warning-report.page').then(m => m.WarningReportPage)
   },
   {
     path: 'follow-up-student',
-    loadChildren: () => import('./follow-up-student/follow-up-student.module').then( m => m.FollowUpStudentPageModule)
+    loadComponent: () => import('./follow-up-student/follow-up-student.page').then(m => m.FollowUpStudentPage)
   },
   {
     path: 'add-class',
-    loadChildren: () => import('./add-class/add-class.module').then( m => m.AddClassPageModule)
+    loadComponent: () => import('./add-class/add-class.page').then(m => m.AddClassPage)
   },
   {
     path: 'followup-student-list',
-    loadChildren: () => import('./followup-student-list/followup-student-list.module').then( m => m.FollowupStudentListPageModule)
+    loadComponent: () => import('./followup-student-list/followup-student-list.page').then(m => m.FollowupStudentListPage)
   },
   {
     path: 'student-report-classes',
-    loadChildren: () => import('./student-report-classes/student-report-classes.module').then( m => m.StudentReportClassesPageModule)
+    loadComponent: () => import('./student-report-classes/student-report-classes.page').then(m => m.StudentReportClassesPage)
   },
   {
     path: 'student-report-list',
-    loadChildren: () => import('./student-report-list/student-report-list.module').then( m => m.StudentReportListPageModule)
+    loadComponent: () => import('./student-report-list/student-report-list.page').then(m => m.StudentReportListPage)
   },
   {
     path: 'student-report-manage',
-    loadChildren: () => import('./student-report-manage/student-report-manage.module').then( m => m.StudentReportManagePageModule)
+    loadComponent: () => import('./student-report-manage/student-report-manage.page').then(m => m.StudentReportManagePage)
   },
   {
     path: 'followup-add-fields',
-    loadChildren: () => import('./followup-add-fields/followup-add-fields.module').then( m => m.FollowupAddFieldsPageModule)
+    loadComponent: () => import('./followup-add-fields/followup-add-fields.page').then(m => m.FollowupAddFieldsPage)
   },
   {
     path: 'add-teacher',
-    loadChildren: () => import('./add-teacher/add-teacher.module').then( m => m.AddTeacherPageModule)
+    loadComponent: () => import('./add-teacher/add-teacher.page').then(m => m.AddTeacherPage)
   },
   {
     path: 'add-parent',
-    loadChildren: () => import('./add-parent/add-parent.module').then( m => m.AddParentPageModule)
+    loadComponent: () => import('./add-parent/add-parent.page').then(m => m.AddParentPage)
   },
  
   {
     path: 'note-calendar',
-    loadChildren: () => import('./note-calendar/note-calendar.module').then( m => m.NoteCalendarPageModule)
+    loadComponent: () => import('./note-calendar/note-calendar.page').then(m => m.NoteCalendarPage)
   },
   {
     path: 'users-list',
-    loadChildren: () => import('./users-list/users-list.module').then( m => m.UsersListPageModule)
+    loadComponent: () => import('./users-list/users-list.page').then(m => m.UsersListPage)
   },
   {
     path: 'add-user',
-    loadChildren: () => import('./add-user/add-user.module').then( m => m.AddUserPageModule)
+    loadComponent: () => import('./add-user/add-user.page').then(m => m.AddUserPage)
   },
   {
     path: 'edit-user-profile',
-    loadChildren: () => import('./edit-user-profile/edit-user-profile.module').then( m => m.EditUserProfilePageModule)
+    loadComponent: () => import('./edit-user-profile/edit-user-profile.page').then(m => m.EditUserProfilePage)
   },
   {
     path: 'tasks-calendar',
-    loadChildren: () => import('./tasks-calendar/tasks-calendar.module').then( m => m.TasksCalendarPageModule)
+    loadComponent: () => import('./tasks-calendar/tasks-calendar.page').then(m => m.TasksCalendarPage)
   },
   {
     path: 'profile-image',
-    loadChildren: () => import('./modals/profile-image/profile-image.module').then( m => m.ProfileImagePageModule)
+    loadComponent: () => import('./modals/profile-image/profile-image.page').then(m => m.ProfileImagePage)
   },
   {
     path: 'apply-vouches-code',
-    loadChildren: () => import('./apply-vouches-code/apply-vouches-code.module').then( m => m.ApplyVouchesCodePageModule)
+    loadComponent: () => import('./apply-vouches-code/apply-vouches-code.page').then(m => m.ApplyVouchesCodePage)
   },
   {
     path: 'absent-students',
-    loadChildren: () => import('./absent-students/absent-students.module').then( m => m.AbsentStudentsPageModule)
+    loadComponent: () => import('./absent-students/absent-students.page').then(m => m.AbsentStudentsPage)
   },
   {
     path: 'submit-absent-application',
-    loadChildren: () => import('./submit-absent-application/submit-absent-application.module').then( m => m.SubmitAbsentApplicationPageModule)
+    loadComponent: () => import('./submit-absent-application/submit-absent-application.page').then(m => m.SubmitAbsentApplicationPage)
   },
   {
     path: 'all-application-list',
-    loadChildren: () => import('./all-application-list/all-application-list.module').then( m => m.AllApplicationListPageModule)
+    loadComponent: () => import('./all-application-list/all-application-list.page').then(m => m.AllApplicationListPage)
   },
   {
     path: 'view-application-details',
-    loadChildren: () => import('./view-application-details/view-application-details.module').then( m => m.ViewApplicationDetailsPageModule)
+    loadComponent: () => import('./view-application-details/view-application-details.page').then(m => m.ViewApplicationDetailsPage)
   },
   {
     path: 'all-devices',
-    loadChildren: () => import('./all-devices/all-devices.module').then( m => m.AllDevicesPageModule)
+    loadComponent: () => import('./all-devices/all-devices.page').then(m => m.AllDevicesPage)
   },
   {
     path: 'pdfviewer',
-    loadChildren: () => import('./pdfviewer/pdfviewer.module').then( m => m.PdfviewerPageModule)
+    loadComponent: () => import('./pdfviewer/pdfviewer.page').then(m => m.PdfviewerPage)
   },
   {
     path: 'user-selection',
-    loadChildren: () => import('./user-selection/user-selection.module').then( m => m.UserSelectionPageModule)
+    loadComponent: () => import('./user-selection/user-selection.page').then(m => m.UserSelectionPage)
   },
   {
     path: 'student-titles',
-    loadChildren: () => import('./student-titles/student-titles.module').then( m => m.StudentTitlesPageModule)
+    loadComponent: () => import('./student-titles/student-titles.page').then(m => m.StudentTitlesPage)
   },
 
 

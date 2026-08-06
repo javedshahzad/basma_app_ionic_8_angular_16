@@ -12,8 +12,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../classlist/classlist.module').then(m => m.ClasslistPageModule)
+            loadComponent: () => import('../classlist/classlist.page').then(m => m.ClasslistPage)
           }
         ]
       },
@@ -22,8 +21,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../delaylist/delaylist.module').then( m => m.DelaylistPageModule)
+            loadComponent: () => import('../delaylist/delaylist.page').then(m => m.DelaylistPage)
           }
         ]
       },
@@ -32,8 +30,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../news/news.module').then(m => m.NewsPageModule)
+            loadComponent: () => import('../news/news.page').then(m => m.NewsPage)
           }
         ]
       },
@@ -42,8 +39,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../messages/messages.module').then(m => m.MessagesPageModule)
+            loadComponent: () => import('../messages/messages.page').then(m => m.MessagesPage)
           }
         ]
       },
@@ -52,8 +48,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../parentconnect/parentconnect.module').then( m => m.ParentconnectPageModule)
+            loadComponent: () => import('../parentconnect/parentconnect.page').then(m => m.ParentconnectPage)
           }
         ]
       },
@@ -62,8 +57,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../children/children.module').then( m => m.ChildrenPageModule)
+            loadComponent: () => import('../children/children.page').then(m => m.ChildrenPage)
           }
         ]
       },
@@ -72,8 +66,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../private-message/private-message.module').then( m => m.PrivateMessagePageModule)
+            loadComponent: () => import('../private-message/private-message.page').then(m => m.PrivateMessagePage)
           }
         ]
       },
@@ -82,8 +75,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../student-notes/student-notes.module').then( m => m.StudentNotesPageModule)
+            loadComponent: () => import('../student-notes/student-notes.page').then(m => m.StudentNotesPage)
           }
         ]
       },
@@ -92,8 +84,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../elearning-schools/elearning-schools.module').then( m => m.ElearningSchoolsPageModule)
+            loadComponent: () => import('../elearning-schools/elearning-schools.page').then(m => m.ElearningSchoolsPage)
           }
         ]
       },
@@ -102,8 +93,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../warning-report/warning-report.module').then( m => m.WarningReportPageModule)
+            loadComponent: () => import('../warning-report/warning-report.page').then(m => m.WarningReportPage)
           }
         ]
       },
@@ -112,15 +102,14 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () =>
-             import('../follow-up-student/follow-up-student.module').then( m => m.FollowUpStudentPageModule)
+            loadComponent: () => import('../follow-up-student/follow-up-student.page').then(m => m.FollowUpStudentPage)
           }
         ]
       },
       {
         path: 'student-titles',
         children: [
-          { path: '', loadChildren: () => import('../student-titles/student-titles.module').then(m => m.StudentTitlesPageModule) }
+          { path: '', loadComponent: () => import('../student-titles/student-titles.page').then(m => m.StudentTitlesPage) }
         ]
       },
       {
