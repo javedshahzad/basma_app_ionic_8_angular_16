@@ -11,7 +11,7 @@ import {
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DatabaseService } from '../service/database/database.service';
 import { StudentDataService } from '../service/student-data/student-data.service';
@@ -138,7 +138,6 @@ export class StudentDetailPage implements OnInit {
     public translate: TranslateService,
     public alertCtrl: AlertController,
     private printer: Printer,
-    public network: Network,
     private route: ActivatedRoute,
     private router: Router,
     public zone: NgZone,
@@ -327,9 +326,9 @@ export class StudentDetailPage implements OnInit {
     });
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
+      if ((await Network.getStatus()).connected) {
         this.checkProfile();
       } else {
         if (this.navData.student_id) {
@@ -913,7 +912,7 @@ export class StudentDetailPage implements OnInit {
   }
 
   async takePicture(event?: any) {
-    if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
+    if ((await Network.getStatus()).connected) {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popover.create({
           component: ImageOptionPopoverComponent,
@@ -1210,7 +1209,7 @@ export class StudentDetailPage implements OnInit {
     //   return;
     // }
 
-    if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
+    if ((await Network.getStatus()).connected) {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popover.create({
           component: PrintOptionsPopoverComponent,

@@ -3,7 +3,6 @@ import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
@@ -36,7 +35,6 @@ export class ManageStudentPage implements OnInit {
     public authProvider: AuthService,
     public translate: TranslateService,
     public alertCtrl: AlertController,
-    public network: Network,
     private route: ActivatedRoute,
     private router: Router,
     public zone: NgZone,

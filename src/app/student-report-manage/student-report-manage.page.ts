@@ -4,7 +4,6 @@ import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 
-import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DatabaseService } from '../service/database/database.service';
 import { StudentDataService } from '../service/student-data/student-data.service';
@@ -97,7 +96,6 @@ export class StudentReportManagePage implements OnInit {
     public alertController: AlertController,
     public translate: TranslateService,
     public alertCtrl: AlertController,
-    public network: Network,
     private route: ActivatedRoute,
     private router: Router,
     private printer: Printer,

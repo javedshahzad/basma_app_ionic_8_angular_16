@@ -1,8 +1,5 @@
 ﻿import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
-import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
@@ -23,17 +20,6 @@ describe('ElearningSchoolsPage', () => {
       declarations: [ElearningSchoolsPage],
       imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule],
       providers: [
-        {
-          provide: Network,
-          useValue: {
-            onDisconnect: () => NEVER,
-            onConnect: () => NEVER,
-            type: 'wifi',
-            Connection: { UNKNOWN: 'unknown', NONE: 'none' }
-          }
-        },
-        { provide: Device, useValue: { uuid: 'test-uuid', platform: 'browser' } },
-        { provide: SQLite, useValue: {} },
         { provide: AppRate, useValue: {} },
         {
           provide: GeoServiceProvider,

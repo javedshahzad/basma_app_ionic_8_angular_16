@@ -7,7 +7,7 @@ import { PopoverController } from '@ionic/angular';
 import { LoaderComponent } from '../components/loader/loader.component';
 import { LoginModel } from '../model/login.model';
 import { NavController, Platform } from '@ionic/angular';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { Device } from '@capacitor/device';
 
 // 🟢 استيراد خدمة التخزين الموحدة
 import { StorageService } from '../service/storage.service';
@@ -33,7 +33,6 @@ export class ParentRegisterPage implements OnInit {
     public dataProvider: DataService,
     private route: ActivatedRoute,
     private router: Router,
-    public device: Device,
     public popoverController: PopoverController,
     public platform: Platform,
     public dbProvider: DatabaseService,
@@ -64,7 +63,7 @@ export class ParentRegisterPage implements OnInit {
     }
 
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      this.user.device_id = this.device.uuid;
+      this.user.device_id = (await Device.getId()).identifier;
       if (this.platform.is('android')) {
         this.user.os_type = 1;
       } else {

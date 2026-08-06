@@ -3,7 +3,6 @@ import { PopoverController, IonicModule } from '@ionic/angular';
 import { NavController, Platform } from '@ionic/angular';
 import { AuthService } from '@services/auth/auth.service';
 import { DatabaseService } from '@services/database/database.service';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -37,7 +36,6 @@ export class EditStudentProfileComponent implements OnInit {
   constructor(
     public popoverController: PopoverController,
     public navCtrl: NavController,
-    public device: Device,
     public authProvider: AuthService,
     public platform: Platform,
     // public events: Events,

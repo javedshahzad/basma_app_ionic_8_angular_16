@@ -11,10 +11,9 @@ import { environment } from '../../../environments/environment';
 import { Observable, Subject } from 'rxjs';
 import { Platform, LoadingController, ModalController, NavController, PopoverController } from '@ionic/angular';
 //import { HttpParams, Http, Headers } from '@angular/common/http';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Network } from '@capacitor/network';
 import { DatabaseService } from '../database/database.service';
 //import { TranslateService } from '@ngx-translate/core';
-import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 // import { PhotoLibrary } from '@awesome-cordova-plugins/photo-library/ngx';
 import { TranslateService } from '@ngx-translate/core';
 //import { EditCalssPage } from '../../common-modal/edit-calss/edit-calss.page';
@@ -67,7 +66,6 @@ export class DataService {
     public loadingCtrl: LoadingController,
     public translate: TranslateService,
     public modalController: ModalController,
-    public network: Network,
     public popoverController: PopoverController,
     public dbProvider: DatabaseService,
     public studentService: StudentDataService,
@@ -91,12 +89,12 @@ export class DataService {
     this.language.subscribe(res => {
       environment.lang_code = res;
     });
-    this.network.onDisconnect().subscribe(() => {
-      this.showToast('No Internet connection...');
-    });
-
-    this.network.onConnect().subscribe(() => {
-      this.showToast('Internet connected');
+    Network.addListener('networkStatusChange', status => {
+      if (status.connected) {
+        this.showToast('Internet connected');
+      } else {
+        this.showToast('No Internet connection...');
+      }
     });
   }
 

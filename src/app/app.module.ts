@@ -16,14 +16,9 @@ import { StudentDataService } from './service/student-data/student-data.service'
 import { FileUploadService } from './service/file-upload/file-upload.service';
 import { DocumentService } from './service/document/document.service';
 import { GeoServiceProvider } from './service/geo-service/geo-service';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient, HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-
-import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
-import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
 
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { LoaderComponent } from './components/loader/loader.component';
@@ -36,8 +31,6 @@ import { GlobalErrorHandler } from './global-error-handler';
 
 import { registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
-
-import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 
 // تسجيل اللغة العربية في نواة التطبيق
 registerLocaleData(localeAr, 'ar-KW');
@@ -71,15 +64,10 @@ export function createTranslateLoader(http: HttpClient) {
   providers: [
     DataService,
     AuthService,
-    SQLite,
     DocumentService,
     StudentDataService,
     DatabaseService,
     FileUploadService,
-    Network,
-    ScreenOrientation,
-    SocialSharing,
-    Device,
     GeoServiceProvider,
     PhotoViewer,
     Printer,

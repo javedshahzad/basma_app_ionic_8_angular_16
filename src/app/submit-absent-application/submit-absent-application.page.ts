@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Network } from '@capacitor/network';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../service/auth/auth.service';
@@ -39,7 +39,6 @@ export class SubmitAbsentApplicationPage implements OnInit {
     public authProvider: AuthService,
     public translate: TranslateService,
     public alertCtrl: AlertController,
-    public network: Network,
     private route: ActivatedRoute,
     private router: Router,
     private platform: Platform, // 🟢 لحماية التقاط الصور
@@ -156,7 +155,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
   async takePicture() {
     // 🟢 حماية الكاميرا للعمل فقط إذا كان هناك إنترنت، لأن السيرفر يحتاج لرفع الصورة فوراً
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      if (this.network.type === this.network.Connection.NONE || this.network.type === this.network.Connection.UNKNOWN) {
+      if (!(await Network.getStatus()).connected) {
         this.dataProvider.showToast(this.lang?.no_internet || 'لا يوجد اتصال بالإنترنت');
         return;
       }

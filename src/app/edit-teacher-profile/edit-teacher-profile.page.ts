@@ -14,7 +14,6 @@ import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 //import { TabsPage } from '../tabs/tabs';
 
-import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
@@ -48,7 +47,6 @@ export class EditTeacherProfilePage implements OnInit {
     public translate: TranslateService,
     public alertCtrl: AlertController,
 
-    public network: Network,
     private route: ActivatedRoute,
     private router: Router,
     public zone: NgZone,

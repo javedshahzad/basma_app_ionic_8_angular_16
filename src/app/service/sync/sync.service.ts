@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Network } from '@capacitor/network';
 import { StorageService } from '../storage.service';
 import { OverlayService } from '../overlay/overlay.service';
 import { AttendanceApiService } from '../attendance-api/attendance-api.service';
@@ -19,13 +19,14 @@ export class SyncService {
 
   constructor(
     private platform: Platform,
-    private network: Network,
     private storageSr: StorageService,
     private overlay: OverlayService,
     private attendanceApi: AttendanceApiService
   ) {
-    this.network.onConnect().subscribe(() => {
-      this.syncOffileData();
+    Network.addListener('networkStatusChange', status => {
+      if (status.connected) {
+        this.syncOffileData();
+      }
     });
   }
 
@@ -44,16 +45,10 @@ export class SyncService {
   }
 
   private async getNetworkInformation(): Promise<boolean> {
-    return new Promise((resolve) => {
-      if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        const isOnline =
-          this.network.type !== this.network.Connection.NONE &&
-          this.network.type !== this.network.Connection.UNKNOWN;
-        resolve(isOnline);
-        return;
-      }
-      resolve(navigator.onLine);
-    });
+    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+      return (await Network.getStatus()).connected;
+    }
+    return navigator.onLine;
   }
 
   private async performOfflineSync() {

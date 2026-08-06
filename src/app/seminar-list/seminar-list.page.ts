@@ -3,7 +3,6 @@ import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 import domtoimage from 'dom-to-image';
@@ -43,7 +42,6 @@ export class SeminarListPage implements OnInit {
     public authProvider: AuthService,
     public translate: TranslateService,
     public alertCtrl: AlertController,
-    public network: Network,
     private printer: Printer,
     private route: ActivatedRoute,
     private router: Router,

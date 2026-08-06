@@ -7,10 +7,6 @@ import { Platform, MenuController, NavController, ToastController } from '@ionic
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { HttpClient } from '@angular/common/http';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
-import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
-import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
 
 import { AppComponent } from './app.component';
 import { AuthService } from './service/auth/auth.service';
@@ -62,22 +58,18 @@ describe('AppComponent', () => {
         { provide: StorageService, useValue: storageSrSpy },
         { provide: TranslateService, useValue: translateSpy },
         { provide: AuthService, useValue: { event: authEvent } },
-        { provide: ScreenOrientation, useValue: {} },
         { provide: DataService, useValue: dataProviderSpy },
         { provide: DatabaseService, useValue: jasmine.createSpyObj('DatabaseService', {
             openDataBase: Promise.resolve(),
             createTable: undefined
           }) },
-        { provide: Network, useValue: {} },
         { provide: IonicStorage, useValue: { create: () => Promise.resolve({ get: () => Promise.resolve(null), set: () => Promise.resolve(), remove: () => Promise.resolve(), clear: () => Promise.resolve() }) } },
         { provide: NavController, useValue: jasmine.createSpyObj('NavController', ['navigateRoot']) },
-        { provide: SocialSharing, useValue: {} },
         { provide: FcmService, useValue: { getPlan: fcmGetPlan, initPush: () => {} } },
         { provide: SyncService, useValue: {} },
         { provide: DeviceApiService, useValue: {} },
         { provide: MenuController, useValue: jasmine.createSpyObj('MenuController', ['close']) },
         { provide: ToastController, useValue: {} },
-        { provide: Device, useValue: { uuid: 'test-uuid' } },
         { provide: HttpClient, useValue: {} },
         { provide: PlanApiService, useValue: {} },
       ],

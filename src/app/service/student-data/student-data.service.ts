@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { Platform } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 
@@ -13,7 +12,7 @@ export class StudentDataService {
   studentNote: any = [];
   staticalData: any = [];
 
-  constructor(public http: HttpClient, public sqlite: SQLite, public platform: Platform,
+  constructor(public http: HttpClient, public platform: Platform,
               private storage: Storage) {
   }
 

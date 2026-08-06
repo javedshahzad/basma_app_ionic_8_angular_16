@@ -1,6 +1,5 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { NavController, AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../service/auth/auth.service';
@@ -33,7 +32,6 @@ export class ViewApplicationDetailsPage implements OnInit {
     public authProvider: AuthService,
     public translate: TranslateService,
     public alertCtrl: AlertController,
-    public network: Network,
     private route: ActivatedRoute,
     private router: Router,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين

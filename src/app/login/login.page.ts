@@ -4,7 +4,7 @@ import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
 import { LoginModel } from '../model/login.model';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { Device } from '@capacitor/device';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { LoaderComponent } from '../components/loader/loader.component';
@@ -35,7 +35,6 @@ export class LoginPage implements OnInit {
 
   constructor(
     public navCtrl: NavController,
-    public device: Device,
     public authProvider: AuthService,
     public dataProvider: DataService,
     public platform: Platform,
@@ -59,8 +58,9 @@ export class LoginPage implements OnInit {
 
     // 1. تحديد المعرف الفريد (UUID) ومنع أخطاء المتصفح
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      this.uniqueDeviceId = this.device.uuid;
-      this.user.os_type = this.device.platform === 'android' || this.device.platform === 'Android' ? 1 : 2;
+      const [deviceId, deviceInfo] = await Promise.all([Device.getId(), Device.getInfo()]);
+      this.uniqueDeviceId = deviceId.identifier;
+      this.user.os_type = deviceInfo.platform === 'android' ? 1 : 2;
     } else {
       let browserId = await this.storageSr.get('browser_uuid');
       if (!browserId) {

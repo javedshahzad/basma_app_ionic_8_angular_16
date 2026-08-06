@@ -4,7 +4,6 @@ import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router, NavigationExtras } from '@angular/router';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 
@@ -39,7 +38,6 @@ export class BulletinsPage implements OnInit {
     public authProvider: AuthService,
     public translate: TranslateService,
     public alertCtrl: AlertController,
-    public network: Network,
     private photoViewer: PhotoViewer,
     private router: Router,
     public zone: NgZone,

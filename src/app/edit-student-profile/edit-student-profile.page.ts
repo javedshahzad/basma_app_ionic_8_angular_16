@@ -2,7 +2,6 @@
 import { PopoverController, AlertController, NavController, Platform, MenuController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DatabaseService } from '../service/database/database.service';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DataService } from './../service/data/data.service';
@@ -40,7 +39,6 @@ export class EditStudentProfilePage implements OnInit {
   constructor(
     public popoverController: PopoverController,
     public navCtrl: NavController,
-    public device: Device,
     public authProvider: AuthService,
     public platform: Platform,
     private alertCtrl: AlertController,

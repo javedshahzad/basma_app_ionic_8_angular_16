@@ -9,7 +9,7 @@ import {
 } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DatabaseService } from '../../service/database/database.service';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { Device } from '@capacitor/device';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoaderComponent } from '../../components/loader/loader.component';
@@ -46,7 +46,6 @@ export class SwitchAccountComponent implements OnInit {
   constructor(
     public popoverController: PopoverController,
     public navCtrl: NavController,
-    public device: Device,
     public authProvider: AuthService,
     public platform: Platform,
     private alertController: AlertController,
@@ -77,8 +76,9 @@ export class SwitchAccountComponent implements OnInit {
     }
 
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      this.device_id = this.device.uuid;
-      this.os_type = this.device.platform == 'android' || this.device.platform == 'Android' ? 1 : 2;
+      const [deviceId, deviceInfo] = await Promise.all([Device.getId(), Device.getInfo()]);
+      this.device_id = deviceId.identifier;
+      this.os_type = deviceInfo.platform === 'android' ? 1 : 2;
     } else {
       let browserId = await this.storageSr.get('browser_uuid');
       if (!browserId) {

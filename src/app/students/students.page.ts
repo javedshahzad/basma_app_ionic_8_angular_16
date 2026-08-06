@@ -13,7 +13,7 @@ import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // الاستيرادات الخاصة بالصورة والنوافذ
@@ -84,7 +84,6 @@ export class StudentsPage implements OnInit {
     public authProvider: AuthService,
     public translate: TranslateService,
     public alertCtrl: AlertController,
-    public network: Network,
     private route: ActivatedRoute,
     private router: Router,
     public zone: NgZone,
@@ -343,9 +342,9 @@ export class StudentsPage implements OnInit {
     }, 300);
   }
 
-  openCalenderModal() {
+  async openCalenderModal() {
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      if (this.network.type === this.network.Connection.NONE || this.network.type === this.network.Connection.UNKNOWN) {
+      if (!(await Network.getStatus()).connected) {
         this.dataProvider.showToast(this.lang.no_internet);
         return;
       }
@@ -420,7 +419,7 @@ export class StudentsPage implements OnInit {
       let submittedByUser = this.userType == UserType.Admin ? 1 : this.userType == UserType.Moderator ? 2 : 0;
 
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
+        if ((await Network.getStatus()).connected) {
           this.attendanceApi
             .markDelayAttendance(data, submittedByUser)
             .then(response => {
@@ -712,7 +711,7 @@ export class StudentsPage implements OnInit {
 
   // ================= دوال الكاميرا وتغيير الصورة =================
   async takePicture(event?: any) {
-    if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
+    if ((await Network.getStatus()).connected) {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popoverController.create({
           component: ImageOptionPopoverComponent,

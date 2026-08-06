@@ -16,8 +16,7 @@ import { DataService } from '../service/data/data.service';
 import { Browser } from '@capacitor/browser';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../service/auth/auth.service';
-import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
-import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { Router } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 
@@ -71,10 +70,8 @@ export class NewsPage implements OnInit {
     private geo: GeoServiceProvider,
     public authProvider: AuthService,
     public translate: TranslateService,
-    public socialSharing: SocialSharing,
     private router: Router,
     public alertController: AlertController,
-    public screen: ScreenOrientation,
     public sanitizer: DomSanitizer,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private zone: NgZone,
@@ -137,7 +134,7 @@ export class NewsPage implements OnInit {
 
   ionViewWillLeave() {
     if (this.platform.is('cordova')) {
-      this.screen.lock(this.screen.ORIENTATIONS.PORTRAIT).catch(err => console.log(err));
+      ScreenOrientation.lock({ orientation: 'portrait' }).catch(err => console.log(err));
     }
   }
 
@@ -240,7 +237,7 @@ export class NewsPage implements OnInit {
             // فتح الشاشة في حالة تشغيل فيديو
             for (let i = 0; i < this.allNews.length; i++) {
               if (this.allNews[i].video_url != '') {
-                if (this.platform.is('cordova')) this.screen.unlock();
+                if (this.platform.is('cordova')) ScreenOrientation.unlock();
                 break;
               }
             }

@@ -12,7 +12,7 @@ import { NavController, AlertController, Platform, ModalController } from '@ioni
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { ConnectNewMessagePage } from '../connect-new-message/connect-new-message.page';
 
@@ -57,7 +57,6 @@ export class ParentconnectPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public zone: NgZone,
-    public network: Network,
     public platform: Platform,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private parentConnectApi: ParentConnectApiService,
@@ -169,11 +168,10 @@ export class ParentconnectPage implements OnInit {
       });
   }
 
-  createChatMessage() {
+  async createChatMessage() {
     let isOffline = false;
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      isOffline =
-        this.network.type === this.network.Connection.NONE || this.network.type === this.network.Connection.UNKNOWN;
+      isOffline = !(await Network.getStatus()).connected;
     } else {
       isOffline = !navigator.onLine;
     }
@@ -208,11 +206,10 @@ export class ParentconnectPage implements OnInit {
     });
   }
 
-  openChat(chat: any) {
+  async openChat(chat: any) {
     let isOffline = false;
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      isOffline =
-        this.network.type === this.network.Connection.NONE || this.network.type === this.network.Connection.UNKNOWN;
+      isOffline = !(await Network.getStatus()).connected;
     } else {
       isOffline = !navigator.onLine;
     }

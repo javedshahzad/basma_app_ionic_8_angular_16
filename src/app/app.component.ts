@@ -1,4 +1,4 @@
-﻿import { Device } from '@awesome-cordova-plugins/device/ngx';
+﻿import { Device } from '@capacitor/device';
 import { UserType } from './constants/user-type';
 import { Component, OnInit, NgZone } from '@angular/core';
 import { Platform, MenuController, NavController } from '@ionic/angular';
@@ -6,9 +6,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './service/auth/auth.service';
 import { DataService } from './service/data/data.service';
 import { DatabaseService } from './service/database/database.service';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
-import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
-import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+import { Network } from '@capacitor/network';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
+import { Share } from '@capacitor/share';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { ToastController } from '@ionic/angular';
@@ -60,22 +60,18 @@ export class AppComponent implements OnInit {
     private storageSr: StorageService,
     public translate: TranslateService,
     public auth: AuthService,
-    public screen: ScreenOrientation,
     public dataProvider: DataService,
     public dbProvider: DatabaseService,
-    public network: Network,
     public zone: NgZone,
     private route: ActivatedRoute,
     private storage: Storage,
     private navController: NavController,
-    public socialSharing: SocialSharing,
     private fcm: FcmService,
     private syncService: SyncService,
     private deviceApi: DeviceApiService,
     public menuCtrl: MenuController,
     public toastController: ToastController,
     public router: Router,
-    private device: Device,
     private http: HttpClient,
     private planApi: PlanApiService
   ) {
@@ -165,9 +161,9 @@ export class AppComponent implements OnInit {
   }
 
   initializeApp() {
-    this.platform.ready().then(() => {
+    this.platform.ready().then(async () => {
       if (this.platform.is('capacitor')) {
-        this.storageSr.set('uuid', this.device.uuid);
+        this.storageSr.set('uuid', (await Device.getId()).identifier);
       } else {
         this.storageSr.set('uuid', '#1122112233112233');
       }
@@ -247,44 +243,34 @@ export class AppComponent implements OnInit {
       });
 
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        this.screen
-          .lock(this.screen.ORIENTATIONS.PORTRAIT)
+        ScreenOrientation.lock({ orientation: 'portrait' })
           .then(() => {})
           .catch(() => {});
 
-        setTimeout(() => {
-          if (
-            this.network.type == this.network.Connection.UNKNOWN ||
-            this.network.type == this.network.Connection.NONE
-          ) {
-            // no-op: initial check, handled by onDisconnect/onConnect below
+        setTimeout(async () => {
+          if (!(await Network.getStatus()).connected) {
+            // no-op: initial check, handled by the networkStatusChange listener below
           }
         }, 1000);
 
-        this.network.onDisconnect().subscribe(() => {
-          // Delay so we don't show a false-positive during brief network blips.
-          setTimeout(() => {
-            if (
-              this.network.type == this.network.Connection.UNKNOWN ||
-              this.network.type == this.network.Connection.NONE
-            ) {
-              this.dataProvider.showToast(this.lang.alertmessages.not_online);
+        Network.addListener('networkStatusChange', status => {
+          if (status.connected) {
+            if (!this.runNetwork) {
+              this.runNetwork = true;
             }
-          }, 2000);
-        });
-
-        this.network.onConnect().subscribe(() => {
-          if (!this.runNetwork) {
-            this.runNetwork = true;
+          } else {
+            // Delay so we don't show a false-positive during brief network blips.
+            setTimeout(async () => {
+              if (!(await Network.getStatus()).connected) {
+                this.dataProvider.showToast(this.lang.alertmessages.not_online);
+              }
+            }, 2000);
           }
         });
 
         this.platform.resume.subscribe(() => {
-          setTimeout(() => {
-            if (
-              this.network.type !== this.network.Connection.UNKNOWN &&
-              this.network.type !== this.network.Connection.NONE
-            ) {
+          setTimeout(async () => {
+            if ((await Network.getStatus()).connected) {
               this.runNetwork = true;
             }
           }, 1000);
@@ -479,26 +465,25 @@ export class AppComponent implements OnInit {
   }
 
   shareRegistrationLink() {
-    this.socialSharing
-      .share('Teacher Registration', 'This is registration link for the new teacher.', null, this.activeLink.link)
-      .then(
-        () => {},
-        err => console.log(err)
-      );
+    Share.share({
+      text: 'Teacher Registration',
+      title: 'This is registration link for the new teacher.',
+      url: this.activeLink.link
+    }).then(
+      () => {},
+      err => console.log(err)
+    );
   }
 
   shareParentRegistrationLink() {
-    this.socialSharing
-      .share(
-        'Parent Registration',
-        'This is registration link for the new parents.',
-        null,
-        this.activeLink.parent_link_active
-      )
-      .then(
-        () => {},
-        err => console.log(err)
-      );
+    Share.share({
+      text: 'Parent Registration',
+      title: 'This is registration link for the new parents.',
+      url: this.activeLink.parent_link_active
+    }).then(
+      () => {},
+      err => console.log(err)
+    );
   }
 
   registerParent(page) {
@@ -514,7 +499,7 @@ export class AppComponent implements OnInit {
     this.dataProvider
       .run(() => this.dataProvider.getShareLink('elem'))
       .then(response => {
-        this.socialSharing.share(null, null, null, response.short_url).then(
+        Share.share({ url: response.short_url }).then(
           () => {},
           err => console.log(err)
         );
@@ -769,7 +754,7 @@ export class AppComponent implements OnInit {
       let currentDeviceId = '';
 
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        currentDeviceId = this.device.uuid;
+        currentDeviceId = (await Device.getId()).identifier;
       }
 
       if (!currentDeviceId || currentDeviceId === 'undefined') {
@@ -808,7 +793,7 @@ export class AppComponent implements OnInit {
       let currentDeviceId = '';
 
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        currentDeviceId = this.device.uuid;
+        currentDeviceId = (await Device.getId()).identifier;
       }
 
       if (!currentDeviceId || currentDeviceId === 'undefined') {

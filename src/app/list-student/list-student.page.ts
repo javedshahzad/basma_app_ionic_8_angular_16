@@ -12,7 +12,7 @@ import {
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 
@@ -157,7 +157,6 @@ export class ListStudentPage implements OnInit {
     public authProvider: AuthService,
     public translate: TranslateService,
     public alertCtrl: AlertController,
-    public network: Network,
     private route: ActivatedRoute,
     private router: Router,
     public zone: NgZone,
@@ -1299,7 +1298,7 @@ export class ListStudentPage implements OnInit {
       username: this.userDetails.details.first_name || this.userDetails.details.username || 'الإدارة'
     };
 
-    if (this.isOnline()) {
+    if (await this.isOnline()) {
       this.sendAttendanceToServer(data);
     } else {
       this.dataProvider.hideLoading();
@@ -1339,11 +1338,9 @@ export class ListStudentPage implements OnInit {
       this.attendanceSheet
     );
   }
-  isOnline(): boolean {
+  async isOnline(): Promise<boolean> {
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      return (
-        this.network.type !== this.network.Connection.NONE && this.network.type !== this.network.Connection.UNKNOWN
-      );
+      return (await Network.getStatus()).connected;
     }
 
     return navigator.onLine;

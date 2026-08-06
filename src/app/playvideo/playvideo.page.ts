@@ -10,11 +10,11 @@
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
+import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { NavController, Platform } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
+import { Share } from '@capacitor/share';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
@@ -43,10 +43,8 @@ export class PlayvideoPage implements OnInit {
     public dataProvider: DataService,
     public platform: Platform,
     private route: ActivatedRoute,
-    public socialSharing: SocialSharing,
     private router: Router,
     public zone: NgZone,
-    public screen: ScreenOrientation,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private elearningApi: ElearningApiService,
     private cdr: ChangeDetectorRef
@@ -74,7 +72,7 @@ export class PlayvideoPage implements OnInit {
   // 🟢 إعادة قفل الشاشة للوضع العمودي عند الخروج من الصفحة
   ionViewWillLeave() {
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      this.screen.lock(this.screen.ORIENTATIONS.PORTRAIT).catch(() => {});
+      ScreenOrientation.lock({ orientation: 'portrait' }).catch(() => {});
     }
   }
 
@@ -110,12 +108,12 @@ export class PlayvideoPage implements OnInit {
       const video = this.mVideoPlayer.nativeElement;
       video.addEventListener('play', () => {
         if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-          this.screen.unlock();
+          ScreenOrientation.unlock();
         }
       });
       video.addEventListener('ended', () => {
         if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-          this.screen.lock(this.screen.ORIENTATIONS.PORTRAIT).catch(() => {});
+          ScreenOrientation.lock({ orientation: 'portrait' }).catch(() => {});
         }
       });
     }
@@ -130,7 +128,7 @@ export class PlayvideoPage implements OnInit {
           ? video.material_video_file
           : video.material_video_link;
 
-      this.socialSharing.share(content, video.material_title, null, videoUrl).catch(err => {
+      Share.share({ text: content, title: video.material_title, url: videoUrl }).catch(err => {
         console.log(err);
       });
     }

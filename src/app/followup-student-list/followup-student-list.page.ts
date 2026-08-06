@@ -19,7 +19,7 @@ import {
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد الخدمات المساعدة
@@ -91,7 +91,6 @@ export class FollowupStudentListPage implements OnInit {
     public authProvider: AuthService,
     public translate: TranslateService,
     public alertCtrl: AlertController,
-    public network: Network,
     private route: ActivatedRoute,
     private router: Router,
     public zone: NgZone,
@@ -311,7 +310,7 @@ export class FollowupStudentListPage implements OnInit {
     //   return;
     // }
 
-    if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
+    if ((await Network.getStatus()).connected) {
       const actionSheet = await this.actionSheetController.create({
         header: 'تصدير تقرير المتابعة',
         mode: 'md',

@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
 import { PopoverController, NavController, Platform, ModalController, IonicModule } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../service/auth/auth.service';
@@ -31,7 +30,6 @@ export class StudentDetailsComponent implements OnInit {
   constructor(
     public popoverController: PopoverController,
     public navCtrl: NavController,
-    public device: Device,
     public authProvider: AuthService,
     public platform: Platform,
     private dataProvider: DataService,

@@ -3,7 +3,7 @@ import { NavController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { Router } from '@angular/router';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
+import { Device } from '@capacitor/device';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
 
@@ -20,6 +20,7 @@ export class AllDevicesPage implements OnInit {
   }
   userDetails: any;
   All_available_devices = [];
+  deviceSr: { uuid: string } = { uuid: '' };
 
   // ==========================================
   // المتغيرات للتحكم في النوافذ المنبثقة (Modals)
@@ -33,7 +34,6 @@ export class AllDevicesPage implements OnInit {
     public dataProvider: DataService,
     public authProvider: AuthService,
     private router: Router,
-    public deviceSr: Device,
     private deviceApi: DeviceApiService,
     private storageSr: StorageService,
     private cdr: ChangeDetectorRef
@@ -41,6 +41,7 @@ export class AllDevicesPage implements OnInit {
 
   async ngOnInit() {
     this.userDetails = await this.storageSr.get('userloggedin');
+    this.deviceSr.uuid = (await Device.getId()).identifier;
     this.cdr.markForCheck();
   }
 

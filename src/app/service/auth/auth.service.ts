@@ -2,11 +2,11 @@ import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { firstValueFrom, Subject } from "rxjs";
-import { Network } from "@awesome-cordova-plugins/network/ngx";
+import { Network } from "@capacitor/network";
 import { Platform } from "@ionic/angular";
 import { DatabaseService } from "../database/database.service";
 import { Router } from "@angular/router";
-import { Device } from "@awesome-cordova-plugins/device/ngx";
+import { Device } from "@capacitor/device";
 import { StorageService } from "../storage.service";
 import { OverlayService } from "../overlay/overlay.service";
 
@@ -26,8 +26,6 @@ export class AuthService {
 
   constructor(
     public http: HttpClient,
-    public network: Network,
-    public device: Device,
     public platform: Platform,
     public dbProvider: DatabaseService,
     private router: Router,
@@ -265,8 +263,9 @@ export class AuthService {
     // تأمين الهوية للمتصفح والأجهزة
     let currentDeviceId = '';
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      currentDeviceId = this.device.uuid;
-      data.os_type = (this.device.platform == "android" || this.device.platform == "Android") ? 1 : 2;
+      const [deviceId, deviceInfo] = await Promise.all([Device.getId(), Device.getInfo()]);
+      currentDeviceId = deviceId.identifier;
+      data.os_type = deviceInfo.platform === 'android' ? 1 : 2;
     } else {
       currentDeviceId = await this.storageSr.get("browser_uuid");
       data.os_type = 2;
@@ -313,20 +312,10 @@ export class AuthService {
     }
   }
 
-  getNetworkInformation(): Promise<any> {
-    return new Promise((resolve) => {
-      if (this.platform.is("cordova") || this.platform.is("capacitor")) {
-        if (
-          this.network.type == this.network.Connection.UNKNOWN ||
-          this.network.type == this.network.Connection.NONE
-        ) {
-          resolve(false);
-        } else {
-          resolve(true);
-        }
-      } else {
-        resolve(true); 
-      }
-    });
+  async getNetworkInformation(): Promise<any> {
+    if (this.platform.is("cordova") || this.platform.is("capacitor")) {
+      return (await Network.getStatus()).connected;
+    }
+    return true;
   }
 }

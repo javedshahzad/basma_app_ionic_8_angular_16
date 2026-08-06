@@ -1,8 +1,5 @@
 ﻿import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
-import { Device } from '@awesome-cordova-plugins/device/ngx';
-import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
@@ -23,17 +20,6 @@ describe('CreateClassPage', () => {
       declarations: [CreateClassPage],
       imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, FormsModule],
       providers: [
-        {
-          provide: Network,
-          useValue: {
-            onDisconnect: () => NEVER,
-            onConnect: () => NEVER,
-            type: 'wifi',
-            Connection: { UNKNOWN: 'unknown', NONE: 'none' }
-          }
-        },
-        { provide: Device, useValue: { uuid: 'test-uuid', platform: 'browser' } },
-        { provide: SQLite, useValue: {} },
         { provide: AppRate, useValue: {} },
         {
           provide: IonicStorage,

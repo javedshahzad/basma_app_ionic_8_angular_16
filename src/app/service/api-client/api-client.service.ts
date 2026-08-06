@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
-import { Network } from '@awesome-cordova-plugins/network/ngx';
+import { Network } from '@capacitor/network';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../model/api-response.model';
 
@@ -17,29 +17,20 @@ export class ApiClient {
 
   constructor(
     private http: HttpClient,
-    private platform: Platform,
-    private network: Network
+    private platform: Platform
   ) { }
 
   /**
    * Check whether network is available or not
    */
-  getNetworkInformation(): Promise<boolean> {
-    return new Promise((resolve) => {
+  async getNetworkInformation(): Promise<boolean> {
+    // Native app (Cordova/Capacitor)
+    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+      return (await Network.getStatus()).connected;
+    }
 
-      // Native app (Cordova/Capacitor)
-      if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        const isOnline =
-          this.network.type !== this.network.Connection.NONE &&
-          this.network.type !== this.network.Connection.UNKNOWN;
-
-        resolve(isOnline);
-        return;
-      }
-
-      // Browser/Desktop
-      resolve(navigator.onLine);
-    });
+    // Browser/Desktop
+    return navigator.onLine;
   }
 
   /** Function to convert object into param string
