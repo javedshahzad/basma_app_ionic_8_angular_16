@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
 import { Network } from '@capacitor/network';
+import * as Sentry from '@sentry/angular';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../model/api-response.model';
 
@@ -69,6 +70,10 @@ export class ApiClient {
               }
             }
           }, (error) => {
+            // Only real transport/HTTP failures are Sentry-worthy here — the
+            // empty-body "Unable to find any record" reject above is a normal
+            // no-data outcome, not a bug, and must not be captured.
+            Sentry.captureException(error, { extra: { slug } });
             reject(error);
           })
         } else {

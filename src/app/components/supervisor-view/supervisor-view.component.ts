@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
 import { UserType } from '../../constants/user-type';
 import { NgIf, NgFor, NgClass, DecimalPipe } from '@angular/common';
@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 @Component({
     selector: 'app-supervisor-view',
     templateUrl: './supervisor-view.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgIf, IonicModule, NgFor, NgClass, DecimalPipe]
 })
 export class SupervisorViewComponent {

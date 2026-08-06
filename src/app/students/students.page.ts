@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, NavParams, AlertController, Platform, PopoverController, ActionSheetController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -34,6 +34,7 @@ import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtua
     selector: 'app-students',
     templateUrl: './students.page.html',
     styleUrls: ['./students.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgClass, ɵɵDir, NgIf, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf, NgFor, DecimalPipe, DatePipe, TranslatePipe]
 })
 export class StudentsPage implements OnInit {
@@ -127,6 +128,7 @@ export class StudentsPage implements OnInit {
               this.holidayString = response.holiday_string;
               this.checkIfHoliday();
             }
+            this.cdr.markForCheck();
           })
           .catch(error => {
             this.dataProvider.hideLoading();
@@ -134,6 +136,7 @@ export class StudentsPage implements OnInit {
 
         this.show_loading = true;
         this.getStudents();
+        this.cdr.markForCheck();
       } else {
         this.dataProvider.hideLoading();
         this.authProvider.flushLocalStorage();
@@ -143,10 +146,12 @@ export class StudentsPage implements OnInit {
 
     this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
+      this.cdr.markForCheck();
     });
 
     this.translate.get('student-details').subscribe(val => {
       this.student_detailse = val;
+      this.cdr.markForCheck();
     });
   }
 
@@ -177,6 +182,7 @@ export class StudentsPage implements OnInit {
   getStudentPoints() {
     this.gamificationApi.getPointsValue().then(res => {
       this.student_points = res.points;
+      this.cdr.markForCheck();
     });
   }
 
@@ -227,6 +233,7 @@ export class StudentsPage implements OnInit {
         this.dataProvider.errorALertMessage(res.message);
         this.router.navigate(['login'], { replaceUrl: true });
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -335,6 +342,7 @@ export class StudentsPage implements OnInit {
     this.showImageViewer = false;
     setTimeout(() => {
       this.viewImageUrl = '';
+      this.cdr.markForCheck();
     }, 300);
   }
 
@@ -346,6 +354,7 @@ export class StudentsPage implements OnInit {
       }
     }
     this.showCalenderModal = true;
+    this.cdr.markForCheck();
   }
 
   hideCalenderModal() {
@@ -427,6 +436,7 @@ export class StudentsPage implements OnInit {
                 this.getStudents(false);
                 this.dataProvider.showToast('تم الحفظ بنجاح');
               }
+              this.cdr.markForCheck();
             })
             .catch(error => {
               this.dataProvider.hideLoading();
@@ -443,6 +453,7 @@ export class StudentsPage implements OnInit {
           this.attMarkBegin = false;
           this.dataProvider.showToast(this.lang.offline_att_stored || 'تم الحفظ أوفلاين');
           this.getStudents(false);
+          this.cdr.markForCheck();
         }
       } else {
         this.attendanceApi
@@ -456,6 +467,7 @@ export class StudentsPage implements OnInit {
               this.getStudents(false);
               this.dataProvider.showToast('تم الحفظ بنجاح');
             }
+            this.cdr.markForCheck();
           })
           .catch(error => {
             this.dataProvider.hideLoading();
@@ -607,6 +619,7 @@ export class StudentsPage implements OnInit {
     if (mode === 'note') {
       this.studentData = student;
       this.showNoteModal = true;
+      this.cdr.markForCheck();
     } else {
       this.studentData = student;
       const modal = await this.modalController.create({
@@ -619,6 +632,7 @@ export class StudentsPage implements OnInit {
           this.noteMessage = data.data.noteMessage;
           this.addNotesNote();
         }
+        this.cdr.markForCheck();
       });
       return await modal.present();
     }
@@ -657,6 +671,7 @@ export class StudentsPage implements OnInit {
               this.noteMessage = '';
               this.showNoteModal = false;
               this.dataProvider.showToast(this.lang.add_review_success_message);
+              this.cdr.markForCheck();
             })
             .catch(error => {
               this.dataProvider.hideLoading();
@@ -690,6 +705,7 @@ export class StudentsPage implements OnInit {
               this.noteMessage = '';
               this.showNoteModal = false;
               this.dataProvider.showToast(this.lang.add_note_success_message);
+              this.cdr.markForCheck();
             })
             .catch(error => {
               this.dataProvider.errorALertMessage(error);

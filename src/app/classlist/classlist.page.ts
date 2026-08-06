@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, ItemReorderEventDetail, Platform, ActionSheetController, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -30,6 +30,7 @@ import { FormsModule } from '@angular/forms';
     selector: 'app-classlist',
     templateUrl: './classlist.page.html',
     styleUrls: ['./classlist.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgClass, NgFor, FormsModule, TranslatePipe]
 })
 export class ClasslistPage implements OnInit {
@@ -88,7 +89,8 @@ export class ClasslistPage implements OnInit {
     private syncService: SyncService,
     private userManagementApi: UserManagementApiService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
-    private coursesApi: CoursesApiService
+    private coursesApi: CoursesApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res.changeUser) {
@@ -97,14 +99,17 @@ export class ClasslistPage implements OnInit {
     });
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
+      this.cdr.markForCheck();
     });
     this.translate.get('action_icons').subscribe(res => {
       this.lang1 = res;
+      this.cdr.markForCheck();
     });
     this.category = 'list';
     this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(resq => {
       this.translate.get('alertmessages').subscribe(res => {
         this.lang = res;
+        this.cdr.markForCheck();
         this.ngOnInit(false);
       });
     });
@@ -213,6 +218,7 @@ export class ClasslistPage implements OnInit {
       this.userDetails = userLoggedIn;
       this.userType = String(this.userDetails.details.user_type);
       this.is_school_admin = this.userDetails.details.is_school_admin;
+      this.cdr.markForCheck();
 
       this.getCourse(loader);
 
@@ -223,6 +229,7 @@ export class ClasslistPage implements OnInit {
       this.dataProvider.hideLoading();
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
+      this.cdr.markForCheck();
     }
   }
 
@@ -249,6 +256,7 @@ export class ClasslistPage implements OnInit {
         this.dataProvider.errorALertMessage(response.msg);
         this.deactivate_date = '';
         this.dataProvider.deactivate_date = '';
+        this.cdr.markForCheck();
       })
       .catch(error => {
         this.dataProvider.errorALertMessage(error.msg);
@@ -303,6 +311,7 @@ export class ClasslistPage implements OnInit {
             this.classes = [];
             this.reorderList = [];
           }
+          this.cdr.markForCheck();
         } else {
           this.authProvider.flushLocalStorage();
           this.router.navigate(['login'], { replaceUrl: true });
@@ -310,6 +319,7 @@ export class ClasslistPage implements OnInit {
       })
       .catch(error => {
         if (loader) this.isLoading = false;
+        this.cdr.markForCheck();
       });
   }
 
@@ -326,6 +336,7 @@ export class ClasslistPage implements OnInit {
         if (response && response.session) {
           this.dashBoard = response.data.seminar;
         }
+        this.cdr.markForCheck();
       })
       .catch(error => {
         console.error('Dashboard Error:', error);
@@ -395,6 +406,7 @@ export class ClasslistPage implements OnInit {
             this.getCourse(false);
             this.editingClass = {};
             this.dataProvider.showToast('تم تحديث بيانات الصف بنجاح');
+            this.cdr.markForCheck();
           } else {
             this.authProvider.flushLocalStorage();
             this.router.navigate(['login'], { replaceUrl: true });
@@ -474,6 +486,7 @@ export class ClasslistPage implements OnInit {
   async openMenu(event: any) {
     this.translate.get('action_icons').subscribe(res => {
       this.lang1 = res;
+      this.cdr.markForCheck();
     });
 
     if (this.platform.width() >= 768) {
@@ -562,6 +575,7 @@ export class ClasslistPage implements OnInit {
     else if (action === 'create') this.createClass();
     else if (action === 'search') this.openSearchPage();
     else if (action === 'reorder') this.toogleReorder();
+    this.cdr.markForCheck();
   }
 
   async checkAndDeleteAccount() {
@@ -603,6 +617,7 @@ export class ClasslistPage implements OnInit {
       if (!responseData.success) {
         this.deactivate_date = responseData.response.deactivate_date;
         this.dataProvider.deactivate_date = responseData.response.deactivate_date;
+        this.cdr.markForCheck();
       }
     } catch (error) {
       console.log(error);

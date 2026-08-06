@@ -1,6 +1,6 @@
 ﻿import { Device } from '@capacitor/device';
 import { UserType } from './constants/user-type';
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Platform, MenuController, NavController, IonicModule } from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from './service/auth/auth.service';
@@ -32,6 +32,7 @@ declare var cordova: any;
     selector: 'app-root',
     templateUrl: 'app.component.html',
     styleUrls: ['app.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
 export class AppComponent implements OnInit {
@@ -77,7 +78,8 @@ export class AppComponent implements OnInit {
     public router: Router,
     private http: HttpClient,
     private planApi: PlanApiService,
-    private reportsApi: ReportsApiService
+    private reportsApi: ReportsApiService,
+    private cdr: ChangeDetectorRef
   ) {
     this.storageSr.init();
 
@@ -93,6 +95,7 @@ export class AppComponent implements OnInit {
     this.storageSr.get('userloggedin').then(async user => {
       if (user) {
         this.AvailablePlan = await this.storageSr.get('availablePlan');
+        this.cdr.markForCheck();
         this.tryLogin();
         this.getUserPlan();
 
@@ -105,6 +108,7 @@ export class AppComponent implements OnInit {
 
     this.storageSr.get('language').then(res => {
       this.selectedLanguage = res ? res : 'ar';
+      this.cdr.markForCheck();
       if (!res) {
         this.storageSr.set('language', 'ar');
       }
@@ -126,6 +130,7 @@ export class AppComponent implements OnInit {
     this.auth.event.subscribe(async (status: any) => {
       if (status === true || (status && (status.loggedin || status.changeUser))) {
         this.loggedin = true;
+        this.cdr.markForCheck();
 
         // If switching accounts came from the switch-account screen, don't
         // auto-route from here.
@@ -154,6 +159,7 @@ export class AppComponent implements OnInit {
         this.loggedin = false;
         this.navController.navigateRoot('/login');
         this.dataProvider.hideLoading();
+        this.cdr.markForCheck();
       }
     });
 
@@ -177,6 +183,7 @@ export class AppComponent implements OnInit {
 
       this.translate.get(['sidemenu', 'alertmessages', 'app_rate', 'switch_account']).subscribe(response => {
         this.lang = response;
+        this.cdr.markForCheck();
         this.dbProvider.openDataBase().then(async () => {
           this.dbProvider.createTable();
 
@@ -242,6 +249,7 @@ export class AppComponent implements OnInit {
             ];
             this.rootPage = 'login';
           }
+          this.cdr.markForCheck();
           this.initializeDeeppLink();
         });
       });
@@ -261,6 +269,7 @@ export class AppComponent implements OnInit {
           if (status.connected) {
             if (!this.runNetwork) {
               this.runNetwork = true;
+              this.cdr.markForCheck();
             }
           } else {
             // Delay so we don't show a false-positive during brief network blips.
@@ -276,6 +285,7 @@ export class AppComponent implements OnInit {
           setTimeout(async () => {
             if ((await Network.getStatus()).connected) {
               this.runNetwork = true;
+              this.cdr.markForCheck();
             }
           }, 1000);
         });
@@ -284,6 +294,7 @@ export class AppComponent implements OnInit {
       this.auth.event.subscribe(data => {
         if (data && data.activeLink) {
           this.activeLink = data.activeLink;
+          this.cdr.markForCheck();
         }
       });
     });
@@ -462,6 +473,7 @@ export class AppComponent implements OnInit {
         this.user.userType = 'student';
       }
     }
+    this.cdr.markForCheck();
 
     if (shouldRoute) {
       await this.checkRoute();
@@ -552,10 +564,12 @@ export class AppComponent implements OnInit {
         this.translate.setDefaultLang(newLang);
         this.setAppDirection(newLang);
         this.dataProvider.language.next(newLang);
+        this.cdr.markForCheck();
 
         this.translate.get(['sidemenu', 'alertmessages', 'app_rate']).subscribe(response => {
           this.lang = response;
           this.updateMenuTranslations();
+          this.cdr.markForCheck();
         });
       },
       error: err => {
@@ -641,6 +655,7 @@ export class AppComponent implements OnInit {
         });
       }
     }
+    this.cdr.markForCheck();
   }
 
   setAppDirection(lang: string) {
@@ -690,10 +705,12 @@ export class AppComponent implements OnInit {
     }
 
     this.AvailablePlan = await this.storageSr.get('availablePlan');
+    this.cdr.markForCheck();
   }
 
   async getUserPlan() {
     this.userDetails = await this.storageSr.get('userloggedin');
+    this.cdr.markForCheck();
 
     if (this.userDetails && this.userDetails.details && this.userDetails.details.user_no) {
       const data = {
@@ -723,6 +740,7 @@ export class AppComponent implements OnInit {
           } else {
             await this.storageSr.remove('availablePlan');
           }
+          this.cdr.markForCheck();
         })
         .catch(e => {
           console.log(e);

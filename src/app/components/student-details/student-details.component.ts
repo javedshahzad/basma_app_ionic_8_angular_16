@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { PopoverController, NavController, Platform, ModalController, IonicModule } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../service/auth/auth.service';
@@ -15,6 +15,7 @@ import { UserType } from '../../constants/user-type';
   selector: 'app-student-details',
   templateUrl: './student-details.component.html',
   styleUrls: ['./student-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule]
 })
 export class StudentDetailsComponent implements OnInit {
@@ -37,7 +38,8 @@ export class StudentDetailsComponent implements OnInit {
     public dbProvider: DatabaseService,
     public modalController: ModalController,
     private storageSr: StorageService,
-    private userManagementApi: UserManagementApiService
+    private userManagementApi: UserManagementApiService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -57,6 +59,7 @@ export class StudentDetailsComponent implements OnInit {
     } else {
       this.disabledFileds = true;
     }
+    this.cdr.markForCheck();
   }
 
   closeModal(actionRole: string = 'cancel') {

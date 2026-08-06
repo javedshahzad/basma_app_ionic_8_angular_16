@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
 import { NgIf, NgFor, NgClass, NgSwitch, NgSwitchCase, NgTemplateOutlet, DecimalPipe } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 @Component({
     selector: 'app-teacher-view',
     templateUrl: './teacher-view.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [NgIf, IonicModule, NgFor, NgClass, NgSwitch, NgSwitchCase, NgTemplateOutlet, DecimalPipe]
 })
 export class TeacherViewComponent {

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { NavController, NavParams, AlertController, PopoverController, Platform, ModalController, ActionSheetController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
@@ -41,6 +41,7 @@ const env = environment;
     selector: 'app-student-detail',
     templateUrl: './student-detail.page.html',
     styleUrls: ['./student-detail.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, FormsModule, DecimalPipe, DatePipe, TranslatePipe]
 })
 export class StudentDetailPage implements OnInit {
@@ -152,7 +153,8 @@ export class StudentDetailPage implements OnInit {
     private userManagementApi: UserManagementApiService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
     private storageSr: StorageService,
-    private studentEngagement: StudentEngagementService
+    private studentEngagement: StudentEngagementService,
+    private cdr: ChangeDetectorRef
   ) {
     // 🟢 الإصلاح الأول: صيد البيانات فوراً بدون التورط في subscribe لـ queryParams
     const navigation = this.router.getCurrentNavigation();
@@ -165,15 +167,19 @@ export class StudentDetailPage implements OnInit {
 
     this.translate.get('alertmessages').subscribe(val => {
       this.lang = val;
+      this.cdr.markForCheck();
     });
     this.translate.get('plan').subscribe(val => {
       this.planLang = val;
+      this.cdr.markForCheck();
     });
     this.translate.get('app_rate').subscribe(val => {
       this.app_rate = val;
+      this.cdr.markForCheck();
     });
     this.translate.get('student-details').subscribe(val => {
       this.student_detailse = val;
+      this.cdr.markForCheck();
     });
   }
 
@@ -221,12 +227,14 @@ export class StudentDetailPage implements OnInit {
           } else {
             this.studentDetails.student_points = point;
           }
+          this.cdr.markForCheck();
         } else {
           setTimeout(() => {
             let msg = res?.msg || 'تعذر إضافة النقاط';
             this.warningType = this.isFrozen || msg.includes('مجم') || msg.includes('تجميد') ? 'frozen' : 'warning';
             this.warningMessage = msg;
             this.showWarningPopup = true;
+            this.cdr.markForCheck();
           }, 300);
         }
       });
@@ -239,6 +247,7 @@ export class StudentDetailPage implements OnInit {
           this.warningType = this.isFrozen || msg.includes('مجم') || msg.includes('تجميد') ? 'frozen' : 'warning';
           this.warningMessage = msg;
           this.showWarningPopup = true;
+          this.cdr.markForCheck();
         }, 300);
       });
     }
@@ -271,10 +280,12 @@ export class StudentDetailPage implements OnInit {
         } else {
           this.studentTitle = '🌱 بطل في البداية';
         }
+        this.cdr.markForCheck();
       })
       .catch(err => {
         this.isLoadingSkills = false;
         this.studentTitle = '⚠️ تعذر جلب اللقب';
+        this.cdr.markForCheck();
       });
   }
 
@@ -317,12 +328,14 @@ export class StudentDetailPage implements OnInit {
     this.showImageViewer = false;
     setTimeout(() => {
       this.viewImageUrl = '';
+      this.cdr.markForCheck();
     }, 300);
   }
 
   getStudentPoints() {
     this.gamificationApi.getPointsValue().then(res => {
       this.student_points = res.points;
+      this.cdr.markForCheck();
     });
   }
 
@@ -349,6 +362,7 @@ export class StudentDetailPage implements OnInit {
               if (this.studentDetails.absents.length == 0) {
                 this.noAbsenceFound = this.lang.no_absent;
               }
+              this.cdr.markForCheck();
             })
             .catch(error => {
               this.dataProvider.showToast(this.lang.no_internet);
@@ -367,6 +381,7 @@ export class StudentDetailPage implements OnInit {
     if (planStorage && planStorage !== 'undefined') {
       this.AvailablePlan = JSON.parse(planStorage);
     }
+    this.cdr.markForCheck();
 
     if (this.navData?.student_id) {
       this.fetchStudentSkills(this.navData.student_id);
@@ -437,6 +452,7 @@ export class StudentDetailPage implements OnInit {
         } else {
           this.noNotesFound = this.lang.no_note;
         }
+        this.cdr.markForCheck();
       })
       .catch(error => {
         this.dataProvider.showToast(this.lang.no_internet);
@@ -503,6 +519,7 @@ export class StudentDetailPage implements OnInit {
                 this.studentTitle = this.getStudentTitle(this.studentDetails);
               }
             }
+            this.cdr.markForCheck();
           } else {
             // في حال الرد بفشل من السيرفر
             this.dataProvider.showToast(response?.message || 'تعذر جلب بيانات الطالب بشكل كامل');
@@ -582,6 +599,7 @@ export class StudentDetailPage implements OnInit {
             this.noNotesFound = this.lang.no_note;
           }
 
+          this.cdr.markForCheck();
           resolve();
         })
         .catch((error: any) => {
@@ -650,6 +668,7 @@ export class StudentDetailPage implements OnInit {
           this.authProvider.flushLocalStorage();
           this.dataProvider.errorALertMessage(response.message);
         }
+        this.cdr.markForCheck();
       })
       .catch(error => {
         this.dataProvider.errorALertMessage(error);
@@ -686,10 +705,12 @@ export class StudentDetailPage implements OnInit {
           this.canAddStudentNote = true;
           this.getNotes();
           this.hideDeleteConfirmModal();
+          this.cdr.markForCheck();
         })
         .catch(error => {
           this.dataProvider.errorALertMessage(error);
           this.hideDeleteConfirmModal();
+          this.cdr.markForCheck();
         });
     } else if (this.deletePayload.type === 'absence') {
       this.dataProvider
@@ -703,10 +724,12 @@ export class StudentDetailPage implements OnInit {
             this.dataProvider.errorALertMessage(response.message);
           }
           this.hideDeleteConfirmModal();
+          this.cdr.markForCheck();
         })
         .catch(error => {
           this.dataProvider.errorALertMessage(error);
           this.hideDeleteConfirmModal();
+          this.cdr.markForCheck();
         });
     }
   }
@@ -729,6 +752,7 @@ export class StudentDetailPage implements OnInit {
               this.noteMessage = '';
               this.showNoteModal = false;
               this.dataProvider.showToast(this.lang.add_review_success_message);
+              this.cdr.markForCheck();
             })
             .catch(error => {
               this.dataProvider.errorALertMessage(error);
@@ -764,6 +788,7 @@ export class StudentDetailPage implements OnInit {
               this.showNoteModal = false;
               this.id = '';
               this.dataProvider.showToast(this.lang.add_note_success_message);
+              this.cdr.markForCheck();
             })
             .catch(error => {
               this.dataProvider.errorALertMessage(error);
@@ -798,6 +823,7 @@ export class StudentDetailPage implements OnInit {
               this.noteMessage = '';
               this.showNoteModal = false;
               this.dataProvider.showToast(this.lang.add_note_success_message);
+              this.cdr.markForCheck();
             })
             .catch(error => {
               this.dataProvider.errorALertMessage(error);
@@ -839,6 +865,7 @@ export class StudentDetailPage implements OnInit {
         if (data && data.selectedAction === 'delete') {
           this.deleteUserNote(note_id, index);
         }
+        this.cdr.markForCheck();
       });
     } else {
       const actionSheet = await this.actionSheetController.create({
@@ -1024,6 +1051,7 @@ export class StudentDetailPage implements OnInit {
         this.authProvider.flushLocalStorage();
         this.dataProvider.errorALertMessage(result.message);
       }
+      this.cdr.markForCheck();
     } catch (error: any) {
       this.dataProvider.errorALertMessage(error?.message || 'حدث خطأ في الاتصال');
     }
@@ -1116,6 +1144,7 @@ export class StudentDetailPage implements OnInit {
         this.id = note.id;
       }
       this.showNoteModal = true;
+      this.cdr.markForCheck();
     } else {
       const modal = await this.modalController.create({
         component: AddReviewComponent,
@@ -1131,6 +1160,7 @@ export class StudentDetailPage implements OnInit {
           } else {
             this.addNotesNote();
           }
+          this.cdr.markForCheck();
         }
       });
       return await modal.present();
@@ -1456,6 +1486,7 @@ export class StudentDetailPage implements OnInit {
       student.phone_no = data.phone_no;
       student.phone_no_two = data.phone_no_two;
       student.medical_condition = data.medical_condition;
+      this.cdr.markForCheck();
     }
   }
 
@@ -1485,6 +1516,7 @@ export class StudentDetailPage implements OnInit {
     this.reportsApi.GetAllCallOfStudentReport(data).then(
       res => {
         this.callOfStudentsReport = res.data;
+        this.cdr.markForCheck();
       },
       error => {
         this.dataProvider.hideLoading();
@@ -1503,6 +1535,7 @@ export class StudentDetailPage implements OnInit {
     this.reportsApi.GetStudentPledgesReport(data).then(
       res => {
         this.AllStudentPledgesReports = res.data;
+        this.cdr.markForCheck();
       },
       error => {
         this.dataProvider.hideLoading();
@@ -1575,6 +1608,7 @@ export class StudentDetailPage implements OnInit {
   async openInventoryModal() {
     await this.fetchInventory();
     this.showInventoryModal = true;
+    this.cdr.markForCheck();
   }
 
   closeInventoryModal() {
@@ -1620,6 +1654,7 @@ export class StudentDetailPage implements OnInit {
             }
           }
 
+          this.cdr.markForCheck();
           resolve();
         })
         .catch(err => {
@@ -1684,6 +1719,7 @@ export class StudentDetailPage implements OnInit {
           this.studentSkillData,
           this.studentTotalPoints
         );
+        this.cdr.markForCheck();
       }
     } catch (e) {}
   }
@@ -1711,6 +1747,7 @@ export class StudentDetailPage implements OnInit {
                   matched.unacceptable_absent_days !== undefined ? matched.unacceptable_absent_days : 0;
                 this.studentDetails.suspend_days = matched.suspend_days !== undefined ? matched.suspend_days : 0;
                 this.studentDetails.medical_days = matched.medical_days !== undefined ? matched.medical_days : 0;
+                this.cdr.markForCheck();
               });
             }
           }
@@ -1726,6 +1763,7 @@ export class StudentDetailPage implements OnInit {
           }
 
           this.isAbsenceLoaded = true;
+          this.cdr.markForCheck();
         });
       } catch (e) {
         console.error(e);
@@ -1735,6 +1773,7 @@ export class StudentDetailPage implements OnInit {
         await this.dataProvider.run(async () => {
           this.getStudentCallOfReports();
           this.isReportsLoaded = true;
+          this.cdr.markForCheck();
         });
       } catch (e) {
         console.log(e);
@@ -1744,6 +1783,7 @@ export class StudentDetailPage implements OnInit {
         await this.dataProvider.run(async () => {
           await this.getNotes();
           this.isNotesLoaded = true;
+          this.cdr.markForCheck();
         });
       } catch (e) {
         console.error(e);

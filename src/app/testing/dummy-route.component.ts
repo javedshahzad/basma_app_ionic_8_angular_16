@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 // مكوّن وهمي بديل يُستخدم فقط في RouterTestingModule.withRoutes([...]) داخل
 // ملفات spec — بعض الصفحات تستدعي router.navigate(['login']) أثناء الإنشاء،
@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
 // هذا المكوّن كوجهة كافٍ لإسكات الخطأ دون الحاجة لأي منطق حقيقي.
 @Component({
   standalone: true,
-  template: ''
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DummyRouteComponent {}

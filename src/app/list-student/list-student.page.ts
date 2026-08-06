@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController, ActionSheetController, MenuController, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -53,6 +53,7 @@ export enum TeacherTypeEnum {
     selector: 'app-list-student',
     templateUrl: './list-student.page.html',
     styleUrls: ['./list-student.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgClass, NgIf, FormsModule, NgFor, SupervisorViewComponent, TeacherViewComponent, DatePipe, TranslatePipe]
 })
 export class ListStudentPage implements OnInit {
@@ -184,13 +185,23 @@ export class ListStudentPage implements OnInit {
       if (navigation && navigation.extras && navigation.extras.state) {
         this.navData = navigation.extras.state['course'];
       }
+      this.cdr.markForCheck();
     });
 
     this.dateSelected = new Date();
 
-    this.translate.get('alertmessages').subscribe(res => (this.lang = res));
-    this.translate.get('plan').subscribe(val => (this.planLang = val));
-    this.translate.get('student-details').subscribe(val => (this.student_detailse = val));
+    this.translate.get('alertmessages').subscribe(res => {
+      this.lang = res;
+      this.cdr.markForCheck();
+    });
+    this.translate.get('plan').subscribe(val => {
+      this.planLang = val;
+      this.cdr.markForCheck();
+    });
+    this.translate.get('student-details').subscribe(val => {
+      this.student_detailse = val;
+      this.cdr.markForCheck();
+    });
   }
 
   ngOnInit() {}
@@ -225,6 +236,7 @@ export class ListStudentPage implements OnInit {
       this.userRole = this.userDetails.details.user_type as UserRole;
       this.teacherType = (this.userDetails.details.teacher_type as TeacherTypeEnum) || TeacherTypeEnum.Regular;
       this.isTeacher = this.isTeacherUser;
+      this.cdr.markForCheck();
 
       let data = {
         user_no: this.userDetails.details.user_no,
@@ -244,6 +256,7 @@ export class ListStudentPage implements OnInit {
 
             this.isHoliday = this.holidayString.includes(string_date);
           }
+          this.cdr.markForCheck();
         })
         .catch(error => {
           console.log('Error loading holidays', error);
@@ -254,6 +267,7 @@ export class ListStudentPage implements OnInit {
       this.show_loading = false;
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
+      this.cdr.markForCheck();
     }
   }
 
@@ -381,14 +395,17 @@ export class ListStudentPage implements OnInit {
           if (this.students.length == 0) {
             this.noDataFound = this.lang.no_students_in_class || 'لا يوجد طلاب.';
           }
+          this.cdr.markForCheck();
         } else {
           this.authProvider.flushLocalStorage();
           this.dataProvider.errorALertMessage(res.message);
           this.router.navigate(['login'], { replaceUrl: true });
+          this.cdr.markForCheck();
         }
       })
       .catch(() => {
         this.show_loading = false;
+        this.cdr.markForCheck();
       });
   }
 
@@ -479,6 +496,7 @@ export class ListStudentPage implements OnInit {
   getStudentPoints() {
     this.gamificationApi.getPointsValue().then(res => {
       this.student_points = res.points;
+      this.cdr.markForCheck();
     });
   }
 
@@ -537,12 +555,14 @@ export class ListStudentPage implements OnInit {
                     this.clearTimerSafely();
                     this.determineNextPeriod();
                   }
+                  this.cdr.markForCheck();
                 }, 1000);
               } else {
                 this.canEdit = false;
               }
             }
           }
+          this.cdr.markForCheck();
           resolve();
         })
         .catch(error => {
@@ -562,6 +582,7 @@ export class ListStudentPage implements OnInit {
               this.canEdit = true;
             }
           }
+          this.cdr.markForCheck();
           resolve();
         })
         .catch(error => {
@@ -627,6 +648,7 @@ export class ListStudentPage implements OnInit {
               student.unacceptable_absent_days = matched.unacceptable_absent_days || 0;
               student.suspend_days = matched.suspend_days || 0;
               student.medical_days = matched.medical_days || 0;
+              this.cdr.markForCheck();
             });
           }
         }
@@ -643,6 +665,7 @@ export class ListStudentPage implements OnInit {
     this.showImageViewer = false;
     setTimeout(() => {
       this.viewImageUrl = '';
+      this.cdr.markForCheck();
     }, 300);
   }
 
@@ -1314,6 +1337,7 @@ export class ListStudentPage implements OnInit {
       this.removeSheet = {};
       this.editMode = false;
       this.attMarkBegin = false;
+      this.cdr.markForCheck();
     }
   }
 
@@ -1328,6 +1352,7 @@ export class ListStudentPage implements OnInit {
         this.editMode = false;
         this.attMarkBegin = false;
         this.getStudents(false);
+        this.cdr.markForCheck();
       })
       .catch(error => {
         this.dataProvider.hideLoading();
@@ -1352,6 +1377,7 @@ export class ListStudentPage implements OnInit {
   async registerNewStudent() {
     this.translate.get('reg_student').subscribe(async response => {
       this.addStudentLang = response;
+      this.cdr.markForCheck();
       const result = await this.studentUi.openAddStudent(this.addStudentLang);
       if (result) {
         this.newStudentName = result.name;
@@ -1442,10 +1468,12 @@ export class ListStudentPage implements OnInit {
         } else {
           this.showModernWarning(res?.msg || 'تعذر إضافة النقاط');
         }
+        this.cdr.markForCheck();
       });
     } catch (err: any) {
       this.zone.run(() => {
         this.showModernWarning(`خطأ: ${typeof err === 'string' ? err : err?.message}`);
+        this.cdr.markForCheck();
       });
     }
   }
