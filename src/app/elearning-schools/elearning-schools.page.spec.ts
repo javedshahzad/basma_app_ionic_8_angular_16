@@ -1,4 +1,4 @@
-﻿import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+﻿import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Device } from '@awesome-cordova-plugins/device/ngx';
@@ -7,27 +7,62 @@ import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ElearningSchoolsPage } from './elearning-schools.page';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ElearningSchoolsPage', () => {
   let component: ElearningSchoolsPage;
   let fixture: ComponentFixture<ElearningSchoolsPage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ElearningSchoolsPage ],
-      imports: [IonicModule.forRoot(), HttpClientTestingModule, TranslateModule.forRoot(), RouterTestingModule],
+      declarations: [ElearningSchoolsPage],
+      imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule],
       providers: [
-        { provide: Network, useValue: { onDisconnect: () => NEVER, onConnect: () => NEVER, type: 'wifi', Connection: { UNKNOWN: 'unknown', NONE: 'none' } } },
+        {
+          provide: Network,
+          useValue: {
+            onDisconnect: () => NEVER,
+            onConnect: () => NEVER,
+            type: 'wifi',
+            Connection: { UNKNOWN: 'unknown', NONE: 'none' }
+          }
+        },
         { provide: Device, useValue: { uuid: 'test-uuid', platform: 'browser' } },
         { provide: SQLite, useValue: {} },
         { provide: AppRate, useValue: {} },
-        { provide: GeoServiceProvider, useValue: { getAllCountries: () => [], getEnCountries: () => [], getArCountries: () => [], get_country_name: () => '', getCountryName: () => '', getCountryDetails: () => ({}), getCountryPhone: () => '', getCountriesData: () => [], getMyLocation: () => Promise.resolve({}) } },
-        { provide: IonicStorage, useValue: { create: () => Promise.resolve({ get: () => Promise.resolve(null), set: () => Promise.resolve(), remove: () => Promise.resolve(), clear: () => Promise.resolve() }) } }
+        {
+          provide: GeoServiceProvider,
+          useValue: {
+            getAllCountries: () => [],
+            getEnCountries: () => [],
+            getArCountries: () => [],
+            get_country_name: () => '',
+            getCountryName: () => '',
+            getCountryDetails: () => ({}),
+            getCountryPhone: () => '',
+            getCountriesData: () => [],
+            getMyLocation: () => Promise.resolve({})
+          }
+        },
+        {
+          provide: IonicStorage,
+          useValue: {
+            create: () =>
+              Promise.resolve({
+                get: () => Promise.resolve(null),
+                set: () => Promise.resolve(),
+                remove: () => Promise.resolve(),
+                clear: () => Promise.resolve()
+              })
+          }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
 

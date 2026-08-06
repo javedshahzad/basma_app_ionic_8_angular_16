@@ -16,29 +16,28 @@ import { DataService } from '@services/data/data.service';
 
 @Injectable()
 export class MyInterceptor implements HttpInterceptor {
- 
   constructor(
-    public alertController: AlertController, 
-    private dataProvider: DataService, 
+    public alertController: AlertController,
+    private dataProvider: DataService,
     private auth: AuthService,
     private router: Router
   ) {}
 
-  intercept(
-    request: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
-    
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let requestToHandle = request;
 
     // 1️⃣ الشق الأول: المنطق الخاص بك (إضافة UUID و user_no لطلبات POST المحددة)
-    if (request.method === 'POST' && this.auth.currentUser
-     && !request.url.endsWith('logout')
-     && !request.url.endsWith('login')
-     && !request.url.endsWith('schoolRegister') ) {
-
+    if (
+      request.method === 'POST' &&
+      this.auth.currentUser &&
+      !request.url.endsWith('logout') &&
+      !request.url.endsWith('login') &&
+      !request.url.endsWith('schoolRegister')
+    ) {
       requestToHandle = request.clone({
-        params: request.params.set('uuid', this.auth.currentUuid || '1122112233112233').set("user_no", this.auth.currentUser.details?.user_no || ''),
+        params: request.params
+          .set('uuid', this.auth.currentUuid || '1122112233112233')
+          .set('user_no', this.auth.currentUser.details?.user_no || '')
       });
     }
 
@@ -55,14 +54,15 @@ export class MyInterceptor implements HttpInterceptor {
     }
 
     return response$.pipe(
-
       // أ) التحقق من الردود الناجحة (المنطق الخاص بك للـ Status 100)
       tap((event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
           const responseData = event.body;
           if (responseData && responseData.status === 100) {
             console.log('Terminating request due to status 100 in the response');
-            this.presentAlert("تنبيه مطور: الخادم يطلب تسجيل الخروج بسبب عدم تطابق رقم الجهاز UUID. تم إيقاف الطرد لتسهيل التطوير.");
+            this.presentAlert(
+              'تنبيه مطور: الخادم يطلب تسجيل الخروج بسبب عدم تطابق رقم الجهاز UUID. تم إيقاف الطرد لتسهيل التطوير.'
+            );
           }
         }
       }),
@@ -93,12 +93,10 @@ export class MyInterceptor implements HttpInterceptor {
         if (error instanceof TimeoutError) {
           this.dataProvider.hideLoading();
           this.dataProvider.showToast('استغرق الطلب وقتاً طويلاً، يرجى المحاولة مرة أخرى.');
-        }
-        else if (error.status === 429 || error.status === 503) {
+        } else if (error.status === 429 || error.status === 503) {
           this.dataProvider.hideLoading();
           this.dataProvider.showToast('الشبكة مزدحمة حالياً، يرجى المحاولة بعد قليل.');
-        }
-        else if (error.status === 0) {
+        } else if (error.status === 0) {
           this.dataProvider.hideLoading();
           this.dataProvider.showToast('تعذر الاتصال بالخادم. تأكد من اتصالك بالإنترنت.');
         }
@@ -111,9 +109,9 @@ export class MyInterceptor implements HttpInterceptor {
   // الدوال المساعدة الخاصة بك كما هي
   async presentAlert(message: string) {
     const alert = await this.alertController.create({
-      header : 'تحذير',
+      header: 'تحذير',
       message: message,
-      buttons: ['Ok'],
+      buttons: ['Ok']
     });
     await alert.present();
   }
@@ -121,12 +119,14 @@ export class MyInterceptor implements HttpInterceptor {
   logout() {
     let userDetail = this.auth.currentUser || {};
     let data = {
-      "user_no": userDetail.details?.user_no,
-      "session_id": userDetail.session_id
-    }
-    this.dataProvider.run(() => this.auth.doLogout(data)).then(() => {
-      this.router.navigate(['login'], {replaceUrl: true});
-    }).catch(() => {
-    });
+      user_no: userDetail.details?.user_no,
+      session_id: userDetail.session_id
+    };
+    this.dataProvider
+      .run(() => this.auth.doLogout(data))
+      .then(() => {
+        this.router.navigate(['login'], { replaceUrl: true });
+      })
+      .catch(() => {});
   }
 }

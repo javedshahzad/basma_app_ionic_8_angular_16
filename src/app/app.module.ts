@@ -19,7 +19,7 @@ import { GeoServiceProvider } from './service/geo-service/geo-service';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { HttpClientModule, HttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { SocialSharing } from '@awesome-cordova-plugins/social-sharing/ngx';
@@ -47,10 +47,9 @@ export function createTranslateLoader(http: HttpClient) {
 }
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoaderComponent,
-  ],
+  declarations: [AppComponent, LoaderComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot({ mode: 'md' }),
@@ -61,11 +60,10 @@ export function createTranslateLoader(http: HttpClient) {
     AppRoutingModule,
     PipesModule,
     FormsModule,
-    HttpClientModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
+        useFactory: createTranslateLoader,
         deps: [HttpClient]
       }
     })
@@ -89,12 +87,11 @@ export function createTranslateLoader(http: HttpClient) {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: MyInterceptor,
-      multi: true,
+      multi: true
     },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent]
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule {}
