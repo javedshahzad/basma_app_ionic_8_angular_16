@@ -20,6 +20,7 @@ import { FcmService } from './service/fcm.service';
 import { SyncService } from './service/sync/sync.service';
 import { DeviceApiService } from './service/device-api/device-api.service';
 import { PlanApiService } from './service/plan-api/plan-api.service';
+import { ReportsApiService } from './service/reports-api/reports-api.service';
 import { Browser } from '@capacitor/browser';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { NgIf, NgFor } from '@angular/common';
@@ -75,7 +76,8 @@ export class AppComponent implements OnInit {
     public toastController: ToastController,
     public router: Router,
     private http: HttpClient,
-    private planApi: PlanApiService
+    private planApi: PlanApiService,
+    private reportsApi: ReportsApiService
   ) {
     this.storageSr.init();
 
@@ -499,7 +501,7 @@ export class AppComponent implements OnInit {
 
   shareApp() {
     this.dataProvider
-      .run(() => this.dataProvider.getShareLink('elem'))
+      .run(() => this.reportsApi.getShareLink('elem'))
       .then(response => {
         Share.share({ url: response.short_url }).then(
           () => {},

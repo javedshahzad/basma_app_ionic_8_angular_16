@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { NotificationsApiService } from '../service/notifications-api/notifications-api.service';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
@@ -48,7 +49,8 @@ export class PrivateMessagePage implements OnInit {
     public zone: NgZone,
     public alertCtrl: AlertController,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notificationsApi: NotificationsApiService
   ) {
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
@@ -76,7 +78,7 @@ export class PrivateMessagePage implements OnInit {
       };
 
       this.dataProvider
-        .run(() => this.dataProvider.getNotifications(data))
+        .run(() => this.notificationsApi.getNotifications(data))
         .then(response => {
           if (response.session) {
             this.dataProvider.private_message = false;
@@ -119,7 +121,7 @@ export class PrivateMessagePage implements OnInit {
         session_id: this.userDetails.session_id
       };
 
-      this.dataProvider
+      this.notificationsApi
         .getNotifications(data)
         .then(response => {
           if (response.session) {
@@ -160,7 +162,7 @@ export class PrivateMessagePage implements OnInit {
               session_id: this.userDetails.session_id
             };
             this.dataProvider
-              .run(() => this.dataProvider.deleteNotification(data))
+              .run(() => this.notificationsApi.deleteNotification(data))
               .then(response => {
                 if (response.session) {
                   this.dataProvider.showToast(response.message);

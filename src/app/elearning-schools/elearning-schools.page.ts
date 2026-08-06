@@ -4,6 +4,7 @@ import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
@@ -48,7 +49,8 @@ export class ElearningSchoolsPage implements OnInit {
     private geo: GeoServiceProvider,
     public zone: NgZone,
     private storageSr: StorageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private schoolDirectoryApi: SchoolDirectoryApiService
   ) {
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
@@ -93,7 +95,7 @@ export class ElearningSchoolsPage implements OnInit {
   }
 
   getSchool(location) {
-    this.dataProvider
+    this.schoolDirectoryApi
       .getSchool(location)
       .then(schoolList => {
         this.show_loading = false;

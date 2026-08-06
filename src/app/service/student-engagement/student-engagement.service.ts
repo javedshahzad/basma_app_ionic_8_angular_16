@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { DataService } from '../data/data.service';
 import { NotesApiService } from '../notes-api/notes-api.service';
 import { GamificationApiService } from '../gamification-api/gamification-api.service';
+import { UserManagementApiService } from '../user-management-api/user-management-api.service';
 import { ImageProcessingService } from '../image-processing/image-processing.service';
 import { StudentUiService } from '../student-ui/student-ui.service';
 
@@ -29,9 +29,9 @@ export interface AvatarUploadResult {
 export class StudentEngagementService {
 
   constructor(
-    private dataProvider: DataService,
     private notesApi: NotesApiService,
     private gamificationApi: GamificationApiService,
+    private userManagementApi: UserManagementApiService,
     private imageService: ImageProcessingService,
     private studentUi: StudentUiService
   ) { }
@@ -77,7 +77,7 @@ export class StudentEngagementService {
       sid: opts.sid
     };
 
-    const response: any = await this.dataProvider.updateUserImage(data);
+    const response: any = await this.userManagementApi.updateUserImage(data);
     if (response && response.session) {
       return { success: true, url: response.url + '?t=' + new Date().getTime() };
     }
@@ -96,7 +96,7 @@ export class StudentEngagementService {
 
   /** Awards (or deducts) skill points for a student. */
   awardSkillPoints(body: any): Promise<any> {
-    return this.dataProvider.addStudentPoints(body);
+    return this.gamificationApi.addStudentPoints(body);
   }
 
   /** Crafts (unlocks) a skill title for a student. */

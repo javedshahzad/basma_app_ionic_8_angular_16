@@ -232,4 +232,56 @@ export class UserManagementApiService {
       });
     });
   }
+
+  /**
+   * Update user image
+   * @param data Base64 image data
+   */
+  updateUserImage(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest(data, 'updateStudentImage/' + data.sid)
+        .then((response: any) => {
+          if (response) {
+            if (!response.session) {
+              resolve({ session: false, message: response.msg });
+            } else if (response.success) {
+              resolve({ session: true, url: response.imageUrl });
+            } else {
+              reject(response.msg);
+            }
+          } else {
+            reject(this.dataService.lang.networkNotWorking);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
+  }
+
+  sendPushMessageToStudentParent(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest(data, 'sendPushMessageToStudentParent')
+        .then((response: any) => {
+          if (response.response) {
+            resolve({ session: true, data: response.response });
+          } else {
+            reject(response.msg);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
+  }
 }

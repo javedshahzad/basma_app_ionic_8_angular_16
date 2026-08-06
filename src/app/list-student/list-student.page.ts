@@ -19,6 +19,10 @@ import { StorageService } from '../service/storage.service';
 import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
+import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
+import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { RegistrationApiService } from '../service/registration-api/registration-api.service';
 import { NgClass, NgIf, NgFor, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SupervisorViewComponent } from '../components/supervisor-view/supervisor-view.component';
@@ -169,7 +173,11 @@ export class ListStudentPage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private attendanceApi: AttendanceApiService,
     private holidaysApi: HolidaysApiService,
-    private studentEngagement: StudentEngagementService
+    private studentEngagement: StudentEngagementService,
+    private gamificationApi: GamificationApiService,
+    private followupFieldsApi: FollowupFieldsApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private registrationApi: RegistrationApiService
   ) {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const navigation = this.router.getCurrentNavigation();
@@ -311,7 +319,7 @@ export class ListStudentPage implements OnInit {
       school_id: this.userDetails.details.school_id
     };
 
-    this.dataProvider
+    this.attendanceApi
       .getClassStudentList(studentData)
       .then(async res => {
         this.show_loading = false;
@@ -469,7 +477,7 @@ export class ListStudentPage implements OnInit {
   }
 
   getStudentPoints() {
-    this.dataProvider.getPointsValue().then(res => {
+    this.gamificationApi.getPointsValue().then(res => {
       this.student_points = res.points;
     });
   }
@@ -608,7 +616,7 @@ export class ListStudentPage implements OnInit {
       school_id: this.userDetails.details.school_id
     };
 
-    this.dataProvider
+    this.followupFieldsApi
       .getFollowUpStudentList(requestData)
       .then((followUpRes: any) => {
         if (followUpRes?.data?.students) {
@@ -1357,7 +1365,7 @@ export class ListStudentPage implements OnInit {
     let data = { school_id: this.userDetails.details.school_id };
 
     this.dataProvider
-      .run(() => this.dataProvider.getCountStudents(data))
+      .run(() => this.schoolDirectoryApi.getCountStudents(data))
       .then(res => {
         var totalStudents = res.data;
         if (this.AvailablePlan.isExpire == true) {
@@ -1377,7 +1385,7 @@ export class ListStudentPage implements OnInit {
     if (Number.isInteger(data.student_id)) {
       this.dataProvider
         .run(() =>
-          this.dataProvider.registerStudent({
+          this.registrationApi.registerStudent({
             name: data.student_name,
             student_id: data.student_id,
             user_no: this.userDetails.details.user_no,

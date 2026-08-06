@@ -1,6 +1,7 @@
 import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
+import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 
@@ -46,7 +47,8 @@ export class FollowUpStudentPage implements OnInit {
     private router: Router,
     public zone: NgZone,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private followupFieldsApi: FollowupFieldsApiService
   ) {
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
@@ -83,7 +85,7 @@ export class FollowUpStudentPage implements OnInit {
       session_id: this.userDetails.session_id
     };
 
-    this.dataProvider
+    this.followupFieldsApi
       .getSelectedCourses(data)
       .then(response => {
         if (loader) this.isLoading = false;

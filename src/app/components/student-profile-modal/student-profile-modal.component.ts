@@ -2,6 +2,7 @@ import { Component, Input, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetection
 import { ModalController, IonicModule } from '@ionic/angular';
 import { DataService } from '../../service/data/data.service';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
+import { GamificationApiService } from '../../service/gamification-api/gamification-api.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
@@ -37,6 +38,7 @@ export class StudentProfileModalComponent implements OnInit {
     private dataProvider: DataService,
     private modalCtrl: ModalController,
     public gamification: GamificationEngineService,
+    private gamificationApi: GamificationApiService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -60,7 +62,7 @@ export class StudentProfileModalComponent implements OnInit {
     this.isLoadingSkills = true;
     try {
       // 🟢 1. الإصلاح: استخدام الدالة الصحيحة للمهارات وإرسال (sid)
-      const skillRes: any = await this.dataProvider.getStudentSkillTree({ sid: this.student.sid });
+      const skillRes: any = await this.gamificationApi.getStudentSkillTree({ sid: this.student.sid });
 
       this.isLoadingSkills = false;
 

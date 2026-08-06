@@ -13,6 +13,7 @@ import { environment } from '../../environments/environment';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import dayjs from 'dayjs';
 import { StorageService } from '../service/storage.service';
+import { NotesApiService } from '../service/notes-api/notes-api.service';
 
 @Component({
   selector: 'app-add-notes',
@@ -63,7 +64,8 @@ export class AddNotesPage implements OnInit {
     private router: Router,
     public alertCtrl: AlertController,
     private storageSr: StorageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notesApi: NotesApiService
   ) {
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
@@ -226,7 +228,7 @@ export class AddNotesPage implements OnInit {
     }
 
     this.dataProvider.showLoading();
-    this.dataProvider.createclassNotes(this.formdata).subscribe(
+    this.notesApi.createclassNotes(this.formdata).subscribe(
       res => {
         this.dataProvider.hideLoading();
         this.dataProvider.showToast(this.lang.note_created);

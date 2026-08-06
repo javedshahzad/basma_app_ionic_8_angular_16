@@ -6,6 +6,7 @@ import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { StorageService } from '../service/storage.service';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { FormsModule } from '@angular/forms';
 import { IonicSelectableComponent } from 'ionic-selectable';
 
@@ -36,6 +37,7 @@ export class AddTeacherPage implements OnInit {
     public modalController: ModalController,
     private storageSr: StorageService,
     private registrationApi: RegistrationApiService,
+    private coursesApi: CoursesApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(res => {
@@ -59,7 +61,7 @@ export class AddTeacherPage implements OnInit {
       session_id: this.userDetails.session_id
     };
     this.dataProvider
-      .run(() => this.dataProvider.getCourses(data))
+      .run(() => this.coursesApi.getCourses(data))
       .then(response => {
         if (response.session) {
           this.classes = response.data;

@@ -18,6 +18,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { IonicSelectableComponent } from 'ionic-selectable';
@@ -57,6 +58,7 @@ export class EditTeacherProfilePage implements OnInit {
     private deviceApi: DeviceApiService,
     private storageSr: StorageService,
     private userManagementApi: UserManagementApiService,
+    private coursesApi: CoursesApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
@@ -196,7 +198,7 @@ export class EditTeacherProfilePage implements OnInit {
       session_id: this.userDetails.session_id
     };
     this.dataProvider
-      .run(() => this.dataProvider.getCourses(data))
+      .run(() => this.coursesApi.getCourses(data))
       .then(response => {
         if (response.session) {
           let all_classes_cid = [];

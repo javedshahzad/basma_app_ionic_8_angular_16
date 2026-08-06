@@ -84,4 +84,21 @@ export class PlanApiService {
       })
     })
   }
+
+  ApplyVoucherCode(data): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // console.log(data);
+      this.apiClient.postRequest(data, 'ApplyVoucherCode')
+        .then((response: any) => {
+          if (response) {
+            resolve({ session: response.session, success: response.success, msg: response.msg });
+          } else {
+            reject(response.msg);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    });
+  }
 }

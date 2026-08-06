@@ -6,6 +6,9 @@ import { DatabaseService } from '../../service/database/database.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { CreateClassPage } from '../../create-class/create-class.page';
+import { SchoolDirectoryApiService } from '../../service/school-directory-api/school-directory-api.service';
+import { RegistrationApiService } from '../../service/registration-api/registration-api.service';
+import { CoursesApiService } from '../../service/courses-api/courses-api.service';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
@@ -39,7 +42,10 @@ export class EditCalssPage implements OnInit {
     public zone: NgZone,
     private router: Router,
     public modalController: ModalController,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private registrationApi: RegistrationApiService,
+    private coursesApi: CoursesApiService
   ) {
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
@@ -73,7 +79,7 @@ export class EditCalssPage implements OnInit {
       user_no: this.userDetails.user_no
     };
     this.dataProvider
-      .run(() => this.dataProvider.getTeachers(data))
+      .run(() => this.schoolDirectoryApi.getTeachers(data))
       .then(
         res => {
           console.log('teschers', res);
@@ -133,7 +139,7 @@ export class EditCalssPage implements OnInit {
       user_no: this.userDetails.user_no
     };
     this.dataProvider
-      .run(() => this.dataProvider.updateTeacher(data))
+      .run(() => this.registrationApi.updateTeacher(data))
       .then(
         res => {
           console.log('teschers', res);
@@ -158,7 +164,7 @@ export class EditCalssPage implements OnInit {
       user_no: this.userDetails.user_no
     };
     this.dataProvider
-      .run(() => this.dataProvider.deleteClass(data))
+      .run(() => this.coursesApi.deleteClass(data))
       .then(
         res => {
           console.log('teschers', res);

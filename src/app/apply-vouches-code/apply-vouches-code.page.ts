@@ -58,7 +58,7 @@ export class ApplyVouchesCodePage implements OnInit {
       code: this.code,
       plan_id: this.AvailablePlan.plan.id
     };
-    this.dataProvider.ApplyVoucherCode(data).then(
+    this.planApi.ApplyVoucherCode(data).then(
       res => {
         console.log(res);
         if (res.success) {

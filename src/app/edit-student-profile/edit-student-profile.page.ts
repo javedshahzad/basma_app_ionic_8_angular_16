@@ -9,6 +9,8 @@ import { DataService } from './../service/data/data.service';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -53,7 +55,9 @@ export class EditStudentProfilePage implements OnInit {
     public dbProvider: DatabaseService,
     private storageSr: StorageService,
     private cdr: ChangeDetectorRef,
-    private userManagementApi: UserManagementApiService
+    private userManagementApi: UserManagementApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private coursesApi: CoursesApiService
   ) {
     this.translate.get('alertmessages').subscribe(val => {
       this.lang = val;
@@ -112,7 +116,7 @@ export class EditStudentProfilePage implements OnInit {
         session_id: this.userDetails.session_id
       };
 
-      this.dataProvider
+      this.coursesApi
         .getCourses(data)
         .then((response: any) => {
           if (response && response.session) {
@@ -137,7 +141,7 @@ export class EditStudentProfilePage implements OnInit {
         sid: this.navData?.student?.sid
       };
 
-      this.dataProvider
+      this.schoolDirectoryApi
         .getStudentDetails(data)
         .then((response: any) => {
           if (response && response.session) {

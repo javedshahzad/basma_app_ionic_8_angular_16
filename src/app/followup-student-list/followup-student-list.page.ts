@@ -29,6 +29,8 @@ import { environment } from '../../environments/environment';
 import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
+import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
+import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -100,7 +102,9 @@ export class FollowupStudentListPage implements OnInit {
     private cdr: ChangeDetectorRef,
     private reportsApi: ReportsApiService,
     private holidaysApi: HolidaysApiService,
-    private studentEngagement: StudentEngagementService
+    private studentEngagement: StudentEngagementService,
+    private gamificationApi: GamificationApiService,
+    private followupFieldsApi: FollowupFieldsApiService
   ) {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const navigation = this.router.getCurrentNavigation();
@@ -195,7 +199,7 @@ export class FollowupStudentListPage implements OnInit {
   }
 
   getStudentPoints() {
-    this.dataProvider.getPointsValue().then(res => {
+    this.gamificationApi.getPointsValue().then(res => {
       this.student_points = res.points;
       this.cdr.markForCheck();
     });
@@ -215,7 +219,7 @@ export class FollowupStudentListPage implements OnInit {
       school_id: this.userDetails.details.school_id
     };
 
-    this.dataProvider
+    this.followupFieldsApi
       .getFollowUpStudentList(studentData)
       .then(res => {
         this.show_loading = false;
@@ -426,7 +430,7 @@ export class FollowupStudentListPage implements OnInit {
     };
 
     this.dataProvider
-      .run(() => this.dataProvider.deleteFollowUpStudentList(follwData))
+      .run(() => this.followupFieldsApi.deleteFollowUpStudentList(follwData))
       .then(response => {
         if (response.session) {
           this.dataProvider.showToast(response.message);

@@ -226,7 +226,7 @@ export class AvailablePlanPage implements OnInit {
     };
 
     this.dataProvider
-      .run(() => this.dataProvider.ApplyVoucherCode(data))
+      .run(() => this.planApi.ApplyVoucherCode(data))
       .then(res => {
         if (res.success) {
           this.dataProvider.showToast(res.msg);

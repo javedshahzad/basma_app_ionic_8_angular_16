@@ -223,7 +223,7 @@ export class SelectBulletinsUserPage implements OnInit {
       if (user && user.user_no !== this.userDetails.details.user_no) {
         this.formData.append('users', user.user_no); // إرسال المستخدم مباشرة
         this.dataProvider.showLoading();
-        this.dataProvider.createBulletins(this.formData).subscribe(
+        this.bulletinsApi.createBulletins(this.formData).subscribe(
           res => {
             this.dataProvider.hideLoading();
             this.dataProvider.showToast(res.message || 'تمت المشاركة بنجاح');

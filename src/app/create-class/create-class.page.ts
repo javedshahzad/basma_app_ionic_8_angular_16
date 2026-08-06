@@ -6,6 +6,7 @@ import { DatabaseService } from '../service/database/database.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { StorageService } from '../service/storage.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 
@@ -38,7 +39,8 @@ export class CreateClassPage implements OnInit {
     public viewCtrl: ModalController,
     public dataProvider: DataService,
     private storageSr: StorageService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private coursesApi: CoursesApiService
   ) {
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
@@ -74,7 +76,7 @@ export class CreateClassPage implements OnInit {
     };
 
     try {
-      const response: any = await this.dataProvider.run(() => this.dataProvider.createNewCourse(cleanPostData));
+      const response: any = await this.dataProvider.run(() => this.coursesApi.createNewCourse(cleanPostData));
 
       // 🔴 قراءة session ليتطابق مع السيرفر
       if (response && (response.session === true || response.success === true)) {

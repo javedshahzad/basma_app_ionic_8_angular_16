@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
+import { DatabaseService } from '../database/database.service';
+import { StorageService } from '../storage.service';
 
 /**
  * Owns the attendance-marking HTTP calls (online submit + the offline/delay
@@ -18,7 +20,9 @@ export class AttendanceApiService {
   constructor(
     private http: HttpClient,
     private apiClient: ApiClient,
-    private dataService: DataService
+    private dataService: DataService,
+    private dbProvider: DatabaseService,
+    private storageSr: StorageService
   ) { }
 
   /**
@@ -195,5 +199,135 @@ export class AttendanceApiService {
         }
       })
     })
+  }
+
+  /** Get student list according to course.
+   * @param {Object} data - date, user_no, session_id, course_id, school_id
+   * @returns list of students or error
+   */
+  getClassStudentList(data: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      this.apiClient.postRequest(data, 'getStudents/' + data.course_id)
+        .then(async (response: any) => {
+          if (response) {
+            if (!response.session) {
+              resolve({ session: false, message: response.msg });
+            } else if (response.success) {
+              this.dbProvider.insertStudentList(response.students, 5);
+              resolve({ session: true, data: response });
+            } else {
+              reject(response.msg);
+            }
+          } else {
+            let attendance = await this.storageSr.get('classlocalatt');
+            if (attendance) {
+              if (attendance[data.course_id]) {
+                resolve({ session: true, data: attendance[data.course_id] });
+              } else {
+                this.dbProvider
+                  .getStudentList(data.course_id)
+                  .then(students => {
+                    resolve({ session: true, data: { students: students, last_cem: 0, semteacher: [] } });
+                  })
+                  .catch(error => {
+                    reject(error);
+                  });
+              }
+            } else {
+              this.dbProvider
+                .getStudentList(data.course_id)
+                .then(students => {
+                  resolve({ session: true, data: { students: students, last_cem: 0, semteacher: [] } });
+                })
+                .catch(error => {
+                  reject(error);
+                });
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
+  }
+
+  /** Get delay student list according to course.
+   * @param {Object} data - date, user_no, session_id, course_id, school_id
+   * @returns list of students or error
+   */
+  getDelayClassStudentList(data: any): Promise<any> {
+    return new Promise(async (resolve, reject) => {
+      this.apiClient.postRequest(data, 'getStudents_delay/' + data.course_id)
+        .then(async (response: any) => {
+          if (response) {
+            if (!response.session) {
+              resolve({ session: response.session, message: response.msg, success: response.success, data: response });
+            } else if (response.success) {
+              this.dbProvider.insertStudentList(response.students, response.delay_rule);
+              resolve({ session: response.session, data: response, success: response.success });
+            } else {
+              reject(response.msg);
+            }
+          } else {
+            let attendance = await this.storageSr.get('delayclasslocalatt');
+            if (attendance) {
+              if (attendance[data.course_id]) {
+                resolve({ session: true, data: attendance[data.course_id] });
+              } else {
+                this.dbProvider
+                  .getStudentList(data.course_id)
+                  .then(students => {
+                    if (students.length > 0) {
+                      resolve({
+                        session: true,
+                        data: { students: students, last_cem: 0, semteacher: [], delay_rule: students[0].delay_rule }
+                      });
+                    } else {
+                      resolve({
+                        session: true,
+                        data: { students: students, last_cem: 0, semteacher: [], delay_rule: 5 }
+                      });
+                    }
+                  })
+                  .catch(error => {
+                    reject(error);
+                  });
+              }
+            } else {
+              this.dbProvider
+                .getStudentList(data.course_id)
+                .then(students => {
+                  if (students.length > 0) {
+                    resolve({
+                      session: true,
+                      data: { students: students, last_cem: 0, semteacher: [], delay_rule: students[0].delay_rule }
+                    });
+                  } else {
+                    resolve({
+                      session: true,
+                      data: { students: students, last_cem: 0, semteacher: [], delay_rule: 5 }
+                    });
+                  }
+                })
+                .catch(error => {
+                  reject(error);
+                });
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
   }
 }

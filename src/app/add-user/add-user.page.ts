@@ -15,6 +15,7 @@ import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router'; // 🟢 تأكد من إضافة ActivatedRoute هنا
 import { StorageService } from '../service/storage.service';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -68,6 +69,7 @@ export class AddUserPage implements OnInit {
     public modalController: ModalController,
     private storageSr: StorageService,
     private registrationApi: RegistrationApiService,
+    private coursesApi: CoursesApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(res => {
@@ -117,7 +119,7 @@ export class AddUserPage implements OnInit {
       school_id: this.userDetails.details.school_id,
       session_id: this.userDetails.session_id
     };
-    this.dataProvider
+    this.coursesApi
       .getCourses(data)
       .then((response: any) => {
         if (response.session) {

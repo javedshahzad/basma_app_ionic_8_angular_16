@@ -20,6 +20,8 @@ import { EditClassModalComponent } from '../components/edit-class-modal/edit-cla
 import { StorageService } from '../service/storage.service';
 import { SyncService } from '../service/sync/sync.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgClass, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -84,7 +86,9 @@ export class ClasslistPage implements OnInit {
     public platform: Platform,
     private storageSr: StorageService,
     private syncService: SyncService,
-    private userManagementApi: UserManagementApiService
+    private userManagementApi: UserManagementApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
+    private coursesApi: CoursesApiService
   ) {
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res.changeUser) {
@@ -128,7 +132,7 @@ export class ClasslistPage implements OnInit {
     };
     if (this.reorderList.length) {
       this.presentPopover();
-      this.dataProvider
+      this.coursesApi
         .reorderClasses(data)
         .then(res => {
           this.dissmissPopOver();
@@ -272,7 +276,7 @@ export class ClasslistPage implements OnInit {
       session_id: this.userDetails.session_id
     };
 
-    this.dataProvider
+    this.coursesApi
       .getCourses(data)
       .then(response => {
         if (loader) this.isLoading = false;
@@ -316,7 +320,7 @@ export class ClasslistPage implements OnInit {
       session_id: this.userDetails.session_id
     };
 
-    this.dataProvider
+    this.schoolDirectoryApi
       .todayDashboard(data)
       .then(response => {
         if (response && response.session) {
@@ -385,7 +389,7 @@ export class ClasslistPage implements OnInit {
       };
 
       this.dataProvider
-        .run(() => this.dataProvider.updateCourseDesc(postData))
+        .run(() => this.coursesApi.updateCourseDesc(postData))
         .then(response => {
           if (response.session) {
             this.getCourse(false);
@@ -421,7 +425,7 @@ export class ClasslistPage implements OnInit {
     };
 
     this.dataProvider
-      .run(() => this.dataProvider.deleteClass(data))
+      .run(() => this.coursesApi.deleteClass(data))
       .then(res => {
         if (res && (res.session || res.response)) {
           this.dataProvider.showToast(res.data || 'تم حذف الصف بنجاح');

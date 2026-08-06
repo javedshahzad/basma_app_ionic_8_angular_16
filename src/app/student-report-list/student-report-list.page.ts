@@ -7,6 +7,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
@@ -40,7 +41,8 @@ export class StudentReportListPage implements OnInit {
     public zone: NgZone,
     public platform: Platform,
     private storageSr: StorageService, // 🟢 2. حقن الخدمة
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private attendanceApi: AttendanceApiService
   ) {
     // 🟢 3. التقاط البيانات الممررة من הـ Router بشكل متزامن قبل ضياعها
     const navigation = this.router.getCurrentNavigation();
@@ -98,7 +100,7 @@ export class StudentReportListPage implements OnInit {
       school_id: this.userDetails.details.school_id
     };
 
-    this.dataProvider
+    this.attendanceApi
       .getClassStudentList(studentData)
       .then(res => {
         if (loader) this.dataProvider.hideLoading();

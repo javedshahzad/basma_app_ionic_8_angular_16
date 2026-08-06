@@ -12,6 +12,7 @@ import { Device } from '@capacitor/device';
 // 🟢 استيراد خدمة التخزين الموحدة
 import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
+import { RegistrationApiService } from '../service/registration-api/registration-api.service';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -40,7 +41,8 @@ export class ParentRegisterPage implements OnInit {
     public platform: Platform,
     public dbProvider: DatabaseService,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private registrationApi: RegistrationApiService
   ) {
     // 🟢 التقاط البيانات متزامناً
     const navigation = this.router.getCurrentNavigation();
@@ -103,7 +105,7 @@ export class ParentRegisterPage implements OnInit {
   async registerparent() {
     try {
       const response = await this.dataProvider.run(() =>
-        this.dataProvider.registerNewParent({
+        this.registrationApi.registerNewParent({
           user_no: this.user_no,
           school_id: this.school_id,
           parentId: this.parent.parentId,

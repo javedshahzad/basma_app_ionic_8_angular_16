@@ -23,6 +23,7 @@ import { StorageService } from '../service/storage.service';
 
 import { AuthService } from '../service/auth/auth.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { MessagingApiService } from '../service/messaging-api/messaging-api.service';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
 
@@ -80,6 +81,7 @@ export class SendmessagePage implements OnInit {
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     public authProvider: AuthService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
+    private messagingApi: MessagingApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.dataProvider.selectedUsers.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
@@ -253,7 +255,7 @@ export class SendmessagePage implements OnInit {
       this.formdata.append('file', imgBlob, fileName);
     }
 
-    this.dataProvider.sendMessage(this.formdata, data.school_id).subscribe(
+    this.messagingApi.sendMessage(this.formdata, data.school_id).subscribe(
       res => {
         this.show_spinner = false;
         this.dataProvider.showToast(this.lang.msg_sent_success);

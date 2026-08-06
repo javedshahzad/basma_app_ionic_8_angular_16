@@ -11,6 +11,7 @@ import { LoaderComponent } from '../components/loader/loader.component';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
@@ -60,7 +61,8 @@ export class StudentReportClassesPage implements OnInit {
     private router: Router,
     public modalCtrl: ModalController,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private coursesApi: CoursesApiService
   ) {
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
@@ -126,7 +128,7 @@ export class StudentReportClassesPage implements OnInit {
       session_id: this.userDetails.session_id
     };
 
-    this.dataProvider
+    this.coursesApi
       .getCourses(data)
       .then(response => {
         if (loader) {

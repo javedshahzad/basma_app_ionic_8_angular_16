@@ -20,6 +20,7 @@ import { Filesystem } from '@capacitor/filesystem';
 import { StorageService } from '../service/storage.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { BulletinsApiService } from '../service/bulletins-api/bulletins-api.service';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
@@ -65,6 +66,7 @@ export class FollowBulletinsPage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private searchApi: SearchApiService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
+    private bulletinsApi: BulletinsApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(response => {
@@ -295,7 +297,7 @@ export class FollowBulletinsPage implements OnInit {
     }
 
     this.dataProvider.showLoading();
-    this.dataProvider.createBulletins(formdata).subscribe(
+    this.bulletinsApi.createBulletins(formdata).subscribe(
       res => {
         this.dataProvider.hideLoading();
         this.dataProvider.showToast('تم الإرسال بنجاح');

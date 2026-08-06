@@ -8,6 +8,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -47,6 +48,7 @@ export class ManageTeacherPage implements OnInit {
     public modalController: ModalController,
     private storageSr: StorageService, // 🟢 حقن الخدمة
     private searchApi: SearchApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(res => {
@@ -96,7 +98,7 @@ export class ManageTeacherPage implements OnInit {
 
     if (loader) this.dataProvider.showLoading();
 
-    this.dataProvider.getTeachers(data).then(
+    this.schoolDirectoryApi.getTeachers(data).then(
       res => {
         if (loader) this.dataProvider.hideLoading();
         this.show_loading = true;

@@ -66,7 +66,7 @@ export class AddClassPage implements OnInit {
     };
 
     try {
-      const res: any = await this.dataProvider.run(() => this.dataProvider.getTeachersClass(data));
+      const res: any = await this.dataProvider.run(() => this.followupFieldsApi.getTeachersClass(data));
       if (res && res.data) {
         this.classes = res.data;
       }

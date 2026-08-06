@@ -10,6 +10,7 @@ import domtoimage from 'dom-to-image';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 @Component({
@@ -50,7 +51,8 @@ export class SeminarListPage implements OnInit {
     public platform: Platform,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
     private holidaysApi: HolidaysApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private coursesApi: CoursesApiService
   ) {
     // 🟢 3. استخراج البيانات من الـ Router بشكل متزامن قبل ضياعها
     const navigation = this.router.getCurrentNavigation();
@@ -140,7 +142,7 @@ export class SeminarListPage implements OnInit {
       school_id: this.userDetails.details.school_id
     };
 
-    this.dataProvider
+    this.coursesApi
       .getSeminarClassList(studentData)
       .then(res => {
         if (loader) this.dataProvider.hideLoading();

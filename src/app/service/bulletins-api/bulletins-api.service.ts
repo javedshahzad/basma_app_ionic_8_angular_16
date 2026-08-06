@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
+import { map, tap, last } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ApiClient } from '../api-client/api-client.service';
+import { DataService } from '../data/data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +12,8 @@ export class BulletinsApiService {
 
   constructor(
     private http: HttpClient,
-    private apiClient: ApiClient
+    private apiClient: ApiClient,
+    private dataService: DataService
   ) { }
 
   getBulletins(data): Promise<any> {
@@ -51,5 +54,21 @@ export class BulletinsApiService {
         console.log(error);
       });
     })
+  }
+
+  createBulletins(data) {
+    let header = new HttpHeaders();
+    header.append('Content-Type', 'application/json');
+    data.lang_code = environment.lang_code;
+    let req = new HttpRequest('POST', environment.serverURL + 'createBulletins', data, {
+      responseType: 'arraybuffer',
+      reportProgress: true
+    });
+
+    return this.http.request(req).pipe(
+      map(event => this.dataService.getStatusMessage(event)),
+      tap(message => message),
+      last()
+    );
   }
 }

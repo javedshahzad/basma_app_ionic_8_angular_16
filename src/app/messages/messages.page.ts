@@ -10,6 +10,7 @@ import { LoaderComponent } from '../components/loader/loader.component';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { NotificationsApiService } from '../service/notifications-api/notifications-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor } from '@angular/common';
 
@@ -48,7 +49,8 @@ export class MessagesPage implements OnInit {
     public alertCtrl: AlertController,
     private router: Router,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notificationsApi: NotificationsApiService
   ) {
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
@@ -91,7 +93,7 @@ export class MessagesPage implements OnInit {
         session_id: this.userDetails.session_id
       };
 
-      this.dataProvider
+      this.notificationsApi
         .getNotifications(data)
         .then(response => {
           this.dissmissPopOver();
@@ -162,7 +164,7 @@ export class MessagesPage implements OnInit {
         session_id: this.userDetails.session_id
       };
 
-      this.dataProvider
+      this.notificationsApi
         .getNotifications(data)
         .then(response => {
           if (response.session) {
@@ -216,7 +218,7 @@ export class MessagesPage implements OnInit {
       session_id: this.userDetails.session_id
     };
 
-    this.dataProvider
+    this.notificationsApi
       .deleteNotification(data)
       .then(response => {
         this.dissmissPopOver();

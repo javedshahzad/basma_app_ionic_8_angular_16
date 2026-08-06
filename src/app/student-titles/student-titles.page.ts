@@ -9,6 +9,7 @@ import { GamificationEngineService } from '../service/gamification-engine/gamifi
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 
 @Component({
@@ -103,6 +104,7 @@ export class StudentTitlesPage implements OnInit {
     private gamification: GamificationEngineService,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
     private gamificationApi: GamificationApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(res => {
@@ -144,7 +146,7 @@ export class StudentTitlesPage implements OnInit {
         cid: '',
         date: new Date().toISOString().split('T')[0]
       };
-      this.dataProvider
+      this.schoolDirectoryApi
         .getStudentDetails(data)
         .then((res: any) => {
           if (res && res.session && res.data) this.studentDetails = res.data;
@@ -157,7 +159,7 @@ export class StudentTitlesPage implements OnInit {
   fetchStudentSkills(sid: any): Promise<void> {
     return new Promise(resolve => {
       let body = { sid: String(sid) };
-      this.dataProvider
+      this.gamificationApi
         .getStudentSkillTree(body)
         .then((res: any) => {
           if (res && res.success) {

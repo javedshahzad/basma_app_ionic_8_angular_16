@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
 
@@ -14,6 +16,7 @@ export class ReportsApiService {
 
   constructor(
     private apiClient: ApiClient,
+    private http: HttpClient,
     private dataService: DataService
   ) { }
 
@@ -246,5 +249,102 @@ export class ReportsApiService {
         }
       })
     })
+  }
+
+  getAllWarning(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest(data, 'getWarningReport')
+        .then((response: any) => {
+          if (response) {
+            if (response.response) {
+              resolve(response.response);
+            } else {
+              reject(response.msg);
+            }
+          } else {
+            reject(this.dataService.lang.networkNotWorking);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
+  }
+
+  printWarning(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest(data, 'getWarningReportPdf')
+        .then((response: any) => {
+          if (response) {
+            if (response.response) {
+              resolve(response.response);
+            } else {
+              reject(response.msg);
+            }
+          } else {
+            reject(this.dataService.lang.networkNotWorking);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
+  }
+
+  openStudentReport(url): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // console.log(data);
+      let header = new HttpHeaders();
+      header.append('Content-Type', 'application/json');
+      this.http.get(url, { headers: header }).subscribe(
+        res => {
+          resolve(res);
+        },
+        e => {
+          resolve(e);
+        }
+      );
+    });
+  }
+
+  getShareLink(data): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.getNetworkInformation().then(isNetworkAvailable => {
+        if (isNetworkAvailable) {
+          let header = new HttpHeaders();
+          header.append('Content-Type', 'application/json');
+
+          let url = environment.serverURL + 'getAppShareLink?' + 'lang=en';
+          this.http.get(url, { headers: header }).subscribe(
+            (response: any) => {
+              if (response) {
+                resolve(response);
+              } else {
+                reject('Server is not responding');
+              }
+            },
+            error => {
+              if (error.message != undefined && error.message != '' && error.message != null) {
+                reject(error.message);
+              } else {
+                reject(this.dataService.lang.usnexpectedError);
+              }
+            }
+          );
+        } else {
+          reject(this.dataService.lang.networkNotWorking);
+        }
+      });
+    });
   }
 }

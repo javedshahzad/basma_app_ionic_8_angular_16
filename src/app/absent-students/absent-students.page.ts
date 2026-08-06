@@ -5,6 +5,8 @@ import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatePipe, NgIf, NgFor } from '@angular/common';
 import { AbsentApplicationApiService } from '../service/absent-application-api/absent-application-api.service';
+import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
 import { IonicSelectableComponent } from 'ionic-selectable';
@@ -62,6 +64,8 @@ export class AbsentStudentsPage implements OnInit {
     public modalCtrl: ModalController,
     public actionSheet: ActionSheetController,
     private absentApplicationApi: AbsentApplicationApiService,
+    private attendanceApi: AttendanceApiService,
+    private coursesApi: CoursesApiService,
     private storageSr: StorageService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -94,7 +98,7 @@ export class AbsentStudentsPage implements OnInit {
       school_id: this.userDetails.details.school_id,
       session_id: this.userDetails.session_id
     };
-    this.dataProvider
+    this.coursesApi
       .getCourses(data)
       .then(response => {
         let courses = response.data;
@@ -116,7 +120,7 @@ export class AbsentStudentsPage implements OnInit {
       course_id: cid,
       school_id: this.userDetails.details.school_id
     };
-    this.dataProvider
+    this.attendanceApi
       .getClassStudentList(studentData)
       .then(response => {
         this.StudentsList = response.data.students;

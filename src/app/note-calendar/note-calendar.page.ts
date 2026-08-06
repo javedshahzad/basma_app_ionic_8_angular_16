@@ -4,6 +4,7 @@ import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 import { ModalController, Platform, IonicModule } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../service/data/data.service';
+import { NotesApiService } from '../service/notes-api/notes-api.service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
@@ -45,7 +46,8 @@ export class NoteCalendarPage implements OnInit {
     private translate: TranslateService,
     public platform: Platform,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notesApi: NotesApiService
   ) {
     // 🟢 التقاط البيانات متزامناً
     const navigation = this.router.getCurrentNavigation();
@@ -180,7 +182,7 @@ export class NoteCalendarPage implements OnInit {
     };
 
     this.dataProvider
-      .run(() => this.dataProvider.printAllClassNotes(data))
+      .run(() => this.notesApi.printAllClassNotes(data))
       .then(res => {
         if (res && res.data) {
           let printContent = res.data.replace(/(\r\n|\n|\r)/gm, '');

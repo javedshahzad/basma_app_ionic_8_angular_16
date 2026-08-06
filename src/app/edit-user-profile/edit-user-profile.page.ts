@@ -18,6 +18,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { StorageService } from '../service/storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgClass, NgFor } from '@angular/common';
@@ -72,6 +73,7 @@ export class EditUserProfilePage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private deviceApi: DeviceApiService,
     private userManagementApi: UserManagementApiService,
+    private coursesApi: CoursesApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(response => {
@@ -390,7 +392,7 @@ export class EditUserProfilePage implements OnInit {
       session_id: this.userDetails?.session_id
     };
     try {
-      const response = await this.dataProvider.run(() => this.dataProvider.getCourses(data));
+      const response = await this.dataProvider.run(() => this.coursesApi.getCourses(data));
       if (response.session) {
         this.classes = response.data;
       }

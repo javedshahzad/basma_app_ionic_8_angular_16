@@ -26,6 +26,9 @@ import { SkillTreeModalComponent } from '../components/skill-tree-modal/skill-tr
 import { NotesApiService } from '../service/notes-api/notes-api.service';
 import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
+import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
+import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { StorageService } from '../service/storage.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { UserType } from '../constants/user-type';
@@ -145,6 +148,9 @@ export class StudentDetailPage implements OnInit {
     private notesApi: NotesApiService,
     private reportsApi: ReportsApiService,
     private gamificationApi: GamificationApiService,
+    private followupFieldsApi: FollowupFieldsApiService,
+    private userManagementApi: UserManagementApiService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
     private storageSr: StorageService,
     private studentEngagement: StudentEngagementService
   ) {
@@ -250,7 +256,7 @@ export class StudentDetailPage implements OnInit {
 
     let body = { sid: sid };
 
-    this.dataProvider
+    this.gamificationApi
       .getStudentSkillTree(body)
       .then((res: any) => {
         this.isLoadingSkills = false;
@@ -315,7 +321,7 @@ export class StudentDetailPage implements OnInit {
   }
 
   getStudentPoints() {
-    this.dataProvider.getPointsValue().then(res => {
+    this.gamificationApi.getPointsValue().then(res => {
       this.student_points = res.points;
     });
   }
@@ -454,7 +460,7 @@ export class StudentDetailPage implements OnInit {
             sid: this.navData?.student_id || this.navData?.sid
           };
 
-          const response: any = await this.dataProvider.getStudentDetails(data);
+          const response: any = await this.schoolDirectoryApi.getStudentDetails(data);
 
           if (response && response.session && response.data) {
             this.studentService.checkStudent(response.data);
@@ -631,7 +637,7 @@ export class StudentDetailPage implements OnInit {
     };
 
     this.dataProvider
-      .run(() => this.dataProvider.saveAbsenceNote(data))
+      .run(() => this.notesApi.saveAbsenceNote(data))
       .then(response => {
         if (response.session) {
           notes.push({
@@ -687,7 +693,7 @@ export class StudentDetailPage implements OnInit {
         });
     } else if (this.deletePayload.type === 'absence') {
       this.dataProvider
-        .run(() => this.dataProvider.deleteAbsenceNote(data, this.deletePayload.id))
+        .run(() => this.notesApi.deleteAbsenceNote(data, this.deletePayload.id))
         .then(response => {
           if (response.session) {
             this.deletePayload.notesArray.splice(this.deletePayload.index, 1);
@@ -879,7 +885,7 @@ export class StudentDetailPage implements OnInit {
       note: data.noteMessage,
       updated_by: this.userDetails.details.user_no
     };
-    this.dataProvider
+    this.notesApi
       .editAbsentNotes(updates)
       .then(res => {
         if (res) {
@@ -1149,7 +1155,7 @@ export class StudentDetailPage implements OnInit {
       .openPdf(planData)
       .then(res => {
         let url = env.serverURL + 'student_report_new?school_id=' + data.school_id + '&sid=' + data.sid;
-        this.dataProvider
+        this.reportsApi
           .openStudentReport(url)
           .then(res => {
             this.dataProvider.hideLoading();
@@ -1278,7 +1284,7 @@ export class StudentDetailPage implements OnInit {
         if (type === 'pdf') {
           let url = env.serverURL + 'student_report_new?school_id=' + studentData.school_id + '&sid=' + studentData.sid;
 
-          this.dataProvider
+          this.reportsApi
             .openStudentReport(url)
             .then(async (res: any) => {
               this.dataProvider.hideLoading();
@@ -1459,7 +1465,7 @@ export class StudentDetailPage implements OnInit {
       message: msg,
       title: 'Absent'
     };
-    this.dataProvider.sendPushMessageToStudentParent(studentData).then(
+    this.userManagementApi.sendPushMessageToStudentParent(studentData).then(
       res => {
         console.log(res);
       },
@@ -1696,7 +1702,7 @@ export class StudentDetailPage implements OnInit {
 
       try {
         await this.dataProvider.run(async () => {
-          const followUpRes: any = await this.dataProvider.getFollowUpStudentList(followUpData);
+          const followUpRes: any = await this.followupFieldsApi.getFollowUpStudentList(followUpData);
           if (followUpRes && followUpRes.data && followUpRes.data.students) {
             let matched = followUpRes.data.students.find((s: any) => s.sid === this.navData.student_id);
             if (matched) {

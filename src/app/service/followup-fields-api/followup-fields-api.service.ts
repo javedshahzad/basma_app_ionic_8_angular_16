@@ -149,4 +149,114 @@ export class FollowupFieldsApiService {
       });
     })
   }
+
+  /** Get courses from API to show on classlist page.
+   * @param {Object} data - contains user_no, school_id, session_id
+   * @returns list of courses or error
+   */
+  getTeachersClass(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // console.log(data);
+      this.apiClient.postRequest(data, 'getTeachersClass/' + data.school_id)
+        .then((response: any) => {
+          if (response) {
+            if (response.success) {
+              resolve({ session: true, data: response.courses });
+            } else {
+              reject(response.msg);
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
+  }
+
+  /** Get follow up fields.
+   * @param {Object} data - contains user_no, school_id, session_id
+   * @returns list of courses or error
+   */
+  getSelectedCourses(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      // console.log(data);
+      this.apiClient.postRequest(data, 'getSelectedCourses/' + data.school_id)
+        .then((response: any) => {
+          if (response) {
+            if (response.success) {
+              resolve({ session: true, data: response.selectedCourses });
+            } else {
+              reject(response.msg);
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
+  }
+
+  /** Get student list according to course.
+   * @param {Object} data - date, user_no, session_id, course_id, school_id
+   * @returns list of students or error
+   */
+  getFollowUpStudentList(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest(data, 'getFollowUpStudentList/' + data.course_id)
+        .then((response: any) => {
+          if (!response.session) {
+            resolve({ session: false, message: response.msg });
+          } else if (response.success) {
+            resolve({ session: true, data: response });
+          } else {
+            reject(response.msg);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
+  }
+
+  /** Delete student marks according to course and user id with selected date.
+   * @param {Object} data - date, user_no, session_id, course_id, school_id
+   * @returns list of students or error
+   */
+  deleteFollowUpStudentList(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest(data, 'deleteFollowUpStudentList/' + data.course_id)
+        .then((response: any) => {
+          if (!response.session) {
+            resolve({ session: false, message: response.msg });
+          } else if (response.success) {
+            resolve({ session: true, data: response });
+          } else {
+            reject(response.msg);
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            reject(this.dataService.lang.usnexpectedError);
+          }
+        });
+    });
+  }
 }

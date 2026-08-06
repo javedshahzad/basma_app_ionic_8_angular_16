@@ -18,6 +18,7 @@ import { LoaderComponent } from '../components/loader/loader.component';
 
 // 🟢 استيراد خدمة التخزين الموحدة
 import { StorageService } from '../service/storage.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
@@ -67,7 +68,8 @@ export class DelaylistPage implements OnInit {
     private router: Router,
     public alertCtrl: AlertController,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private coursesApi: CoursesApiService
   ) {
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res.changeUser) {
@@ -132,7 +134,7 @@ export class DelaylistPage implements OnInit {
         session_id: this.userDetails.session_id
       };
 
-      this.dataProvider
+      this.coursesApi
         .getCourses(data)
         .then(response => {
           this.isLoading = false;
@@ -192,7 +194,7 @@ export class DelaylistPage implements OnInit {
                   course: { name: data.courseName, desc: data.courseDesc }
                 };
 
-                this.dataProvider
+                this.coursesApi
                   .updateCourseDesc(postData)
                   .then((response: any) => {
                     if (response.session) {

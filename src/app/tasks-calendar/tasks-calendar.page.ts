@@ -11,6 +11,7 @@ import { ActionSheetController } from '@ionic/angular';
 import { StorageService } from '../service/storage.service';
 import { SyncService } from '../service/sync/sync.service';
 import { NotesApiService } from '../service/notes-api/notes-api.service';
+import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { NgIf, NgFor } from '@angular/common';
 
 @Component({
@@ -65,6 +66,7 @@ export class TasksCalendarPage implements OnInit {
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     private syncService: SyncService,
     private notesApi: NotesApiService,
+    private coursesApi: CoursesApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('sidemenu').subscribe(res => {
@@ -125,7 +127,7 @@ export class TasksCalendarPage implements OnInit {
       session_id: this.userDetails.session_id
     };
 
-    this.dataProvider
+    this.coursesApi
       .getCourses(data)
       .then(response => {
         if (loader) {

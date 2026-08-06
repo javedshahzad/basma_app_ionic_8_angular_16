@@ -10,6 +10,7 @@ import { StorageService } from '../service/storage.service';
 import { ParentManagementApiService } from '../service/parent-management-api/parent-management-api.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { RegistrationApiService } from '../service/registration-api/registration-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgClass, NgFor } from '@angular/common';
 
@@ -50,6 +51,7 @@ export class RequestedParentPage implements OnInit {
     private parentManagementApi: ParentManagementApiService,
     private searchApi: SearchApiService,
     private userManagementApi: UserManagementApiService,
+    private registrationApi: RegistrationApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(res => {
@@ -339,7 +341,7 @@ export class RequestedParentPage implements OnInit {
                 data.user_no = this.userDetails.details.user_no;
                 data.school_id = this.userDetails.details.school_id;
                 this.dataProvider
-                  .run(() => this.dataProvider.registerNewParent(data))
+                  .run(() => this.registrationApi.registerNewParent(data))
                   .then(res => {
                     if (res.session) {
                       this.dataProvider.showToast(res.message);

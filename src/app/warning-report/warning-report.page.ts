@@ -85,7 +85,7 @@ export class WarningReportPage implements OnInit {
       this.show_loading = true;
     }
 
-    this.dataProvider
+    this.reportsApi
       .getAllWarning(data)
       .then(res => {
         this.show_loading = false;
@@ -111,7 +111,7 @@ export class WarningReportPage implements OnInit {
     };
 
     try {
-      const res = await this.dataProvider.run(() => this.dataProvider.printWarning(data));
+      const res = await this.dataProvider.run(() => this.reportsApi.printWarning(data));
       if (res && res.url) {
         let htmlContent = res.url.replace(/(\r\n|\n|\r)/gm, '');
 

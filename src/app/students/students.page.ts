@@ -25,6 +25,7 @@ import { ImageProcessingService } from '../service/image-processing/image-proces
 import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
+import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
 import { UserType } from '../constants/user-type';
 import { NgClass, NgIf, NgFor, DecimalPipe, DatePipe } from '@angular/common';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
@@ -92,7 +93,8 @@ export class StudentsPage implements OnInit {
     private studentUi: StudentUiService,
     private attendanceApi: AttendanceApiService,
     private holidaysApi: HolidaysApiService,
-    private studentEngagement: StudentEngagementService
+    private studentEngagement: StudentEngagementService,
+    private gamificationApi: GamificationApiService
   ) {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const nav = this.router.getCurrentNavigation();
@@ -173,7 +175,7 @@ export class StudentsPage implements OnInit {
   }
 
   getStudentPoints() {
-    this.dataProvider.getPointsValue().then(res => {
+    this.gamificationApi.getPointsValue().then(res => {
       this.student_points = res.points;
     });
   }
@@ -200,7 +202,7 @@ export class StudentsPage implements OnInit {
       });
     }
 
-    this.dataProvider.getDelayClassStudentList(studentData).then(async res => {
+    this.attendanceApi.getDelayClassStudentList(studentData).then(async res => {
       this.show_loading = false;
       if (res.success) {
         let responseData = res.data;
