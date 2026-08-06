@@ -50,9 +50,8 @@ describe('AppComponent', () => {
     dataProviderSpy.run.and.callFake((fn: any) => fn());
 
     TestBed.configureTestingModule({
-    declarations: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot()],
+    imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot(), AppComponent],
     providers: [
         { provide: Platform, useValue: jasmine.createSpyObj('Platform', { ready: Promise.resolve(), is: false }) },
         { provide: StorageService, useValue: storageSrSpy },

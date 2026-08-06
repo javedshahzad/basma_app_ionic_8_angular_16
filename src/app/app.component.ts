@@ -1,8 +1,8 @@
 ﻿import { Device } from '@capacitor/device';
 import { UserType } from './constants/user-type';
 import { Component, OnInit, NgZone } from '@angular/core';
-import { Platform, MenuController, NavController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { Platform, MenuController, NavController, IonicModule } from '@ionic/angular';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from './service/auth/auth.service';
 import { DataService } from './service/data/data.service';
 import { DatabaseService } from './service/database/database.service';
@@ -22,14 +22,16 @@ import { DeviceApiService } from './service/device-api/device-api.service';
 import { PlanApiService } from './service/plan-api/plan-api.service';
 import { Browser } from '@capacitor/browser';
 import { PushNotifications } from '@capacitor/push-notifications';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 declare var cordova: any;
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
-  standalone: false
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    styleUrls: ['app.component.scss'],
+    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
 export class AppComponent implements OnInit {
   trackByIndex(index: number): number {
