@@ -11,7 +11,8 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-tabs',
   templateUrl: './tabs.page.html',
   styleUrls: ['./tabs.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TabsPage implements OnInit {
   private destroyRef = inject(DestroyRef);
@@ -22,39 +23,39 @@ export class TabsPage implements OnInit {
   isteacher = false;
   isTM = false;
   user = {
-    name: "Guest",
-    description: "Guest",
-    image: "./assets/imgs/logo.png",
-    userType: "guest"
+    name: 'Guest',
+    description: 'Guest',
+    image: './assets/imgs/logo.png',
+    userType: 'guest'
   };
   hide_new: any;
 
   constructor(
     public dbProvider: DatabaseService,
-    private authProvider: AuthService, 
-    public dataProvider: DataService, 
+    private authProvider: AuthService,
+    public dataProvider: DataService,
     private router: Router,
     private storageSr: StorageService,
     private cdr: ChangeDetectorRef
   ) {
-    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async (res) => {
-        if (res) {
-           await this.dbProvider.openDataBase();
-           // 🟢 إضافة مهلة صغيرة جداً لضمان تحديث الـ Storage قبل قراءته
-           setTimeout(async () => {
-             let userLoggedIn = await this.storageSr.get("userloggedin");
-             if (userLoggedIn) {
-               this.loggedin = true;
-               await this.setUserdetails();
-               this.processUserType();
-               this.cdr.markForCheck();
-             }
-           }, 100);
-        }
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async res => {
+      if (res) {
+        await this.dbProvider.openDataBase();
+        // 🟢 إضافة مهلة صغيرة جداً لضمان تحديث الـ Storage قبل قراءته
+        setTimeout(async () => {
+          let userLoggedIn = await this.storageSr.get('userloggedin');
+          if (userLoggedIn) {
+            this.loggedin = true;
+            await this.setUserdetails();
+            this.processUserType();
+            this.cdr.markForCheck();
+          }
+        }, 100);
+      }
     });
 
     this.dbProvider.openDataBase().then(async () => {
-      let userLoggedIn = await this.storageSr.get("userloggedin");
+      let userLoggedIn = await this.storageSr.get('userloggedin');
       if (userLoggedIn) {
         this.loggedin = true;
         await this.setUserdetails();
@@ -66,27 +67,35 @@ export class TabsPage implements OnInit {
 
   processUserType() {
     if (this.user.userType == 'parent') {
-      this.isParent = true; this.isStudent = false; this.isTM = false; this.isteacher = false;
+      this.isParent = true;
+      this.isStudent = false;
+      this.isTM = false;
+      this.isteacher = false;
     } else if (this.user.userType == 'student') {
-      this.isStudent = true; this.isParent = false; this.isTM = false; this.isteacher = false;
+      this.isStudent = true;
+      this.isParent = false;
+      this.isTM = false;
+      this.isteacher = false;
     } else {
-      this.isStudent = false; this.isParent = false; this.isTM = true; 
-      this.isteacher = (this.user.userType == 'teacher');
+      this.isStudent = false;
+      this.isParent = false;
+      this.isTM = true;
+      this.isteacher = this.user.userType == 'teacher';
     }
     // 🟢 قمنا بحذف التوجيه (Navigate) من هنا لكي لا يتعارض مع التوجيه الصحيح في switch-account
   }
 
   // 🟢 6. تحديث الدالة لتكون async وبدون localStorage
   async setUserdetails() {
-    let userDetail = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة بدون JSON.parse
+    let userDetail = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة بدون JSON.parse
 
     if (userDetail && userDetail.details) {
-      this.user.name = userDetail.details.first_name + " " + userDetail.details.last_name;
-      this.user.image = userDetail.details.pic ? userDetail.details.pic : "./assets/imgs/default_avatar.png";
+      this.user.name = userDetail.details.first_name + ' ' + userDetail.details.last_name;
+      this.user.image = userDetail.details.pic ? userDetail.details.pic : './assets/imgs/default_avatar.png';
       this.user.description = userDetail.details.school_name;
-      
+
       // 👈 الحفظ الآمن بدلاً من localStorage.setItem
-      await this.storageSr.set('user_type', userDetail.details.user_type); 
+      await this.storageSr.set('user_type', userDetail.details.user_type);
 
       if (userDetail.details.user_type == '1') {
         if (userDetail.details.school_details != '') {
@@ -107,6 +116,5 @@ export class TabsPage implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

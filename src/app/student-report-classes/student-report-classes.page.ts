@@ -16,18 +16,32 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-student-report-classes',
   templateUrl: './student-report-classes.page.html',
   styleUrls: ['./student-report-classes.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class StudentReportClassesPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   classes: any = [];
-  noDataFound: string = "";
+  noDataFound: string = '';
   userType: any;
   editMode: boolean = false;
   lang: any = {};
   userDetails: any = {};
   category: any;
-  classBackgroundColor = ["#ff7043", "#2962ff", "#43a047", "#6d4c41", "#ffab00", "#00b0ff", "#651fff", "#2962ff", "#d81b60", "#6a1b9a"];
+  classBackgroundColor = [
+    '#ff7043',
+    '#2962ff',
+    '#43a047',
+    '#6d4c41',
+    '#ffab00',
+    '#00b0ff',
+    '#651fff',
+    '#2962ff',
+    '#d81b60',
+    '#6a1b9a'
+  ];
   dashBoard: any;
   popOver: any;
   canPresentPopover = false;
@@ -47,7 +61,7 @@ export class StudentReportClassesPage implements OnInit {
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -58,7 +72,7 @@ export class StudentReportClassesPage implements OnInit {
       component: LoaderComponent,
       backdropDismiss: true,
       translucent: false,
-      cssClass: 'loaderStyle',
+      cssClass: 'loaderStyle'
     });
     return this.popOver.present();
   }
@@ -84,7 +98,7 @@ export class StudentReportClassesPage implements OnInit {
   async ngOnInit(loader: boolean = true) {
     if (loader) this.isLoading = true;
 
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
@@ -104,44 +118,47 @@ export class StudentReportClassesPage implements OnInit {
       this.isLoading = true;
       this.presentPopover();
     }
-    
+
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "school_id": this.userDetails.details.school_id,
-      "session_id": this.userDetails.session_id
+      user_no: this.userDetails.details.user_no,
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
 
-    this.dataProvider.getCourses(data).then(response => {
-      if (loader) {
-        this.dissmissPopOver();
-        this.isLoading = false; // 👈 إخفاء التحميل الوهمي عند وصول البيانات
-      }
-      
-      if (response.session) {
-        let courses = response.data;
-        if (courses && courses.length > 0) {
-          let i = 0;
-          this.classes = courses;
-          this.classes.forEach((course) => {
-            course.backgroundColor = this.classBackgroundColor[i];
-            i++;
-            if (i == 9) i = 0;
-          })
-        } else {
-          this.noDataFound = this.lang.no_class_found;
+    this.dataProvider
+      .getCourses(data)
+      .then(response => {
+        if (loader) {
+          this.dissmissPopOver();
+          this.isLoading = false; // 👈 إخفاء التحميل الوهمي عند وصول البيانات
         }
-      } else {
-        this.authProvider.flushLocalStorage();
-        this.router.navigate(['login'], { replaceUrl: true });
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      if (loader) {
-        this.dissmissPopOver();
-        this.isLoading = false;
-      }
-      this.cdr.markForCheck();
-    });
+
+        if (response.session) {
+          let courses = response.data;
+          if (courses && courses.length > 0) {
+            let i = 0;
+            this.classes = courses;
+            this.classes.forEach(course => {
+              course.backgroundColor = this.classBackgroundColor[i];
+              i++;
+              if (i == 9) i = 0;
+            });
+          } else {
+            this.noDataFound = this.lang.no_class_found;
+          }
+        } else {
+          this.authProvider.flushLocalStorage();
+          this.router.navigate(['login'], { replaceUrl: true });
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        if (loader) {
+          this.dissmissPopOver();
+          this.isLoading = false;
+        }
+        this.cdr.markForCheck();
+      });
   }
 
   openClassStudents(course) {

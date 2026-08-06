@@ -6,7 +6,7 @@ import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
-import { CameraResultType , Camera , ImageOptions, CameraSource } from '@capacitor/camera';
+import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
 import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
 import { StorageService } from '../service/storage.service';
 
@@ -14,44 +14,46 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-connect-new-message',
   templateUrl: './connect-new-message.page.html',
   styleUrls: ['./connect-new-message.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ConnectNewMessagePage implements OnInit {
   userDetails: any = {};
   message: any = {
     title: '',
     message: '',
-    ticketImage: ''  
+    ticketImage: ''
   };
   ticketImage: string = '';
   lang: any = {};
-  
-  constructor(public navCtrl: NavController, 
-              public viewCtrl: ModalController,
-              public dataProvider: DataService, 
-              public authProvider: AuthService, 
-              public translate: TranslateService, 
-              public alertCtrl: AlertController,
-              private router: Router,
-              private parentConnectApi: ParentConnectApiService,
-              private storageSr: StorageService,
-              private cdr: ChangeDetectorRef) {
 
-    this.translate.get("alertmessages").subscribe((res) => {
+  constructor(
+    public navCtrl: NavController,
+    public viewCtrl: ModalController,
+    public dataProvider: DataService,
+    public authProvider: AuthService,
+    public translate: TranslateService,
+    public alertCtrl: AlertController,
+    private router: Router,
+    private parentConnectApi: ParentConnectApiService,
+    private storageSr: StorageService,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
   }
 
   async ionViewWillEnter() {
-    this.userDetails = await this.storageSr.get("userloggedin");
+    this.userDetails = await this.storageSr.get('userloggedin');
     this.cdr.markForCheck();
   }
 
   dismiss() {
     this.viewCtrl.dismiss();
   }
-  
+
   async sendMessage() {
     // التأكد من عدم تجاوز الحد الأقصى
     if (this.message.title.length > 35) {
@@ -116,16 +118,18 @@ export class ConnectNewMessagePage implements OnInit {
       source: CameraSource.Camera,
       width: 800,
       height: 800,
-      allowEditing: true,
+      allowEditing: true
     };
 
-    Camera.getPhoto(options).then((imageData) => {
-      if (imageData) {
-        this.message.ticketImage = "data:image/png;base64," + imageData.base64String;
-        this.ticketImage = "data:image/png;base64," + imageData.base64String;
-      }
-      this.cdr.markForCheck();
-    }).catch(e => console.log('Camera Error', e));
+    Camera.getPhoto(options)
+      .then(imageData => {
+        if (imageData) {
+          this.message.ticketImage = 'data:image/png;base64,' + imageData.base64String;
+          this.ticketImage = 'data:image/png;base64,' + imageData.base64String;
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(e => console.log('Camera Error', e));
   }
 
   openGallery() {
@@ -135,16 +139,18 @@ export class ConnectNewMessagePage implements OnInit {
       source: CameraSource.Photos,
       width: 800,
       height: 800,
-      allowEditing: true,
+      allowEditing: true
     };
 
-    Camera.getPhoto(options).then((imageData) => {
-      if (imageData) {
-        this.message.ticketImage = "data:image/png;base64," + imageData.base64String;
-        this.ticketImage = "data:image/png;base64," + imageData.base64String;
-      }
-      this.cdr.markForCheck();
-    }).catch(e => console.log('Gallery Error', e));
+    Camera.getPhoto(options)
+      .then(imageData => {
+        if (imageData) {
+          this.message.ticketImage = 'data:image/png;base64,' + imageData.base64String;
+          this.ticketImage = 'data:image/png;base64,' + imageData.base64String;
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(e => console.log('Gallery Error', e));
   }
 
   // 🟢 دالة جديدة لحذف الصورة المرفقة إذا تراجع المستخدم
@@ -153,6 +159,5 @@ export class ConnectNewMessagePage implements OnInit {
     this.ticketImage = '';
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

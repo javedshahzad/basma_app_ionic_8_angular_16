@@ -14,18 +14,21 @@ import { GamificationApiService } from '../service/gamification-api/gamification
   selector: 'app-student-titles',
   templateUrl: './student-titles.page.html',
   styleUrls: ['./student-titles.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class StudentTitlesPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   lang: any;
   userDetails: any;
   userType: any;
   navData: any = {}; // بيانات الهوية (الاسم، الصورة، الصف)
   studentDetails: any = null;
-  
+
   inventoryTab: string = 'titles'; // 'titles' | 'badges'
-  
+
   studentWallet: any = {};
   unlockedTitles: string[] = [];
   unlockedBadges: string[] = [];
@@ -41,27 +44,67 @@ export class StudentTitlesPage implements OnInit {
   secretBadgesList: any[] = [];
 
   skillsCardsConfig = [
-    { key: 'cognitive', name: 'عقلي', icon: 'bulb', hoverBg: 'hover:bg-amber-50', iconBg: 'bg-amber-100 text-amber-600', iconColor: 'text-amber-500', badgeBg: 'bg-amber-500' },
-    { key: 'social', name: 'تواصل', icon: 'chatbubbles', hoverBg: 'hover:bg-blue-50', iconBg: 'bg-blue-100 text-blue-600', iconColor: 'text-blue-500', badgeBg: 'bg-blue-500' },
-    { key: 'discipline', name: 'انضباط', icon: 'shield-checkmark', hoverBg: 'hover:bg-emerald-50', iconBg: 'bg-emerald-100 text-emerald-600', iconColor: 'text-emerald-500', badgeBg: 'bg-emerald-500' },
-    { key: 'emotional', name: 'عاطفي', icon: 'heart', hoverBg: 'hover:bg-rose-50', iconBg: 'bg-rose-100 text-rose-600', iconColor: 'text-rose-500', badgeBg: 'bg-rose-500' },
-    { key: 'practical', name: 'عملي', icon: 'laptop', hoverBg: 'hover:bg-purple-50', iconBg: 'bg-purple-100 text-purple-600', iconColor: 'text-purple-500', badgeBg: 'bg-purple-500' }
+    {
+      key: 'cognitive',
+      name: 'عقلي',
+      icon: 'bulb',
+      hoverBg: 'hover:bg-amber-50',
+      iconBg: 'bg-amber-100 text-amber-600',
+      iconColor: 'text-amber-500',
+      badgeBg: 'bg-amber-500'
+    },
+    {
+      key: 'social',
+      name: 'تواصل',
+      icon: 'chatbubbles',
+      hoverBg: 'hover:bg-blue-50',
+      iconBg: 'bg-blue-100 text-blue-600',
+      iconColor: 'text-blue-500',
+      badgeBg: 'bg-blue-500'
+    },
+    {
+      key: 'discipline',
+      name: 'انضباط',
+      icon: 'shield-checkmark',
+      hoverBg: 'hover:bg-emerald-50',
+      iconBg: 'bg-emerald-100 text-emerald-600',
+      iconColor: 'text-emerald-500',
+      badgeBg: 'bg-emerald-500'
+    },
+    {
+      key: 'emotional',
+      name: 'عاطفي',
+      icon: 'heart',
+      hoverBg: 'hover:bg-rose-50',
+      iconBg: 'bg-rose-100 text-rose-600',
+      iconColor: 'text-rose-500',
+      badgeBg: 'bg-rose-500'
+    },
+    {
+      key: 'practical',
+      name: 'عملي',
+      icon: 'laptop',
+      hoverBg: 'hover:bg-purple-50',
+      iconBg: 'bg-purple-100 text-purple-600',
+      iconColor: 'text-purple-500',
+      badgeBg: 'bg-purple-500'
+    }
   ];
 
-  constructor(public navCtrl: NavController,
-              public translate: TranslateService,
-              public dataProvider: DataService,
-              public authProvider: AuthService,
-              public alertCtrl: AlertController,
-              public zone: NgZone,
-              private router: Router,
-              private gamification: GamificationEngineService,
-              private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
-              private gamificationApi: GamificationApiService,
-              private cdr: ChangeDetectorRef
-             ) {
-
-    this.translate.get("alertmessages").subscribe((res) => {
+  constructor(
+    public navCtrl: NavController,
+    public translate: TranslateService,
+    public dataProvider: DataService,
+    public authProvider: AuthService,
+    public alertCtrl: AlertController,
+    public zone: NgZone,
+    private router: Router,
+    private gamification: GamificationEngineService,
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
+    private gamificationApi: GamificationApiService,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -69,22 +112,21 @@ export class StudentTitlesPage implements OnInit {
 
   ngOnInit() {}
 
-  // 🟢 3. جعل الدالة async للتخلص من localStorage 
+  // 🟢 3. جعل الدالة async للتخلص من localStorage
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
       this.navData = this.userDetails.details;
-      
-      let sid = this.userDetails.details.stu_id; 
-      
+
+      let sid = this.userDetails.details.stu_id;
+
       // منع تكرار الطلبات إذا كانت الصفحة تقوم بالتحميل بالفعل
-      if(this.isLoadingData) return; 
+      if (this.isLoadingData) return;
 
       this.loadAllDataSequentially(sid);
-
     } else {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
@@ -93,31 +135,37 @@ export class StudentTitlesPage implements OnInit {
   }
 
   fetchStudentProfile(sid: any): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       let data = {
-        "user_no": this.userDetails.details.user_no,
-        "session_id": this.userDetails.session_id,
-        "sid": String(sid),
-        "cid": "", 
-        "date": new Date().toISOString().split('T')[0]
+        user_no: this.userDetails.details.user_no,
+        session_id: this.userDetails.session_id,
+        sid: String(sid),
+        cid: '',
+        date: new Date().toISOString().split('T')[0]
       };
-      this.dataProvider.getStudentDetails(data).then((res: any) => {
-        if (res && res.session && res.data) this.studentDetails = res.data; 
-        resolve();
-      }).catch(() => resolve());
+      this.dataProvider
+        .getStudentDetails(data)
+        .then((res: any) => {
+          if (res && res.session && res.data) this.studentDetails = res.data;
+          resolve();
+        })
+        .catch(() => resolve());
     });
   }
 
   fetchStudentSkills(sid: any): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       let body = { sid: String(sid) };
-      this.dataProvider.getStudentSkillTree(body).then((res: any) => {
-        if (res && res.success) {
-          this.studentTotalPoints = res.total_points || 0;
-          this.studentSkillData = res.skills;
-        }
-        resolve();
-      }).catch(() => resolve());
+      this.dataProvider
+        .getStudentSkillTree(body)
+        .then((res: any) => {
+          if (res && res.success) {
+            this.studentTotalPoints = res.total_points || 0;
+            this.studentSkillData = res.skills;
+          }
+          resolve();
+        })
+        .catch(() => resolve());
     });
   }
 
@@ -144,7 +192,7 @@ export class StudentTitlesPage implements OnInit {
         this.mapDataToUI();
       });
     } catch (error) {
-      console.error("Error loading data", error);
+      console.error('Error loading data', error);
     } finally {
       this.isLoadingData = false;
       this.cdr.markForCheck();
@@ -156,7 +204,7 @@ export class StudentTitlesPage implements OnInit {
 
     this.alchemyTitlesList.forEach(title => {
       title.isUnlocked = this.unlockedTitles.includes(title.code);
-      title.canCraftFlag = this.canCraft(title.cost); 
+      title.canCraftFlag = this.canCraft(title.cost);
     });
 
     this.secretBadgesList.forEach(badge => {
@@ -168,23 +216,30 @@ export class StudentTitlesPage implements OnInit {
   }
 
   fetchInventory(sid: any): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       let body = { sid: String(sid), userId: String(this.userDetails.details.user_no) };
-      this.gamificationApi.getStudentInventory(body).then((res: any) => {
-        if (res && res.success) {
-          let rawWallet = res.wallet || (res.data && res.data.wallet) || {};
-          this.studentWallet = Array.isArray(rawWallet) ? (rawWallet[0] || {}) : rawWallet;
-          this.unlockedTitles = res.unlocked_titles || [];
-          this.unlockedBadges = res.unlocked_badges || [];
-          this.activeCraftedTitle = res.active_title || null;
+      this.gamificationApi
+        .getStudentInventory(body)
+        .then((res: any) => {
+          if (res && res.success) {
+            let rawWallet = res.wallet || (res.data && res.data.wallet) || {};
+            this.studentWallet = Array.isArray(rawWallet) ? rawWallet[0] || {} : rawWallet;
+            this.unlockedTitles = res.unlocked_titles || [];
+            this.unlockedBadges = res.unlocked_badges || [];
+            this.activeCraftedTitle = res.active_title || null;
 
-          this.alchemyTitlesList = this.gamification.processTitles(this.unlockedTitles);
-          this.secretBadgesList = this.gamification.processBadges(this.unlockedBadges);
-          
-          this.studentTitle = this.gamification.getFinalStudentTitle(this.activeCraftedTitle, this.studentSkillData, this.studentTotalPoints);
-        }
-        resolve();
-      }).catch(() => resolve());
+            this.alchemyTitlesList = this.gamification.processTitles(this.unlockedTitles);
+            this.secretBadgesList = this.gamification.processBadges(this.unlockedBadges);
+
+            this.studentTitle = this.gamification.getFinalStudentTitle(
+              this.activeCraftedTitle,
+              this.studentSkillData,
+              this.studentTotalPoints
+            );
+          }
+          resolve();
+        })
+        .catch(() => resolve());
     });
   }
 
@@ -214,28 +269,35 @@ export class StudentTitlesPage implements OnInit {
     }
 
     switch (highestSkill) {
-      case 'cognitive': return '💡 عبقري المستقبل';
-      case 'social': return '🤝 روح الفريق';
-      case 'discipline': return '🛡️ درع الانضباط';
-      case 'emotional': return '❤️ القلب الكبير';
-      case 'practical': return '💻 المبدع الرقمي';
-      default: return '🌟 نجم المشاركة';
+      case 'cognitive':
+        return '💡 عبقري المستقبل';
+      case 'social':
+        return '🤝 روح الفريق';
+      case 'discipline':
+        return '🛡️ درع الانضباط';
+      case 'emotional':
+        return '❤️ القلب الكبير';
+      case 'practical':
+        return '💻 المبدع الرقمي';
+      default:
+        return '🌟 نجم المشاركة';
     }
   }
 
   canCraft(cost: any): boolean {
-    if(!this.studentWallet || Object.keys(this.studentWallet).length === 0) return false;
-    
+    if (!this.studentWallet || Object.keys(this.studentWallet).length === 0) return false;
+
     for (let skill in cost) {
       let spendableAmount = Number(this.studentWallet['spendable_' + skill]) || 0;
       if (spendableAmount < cost[skill]) return false;
     }
-    return true; 
+    return true;
   }
 
   async craftTitle(title: any) {
-    if(!this.canCraft(title.cost)) {
-      this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.'); return;
+    if (!this.canCraft(title.cost)) {
+      this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.');
+      return;
     }
     let sid = this.userDetails.details.stu_id;
 
@@ -254,11 +316,10 @@ export class StudentTitlesPage implements OnInit {
 
         // 🟢 4. استدعاء هذه الدالة إجباري لكي تتحدث حالة الأزرار في الواجهة (من دمج إلى استخدام)
         this.mapDataToUI();
-
       } else {
         this.dataProvider.errorALertMessage(res.msg);
       }
-    } catch(e) {
+    } catch (e) {
       this.dataProvider.showToast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
     }
     this.cdr.markForCheck();
@@ -280,7 +341,7 @@ export class StudentTitlesPage implements OnInit {
         this.dataProvider.showToast(res.msg);
         this.updateStudentTitle();
       }
-    } catch(e) {
+    } catch (e) {
       this.dataProvider.showToast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
     }
     this.cdr.markForCheck();

@@ -5,11 +5,10 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   templateUrl: './loader.component.html',
   styleUrls: ['./loader.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class LoaderComponent implements OnInit {
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {}
-
 }

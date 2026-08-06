@@ -13,7 +13,8 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-share-bulletins',
   templateUrl: './share-bulletins.page.html',
   styleUrls: ['./share-bulletins.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ShareBulletinsPage implements OnInit {
   lang: any = {};
@@ -37,7 +38,7 @@ export class ShareBulletinsPage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن الخدمة
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
@@ -83,11 +84,11 @@ export class ShareBulletinsPage implements OnInit {
       school_id: this.school_id,
       description: this.description
     };
-    
+
     const navigation: NavigationExtras = {
       state: data
     };
-    
+
     this.zone.run(() => {
       this.router.navigate(['bulletin-users'], navigation);
     });

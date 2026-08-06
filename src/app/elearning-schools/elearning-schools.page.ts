@@ -12,17 +12,20 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-elearning-schools',
   templateUrl: './elearning-schools.page.html',
   styleUrls: ['./elearning-schools.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ElearningSchoolsPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   public language: EventEmitter<any> = new EventEmitter();
 
   schools: any = [];
   noDataFound: string = '';
   lang: any = {};
   location_lang: any = {};
-  
+
   // 🟢 متغيرات نافذة الدول (مطابقة لصفحة الأخبار)
   country_code: any;
   country: any = null; // الدولة المحددة حالياً ككائن
@@ -32,7 +35,7 @@ export class ElearningSchoolsPage implements OnInit {
   countrySearchQuery: string = '';
 
   userDetails: any;
-  show_loading: boolean = true; 
+  show_loading: boolean = true;
 
   constructor(
     public navCtrl: NavController,
@@ -45,11 +48,11 @@ export class ElearningSchoolsPage implements OnInit {
     private storageSr: StorageService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
-    this.translate.get("location").subscribe((res) => {
+    this.translate.get('location').subscribe(res => {
       this.location_lang = res;
       this.cdr.markForCheck();
     });
@@ -66,10 +69,10 @@ export class ElearningSchoolsPage implements OnInit {
     this.countries = currentLang === 'ar' ? this.geo.getAllCountries() : this.geo.getEnCountries();
     this.filteredCountries = [...this.countries];
 
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      
+
       // 🟢 إذا كان للمستخدم دولة افتراضية، قم بتحديدها
       if (this.userDetails.details && this.userDetails.details.country_code) {
         this.country_code = this.userDetails.details.country_code;
@@ -88,19 +91,22 @@ export class ElearningSchoolsPage implements OnInit {
   }
 
   getSchool(location) {
-    this.dataProvider.getSchool(location).then((schoolList) => {
-      this.show_loading = false;
-      this.schools = schoolList || [];
-      if (this.schools.length === 0) {
-        this.noDataFound = this.lang.no_schools_found || 'لا توجد مدارس متاحة حالياً.';
-      }
-      this.cdr.markForCheck();
-    }).catch((err) => {
-      this.show_loading = false;
-      this.noDataFound = this.lang.no_schools_found || 'حدث خطأ في جلب البيانات.';
-      console.log(err);
-      this.cdr.markForCheck();
-    });
+    this.dataProvider
+      .getSchool(location)
+      .then(schoolList => {
+        this.show_loading = false;
+        this.schools = schoolList || [];
+        if (this.schools.length === 0) {
+          this.noDataFound = this.lang.no_schools_found || 'لا توجد مدارس متاحة حالياً.';
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(err => {
+        this.show_loading = false;
+        this.noDataFound = this.lang.no_schools_found || 'حدث خطأ في جلب البيانات.';
+        console.log(err);
+        this.cdr.markForCheck();
+      });
   }
 
   // 🟢 دوال التحكم بالنافذة المنبثقة والفلترة (من صفحة الأخبار)
@@ -115,16 +121,15 @@ export class ElearningSchoolsPage implements OnInit {
       this.filteredCountries = [...this.countries];
     } else {
       const query = this.countrySearchQuery.toLowerCase();
-      this.filteredCountries = this.countries.filter(c => 
-        (c.ar_name && c.ar_name.toLowerCase().includes(query)) ||
-        (c.name && c.name.toLowerCase().includes(query))
+      this.filteredCountries = this.countries.filter(
+        c => (c.ar_name && c.ar_name.toLowerCase().includes(query)) || (c.name && c.name.toLowerCase().includes(query))
       );
     }
   }
 
   selectCountry(selected: any) {
-    this.isCountryModalOpen = false; 
-    if (this.country?.code === selected.code) return; 
+    this.isCountryModalOpen = false;
+    if (this.country?.code === selected.code) return;
 
     this.country = selected;
     this.country_code = selected.code;
@@ -135,7 +140,7 @@ export class ElearningSchoolsPage implements OnInit {
   }
 
   clearCountryFilter(event: Event) {
-    event.stopPropagation(); 
+    event.stopPropagation();
     if (!this.country) return;
 
     this.country = null;

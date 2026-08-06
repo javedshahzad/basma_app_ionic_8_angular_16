@@ -15,10 +15,13 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
   selector: 'app-manage-student',
   templateUrl: './manage-student.page.html',
   styleUrls: ['./manage-student.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ManageStudentPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   userdata: any;
   lang: any;
   students = <any>[];
@@ -28,22 +31,22 @@ export class ManageStudentPage implements OnInit {
   searchTimeout: any; // 🟢 متغير لإدارة تأخير البحث وحماية السيرفر
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public dataProvider: DataService,
-    public authProvider: AuthService, 
+    public authProvider: AuthService,
     public translate: TranslateService,
-    public alertCtrl: AlertController, 
+    public alertCtrl: AlertController,
     public network: Network,
     private route: ActivatedRoute,
     private router: Router,
-    public zone: NgZone, 
+    public zone: NgZone,
     public platform: Platform,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private searchApi: SearchApiService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
@@ -62,7 +65,7 @@ export class ManageStudentPage implements OnInit {
 
   // 🟢 جلب بيانات المستخدم وبدء العملية بطريقة آمنة تماماً
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userdata = userLoggedIn;
       this.getStudents();
@@ -74,13 +77,43 @@ export class ManageStudentPage implements OnInit {
 
   // 🟢 التحديث الصامت للبيانات بعد العودة من صفحة أخرى
   async refreshData() {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userdata = userLoggedIn;
-      let data = { 'school_id': this.userdata.details.school_id };
+      let data = { school_id: this.userdata.details.school_id };
 
-      this.schoolDirectoryApi.getSchoolStudents(data).then(res => {
-        if (res.data) {
+      this.schoolDirectoryApi
+        .getSchoolStudents(data)
+        .then(res => {
+          if (res.data) {
+            this.students = res.data;
+            if (this.students.length > 20) {
+              this.allStudents = this.students.splice(0, 20);
+            } else {
+              this.allStudents = this.students;
+            }
+          }
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          console.log(error);
+          this.cdr.markForCheck();
+        });
+    }
+  }
+
+  getStudents() {
+    let data = {
+      school_id: this.userdata.details.school_id
+    };
+
+    this.show_loading = true;
+
+    this.schoolDirectoryApi
+      .getSchoolStudents(data)
+      .then(res => {
+        this.show_loading = false;
+        if (res && res.data) {
           this.students = res.data;
           if (this.students.length > 20) {
             this.allStudents = this.students.splice(0, 20);
@@ -89,34 +122,13 @@ export class ManageStudentPage implements OnInit {
           }
         }
         this.cdr.markForCheck();
-      }).catch(error => { console.log(error); this.cdr.markForCheck(); });
-    }
-  }
-
-  getStudents() {
-    let data = {
-      'school_id': this.userdata.details.school_id
-    };
-
-    this.show_loading = true;
-
-    this.schoolDirectoryApi.getSchoolStudents(data).then(res => {
-      this.show_loading = false;
-      if (res && res.data) {
-        this.students = res.data;
-        if (this.students.length > 20) {
-          this.allStudents = this.students.splice(0, 20);
-        } else {
-          this.allStudents = this.students;
-        }
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      this.show_loading = false;
-      this.dataProvider.showToast(error);
-      console.log(error);
-      this.cdr.markForCheck();
-    });
+      })
+      .catch(error => {
+        this.show_loading = false;
+        this.dataProvider.showToast(error);
+        console.log(error);
+        this.cdr.markForCheck();
+      });
   }
 
   // 🟢 دالة البحث المحمية بالكامل (Debounce + Two-Way Binding)
@@ -124,10 +136,10 @@ export class ManageStudentPage implements OnInit {
     let input = this.searchtxt; // نأخذ القيمة المتزامنة من ngModel
 
     if (!input || input.trim() === '') {
-       this.allStudents = [];
-       this.getStudents();
-       this.cdr.markForCheck();
-       return;
+      this.allStudents = [];
+      this.getStudents();
+      this.cdr.markForCheck();
+      return;
     }
 
     if (this.searchTimeout) {
@@ -138,52 +150,55 @@ export class ManageStudentPage implements OnInit {
 
     this.searchTimeout = setTimeout(() => {
       let data = {
-        'school_id': this.userdata.details.school_id,
-        'search_str': input.trim()
+        school_id: this.userdata.details.school_id,
+        search_str: input.trim()
       };
-      
-      this.searchApi.serachStudent(data).then(res => {
-        this.show_loading = false;
-        if (res && res.data && res.data.response) {
-          this.students = res.data.response;
-          if (this.students.length > 20) {
-            this.allStudents = this.students.splice(0, 20);
+
+      this.searchApi
+        .serachStudent(data)
+        .then(res => {
+          this.show_loading = false;
+          if (res && res.data && res.data.response) {
+            this.students = res.data.response;
+            if (this.students.length > 20) {
+              this.allStudents = this.students.splice(0, 20);
+            } else {
+              this.allStudents = this.students;
+            }
           } else {
-            this.allStudents = this.students;
+            this.students = [];
+            this.allStudents = [];
           }
-        } else {
-          this.students = [];
-          this.allStudents = [];
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        this.show_loading = false;
-        this.dataProvider.showToast(error);
-        console.log(error);
-        this.cdr.markForCheck();
-      });
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          this.show_loading = false;
+          this.dataProvider.showToast(error);
+          console.log(error);
+          this.cdr.markForCheck();
+        });
     }, 500); // 🟢 نؤخر الطلب نصف ثانية لحماية السيرفر
   }
 
-  openStudentDetails(student) {  
-  // 🟢 هذا السطر مهم جداً للتأكد من المسميات التي تظهر في الكونسول
-  console.log("📤 إرسال بيانات الطالب:", student);
+  openStudentDetails(student) {
+    // 🟢 هذا السطر مهم جداً للتأكد من المسميات التي تظهر في الكونسول
+    console.log('📤 إرسال بيانات الطالب:', student);
 
-  const navigation: NavigationExtras = {
-    state: {
-      student: student,
-      // نرسل أي معرف متاح
-      course_id: student.cid || student.class_id || student.course_id || '',
-      // نرسل اسم الصف المكتوب في القائمة (ص 10-1 مثلاً)
-      course_name: student.class_name || student.course_name || '',
-      dateSelected: this.dataProvider.getFormatedDate(new Date()),
-      returnPath: 'manage-student'
-    }
-  };
-  this.zone.run(() => {
-    this.router.navigate(['edit-student-profile'], navigation);
-  });
-}
+    const navigation: NavigationExtras = {
+      state: {
+        student: student,
+        // نرسل أي معرف متاح
+        course_id: student.cid || student.class_id || student.course_id || '',
+        // نرسل اسم الصف المكتوب في القائمة (ص 10-1 مثلاً)
+        course_name: student.class_name || student.course_name || '',
+        dateSelected: this.dataProvider.getFormatedDate(new Date()),
+        returnPath: 'manage-student'
+      }
+    };
+    this.zone.run(() => {
+      this.router.navigate(['edit-student-profile'], navigation);
+    });
+  }
 
   doInfinite(infiniteScroll: any) {
     setTimeout(() => {

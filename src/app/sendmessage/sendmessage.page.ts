@@ -1,14 +1,22 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { NavController, Platform, AlertController, ModalController } from "@ionic/angular";
-import { DataService } from "../service/data/data.service";
+﻿import {
+  Component,
+  OnInit,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavController, Platform, AlertController, ModalController } from '@ionic/angular';
+import { DataService } from '../service/data/data.service';
 
 import { UserSelectionPage } from '../user-selection/user-selection.page';
 
-import { CameraResultType, Camera, ImageOptions, CameraSource } from "@capacitor/camera";
-import { TranslateService } from "@ngx-translate/core";
-import { Router, ActivatedRoute, NavigationExtras } from "@angular/router";
-import { environment } from "../../environments/environment";
+import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
+import { TranslateService } from '@ngx-translate/core';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
@@ -19,13 +27,16 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
 const env = environment;
 
 @Component({
-  selector: "app-sendmessage",
-  templateUrl: "./sendmessage.page.html",
-  styleUrls: ["./sendmessage.page.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-sendmessage',
+  templateUrl: './sendmessage.page.html',
+  styleUrls: ['./sendmessage.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SendmessagePage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   private destroyRef = inject(DestroyRef);
   mail: any = {
     send_to: {
@@ -35,16 +46,16 @@ export class SendmessagePage implements OnInit {
       others: false,
       admin: false,
       viewer: false,
-      students: false,
+      students: false
     },
-    title: "",
-    notification: "",
-    useremailorid: "",
-    selected_users: [],
+    title: '',
+    notification: '',
+    useremailorid: '',
+    selected_users: []
   };
   lang: any = {};
   userDetails: any = {};
-  ticketImage: string = "";
+  ticketImage: string = '';
   users: any = [];
   selectedUsers: any;
   mediaType: any;
@@ -64,12 +75,12 @@ export class SendmessagePage implements OnInit {
     private route: ActivatedRoute,
     public alertCtrl: AlertController,
     private modalCtrl: ModalController,
-    private storageSr: StorageService,  // 🟢 2. حقن خدمة التخزين
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     public authProvider: AuthService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.dataProvider.selectedUsers.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
+    this.dataProvider.selectedUsers.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       this.mail.selected_users = res.selectedUsers;
       this.selectedUsersShow = res.selectedUsersShow;
       console.log(this.mail.selected_users);
@@ -77,19 +88,19 @@ export class SendmessagePage implements OnInit {
       this.cdr.markForCheck();
     });
 
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
 
-    this.translate.get("sendmsg").subscribe((res) => {
-      this.sendToUers.push({ name: res.parent, value: true, user_id: "parents" });
-      this.sendToUers.push({ name: res.mod, value: true, user_id: "mod" });
-      this.sendToUers.push({ name: res.admin, value: true, user_id: "admin" });
-      this.sendToUers.push({ name: res.viewer, value: true, user_id: "viewer" });
-      this.sendToUers.push({ name: res.teachers, value: true, user_id: "tech" });
-      this.sendToUers.push({ name: res.students, value: true, user_id: "students" });
-      this.sendToUers.push({ name: res.users, value: true, user_id: "others" });
+    this.translate.get('sendmsg').subscribe(res => {
+      this.sendToUers.push({ name: res.parent, value: true, user_id: 'parents' });
+      this.sendToUers.push({ name: res.mod, value: true, user_id: 'mod' });
+      this.sendToUers.push({ name: res.admin, value: true, user_id: 'admin' });
+      this.sendToUers.push({ name: res.viewer, value: true, user_id: 'viewer' });
+      this.sendToUers.push({ name: res.teachers, value: true, user_id: 'tech' });
+      this.sendToUers.push({ name: res.students, value: true, user_id: 'students' });
+      this.sendToUers.push({ name: res.users, value: true, user_id: 'others' });
       this.sendTo = this.sendToUers;
       this.cdr.markForCheck();
     });
@@ -99,11 +110,11 @@ export class SendmessagePage implements OnInit {
 
   // 🟢 3. جعل الدالة async لاستخدام StorageService بدلاً من localStorage
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      this.ticketImage = "";
+      this.ticketImage = '';
       this.getUsers();
     } else {
       this.authProvider.flushLocalStorage(); // تأكد من وجود دالة flushLocalStorage في authProvider أو قم بتغييرها
@@ -121,15 +132,15 @@ export class SendmessagePage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: UserSelectionPage,
       componentProps: {
-        usersList: this.users, 
-        preSelectedUsers: this.mail.selected_users 
+        usersList: this.users,
+        preSelectedUsers: this.mail.selected_users
       }
     });
-    
+
     await modal.present();
-    
+
     const { data } = await modal.onDidDismiss();
-    
+
     if (data) {
       this.mail.selected_users = data;
     }
@@ -141,21 +152,21 @@ export class SendmessagePage implements OnInit {
       state: this.users,
       queryParams: {
         selectedUsers: this.mail.selected_users,
-        selectedUsersShow: this.selectedUsersShow,
-      },
+        selectedUsersShow: this.selectedUsersShow
+      }
     };
     this.zone.run(() => {
-      this.router.navigate(["select-message-user"], navigation);
+      this.router.navigate(['select-message-user'], navigation);
     });
   }
 
   moveBack() {
-    this.router.navigate(["tabs/messages"]);
+    this.router.navigate(['tabs/messages']);
   }
 
   async getUsers() {
     let data = {
-      school_id: this.userDetails.details.school_id,
+      school_id: this.userDetails.details.school_id
     };
     try {
       const res = await this.dataProvider.run(() => this.schoolDirectoryApi.getAllSchoolUsers(data));
@@ -175,11 +186,11 @@ export class SendmessagePage implements OnInit {
       return;
     }
 
-    if (this.mail.notification && this.mail.notification.trim() == "") {
+    if (this.mail.notification && this.mail.notification.trim() == '') {
       this.dataProvider.showToast(this.lang.enter_noti_desc);
       return;
-    } 
-    
+    }
+
     if (this.mail.notification.length > 140) {
       this.dataProvider.showToast(this.lang.max_body);
       return;
@@ -192,13 +203,13 @@ export class SendmessagePage implements OnInit {
 
     // 🟢 4. تبسيط مسار إرسال الرسالة بعد التأكد من صحة البيانات
     let isemailvar = this.mail.send_to.others ? 1 : 2;
-    
+
     let data = {
       user_no: this.userDetails.details.user_no,
       session_id: this.userDetails.session_id,
       notification: this.mail,
       isemail: isemailvar,
-      school_id: this.userDetails.details.school_id,
+      school_id: this.userDetails.details.school_id
     };
 
     this.show_spinner = true;
@@ -207,56 +218,51 @@ export class SendmessagePage implements OnInit {
 
   uploadToServer(data, imgBlob?: any, fileName?: any) {
     this.formdata = new FormData();
-    
-    this.formdata.append("user_no", data.user_no);
-    this.formdata.append("session_id", this.userDetails.session_id);
-    
+
+    this.formdata.append('user_no', data.user_no);
+    this.formdata.append('session_id', this.userDetails.session_id);
+
     if (!data.notification.title || data.notification.title.trim() === '') {
-        data.notification.title = "إشعار إداري";
+      data.notification.title = 'إشعار إداري';
     }
 
-    Object.keys(data.notification).map((key) => {
-      if (key == "send_to") {
-        Object.keys(data.notification[key]).map((send_to_key) => {
-          this.formdata.append(
-            "notification[" + key + "][" + send_to_key + "]",
-            data.notification[key][send_to_key]
-          );
+    Object.keys(data.notification).map(key => {
+      if (key == 'send_to') {
+        Object.keys(data.notification[key]).map(send_to_key => {
+          this.formdata.append('notification[' + key + '][' + send_to_key + ']', data.notification[key][send_to_key]);
         });
-      } else if (key == "selected_users") {
-        
+      } else if (key == 'selected_users') {
         let usersArray = data.notification[key];
         if (Array.isArray(usersArray) && usersArray.length > 0) {
-            let idsString = usersArray.map(u => u.user_id || u.id || u.user_no).join(',');
-            this.formdata.append("notification[" + key + "]", idsString);
+          let idsString = usersArray.map(u => u.user_id || u.id || u.user_no).join(',');
+          this.formdata.append('notification[' + key + ']', idsString);
         } else {
-            this.formdata.append("notification[" + key + "]", "");
+          this.formdata.append('notification[' + key + ']', '');
         }
-        
       } else {
-        this.formdata.append("notification[" + key + "]", data.notification[key]);
+        this.formdata.append('notification[' + key + ']', data.notification[key]);
       }
     });
 
-    this.formdata.append("isemail", data.isemail);
-    this.formdata.append("school_id", this.userDetails.details.school_id);
-    
+    this.formdata.append('isemail', data.isemail);
+    this.formdata.append('school_id', this.userDetails.details.school_id);
+
     if (imgBlob) {
-      this.formdata.append("file", imgBlob, fileName);
+      this.formdata.append('file', imgBlob, fileName);
     }
-    
+
     this.dataProvider.sendMessage(this.formdata, data.school_id).subscribe(
-      (res) => {
+      res => {
         this.show_spinner = false;
         this.dataProvider.showToast(this.lang.msg_sent_success);
         this.resetForm();
-        this.router.navigate(["tabs/messages"]);
+        this.router.navigate(['tabs/messages']);
         this.cdr.markForCheck();
       },
-      (e) => {
+      e => {
         this.show_spinner = false;
         this.resetForm();
-        this.router.navigate(["tabs/messages"]);
+        this.router.navigate(['tabs/messages']);
         this.dataProvider.showToast(this.lang.usnexpectedError);
         this.cdr.markForCheck();
       }
@@ -274,29 +280,25 @@ export class SendmessagePage implements OnInit {
         viewer: false,
         students: false
       },
-      title: "",
-      notification: "",
-      useremailorid: "",
+      title: '',
+      notification: '',
+      useremailorid: '',
       selected_users: []
     };
-    this.ticketImage = "";
+    this.ticketImage = '';
   }
 
   startUpload(imgEntry, data) {
     if (imgEntry) {
-      this.blob = this.dataProvider.base64toBlob(imgEntry, "jpg");
-      this.readFile("", data);
+      this.blob = this.dataProvider.base64toBlob(imgEntry, 'jpg');
+      this.readFile('', data);
     } else {
       this.uploadToServer(data);
     }
   }
 
   readFile(file: any, data) {
-    this.uploadToServer(
-      data,
-      this.blob,
-      this.dataProvider.generateRandomFileName("jpg")
-    );
+    this.uploadToServer(data, this.blob, this.dataProvider.generateRandomFileName('jpg'));
   }
 
   portChange(event) {
@@ -307,9 +309,9 @@ export class SendmessagePage implements OnInit {
       others: false,
       admin: false,
       viewer: false,
-      students: false,
+      students: false
     };
-    event.value.forEach((res) => {
+    event.value.forEach(res => {
       send_to[res.user_id] = true;
       this.mail.send_to = send_to;
     });
@@ -323,15 +325,15 @@ export class SendmessagePage implements OnInit {
           text: this.lang.camera,
           handler: () => {
             this.openCamera();
-          },
+          }
         },
         {
           text: this.lang.gallery,
           handler: () => {
             this.openGallery();
-          },
-        },
-      ],
+          }
+        }
+      ]
     });
     await alert.present();
   }
@@ -340,13 +342,13 @@ export class SendmessagePage implements OnInit {
     const options: ImageOptions = {
       quality: 100,
       resultType: CameraResultType.Base64,
-      source: CameraSource.Camera,
+      source: CameraSource.Camera
     };
 
-    Camera.getPhoto(options).then((imageData) => {
+    Camera.getPhoto(options).then(imageData => {
       if (imageData) {
         this.ticketImage = imageData.base64String;
-        this.mediaType = "image/jpg";
+        this.mediaType = 'image/jpg';
       }
       this.cdr.markForCheck();
     });
@@ -356,13 +358,13 @@ export class SendmessagePage implements OnInit {
     const options: ImageOptions = {
       quality: 100,
       resultType: CameraResultType.Base64,
-      source: CameraSource.Photos,
+      source: CameraSource.Photos
     };
 
-    Camera.getPhoto(options).then((imageData) => {
+    Camera.getPhoto(options).then(imageData => {
       if (imageData) {
         this.ticketImage = imageData.base64String;
-        this.mediaType = "image/jpg";
+        this.mediaType = 'image/jpg';
       }
       this.cdr.markForCheck();
     });

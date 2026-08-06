@@ -15,20 +15,23 @@ import { AbsentApplicationApiService } from '../service/absent-application-api/a
   selector: 'app-submit-absent-application',
   templateUrl: './submit-absent-application.page.html',
   styleUrls: ['./submit-absent-application.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SubmitAbsentApplicationPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   UserData: any;
   absentDates: any;
   absentSeminars: any;
   seminarsList = [];
   selectedDate: any = '';
   selectedSeminar = [];
-  notes: any = "";
+  notes: any = '';
   userDetails: any;
   lang: any;
-  ImgData: string = "";
+  ImgData: string = '';
 
   constructor(
     public navCtrl: NavController,
@@ -55,13 +58,13 @@ export class SubmitAbsentApplicationPage implements OnInit {
 
   // 🟢 4. استخدام async/await لجلب البيانات والتخلص من localStorage
   async ngOnInit() {
-    this.translate.get("alertmessages").subscribe((val) => {
+    this.translate.get('alertmessages').subscribe(val => {
       this.lang = val;
       this.cdr.markForCheck();
     });
 
     // جلب بيانات المستخدم بأمان
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
     } else {
@@ -94,7 +97,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
     const value = event.detail.value;
     this.selectedDate = this.absentDates[value];
     this.seminarsList = this.absentSeminars[value];
-    
+
     // تفريغ اختيار الحصص عند تغيير التاريخ
     this.selectedSeminar = [];
   }
@@ -102,7 +105,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
   OnchangeSeminar(event) {
     const value = event.detail.value;
     const semsList = [];
-    
+
     value.forEach(element => {
       const numMatch = String(element).match(/\d+/);
       if (numMatch) {
@@ -111,27 +114,27 @@ export class SubmitAbsentApplicationPage implements OnInit {
         semsList.push(element);
       }
     });
-    
+
     this.selectedSeminar = semsList;
   }
 
   async submitApplication() {
     if (!this.selectedDate || this.selectedSeminar.length === 0) {
-      this.dataProvider.showToast("يجب تحديد التاريخ والحصص لتقديم الطلب!");
-      return; 
+      this.dataProvider.showToast('يجب تحديد التاريخ والحصص لتقديم الطلب!');
+      return;
     }
 
     const data = {
-      "absent_date": this.selectedDate,
-      "absent_seminars": this.selectedSeminar,
-      "absent_notes": this.notes,
-      "cid": this.UserData.cid,
-      "sid": this.UserData.sid,
-      "school_id": this.userDetails.details.school_id,
-      "student_id": this.UserData.student_id,
-      "student_name": this.UserData.student_name,
-      "submitted_by": this.userDetails.details.user_no,
-      "imageData": this.ImgData
+      absent_date: this.selectedDate,
+      absent_seminars: this.selectedSeminar,
+      absent_notes: this.notes,
+      cid: this.UserData.cid,
+      sid: this.UserData.sid,
+      school_id: this.userDetails.details.school_id,
+      student_id: this.UserData.student_id,
+      student_name: this.UserData.student_name,
+      submitted_by: this.userDetails.details.user_no,
+      imageData: this.ImgData
     };
 
     try {
@@ -146,7 +149,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
         }, 1000);
       }
     } catch (error) {
-      this.dataProvider.showToast("حدث خطأ أثناء الاتصال بالخادم");
+      this.dataProvider.showToast('حدث خطأ أثناء الاتصال بالخادم');
     }
   }
 
@@ -184,16 +187,18 @@ export class SubmitAbsentApplicationPage implements OnInit {
       quality: 90,
       resultType: CameraResultType.Base64,
       source: CameraSource.Camera,
-      width: 800, 
-      allowEditing: false,
+      width: 800,
+      allowEditing: false
     };
 
-    Camera.getPhoto(options).then((imageData) => {
-      if (imageData && imageData.base64String) {
-        this.ImgData = 'data:image/jpeg;base64,' + imageData.base64String;
-      }
-      this.cdr.markForCheck();
-    }).catch(err => console.log('Camera cancelled', err));
+    Camera.getPhoto(options)
+      .then(imageData => {
+        if (imageData && imageData.base64String) {
+          this.ImgData = 'data:image/jpeg;base64,' + imageData.base64String;
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(err => console.log('Camera cancelled', err));
   }
 
   openGallery() {
@@ -202,18 +207,20 @@ export class SubmitAbsentApplicationPage implements OnInit {
       resultType: CameraResultType.Base64,
       source: CameraSource.Photos,
       width: 800,
-      allowEditing: false,
+      allowEditing: false
     };
 
-    Camera.getPhoto(options).then((imageData) => {
-      if (imageData && imageData.base64String) {
-        this.ImgData = 'data:image/jpeg;base64,' + imageData.base64String;
-      }
-      this.cdr.markForCheck();
-    }).catch(err => console.log('Gallery cancelled', err));
+    Camera.getPhoto(options)
+      .then(imageData => {
+        if (imageData && imageData.base64String) {
+          this.ImgData = 'data:image/jpeg;base64,' + imageData.base64String;
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(err => console.log('Gallery cancelled', err));
   }
-  
+
   removeImage() {
-    this.ImgData = "";
+    this.ImgData = '';
   }
 }

@@ -1,4 +1,12 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import {
+  Component,
+  OnInit,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ActionSheetController, PopoverController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -17,10 +25,13 @@ import { UserType } from '../constants/user-type';
   selector: 'app-edit-user-profile',
   templateUrl: './edit-user-profile.page.html',
   styleUrls: ['./edit-user-profile.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class EditUserProfilePage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
   navData: any;
@@ -63,7 +74,7 @@ export class EditUserProfilePage implements OnInit {
     private userManagementApi: UserManagementApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
@@ -73,15 +84,15 @@ export class EditUserProfilePage implements OnInit {
       const navigation = this.router.getCurrentNavigation();
       if (navigation && navigation.extras && navigation.extras.state) {
         this.navData = navigation.extras.state['user'];
-        
+
         if (navigation.extras.state['returnPath']) {
           this.returnPath = navigation.extras.state['returnPath'];
         }
 
         // حفظ البيانات مؤقتاً
         await this.storageSr.set('editUserProfileContext', {
-            navData: this.navData,
-            returnPath: this.returnPath
+          navData: this.navData,
+          returnPath: this.returnPath
         });
 
         this.initUserData();
@@ -89,9 +100,9 @@ export class EditUserProfilePage implements OnInit {
         // استرجاع البيانات في حالة التحديث (Refresh)
         let savedData = await this.storageSr.get('editUserProfileContext');
         if (savedData) {
-            this.navData = savedData.navData;
-            this.returnPath = savedData.returnPath;
-            this.initUserData();
+          this.navData = savedData.navData;
+          this.returnPath = savedData.returnPath;
+          this.initUserData();
         }
       }
       this.cdr.markForCheck();
@@ -102,7 +113,7 @@ export class EditUserProfilePage implements OnInit {
 
   async ionViewWillEnter() {
     // 🟢 قراءة بيانات المشرف أو المدير الحالي بأمان
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
@@ -122,12 +133,12 @@ export class EditUserProfilePage implements OnInit {
     this.user.username = this.navData.username;
     this.user.user_type = this.navData.user_type;
     this.user.status = this.navData.status;
-    
+
     // قراءة نوع المعلم
     let rawType = this.navData.teacher_type || this.navData.assigned_as;
     let tType = rawType ? String(rawType).trim().toLowerCase() : '';
-    this.user.teacher_type = (tType === 'split') ? 'split' : 'regular';
-    
+    this.user.teacher_type = tType === 'split' ? 'split' : 'regular';
+
     // قراءة الفصول
     if (this.navData.in_class) {
       this.user.class = [...this.navData.in_class];
@@ -144,11 +155,12 @@ export class EditUserProfilePage implements OnInit {
 
     this.user.is_show_absent_students = this.navData.is_show_absent_students;
     this.user.is_show_absent_application_list = this.navData.is_show_absent_application_list;
-    
+
     // صلاحية تعديل الغياب
-    let hasEditPower = (this.navData.attendence_permit == '1' || 
-                        this.navData.moderatorAttenEditPower == '1' || 
-                        this.navData.TeacherAttenEditPower == '1');
+    let hasEditPower =
+      this.navData.attendence_permit == '1' ||
+      this.navData.moderatorAttenEditPower == '1' ||
+      this.navData.TeacherAttenEditPower == '1';
     this.user.attendence_permit = hasEditPower ? true : false;
 
     // وقت التعديل للمعلم
@@ -180,13 +192,17 @@ export class EditUserProfilePage implements OnInit {
             text: this.translate.instant('user_profile.active') || 'نشط',
             icon: 'checkmark-circle-outline',
             cssClass: this.user.status == '1' ? 'text-emerald-500 font-bold' : 'text-slate-600',
-            handler: () => { this.setPermission('status', '1'); }
+            handler: () => {
+              this.setPermission('status', '1');
+            }
           },
           {
             text: this.translate.instant('user_profile.inactive') || 'غير نشط',
             icon: 'close-circle-outline',
             cssClass: this.user.status == '0' ? 'text-rose-500 font-bold' : 'text-slate-600',
-            handler: () => { this.setPermission('status', '0'); }
+            handler: () => {
+              this.setPermission('status', '0');
+            }
           }
         ];
       } else if (type === 'absent') {
@@ -196,13 +212,17 @@ export class EditUserProfilePage implements OnInit {
             text: this.translate.instant('teacher_profile.show') || 'عرض',
             icon: 'eye-outline',
             cssClass: this.user.is_show_absent_students == '1' ? 'text-indigo-500 font-bold' : 'text-slate-600',
-            handler: () => { this.setPermission('absent', '1'); }
+            handler: () => {
+              this.setPermission('absent', '1');
+            }
           },
           {
             text: this.translate.instant('teacher_profile.hide') || 'إخفاء',
             icon: 'eye-off-outline',
             cssClass: this.user.is_show_absent_students == '0' ? 'text-slate-500 font-bold' : 'text-slate-600',
-            handler: () => { this.setPermission('absent', '0'); }
+            handler: () => {
+              this.setPermission('absent', '0');
+            }
           }
         ];
       } else if (type === 'application') {
@@ -212,13 +232,17 @@ export class EditUserProfilePage implements OnInit {
             text: this.translate.instant('teacher_profile.show') || 'عرض',
             icon: 'eye-outline',
             cssClass: this.user.is_show_absent_application_list == '1' ? 'text-indigo-500 font-bold' : 'text-slate-600',
-            handler: () => { this.setPermission('application', '1'); }
+            handler: () => {
+              this.setPermission('application', '1');
+            }
           },
           {
             text: this.translate.instant('teacher_profile.hide') || 'إخفاء',
             icon: 'eye-off-outline',
             cssClass: this.user.is_show_absent_application_list == '0' ? 'text-slate-500 font-bold' : 'text-slate-600',
-            handler: () => { this.setPermission('application', '0'); }
+            handler: () => {
+              this.setPermission('application', '0');
+            }
           }
         ];
       }
@@ -255,9 +279,7 @@ export class EditUserProfilePage implements OnInit {
       this.filteredClasses = [...this.classes];
     } else {
       const query = this.classSearchQuery.toLowerCase();
-      this.filteredClasses = this.classes.filter(c => 
-        c.name && c.name.toLowerCase().includes(query)
-      );
+      this.filteredClasses = this.classes.filter(c => c.name && c.name.toLowerCase().includes(query));
     }
   }
 
@@ -270,17 +292,17 @@ export class EditUserProfilePage implements OnInit {
   isClassSelected(cls: any): boolean {
     if (!this.user.class || !Array.isArray(this.user.class)) return false;
     let targetId = cls.cid || cls.id;
-    return this.user.class.some((c: any) => (c.cid === targetId) || (c.id === targetId));
+    return this.user.class.some((c: any) => c.cid === targetId || c.id === targetId);
   }
 
   toggleSelectedClass(cls: any) {
     if (!this.user.class || !Array.isArray(this.user.class)) {
       this.user.class = [];
     }
-    
+
     let targetId = cls.cid || cls.id;
-    const index = this.user.class.findIndex((c: any) => (c.cid === targetId) || (c.id === targetId));
-    
+    const index = this.user.class.findIndex((c: any) => c.cid === targetId || c.id === targetId);
+
     if (index > -1) {
       this.user.class.splice(index, 1);
     } else {
@@ -300,17 +322,18 @@ export class EditUserProfilePage implements OnInit {
 
   async logoutDeviceFromAll(): Promise<void> {
     let data = {
-      "user_no": this.navData.user_no,
+      user_no: this.navData.user_no
     };
     try {
       await this.dataProvider.run(() => this.deviceApi.LogOutAllDevice(data));
     } catch (error) {
-      this.dataProvider.showToast("error");
+      this.dataProvider.showToast('error');
     }
     // 🟢 نكمل العملية حتى لو فشل الطرد لتتم عملية الحفظ
   }
 
-  async saveUserProfile() { // 🟢 إضافة كلمة async هنا ضروري جداً
+  async saveUserProfile() {
+    // 🟢 إضافة كلمة async هنا ضروري جداً
     if (this.user.password && this.user.password != this.user.c_pass) {
       this.dataProvider.showToast(this.lang.pass_not_match || 'كلمة المرور غير متطابقة');
     } else {
@@ -318,13 +341,16 @@ export class EditUserProfilePage implements OnInit {
       this.user.school_id = this.navData.school_id;
       this.user.userId = this.navData.user_no;
       this.user.user_no = this.userDetails?.details?.user_no;
-      
-      if(typeof this.user.class === 'object'){
+
+      if (typeof this.user.class === 'object') {
         this.user.class = JSON.stringify(this.user.class);
       }
-      
-      let permitValue = (this.user.attendence_permit === true || this.user.attendence_permit == 1 || this.user.attendence_permit == '1') ? 1 : 0;
-      
+
+      let permitValue =
+        this.user.attendence_permit === true || this.user.attendence_permit == 1 || this.user.attendence_permit == '1'
+          ? 1
+          : 0;
+
       this.user.attendence_permit = permitValue;
       this.user.moderatorAttenEditPower = permitValue;
       this.user.TeacherAttenEditPower = permitValue;
@@ -332,13 +358,13 @@ export class EditUserProfilePage implements OnInit {
       this.user.teacher_type = this.user.user_type == UserType.Teacher ? this.user.teacher_type : '';
 
       // 🟢 ضمان إرسال الحالة كنص صريح ('0' أو '1') لمنع أخطاء السيرفر
-      this.user.status = (this.user.status == '1' || this.user.status == 1) ? '1' : '0';
+      this.user.status = this.user.status == '1' || this.user.status == 1 ? '1' : '0';
 
       // 🟢 السحر هنا: ننتظر (await) حتى ينتهي السيرفر من الطرد تماماً قبل الحفظ
-      if(this.user.status == '0' || (this.user.password && this.user.password != '' && this.user.c_pass)){
+      if (this.user.status == '0' || (this.user.password && this.user.password != '' && this.user.c_pass)) {
         await this.logoutDeviceFromAll();
       }
-      
+
       // 🟢 الآن وبعد استقرار قاعدة البيانات، نقوم بإرسال التعديل براحة تامة
       this.show_save_user_spinner = false;
       this.cdr.markForCheck();
@@ -359,9 +385,9 @@ export class EditUserProfilePage implements OnInit {
 
   async getClasses() {
     let data = {
-      "user_no": this.userDetails?.details?.user_no,
-      "school_id": this.userDetails?.details?.school_id,
-      "session_id": this.userDetails?.session_id
+      user_no: this.userDetails?.details?.user_no,
+      school_id: this.userDetails?.details?.school_id,
+      session_id: this.userDetails?.session_id
     };
     try {
       const response = await this.dataProvider.run(() => this.dataProvider.getCourses(data));
@@ -379,11 +405,11 @@ export class EditUserProfilePage implements OnInit {
   }
 
   check() {
-    console.log("حالة الزر الحالية:", this.user.attendence_permit);
+    console.log('حالة الزر الحالية:', this.user.attendence_permit);
   }
 
   portChange(event) {
-    this.user.class= JSON.stringify(event.value);
+    this.user.class = JSON.stringify(event.value);
   }
 
   openDeleteModal() {
@@ -396,38 +422,41 @@ export class EditUserProfilePage implements OnInit {
 
   confirmDelete() {
     this.show_delete_user_spinner = true;
-    
+
     let data = {
-      "users_user_no": this.navData.user_no, 
-      "school_id": this.userDetails?.details?.school_id,
-      "session_id": this.userDetails?.session_id
+      users_user_no: this.navData.user_no,
+      school_id: this.userDetails?.details?.school_id,
+      session_id: this.userDetails?.session_id
     };
 
     // 🟢 الإرجاع للدالة الأصلية بمدخلاتها الصحيحة (data, callback)
-    this.userManagementApi.deleteUser(data).then((response: any) => {
-      this.show_delete_user_spinner = false;
-      this.closeDeleteModal();
+    this.userManagementApi
+      .deleteUser(data)
+      .then((response: any) => {
+        this.show_delete_user_spinner = false;
+        this.closeDeleteModal();
 
-      // 🟢 الخدمة الأصلية كانت تعرض هذا التوست دائماً عند وجود استجابة، قبل التفرع
-      this.dataProvider.showToast(response.msg);
+        // 🟢 الخدمة الأصلية كانت تعرض هذا التوست دائماً عند وجود استجابة، قبل التفرع
+        this.dataProvider.showToast(response.msg);
 
-      if (response && (response.success || response.response === true)) {
-        this.dataProvider.showToast(response.msg || 'تم الحذف بنجاح');
+        if (response && (response.success || response.response === true)) {
+          this.dataProvider.showToast(response.msg || 'تم الحذف بنجاح');
 
-        const navigation: NavigationExtras = {
-          state: { isUpdated: true }
-        };
-        this.zone.run(() => {
-          this.router.navigate([this.returnPath], navigation);
-        });
-      } else {
-        this.dataProvider.errorALertMessage(response?.msg || 'حدث خطأ أثناء الحذف');
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      this.show_delete_user_spinner = false;
-      console.log(error);
-      this.cdr.markForCheck();
-    });
+          const navigation: NavigationExtras = {
+            state: { isUpdated: true }
+          };
+          this.zone.run(() => {
+            this.router.navigate([this.returnPath], navigation);
+          });
+        } else {
+          this.dataProvider.errorALertMessage(response?.msg || 'حدث خطأ أثناء الحذف');
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        this.show_delete_user_spinner = false;
+        console.log(error);
+        this.cdr.markForCheck();
+      });
   }
 }

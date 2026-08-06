@@ -1,5 +1,13 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import { NavController, NavParams, AlertController, PopoverController, Platform, ModalController, ActionSheetController } from '@ionic/angular';
+import {
+  NavController,
+  NavParams,
+  AlertController,
+  PopoverController,
+  Platform,
+  ModalController,
+  ActionSheetController
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,7 +25,7 @@ import { Browser } from '@capacitor/browser';
 import { ImageProcessingService } from '../service/image-processing/image-processing.service';
 
 import { StudentOptionsPopoverComponent } from '../components/student-options-popover/student-options-popover.component';
-import { ImageOptionPopoverComponent } from '../components/image-option-popover/image-option-popover.component'; 
+import { ImageOptionPopoverComponent } from '../components/image-option-popover/image-option-popover.component';
 import { PrintOptionsPopoverComponent } from '../components/print-options-popover/print-options-popover.component';
 import { EditDeleteNotePopoverComponent } from '../components/edit-delete-note-popover/edit-delete-note-popover.component';
 
@@ -36,51 +44,63 @@ const env = environment;
   selector: 'app-student-detail',
   templateUrl: './student-detail.page.html',
   styleUrls: ['./student-detail.page.scss'],
+  standalone: false
 })
 export class StudentDetailPage implements OnInit {
-
   readonly UserType = UserType;
-  trackByIndex(index: number): number { return index; }
-  trackByAbsentDate(index: number, details: any): any { return details?.date ?? index; }
-  trackByAbsenceNoteId(index: number, note: any): any { return note?.ID ?? index; }
-  trackByNoteId(index: number, note: any): any { return note?.id ?? index; }
-  trackByTitleCode(index: number, title: any): any { return title?.code ?? index; }
-  trackByBadgeCode(index: number, badge: any): any { return badge?.code ?? index; }
-  absenceDetail: any = []
+  trackByIndex(index: number): number {
+    return index;
+  }
+  trackByAbsentDate(index: number, details: any): any {
+    return details?.date ?? index;
+  }
+  trackByAbsenceNoteId(index: number, note: any): any {
+    return note?.ID ?? index;
+  }
+  trackByNoteId(index: number, note: any): any {
+    return note?.id ?? index;
+  }
+  trackByTitleCode(index: number, title: any): any {
+    return title?.code ?? index;
+  }
+  trackByBadgeCode(index: number, badge: any): any {
+    return badge?.code ?? index;
+  }
+  absenceDetail: any = [];
   notes: any = [];
   category: string;
-  studentDetails:any = {};
-  userType:any;
-  lang:any = {};
-  userDetails:any = {};
-  noteMessage:string = "";
-  canAddStudentNote:boolean = true;
-  noNotesFound:string = '';
-  noAbsenceFound:string = '';
-  selections:any = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
-  aggStars:any = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
-  ratingStars:any;
-  showNoteModal:boolean = false;
-  halfStar:boolean = false;
-  halfStarPosition:number;
-  studentBehaviour:any = {
-    "icon": "",
-    "text": ""
-  }
-  totalDelay:any;
-  navData:any={};
-  planLang:any;
-  app_rate:any;
+  studentDetails: any = {};
+  userType: any;
+  lang: any = {};
+  userDetails: any = {};
+  noteMessage: string = '';
+  canAddStudentNote: boolean = true;
+  noNotesFound: string = '';
+  noAbsenceFound: string = '';
+  selections: any = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+  aggStars: any = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+  ratingStars: any;
+  showNoteModal: boolean = false;
+  halfStar: boolean = false;
+  halfStarPosition: number;
+  studentBehaviour: any = {
+    icon: '',
+    text: ''
+  };
+  totalDelay: any;
+  navData: any = {};
+  planLang: any;
+  app_rate: any;
   student_detailse: any;
   student_points: any[] = [];
   id: any;
-  callOfStudentsReport=[];
-  AllStudentPledgesReports=[];
+  callOfStudentsReport = [];
+  AllStudentPledgesReports = [];
   AvailablePlan: any;
   editNoteData: any;
 
   showAbsenceNoteModal: boolean = false;
-  absenceNoteText: string = "";
+  absenceNoteText: string = '';
   currentAbsenceDate: any = null;
   currentAbsenceNotesArray: any = null;
 
@@ -95,8 +115,8 @@ export class StudentDetailPage implements OnInit {
   studentSkillData: any = null;
   studentTitle: string = '';
   skillMaxTarget: number = 100;
-  
-  isAbsenceLoaded: boolean = false; 
+
+  isAbsenceLoaded: boolean = false;
   isReportsLoaded: boolean = false;
   isNotesLoaded: boolean = false;
 
@@ -108,46 +128,54 @@ export class StudentDetailPage implements OnInit {
   warningMessage: string = '';
   warningType: 'frozen' | 'warning' = 'warning';
 
-  constructor(public navCtrl: NavController, 
-        public dataProvider: DataService,
-        public authProvider: AuthService, 
-        public dbProvider: DatabaseService,
-        public studentService:StudentDataService,
-        public alertController: AlertController,
-        public translate: TranslateService,
-        public alertCtrl: AlertController, 
-        private printer: Printer,
-        public network: Network,
-        private route : ActivatedRoute,
-        private router:Router,
-        public zone:NgZone,
-        private popover:PopoverController, 
-        public platform: Platform,
-        private storage: Storage,
-        public modalController: ModalController,
-        public actionSheetController: ActionSheetController,
-        private imageService: ImageProcessingService,
-        public gamification: GamificationEngineService,
-        private notesApi: NotesApiService,
-        private reportsApi: ReportsApiService,
-        private gamificationApi: GamificationApiService,
-        private storageSr: StorageService,
-        private studentEngagement: StudentEngagementService,
-        ) {
-      
-      // 🟢 الإصلاح الأول: صيد البيانات فوراً بدون التورط في subscribe لـ queryParams
-      const navigation = this.router.getCurrentNavigation();
-      if (navigation && navigation.extras && navigation.extras.state) {
-           this.navData = navigation.extras.state;
-           this.storage.set('currentStudent', this.navData);
-           localStorage.setItem("currentStudent", JSON.stringify(this.navData));
-           this.totalDelay = this.navData.total_delay;
-      }
-   
-      this.translate.get("alertmessages").subscribe((val)=>{ this.lang = val; })
-      this.translate.get("plan").subscribe((val)=>{ this.planLang = val; })
-      this.translate.get("app_rate").subscribe((val)=>{ this.app_rate = val; })
-      this.translate.get("student-details").subscribe((val)=>{ this.student_detailse = val; })
+  constructor(
+    public navCtrl: NavController,
+    public dataProvider: DataService,
+    public authProvider: AuthService,
+    public dbProvider: DatabaseService,
+    public studentService: StudentDataService,
+    public alertController: AlertController,
+    public translate: TranslateService,
+    public alertCtrl: AlertController,
+    private printer: Printer,
+    public network: Network,
+    private route: ActivatedRoute,
+    private router: Router,
+    public zone: NgZone,
+    private popover: PopoverController,
+    public platform: Platform,
+    private storage: Storage,
+    public modalController: ModalController,
+    public actionSheetController: ActionSheetController,
+    private imageService: ImageProcessingService,
+    public gamification: GamificationEngineService,
+    private notesApi: NotesApiService,
+    private reportsApi: ReportsApiService,
+    private gamificationApi: GamificationApiService,
+    private storageSr: StorageService,
+    private studentEngagement: StudentEngagementService
+  ) {
+    // 🟢 الإصلاح الأول: صيد البيانات فوراً بدون التورط في subscribe لـ queryParams
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation && navigation.extras && navigation.extras.state) {
+      this.navData = navigation.extras.state;
+      this.storage.set('currentStudent', this.navData);
+      localStorage.setItem('currentStudent', JSON.stringify(this.navData));
+      this.totalDelay = this.navData.total_delay;
+    }
+
+    this.translate.get('alertmessages').subscribe(val => {
+      this.lang = val;
+    });
+    this.translate.get('plan').subscribe(val => {
+      this.planLang = val;
+    });
+    this.translate.get('app_rate').subscribe(val => {
+      this.app_rate = val;
+    });
+    this.translate.get('student-details').subscribe(val => {
+      this.student_detailse = val;
+    });
   }
 
   closeWarningPopup() {
@@ -157,8 +185,8 @@ export class StudentDetailPage implements OnInit {
   async openSkillTreeModal() {
     const modal = await this.modalController.create({
       component: SkillTreeModalComponent,
-      componentProps: { student: this.studentDetails }, 
-      cssClass: 'bottom-drawer-modal', 
+      componentProps: { student: this.studentDetails },
+      cssClass: 'bottom-drawer-modal',
       breakpoints: [0, 0.6, 0.9],
       initialBreakpoint: 0.6,
       handle: true
@@ -173,7 +201,7 @@ export class StudentDetailPage implements OnInit {
   }
 
   async awardSkillPoints(skillType: string, point: number) {
-    let formattedPoint = "+" + point;
+    let formattedPoint = '+' + point;
 
     let body = {
       sid: String(this.studentDetails.sid),
@@ -188,8 +216,8 @@ export class StudentDetailPage implements OnInit {
       this.zone.run(() => {
         if (res && res.success) {
           this.dataProvider.showToast(`تمت إضافة ${point} نقطة بنجاح!`);
-          
-          if(this.studentDetails.student_points !== undefined) {
+
+          if (this.studentDetails.student_points !== undefined) {
             this.studentDetails.student_points = Number(this.studentDetails.student_points) + point;
           } else {
             this.studentDetails.student_points = point;
@@ -197,7 +225,7 @@ export class StudentDetailPage implements OnInit {
         } else {
           setTimeout(() => {
             let msg = res?.msg || 'تعذر إضافة النقاط';
-            this.warningType = (this.isFrozen || msg.includes('مجم') || msg.includes('تجميد')) ? 'frozen' : 'warning';
+            this.warningType = this.isFrozen || msg.includes('مجم') || msg.includes('تجميد') ? 'frozen' : 'warning';
             this.warningMessage = msg;
             this.showWarningPopup = true;
           }, 300);
@@ -206,10 +234,10 @@ export class StudentDetailPage implements OnInit {
     } catch (err: any) {
       this.zone.run(() => {
         setTimeout(() => {
-          let errorDetails = typeof err === 'string' ? err : (err?.message || JSON.stringify(err));
+          let errorDetails = typeof err === 'string' ? err : err?.message || JSON.stringify(err);
           let msg = `خطأ: ${errorDetails}`;
-          
-          this.warningType = (this.isFrozen || msg.includes('مجم') || msg.includes('تجميد')) ? 'frozen' : 'warning';
+
+          this.warningType = this.isFrozen || msg.includes('مجم') || msg.includes('تجميد') ? 'frozen' : 'warning';
           this.warningMessage = msg;
           this.showWarningPopup = true;
         }, 300);
@@ -223,25 +251,32 @@ export class StudentDetailPage implements OnInit {
 
   fetchStudentSkills(sid: any) {
     this.isLoadingSkills = true;
-    this.studentTotalPoints = 0; 
+    this.studentTotalPoints = 0;
     this.studentSkillData = null;
     this.studentTitle = 'جاري التحليل...';
 
     let body = { sid: sid };
 
-    this.dataProvider.getStudentSkillTree(body).then((res: any) => {
-      this.isLoadingSkills = false;
-      if (res && res.success) {
-        this.studentTotalPoints = res.total_points || 0;
-        this.studentSkillData = res.skills;
-        this.studentTitle = this.gamification.getFinalStudentTitle(this.activeCraftedTitle, res.skills, this.studentTotalPoints);
-      } else {
-        this.studentTitle = '🌱 بطل في البداية'; 
-      }
-    }).catch(err => {
-      this.isLoadingSkills = false;
-      this.studentTitle = '⚠️ تعذر جلب اللقب'; 
-    });
+    this.dataProvider
+      .getStudentSkillTree(body)
+      .then((res: any) => {
+        this.isLoadingSkills = false;
+        if (res && res.success) {
+          this.studentTotalPoints = res.total_points || 0;
+          this.studentSkillData = res.skills;
+          this.studentTitle = this.gamification.getFinalStudentTitle(
+            this.activeCraftedTitle,
+            res.skills,
+            this.studentTotalPoints
+          );
+        } else {
+          this.studentTitle = '🌱 بطل في البداية';
+        }
+      })
+      .catch(err => {
+        this.isLoadingSkills = false;
+        this.studentTitle = '⚠️ تعذر جلب اللقب';
+      });
   }
 
   generateStudentTitle(skills: any, total: number) {
@@ -259,12 +294,18 @@ export class StudentDetailPage implements OnInit {
     }
 
     switch (highestSkill) {
-      case 'cognitive': return '💡 عبقري المستقبل';
-      case 'social': return '🤝 روح الفريق';
-      case 'discipline': return '🛡️ درع الانضباط';
-      case 'emotional': return '❤️ القلب الكبير';
-      case 'practical': return '💻 المبدع الرقمي';
-      default: return '🌟 نجم المشاركة';
+      case 'cognitive':
+        return '💡 عبقري المستقبل';
+      case 'social':
+        return '🤝 روح الفريق';
+      case 'discipline':
+        return '🛡️ درع الانضباط';
+      case 'emotional':
+        return '❤️ القلب الكبير';
+      case 'practical':
+        return '💻 المبدع الرقمي';
+      default:
+        return '🌟 نجم المشاركة';
     }
   }
 
@@ -280,49 +321,52 @@ export class StudentDetailPage implements OnInit {
     }, 300);
   }
 
-  getStudentPoints(){
+  getStudentPoints() {
     this.dataProvider.getPointsValue().then(res => {
-     this.student_points = res.points;
-    });   
-   }
+      this.student_points = res.points;
+    });
+  }
 
   ionViewWillEnter() {
-   if(this.platform.is('cordova') || this.platform.is('capacitor')){
-      if(this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN){
+    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+      if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
         this.checkProfile();
-      }else{
-        if(this.navData.student_id){
+      } else {
+        if (this.navData.student_id) {
           this.getOfflineNote();
-          this.studentService.getStudent(this.navData.student_id).then(response=>{
-            this.studentDetails = response;
+          this.studentService
+            .getStudent(this.navData.student_id)
+            .then(response => {
+              this.studentDetails = response;
 
-              if(this.studentDetails.can_view_absent){
-                this.category = "absence";
-              }else{
-                this.category = "notes";
+              if (this.studentDetails.can_view_absent) {
+                this.category = 'absence';
+              } else {
+                this.category = 'notes';
               }
-              if(this.userType == UserType.Teacher){
-                this.category = "notes";
+              if (this.userType == UserType.Teacher) {
+                this.category = 'notes';
               }
-              if(this.studentDetails.absents.length == 0){
+              if (this.studentDetails.absents.length == 0) {
                 this.noAbsenceFound = this.lang.no_absent;
               }
-          }).catch(error=>{
-            this.dataProvider.showToast(this.lang.no_internet);
-          })
-        }else{
-            this.dataProvider.showToast(this.lang.no_internet); 
+            })
+            .catch(error => {
+              this.dataProvider.showToast(this.lang.no_internet);
+            });
+        } else {
+          this.dataProvider.showToast(this.lang.no_internet);
           this.navCtrl.back();
         }
       }
-    }else{
+    } else {
       this.checkProfile();
     }
     this.getStudentPoints();
-    
+
     let planStorage = localStorage.getItem('availablePlan');
-    if(planStorage && planStorage !== 'undefined') {
-        this.AvailablePlan = JSON.parse(planStorage);
+    if (planStorage && planStorage !== 'undefined') {
+      this.AvailablePlan = JSON.parse(planStorage);
     }
 
     if (this.navData?.student_id) {
@@ -330,215 +374,235 @@ export class StudentDetailPage implements OnInit {
     }
   }
 
-  getOfflineNote(){
-    this.studentService.getStudentNote(this.navData.student_id).then(response=>{
-      this.aggStars = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
-      this.notes = response;
-      if(response.agg_ranking > 0 && response.agg_ranking < 2.6){
-        this.studentBehaviour.icon = "./assets/icon/warning.png";
-        this.studentBehaviour.text = this.lang.warning_behaviour;
-      }else if(response.agg_ranking > 2.5 && response.agg_ranking < 3.6){
-        this.studentBehaviour.icon = "./assets/icon/good.png";
-        this.studentBehaviour.text = this.lang.good_behaviour;
-      }else if(response.agg_ranking > 3.5 && response.agg_ranking < 4.6){
-        this.studentBehaviour.icon = "./assets/icon/very-good.png";
-        this.studentBehaviour.text = this.lang.very_good_behaviour;
-      }else if(response.agg_ranking > 4.5 && response.agg_ranking < 5.1){
-        this.studentBehaviour.icon = "./assets/icon/excellent.png";
-        this.studentBehaviour.text = this.lang.excellent_behaviour;
-      }else{
-        this.studentBehaviour.icon = "chatbubbles";
-        this.studentBehaviour.text = this.lang.no_behaviour;
-      }
-      if(response.notes.length > 0){
-        this.notes.notes.forEach((note:any) => {
-          if (note.user_id == this.userDetails.details.user_no && this.userDetails.details.pic) {
-            note.teacher_pic = this.userDetails.details.pic;
-          }
-          let picToUse = note.teacher_pic ? note.teacher_pic : note.pic;
-          if (!picToUse || picToUse === '' || picToUse === 'null' || picToUse.includes('default_avatar')) {
-            picToUse = 'assets/imgs/default_avatar.png';
-          } else if (!picToUse.startsWith('http') && !picToUse.startsWith('assets')) {
-            picToUse = environment.docUrl + 'uploads/' + picToUse.replace('uploads/', '');
-          }
-          note.display_pic = picToUse;
-
-          if((this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) || this.userDetails.details.user_type != UserType.Teacher){
-            if(this.userDetails.details.user_type === UserType.Teacher){
-               this.canAddStudentNote = false;
-             }
-          }
-          if(note.rating > 0){
-            note.selections = ['#fff', '#fff', '#fff', '#fff', '#fff'];
-            for(let i=0; i< parseInt(note.rating); i++){
-              note.selections[i] = "#04855f";
-            }
-          }
-        })
-        let realNo = 0;
-        if(this.notes.agg_ranking % 1 == 0){
-          realNo = parseInt(this.notes.agg_ranking);
-        }else {
-          realNo = Math.floor(this.notes.agg_ranking);
-          this.halfStarPosition = realNo;
-          this.halfStar = true;
-        }
-        for(let i=0; i< realNo; i++){
-          this.aggStars[i] = "#04855f";
-        }
-      }else{
-        this.noNotesFound = this.lang.no_note;
-      }
-    }).catch(error=>{this.dataProvider.showToast(this.lang.no_internet);})
-  }
-
-  // 🟢 الإصلاح الثاني: تأمين دالة الجلب بـ try..finally لضمان إغلاق التحميل اللانهائي!
-   async checkProfile() {
-    try {
-      await this.dataProvider.run(async () => {
-      const userData = await this.storageSr.get("userloggedin");
-      if (userData) {
-        this.userDetails = userData;
-        this.userType = this.userDetails.details.user_type;
-
-        let data = {
-          "user_no": this.userDetails.details.user_no,
-          "session_id": this.userDetails.session_id,
-          "cid": this.navData?.course_id || "",
-          "date": this.navData?.dateSelected || this.dataProvider.getFormatedDate(new Date()),
-          "sid": this.navData?.student_id || this.navData?.sid
-        };
-
-        const response: any = await this.dataProvider.getStudentDetails(data);
-
-        if (response && response.session && response.data) {
-          this.studentService.checkStudent(response.data);
-          this.studentDetails = response.data;
-
-          if (this.studentDetails && !this.studentDetails.agg_ranking) {
-            this.studentDetails.agg_ranking = this.navData?.agg_ranking || 0;
-          }
-
-          this.studentDetails.student_points = this.navData?.student_points !== undefined ? this.navData.student_points : (response.data.student_points || 0);
-
-          let dashboardData = {
-            "sid": String(data.sid),
-            "userId": String(this.userDetails.details.user_no)
-          };
-
-          const dashRes: any = await this.gamificationApi.getStudentProfileDashboard(dashboardData);
-
-          if (dashRes && dashRes.success) {
-            let rawTitle = dashRes.inventory?.active_title;
-            if (rawTitle && rawTitle !== 'null' && rawTitle !== '') {
-              this.activeCraftedTitle = typeof rawTitle === 'object' ? (rawTitle.code || rawTitle.title_name) : rawTitle;
-            } else {
-              this.activeCraftedTitle = null;
-            }
-
-            if (this.studentDetails) {
-              this.studentDetails.active_crafted_title = this.activeCraftedTitle;
-            }
-
-            this.studentTotalPoints = dashRes.skill_tree?.skill_tree_total || 0;
-            this.studentSkillData = dashRes.skill_tree?.skills || null;
-
-            if (this.gamification) {
-              this.processedBadges = this.gamification.processBadges(dashRes.inventory?.unlocked_badges || []);
-              this.studentTitle = this.getStudentTitle(this.studentDetails);
-            }
-          }
-        } else {
-            // في حال الرد بفشل من السيرفر
-            this.dataProvider.showToast(response?.message || 'تعذر جلب بيانات الطالب بشكل كامل');
-        }
-      } else {
-        this.authProvider.flushLocalStorage();
-        this.router.navigate(['login'], { replaceUrl: true });
-      }
-      });
-    } catch (error) {
-      console.error("Critical Profile Error:", error);
-    }
-  }
-
-
-  getNotes(): Promise<void> {
-    return new Promise((resolve) => {
-      let data = {
-        "user_no": this.userDetails.details.user_no,
-        "session_id": this.userDetails.session_id,
-        "cid": this.navData.course_id,
-        "date": this.navData.dateSelected,
-        "sid": this.navData.student_id
-      };
-      
-      this.notesApi.getStudentNotes(data).then((response)=>{
-        this.studentService.checkStudentNotes(response,this.navData.student_id);
+  getOfflineNote() {
+    this.studentService
+      .getStudentNote(this.navData.student_id)
+      .then(response => {
         this.aggStars = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
         this.notes = response;
-        
-        if(response.notes.length > 0){
-          this.notes.notes.forEach((note:any) => {
+        if (response.agg_ranking > 0 && response.agg_ranking < 2.6) {
+          this.studentBehaviour.icon = './assets/icon/warning.png';
+          this.studentBehaviour.text = this.lang.warning_behaviour;
+        } else if (response.agg_ranking > 2.5 && response.agg_ranking < 3.6) {
+          this.studentBehaviour.icon = './assets/icon/good.png';
+          this.studentBehaviour.text = this.lang.good_behaviour;
+        } else if (response.agg_ranking > 3.5 && response.agg_ranking < 4.6) {
+          this.studentBehaviour.icon = './assets/icon/very-good.png';
+          this.studentBehaviour.text = this.lang.very_good_behaviour;
+        } else if (response.agg_ranking > 4.5 && response.agg_ranking < 5.1) {
+          this.studentBehaviour.icon = './assets/icon/excellent.png';
+          this.studentBehaviour.text = this.lang.excellent_behaviour;
+        } else {
+          this.studentBehaviour.icon = 'chatbubbles';
+          this.studentBehaviour.text = this.lang.no_behaviour;
+        }
+        if (response.notes.length > 0) {
+          this.notes.notes.forEach((note: any) => {
             if (note.user_id == this.userDetails.details.user_no && this.userDetails.details.pic) {
               note.teacher_pic = this.userDetails.details.pic;
             }
-
             let picToUse = note.teacher_pic ? note.teacher_pic : note.pic;
-            
             if (!picToUse || picToUse === '' || picToUse === 'null' || picToUse.includes('default_avatar')) {
               picToUse = 'assets/imgs/default_avatar.png';
             } else if (!picToUse.startsWith('http') && !picToUse.startsWith('assets')) {
               picToUse = environment.docUrl + 'uploads/' + picToUse.replace('uploads/', '');
             }
-
             note.display_pic = picToUse;
 
-            if((this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) || this.userDetails.details.user_type != UserType.Teacher){
-              if(this.userDetails.details.user_type === UserType.Teacher){
-                 this.canAddStudentNote = false;
-               }
-            }
-            
-            if(note.rating > 0){
-              note.selections = ['#fff', '#fff', '#fff', '#fff', '#fff'];
-              for(let i=0; i< parseInt(note.rating); i++){
-                note.selections[i] = "#04855f";
+            if (
+              (this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) ||
+              this.userDetails.details.user_type != UserType.Teacher
+            ) {
+              if (this.userDetails.details.user_type === UserType.Teacher) {
+                this.canAddStudentNote = false;
               }
             }
-          })
-
+            if (note.rating > 0) {
+              note.selections = ['#fff', '#fff', '#fff', '#fff', '#fff'];
+              for (let i = 0; i < parseInt(note.rating); i++) {
+                note.selections[i] = '#04855f';
+              }
+            }
+          });
           let realNo = 0;
-          if(this.notes.agg_ranking % 1 == 0){
+          if (this.notes.agg_ranking % 1 == 0) {
             realNo = parseInt(this.notes.agg_ranking);
-          }else {
+          } else {
             realNo = Math.floor(this.notes.agg_ranking);
             this.halfStarPosition = realNo;
             this.halfStar = true;
           }
-          for(let i=0; i< realNo; i++){
-            this.aggStars[i] = "#04855f";
+          for (let i = 0; i < realNo; i++) {
+            this.aggStars[i] = '#04855f';
           }
-        }else{
+        } else {
           this.noNotesFound = this.lang.no_note;
-        }  
-        
-        resolve();
-
-      }).catch((error: any) =>{
-        let safeErrorMsg = error?.error?.msg || error?.error?.message || error?.message || (typeof error === 'string' ? error : 'حدث خطأ غير متوقع أثناء جلب الملاحظات');
-        this.dataProvider.errorALertMessage(safeErrorMsg);
-        resolve();
+        }
+      })
+      .catch(error => {
+        this.dataProvider.showToast(this.lang.no_internet);
       });
+  }
+
+  // 🟢 الإصلاح الثاني: تأمين دالة الجلب بـ try..finally لضمان إغلاق التحميل اللانهائي!
+  async checkProfile() {
+    try {
+      await this.dataProvider.run(async () => {
+        const userData = await this.storageSr.get('userloggedin');
+        if (userData) {
+          this.userDetails = userData;
+          this.userType = this.userDetails.details.user_type;
+
+          let data = {
+            user_no: this.userDetails.details.user_no,
+            session_id: this.userDetails.session_id,
+            cid: this.navData?.course_id || '',
+            date: this.navData?.dateSelected || this.dataProvider.getFormatedDate(new Date()),
+            sid: this.navData?.student_id || this.navData?.sid
+          };
+
+          const response: any = await this.dataProvider.getStudentDetails(data);
+
+          if (response && response.session && response.data) {
+            this.studentService.checkStudent(response.data);
+            this.studentDetails = response.data;
+
+            if (this.studentDetails && !this.studentDetails.agg_ranking) {
+              this.studentDetails.agg_ranking = this.navData?.agg_ranking || 0;
+            }
+
+            this.studentDetails.student_points =
+              this.navData?.student_points !== undefined
+                ? this.navData.student_points
+                : response.data.student_points || 0;
+
+            let dashboardData = {
+              sid: String(data.sid),
+              userId: String(this.userDetails.details.user_no)
+            };
+
+            const dashRes: any = await this.gamificationApi.getStudentProfileDashboard(dashboardData);
+
+            if (dashRes && dashRes.success) {
+              let rawTitle = dashRes.inventory?.active_title;
+              if (rawTitle && rawTitle !== 'null' && rawTitle !== '') {
+                this.activeCraftedTitle =
+                  typeof rawTitle === 'object' ? rawTitle.code || rawTitle.title_name : rawTitle;
+              } else {
+                this.activeCraftedTitle = null;
+              }
+
+              if (this.studentDetails) {
+                this.studentDetails.active_crafted_title = this.activeCraftedTitle;
+              }
+
+              this.studentTotalPoints = dashRes.skill_tree?.skill_tree_total || 0;
+              this.studentSkillData = dashRes.skill_tree?.skills || null;
+
+              if (this.gamification) {
+                this.processedBadges = this.gamification.processBadges(dashRes.inventory?.unlocked_badges || []);
+                this.studentTitle = this.getStudentTitle(this.studentDetails);
+              }
+            }
+          } else {
+            // في حال الرد بفشل من السيرفر
+            this.dataProvider.showToast(response?.message || 'تعذر جلب بيانات الطالب بشكل كامل');
+          }
+        } else {
+          this.authProvider.flushLocalStorage();
+          this.router.navigate(['login'], { replaceUrl: true });
+        }
+      });
+    } catch (error) {
+      console.error('Critical Profile Error:', error);
+    }
+  }
+
+  getNotes(): Promise<void> {
+    return new Promise(resolve => {
+      let data = {
+        user_no: this.userDetails.details.user_no,
+        session_id: this.userDetails.session_id,
+        cid: this.navData.course_id,
+        date: this.navData.dateSelected,
+        sid: this.navData.student_id
+      };
+
+      this.notesApi
+        .getStudentNotes(data)
+        .then(response => {
+          this.studentService.checkStudentNotes(response, this.navData.student_id);
+          this.aggStars = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+          this.notes = response;
+
+          if (response.notes.length > 0) {
+            this.notes.notes.forEach((note: any) => {
+              if (note.user_id == this.userDetails.details.user_no && this.userDetails.details.pic) {
+                note.teacher_pic = this.userDetails.details.pic;
+              }
+
+              let picToUse = note.teacher_pic ? note.teacher_pic : note.pic;
+
+              if (!picToUse || picToUse === '' || picToUse === 'null' || picToUse.includes('default_avatar')) {
+                picToUse = 'assets/imgs/default_avatar.png';
+              } else if (!picToUse.startsWith('http') && !picToUse.startsWith('assets')) {
+                picToUse = environment.docUrl + 'uploads/' + picToUse.replace('uploads/', '');
+              }
+
+              note.display_pic = picToUse;
+
+              if (
+                (this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) ||
+                this.userDetails.details.user_type != UserType.Teacher
+              ) {
+                if (this.userDetails.details.user_type === UserType.Teacher) {
+                  this.canAddStudentNote = false;
+                }
+              }
+
+              if (note.rating > 0) {
+                note.selections = ['#fff', '#fff', '#fff', '#fff', '#fff'];
+                for (let i = 0; i < parseInt(note.rating); i++) {
+                  note.selections[i] = '#04855f';
+                }
+              }
+            });
+
+            let realNo = 0;
+            if (this.notes.agg_ranking % 1 == 0) {
+              realNo = parseInt(this.notes.agg_ranking);
+            } else {
+              realNo = Math.floor(this.notes.agg_ranking);
+              this.halfStarPosition = realNo;
+              this.halfStar = true;
+            }
+            for (let i = 0; i < realNo; i++) {
+              this.aggStars[i] = '#04855f';
+            }
+          } else {
+            this.noNotesFound = this.lang.no_note;
+          }
+
+          resolve();
+        })
+        .catch((error: any) => {
+          let safeErrorMsg =
+            error?.error?.msg ||
+            error?.error?.message ||
+            error?.message ||
+            (typeof error === 'string' ? error : 'حدث خطأ غير متوقع أثناء جلب الملاحظات');
+          this.dataProvider.errorALertMessage(safeErrorMsg);
+          resolve();
+        });
     });
   }
 
-  async addAbsentNote(notes:any, date:any){
-    let note = notes.filter((note:any)=>{
-      return note.created_by == this.userDetails.details.user_no
-    })
-    
-    if(note.length == 0){
+  async addAbsentNote(notes: any, date: any) {
+    let note = notes.filter((note: any) => {
+      return note.created_by == this.userDetails.details.user_no;
+    });
+
+    if (note.length == 0) {
       this.currentAbsenceNotesArray = notes;
       this.currentAbsenceDate = date;
       this.absenceNoteText = '';
@@ -563,7 +627,7 @@ export class StudentDetailPage implements OnInit {
     }
   }
 
-  saveNote(noteData:any, notes:any, date:any){
+  saveNote(noteData: any, notes: any, date: any) {
     let data = {
       sid: this.studentDetails.sid,
       cid: this.navData.course_id,
@@ -571,23 +635,26 @@ export class StudentDetailPage implements OnInit {
       note: noteData.note,
       user_no: this.userDetails.details.user_no,
       session_id: this.userDetails.session_id
-    }
+    };
 
-    this.dataProvider.run(() => this.dataProvider.saveAbsenceNote(data)).then((response)=>{
-      if(response.session){
-        notes.push({
-          note: noteData.note,
-          ID: response.note_id,
-          created_by: this.userDetails.details.user_no
-        });
-        this.dataProvider.showToast(response.message)
-      }else{
-        this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(response.message);
-      }
-    }).catch(error=>{
-      this.dataProvider.errorALertMessage(error);
-    })
+    this.dataProvider
+      .run(() => this.dataProvider.saveAbsenceNote(data))
+      .then(response => {
+        if (response.session) {
+          notes.push({
+            note: noteData.note,
+            ID: response.note_id,
+            created_by: this.userDetails.details.user_no
+          });
+          this.dataProvider.showToast(response.message);
+        } else {
+          this.authProvider.flushLocalStorage();
+          this.dataProvider.errorALertMessage(response.message);
+        }
+      })
+      .catch(error => {
+        this.dataProvider.errorALertMessage(error);
+      });
   }
 
   deleteUserNote(note_id: any, index: number) {
@@ -610,136 +677,146 @@ export class StudentDetailPage implements OnInit {
 
     let data = {
       user_no: this.userDetails.details.user_no,
-      session_id:  this.userDetails.session_id
+      session_id: this.userDetails.session_id
     };
 
     if (this.deletePayload.type === 'note') {
-      this.dataProvider.run(() => this.notesApi.deleteStudentNote(data, this.deletePayload.id)).then((response) => {
-        this.canAddStudentNote = true;
-        this.getNotes();
-        this.hideDeleteConfirmModal();
-      }).catch(error => {
-        this.dataProvider.errorALertMessage(error);
-        this.hideDeleteConfirmModal();
-      });
-    }
-    else if (this.deletePayload.type === 'absence') {
-      this.dataProvider.run(() => this.dataProvider.deleteAbsenceNote(data, this.deletePayload.id)).then((response) => {
-        if(response.session){
-          this.deletePayload.notesArray.splice(this.deletePayload.index, 1);
-          this.dataProvider.showToast(response.message);
-        }else{
-          this.authProvider.flushLocalStorage();
-          this.dataProvider.errorALertMessage(response.message);
-        }
-        this.hideDeleteConfirmModal();
-      }).catch(error => {
-        this.dataProvider.errorALertMessage(error);
-        this.hideDeleteConfirmModal();
-      });
+      this.dataProvider
+        .run(() => this.notesApi.deleteStudentNote(data, this.deletePayload.id))
+        .then(response => {
+          this.canAddStudentNote = true;
+          this.getNotes();
+          this.hideDeleteConfirmModal();
+        })
+        .catch(error => {
+          this.dataProvider.errorALertMessage(error);
+          this.hideDeleteConfirmModal();
+        });
+    } else if (this.deletePayload.type === 'absence') {
+      this.dataProvider
+        .run(() => this.dataProvider.deleteAbsenceNote(data, this.deletePayload.id))
+        .then(response => {
+          if (response.session) {
+            this.deletePayload.notesArray.splice(this.deletePayload.index, 1);
+            this.dataProvider.showToast(response.message);
+          } else {
+            this.authProvider.flushLocalStorage();
+            this.dataProvider.errorALertMessage(response.message);
+          }
+          this.hideDeleteConfirmModal();
+        })
+        .catch(error => {
+          this.dataProvider.errorALertMessage(error);
+          this.hideDeleteConfirmModal();
+        });
     }
   }
 
-  addNotesNote(){
-    if(this.noteMessage && this.noteMessage.trim() != '') {
-      if(this.noteMessage.length <= 45) {
-        if(this.canAddStudentNote) {
+  addNotesNote() {
+    if (this.noteMessage && this.noteMessage.trim() != '') {
+      if (this.noteMessage.length <= 45) {
+        if (this.canAddStudentNote) {
           let data = {
             sid: this.navData.student_id,
             note: this.noteMessage,
             user_id: this.userDetails.details.user_no,
             rating: this.ratingStars,
             new_rating: JSON.stringify(this.ratingStars)
-          }
-          this.dataProvider.run(() => this.studentEngagement.addNote(data)).then((note_id)=>{
-            this.getNotes();
-            this.noteMessage = '';
-            this.showNoteModal = false;
-            this.dataProvider.showToast(this.lang.add_review_success_message);
-
-          }).catch(error=>{
-            this.dataProvider.errorALertMessage(error);
-          })
-        }else{
+          };
+          this.dataProvider
+            .run(() => this.studentEngagement.addNote(data))
+            .then(note_id => {
+              this.getNotes();
+              this.noteMessage = '';
+              this.showNoteModal = false;
+              this.dataProvider.showToast(this.lang.add_review_success_message);
+            })
+            .catch(error => {
+              this.dataProvider.errorALertMessage(error);
+            });
+        } else {
           this.dataProvider.showToast(this.lang.already_submit_note);
         }
-      }else {
+      } else {
         this.dataProvider.showToast(this.lang.max_note_length);
       }
-    }
-    else{
+    } else {
       this.dataProvider.showToast(this.lang.empty_note);
     }
   }
 
-  EditStudentNotes(){
-    if(this.noteMessage && this.noteMessage.trim() != '') {
-      if(this.noteMessage.length <= 45) {
-        if(this.canAddStudentNote) {
+  EditStudentNotes() {
+    if (this.noteMessage && this.noteMessage.trim() != '') {
+      if (this.noteMessage.length <= 45) {
+        if (this.canAddStudentNote) {
           let data = {
             sid: this.navData.student_id,
             note: this.noteMessage,
             user_id: this.editNoteData.user_id,
             rating: 0,
-            id : this.id,
-            new_rating: JSON.stringify([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-          }
-          this.dataProvider.run(() => this.studentEngagement.editNote(data)).then((note_id)=>{
-            this.getNotes();
-            this.noteMessage = '';
-            this.showNoteModal = false;
-            this.id = '';
-            this.dataProvider.showToast(this.lang.add_note_success_message);
-          }).catch(error=>{
-            this.dataProvider.errorALertMessage(error);
-          })
-        }else{
+            id: this.id,
+            new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+          };
+          this.dataProvider
+            .run(() => this.studentEngagement.editNote(data))
+            .then(note_id => {
+              this.getNotes();
+              this.noteMessage = '';
+              this.showNoteModal = false;
+              this.id = '';
+              this.dataProvider.showToast(this.lang.add_note_success_message);
+            })
+            .catch(error => {
+              this.dataProvider.errorALertMessage(error);
+            });
+        } else {
           this.dataProvider.showToast(this.lang.already_submit_note);
         }
-      }else {
+      } else {
         this.dataProvider.showToast(this.lang.max_note_length);
       }
-    }
-    else{
+    } else {
       this.dataProvider.showToast(this.lang.empty_note);
     }
   }
 
-  addTextNotesNote(){
-    if(this.noteMessage && this.noteMessage.trim() != '') {
-      if(this.noteMessage.length <= 45) {
-        if(this.canAddStudentNote) {
+  addTextNotesNote() {
+    if (this.noteMessage && this.noteMessage.trim() != '') {
+      if (this.noteMessage.length <= 45) {
+        if (this.canAddStudentNote) {
           let data = {
             sid: this.navData.student_id,
             note: this.noteMessage,
             user_id: this.userDetails.details.user_no,
             rating: 0,
-            user_type : this.userDetails.details.user_type,
-            new_rating: JSON.stringify([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-          }
-          this.dataProvider.run(() => this.studentEngagement.addNote(data)).then((note_id)=>{
-            this.getNotes();
-            this.noteMessage = '';
-            this.showNoteModal = false;
-            this.dataProvider.showToast(this.lang.add_note_success_message);
-          }).catch(error=>{
-            this.dataProvider.errorALertMessage(error);
-          })
-        }else{
-          this.dataProvider.showToast(this.lang.already_submit_note);  
+            user_type: this.userDetails.details.user_type,
+            new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+          };
+          this.dataProvider
+            .run(() => this.studentEngagement.addNote(data))
+            .then(note_id => {
+              this.getNotes();
+              this.noteMessage = '';
+              this.showNoteModal = false;
+              this.dataProvider.showToast(this.lang.add_note_success_message);
+            })
+            .catch(error => {
+              this.dataProvider.errorALertMessage(error);
+            });
+        } else {
+          this.dataProvider.showToast(this.lang.already_submit_note);
         }
-      }else {
+      } else {
         this.dataProvider.showToast(this.lang.max_note_length);
       }
-    }
-    else{
+    } else {
       this.dataProvider.showToast(this.lang.empty_note);
     }
   }
 
   async editDeleteNotes(event: any, note_id: any, index: number, note: any) {
     this.editNoteData = note;
-    
+
     if (this.platform.width() >= 768 && event) {
       const popover = await this.popover.create({
         component: EditDeleteNotePopoverComponent,
@@ -751,7 +828,7 @@ export class StudentDetailPage implements OnInit {
       await popover.present();
 
       const { data } = await popover.onDidDismiss();
-      
+
       this.zone.run(() => {
         if (data && data.selectedAction === 'edit') {
           if (note.new_ratting === '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]') {
@@ -764,7 +841,6 @@ export class StudentDetailPage implements OnInit {
           this.deleteUserNote(note_id, index);
         }
       });
-
     } else {
       const actionSheet = await this.actionSheetController.create({
         header: this.lang.cange_note || 'إجراءات الملاحظة',
@@ -775,7 +851,7 @@ export class StudentDetailPage implements OnInit {
             text: this.lang.edit_title || 'تعديل الملاحظة',
             icon: 'pencil-outline',
             handler: () => {
-              if(note.new_ratting === '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]'){
+              if (note.new_ratting === '[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]') {
                 this.openNoteModal('note', 'edit', note, note_id);
               } else {
                 this.openNoteModal('review', 'edit', note, note_id);
@@ -791,7 +867,7 @@ export class StudentDetailPage implements OnInit {
             }
           },
           {
-            text: (this.student_detailse && this.student_detailse.cancel) ? this.student_detailse.cancel : 'إلغاء',
+            text: this.student_detailse && this.student_detailse.cancel ? this.student_detailse.cancel : 'إلغاء',
             icon: 'close',
             role: 'cancel'
           }
@@ -801,30 +877,37 @@ export class StudentDetailPage implements OnInit {
     }
   }
 
-  udateNotes(data,note_id:any){
-    let updates={
-        sid:this.navData.student_id,
-        note_id:note_id,
-        rating:data.data,
-        new_rating: data.data,
-        note:data.noteMessage,
-        updated_by:this.userDetails.details.user_no
-    }
-    this.dataProvider.editAbsentNotes(updates).then(res=>{
-      if(res){
-        this.dataProvider.showToast(res.data.msg);
-        this.getNotes();
-      }
-    }).catch(err=>{
-      this.dataProvider.showToast(err.message);
-    })
+  udateNotes(data, note_id: any) {
+    let updates = {
+      sid: this.navData.student_id,
+      note_id: note_id,
+      rating: data.data,
+      new_rating: data.data,
+      note: data.noteMessage,
+      updated_by: this.userDetails.details.user_no
+    };
+    this.dataProvider
+      .editAbsentNotes(updates)
+      .then(res => {
+        if (res) {
+          this.dataProvider.showToast(res.data.msg);
+          this.getNotes();
+        }
+      })
+      .catch(err => {
+        this.dataProvider.showToast(err.message);
+      });
   }
 
-  checkNoteDate(date:Date){
+  checkNoteDate(date: Date) {
     let currentDate = new Date();
-    if(date.getDate() == currentDate.getDate() && date.getMonth() == currentDate.getMonth() && date.getFullYear() == currentDate.getFullYear()){
+    if (
+      date.getDate() == currentDate.getDate() &&
+      date.getMonth() == currentDate.getMonth() &&
+      date.getFullYear() == currentDate.getFullYear()
+    ) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
@@ -847,7 +930,6 @@ export class StudentDetailPage implements OnInit {
           if (data && data.selectedAction === 'gallery') this.handleImageSelection('gallery');
           if (data && data.selectedAction === 'avatar') this.OpenAvatarModel();
         });
-
       } else {
         const actionSheet = await this.actionSheetController.create({
           header: this.lang.image_option || 'تغيير صورة الطالب',
@@ -857,17 +939,23 @@ export class StudentDetailPage implements OnInit {
             {
               text: this.lang.camera || 'التقاط بالكاميرا',
               icon: 'camera-outline',
-              handler: () => { this.handleImageSelection('camera'); }
+              handler: () => {
+                this.handleImageSelection('camera');
+              }
             },
             {
               text: this.lang.gallery || 'اختيار من المعرض',
               icon: 'image-outline',
-              handler: () => { this.handleImageSelection('gallery'); }
+              handler: () => {
+                this.handleImageSelection('gallery');
+              }
             },
             {
               text: this.lang.avatar || 'اختيار صورة رمزية',
               icon: 'people-circle-outline',
-              handler: () => { this.OpenAvatarModel(); }
+              handler: () => {
+                this.OpenAvatarModel();
+              }
             },
             {
               text: this.lang.cancel || 'إلغاء',
@@ -879,7 +967,6 @@ export class StudentDetailPage implements OnInit {
         });
         await actionSheet.present();
       }
-
     } else {
       this.dataProvider.showToast(this.lang.no_internet);
     }
@@ -888,7 +975,7 @@ export class StudentDetailPage implements OnInit {
   async handleImageSelection(source: 'camera' | 'gallery') {
     const base64Image = await this.imageService.takePicture(source);
     if (base64Image) {
-      this.ChangeStudentProfileAvatar(base64Image); 
+      this.ChangeStudentProfileAvatar(base64Image);
     }
   }
 
@@ -898,16 +985,19 @@ export class StudentDetailPage implements OnInit {
       cssClass: 'my-custom-class',
       componentProps: { student: this.studentDetails }
     });
-    
+
     modal.onDidDismiss().then((data: any) => {
       if (data && data.data && data.data.image_url) {
         this.dataProvider.showLoading();
-        this.imageService.convertUrlToBase64(data.data.image_url).then(base64 => {
-          this.ChangeStudentProfileAvatar(base64);
-        }).catch(err => {
-          this.dataProvider.hideLoading();
-          this.dataProvider.errorALertMessage("تعذر معالجة الصورة الرمزية، يرجى المحاولة مرة أخرى.");
-        });
+        this.imageService
+          .convertUrlToBase64(data.data.image_url)
+          .then(base64 => {
+            this.ChangeStudentProfileAvatar(base64);
+          })
+          .catch(err => {
+            this.dataProvider.hideLoading();
+            this.dataProvider.errorALertMessage('تعذر معالجة الصورة الرمزية، يرجى المحاولة مرة أخرى.');
+          });
       }
     });
     return await modal.present();
@@ -920,32 +1010,34 @@ export class StudentDetailPage implements OnInit {
     }
 
     try {
-      const result = await this.dataProvider.run(() => this.studentEngagement.uploadAvatar(base64Data, {
-        user_no: this.userDetails.details.user_no,
-        session_id: this.userDetails.session_id,
-        sid: this.navData.student_id
-      }));
+      const result = await this.dataProvider.run(() =>
+        this.studentEngagement.uploadAvatar(base64Data, {
+          user_no: this.userDetails.details.user_no,
+          session_id: this.userDetails.session_id,
+          sid: this.navData.student_id
+        })
+      );
 
       if (result.success) {
         this.studentDetails.pic = result.url;
-        this.dataProvider.showToast("تم تحديث الصورة بنجاح");
+        this.dataProvider.showToast('تم تحديث الصورة بنجاح');
       } else {
         this.authProvider.flushLocalStorage();
         this.dataProvider.errorALertMessage(result.message);
       }
     } catch (error: any) {
-      this.dataProvider.errorALertMessage(error?.message || "حدث خطأ في الاتصال");
+      this.dataProvider.errorALertMessage(error?.message || 'حدث خطأ في الاتصال');
     }
   }
 
-  getSelectedStars(){
+  getSelectedStars() {
     return new Array(5);
   }
 
-  selectStarsForRating(index:number){
-    this.ratingStars = index+1;
-    this.selections= ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
-    for(let i=0;i<=index;i++){
+  selectStarsForRating(index: number) {
+    this.ratingStars = index + 1;
+    this.selections = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+    for (let i = 0; i <= index; i++) {
       this.selections[i] = '#04855f';
     }
   }
@@ -963,11 +1055,11 @@ export class StudentDetailPage implements OnInit {
       await popover.present();
 
       const { data } = await popover.onDidDismiss();
-      
+
       this.zone.run(() => {
         if (data && data.selectedAction === 'review') this.openNoteModal('review', mode, note, note_id);
         if (data && data.selectedAction === 'note') this.openNoteModal('note', mode, note, note_id);
-        if (data && data.selectedAction === 'points') this.openSkillTreeModal(); 
+        if (data && data.selectedAction === 'points') this.openSkillTreeModal();
       });
     } else {
       const actionSheet = await this.actionSheetController.create({
@@ -976,35 +1068,50 @@ export class StudentDetailPage implements OnInit {
         mode: 'md',
         buttons: [
           {
-            text: (this.student_detailse && this.student_detailse.student_review) ? this.student_detailse.student_review : 'تقييم الطالب',
+            text:
+              this.student_detailse && this.student_detailse.student_review
+                ? this.student_detailse.student_review
+                : 'تقييم الطالب',
             icon: 'star-outline',
-            handler: () => { this.openNoteModal('review', mode, note, note_id); },
+            handler: () => {
+              this.openNoteModal('review', mode, note, note_id);
+            }
           },
           {
-            text: (this.student_detailse && this.student_detailse.student_note) ? this.student_detailse.student_note : 'إضافة ملاحظة',
+            text:
+              this.student_detailse && this.student_detailse.student_note
+                ? this.student_detailse.student_note
+                : 'إضافة ملاحظة',
             icon: 'document-text-outline',
-            handler: () => { this.openNoteModal('note', mode, note, note_id); },
+            handler: () => {
+              this.openNoteModal('note', mode, note, note_id);
+            }
           },
           {
-            text: (this.student_detailse && this.student_detailse.student_point) ? this.student_detailse.student_point : 'نقاط الطالب',
+            text:
+              this.student_detailse && this.student_detailse.student_point
+                ? this.student_detailse.student_point
+                : 'نقاط الطالب',
             icon: 'medal-outline',
-            handler: () => { this.openSkillTreeModal(); },
+            handler: () => {
+              this.openSkillTreeModal();
+            }
           },
           {
-            text: (this.student_detailse && this.student_detailse.cancel) ? this.student_detailse.cancel : 'إلغاء',
+            text: this.student_detailse && this.student_detailse.cancel ? this.student_detailse.cancel : 'إلغاء',
             icon: 'close',
             role: 'cancel',
-            cssClass: 'text-rose-500 font-bold',
-          },
-        ],
+            cssClass: 'text-rose-500 font-bold'
+          }
+        ]
       });
       await actionSheet.present();
     }
   }
 
-  async openNoteModal(mode, note_mode, note, note_id){
-    if(mode === 'note'){
-      if(note_mode === 'edit'){
+  async openNoteModal(mode, note_mode, note, note_id) {
+    if (mode === 'note') {
+      if (note_mode === 'edit') {
         this.canAddStudentNote = true;
         this.noteMessage = note.note;
         this.id = note.id;
@@ -1014,14 +1121,14 @@ export class StudentDetailPage implements OnInit {
       const modal = await this.modalController.create({
         component: AddReviewComponent,
         cssClass: 'my-custom-class',
-        componentProps: {data: note_mode === 'edit' ? note : null, student:this.studentDetails}
+        componentProps: { data: note_mode === 'edit' ? note : null, student: this.studentDetails }
       });
       modal.onDidDismiss().then(data => {
-        if(data.data && data.data.data){
-          this.ratingStars = (data.data.data);
+        if (data.data && data.data.data) {
+          this.ratingStars = data.data.data;
           this.noteMessage = data.data.noteMessage;
-          if(note_mode === 'edit'){
-            this.udateNotes(data.data,note_id);
+          if (note_mode === 'edit') {
+            this.udateNotes(data.data, note_id);
           } else {
             this.addNotesNote();
           }
@@ -1031,52 +1138,59 @@ export class StudentDetailPage implements OnInit {
     }
   }
 
-  hideNoteModal(){
+  hideNoteModal() {
     this.id = '';
     this.showNoteModal = false;
   }
 
-  openPdf(){
-    let data={
-      school_id:this.userDetails.details.school_id,
-      sid:this.navData.student_id
-    }
-    let planData={
-      user_no:this.userDetails.details.user_no
-    }
+  openPdf() {
+    let data = {
+      school_id: this.userDetails.details.school_id,
+      sid: this.navData.student_id
+    };
+    let planData = {
+      user_no: this.userDetails.details.user_no
+    };
     this.dataProvider.showLoading();
-    this.dataProvider.openPdf(planData).then(res=>{
-      let url=env.serverURL+'student_report_new?school_id='+data.school_id+'&sid='+data.sid;
-      this.dataProvider.openStudentReport(url).then(res=>{
-        this.dataProvider.hideLoading();
-        if(res){
-          window.open(res.url, '_system');
-        }else{
-          this.dataProvider.showToast('Unable to generate report');
-        }
-      }).catch(e=>{
-          this.dataProvider.hideLoading();
-          this.dataProvider.showToast('Unable to generate report');
+    this.dataProvider
+      .openPdf(planData)
+      .then(res => {
+        let url = env.serverURL + 'student_report_new?school_id=' + data.school_id + '&sid=' + data.sid;
+        this.dataProvider
+          .openStudentReport(url)
+          .then(res => {
+            this.dataProvider.hideLoading();
+            if (res) {
+              window.open(res.url, '_system');
+            } else {
+              this.dataProvider.showToast('Unable to generate report');
+            }
+          })
+          .catch(e => {
+            this.dataProvider.hideLoading();
+            this.dataProvider.showToast('Unable to generate report');
+          });
       })
-    }).catch(e=>{
-      this.dataProvider.hideLoading();
-      this.presentAlertConfirm();
-    })
+      .catch(e => {
+        this.dataProvider.hideLoading();
+        this.presentAlertConfirm();
+      });
   }
 
   async presentAlertConfirm() {
     const alert = await this.alertController.create({
       header: this.planLang.not_valid,
-      mode:'ios',
+      mode: 'ios',
       buttons: [
         {
           text: this.planLang.cancel,
           role: 'cancel',
           cssClass: 'secondary',
-          handler: (blah) => {
+          handler: blah => {
             console.log('Confirm Cancel: blah');
           }
-        }, {
+        },
+        {
           text: this.planLang.subscribe,
           handler: () => {
             this.router.navigate(['available-plan']);
@@ -1088,16 +1202,15 @@ export class StudentDetailPage implements OnInit {
     await alert.present();
   }
 
-  ngOnInit() {
-  }
-  
+  ngOnInit() {}
+
   async presentPrintOption(event: any) {
     // if(this.AvailablePlan?.plan?.slug == 'free' || this.AvailablePlan?.isExpire == true){
     //   this.presentAlertPlanConfirm();
     //   return;
     // }
 
-    if(this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN){
+    if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popover.create({
           component: PrintOptionsPopoverComponent,
@@ -1110,7 +1223,7 @@ export class StudentDetailPage implements OnInit {
         await popover.present();
 
         const { data } = await popover.onDidDismiss();
-        
+
         if (data && data.selectedAction) {
           this.printReport(data.selectedAction);
         }
@@ -1147,7 +1260,6 @@ export class StudentDetailPage implements OnInit {
         });
         await actionSheet.present();
       }
-
     } else {
       this.dataProvider.showToast(this.lang.no_internet);
     }
@@ -1157,71 +1269,76 @@ export class StudentDetailPage implements OnInit {
     let planData = {
       user_no: this.userDetails.details.user_no,
       report_type: type
-    }
-    
+    };
+
     this.dataProvider.showLoading();
-    
-    this.dataProvider.openPdf(planData).then(res => {
+
+    this.dataProvider
+      .openPdf(planData)
+      .then(res => {
         let studentData = {
-          "school_id": this.userDetails.details.school_id,
-          "sid": this.navData.student_id,
-          "report_type": type
-        }
+          school_id: this.userDetails.details.school_id,
+          sid: this.navData.student_id,
+          report_type: type
+        };
 
-        if (type === "pdf") {
+        if (type === 'pdf') {
           let url = env.serverURL + 'student_report_new?school_id=' + studentData.school_id + '&sid=' + studentData.sid;
-          
-          this.dataProvider.openStudentReport(url).then(async (res: any) => {
-            this.dataProvider.hideLoading();
-            
-            if (res && res.data) {
-              let htmlContent = res.data;
 
-              if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-                let options: PrintOptions = { orientation: 'portrait' };
-                this.printer.print(htmlContent.replace(/(\r\n|\n|\r)/gm, ''), options).then(
-                  (onSuccess: any) => {
-                    console.log('تم فتح نافذة الطباعة بنجاح');
-                  },
-                  (e: any) => {
-                    console.log('تعذرت الطباعة، سيتم الفتح في المتصفح', e);
-                    this.openHtmlInBrowser(htmlContent);
-                  }
-                );
-              } 
-              else {
-                this.openHtmlInBrowser(htmlContent);
+          this.dataProvider
+            .openStudentReport(url)
+            .then(async (res: any) => {
+              this.dataProvider.hideLoading();
+
+              if (res && res.data) {
+                let htmlContent = res.data;
+
+                if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+                  let options: PrintOptions = { orientation: 'portrait' };
+                  this.printer.print(htmlContent.replace(/(\r\n|\n|\r)/gm, ''), options).then(
+                    (onSuccess: any) => {
+                      console.log('تم فتح نافذة الطباعة بنجاح');
+                    },
+                    (e: any) => {
+                      console.log('تعذرت الطباعة، سيتم الفتح في المتصفح', e);
+                      this.openHtmlInBrowser(htmlContent);
+                    }
+                  );
+                } else {
+                  this.openHtmlInBrowser(htmlContent);
+                }
+              } else {
+                this.dataProvider.showToast('تعذر جلب بيانات التقرير من الخادم');
               }
-
-            } else {
-              this.dataProvider.showToast('تعذر جلب بيانات التقرير من الخادم');
-            }
-          }).catch(e => {
-            this.dataProvider.hideLoading();
-            this.dataProvider.showToast('خطأ في الاتصال بسيرفر التقارير');
-          });
-        } 
-        else {
-          this.reportsApi.getStudentReport(studentData).then(async (res: any) => {
-            this.dataProvider.hideLoading();
-            if (res && res.data) {
-                let splitUrl = res.data.split("/");
+            })
+            .catch(e => {
+              this.dataProvider.hideLoading();
+              this.dataProvider.showToast('خطأ في الاتصال بسيرفر التقارير');
+            });
+        } else {
+          this.reportsApi.getStudentReport(studentData).then(
+            async (res: any) => {
+              this.dataProvider.hideLoading();
+              if (res && res.data) {
+                let splitUrl = res.data.split('/');
                 let filename = splitUrl[splitUrl.length - 1];
                 let url = `${environment.docUrl}uploads/stufollowup/${filename}`;
                 await Browser.open({ url: url });
-            } else {
+              } else {
+                this.dataProvider.showToast(this.lang.report_error);
+              }
+            },
+            error => {
+              this.dataProvider.hideLoading();
               this.dataProvider.showToast(this.lang.report_error);
             }
-          }, error => {
-            this.dataProvider.hideLoading();
-            this.dataProvider.showToast(this.lang.report_error);
-          });
+          );
         }
-        
-    }).catch(e => {
-      this.dataProvider.hideLoading();
-      this.presentAlertConfirm();
-    });
+      })
+      .catch(e => {
+        this.dataProvider.hideLoading();
+        this.presentAlertConfirm();
+      });
   }
 
   openHtmlInBrowser(htmlContent: string) {
@@ -1231,7 +1348,7 @@ export class StudentDetailPage implements OnInit {
       printWindow.document.write(htmlContent);
       printWindow.document.close();
       printWindow.focus();
-      
+
       setTimeout(() => {
         printWindow.print();
       }, 1000);
@@ -1241,66 +1358,68 @@ export class StudentDetailPage implements OnInit {
   }
 
   async presentAlertPlanConfirm() {
-    let buttonsAdmin =  [
+    let buttonsAdmin = [
       {
         text: this.planLang.cancel,
         role: 'cancel',
         cssClass: 'secondary',
-        handler: (blah) => {
+        handler: blah => {
           console.log('Confirm Cancel: blah');
         }
-      }, {
+      },
+      {
         text: this.planLang.subscribe,
         handler: () => {
           this.router.navigate(['available-plan']);
         }
       }
     ];
-    let button =  [
+    let button = [
       {
-        text: "Ok",
+        text: 'Ok',
         role: 'cancel',
         cssClass: 'secondary',
-        handler: (blah) => {
+        handler: blah => {
           console.log('Confirm Cancel: blah');
         }
       }
     ];
 
     const alert = await this.alertCtrl.create({
-      header: this.userDetails.details.is_school_admin == 1 ?  this.planLang.not_valid : this.planLang.not_valid_for_others,
-      mode:'ios',
-      buttons:  this.userDetails.details.is_school_admin == 1 ? buttonsAdmin : button
+      header:
+        this.userDetails.details.is_school_admin == 1 ? this.planLang.not_valid : this.planLang.not_valid_for_others,
+      mode: 'ios',
+      buttons: this.userDetails.details.is_school_admin == 1 ? buttonsAdmin : button
     });
 
     await alert.present();
   }
 
-  async presentAlertForPremiumsection(){
-    let button =  [
+  async presentAlertForPremiumsection() {
+    let button = [
       {
-        text: "Ok",
+        text: 'Ok',
         role: 'cancel',
         cssClass: 'secondary',
-        handler: (blah) => {
+        handler: blah => {
           console.log('Confirm Cancel: blah');
         }
       }
     ];
 
     const alert = await this.alertCtrl.create({
-      header:this.planLang.not_valid_for_others,
-      mode:'ios',
+      header: this.planLang.not_valid_for_others,
+      mode: 'ios',
       buttons: button
     });
 
     await alert.present();
   }
 
-  notes_action(){
-    if(this.id){
-      this.EditStudentNotes()
-    }else{
+  notes_action() {
+    if (this.id) {
+      this.EditStudentNotes();
+    } else {
       this.addTextNotesNote();
     }
   }
@@ -1325,7 +1444,7 @@ export class StudentDetailPage implements OnInit {
       handleBehavior: 'cycle',
       cssClass: 'lineone-bottom-sheet'
     });
-    
+
     await modal.present();
 
     const { data, role } = await modal.onDidDismiss();
@@ -1334,100 +1453,121 @@ export class StudentDetailPage implements OnInit {
       this.studentDetails.phone_no = data.phone_no;
       this.studentDetails.phone_no_two = data.phone_no_two;
       this.studentDetails.medical_condition = data.medical_condition;
-      
+
       student.phone_no = data.phone_no;
       student.phone_no_two = data.phone_no_two;
       student.medical_condition = data.medical_condition;
     }
   }
 
-  sendPushMessageToStudentParent(msg){
+  sendPushMessageToStudentParent(msg) {
     let studentData = {
-      "student_id":this.userDetails.details.school_id,
-      "message": msg,
-      "title":"Absent"
-    }
-    this.dataProvider.sendPushMessageToStudentParent(studentData).then(res => {
-      console.log(res)
-    },error=>{
-      this.dataProvider.hideLoading();
-      this.dataProvider.showToast(this.lang.report_error);
-    })
-
+      student_id: this.userDetails.details.school_id,
+      message: msg,
+      title: 'Absent'
+    };
+    this.dataProvider.sendPushMessageToStudentParent(studentData).then(
+      res => {
+        console.log(res);
+      },
+      error => {
+        this.dataProvider.hideLoading();
+        this.dataProvider.showToast(this.lang.report_error);
+      }
+    );
   }
 
-  getStudentCallOfReports(){
+  getStudentCallOfReports() {
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "student_id": this.navData.student_id,
-      "school_id":this.userDetails.details.school_id
+      user_no: this.userDetails.details.user_no,
+      student_id: this.navData.student_id,
+      school_id: this.userDetails.details.school_id
     };
-    this.reportsApi.GetAllCallOfStudentReport(data).then(res => {
-      this.callOfStudentsReport = res.data;
-    },error=>{
-      this.dataProvider.hideLoading();
-      this.dataProvider.showToast(this.lang.report_error);
-    })
+    this.reportsApi.GetAllCallOfStudentReport(data).then(
+      res => {
+        this.callOfStudentsReport = res.data;
+      },
+      error => {
+        this.dataProvider.hideLoading();
+        this.dataProvider.showToast(this.lang.report_error);
+      }
+    );
     this.GetStudentPledgesReport();
   }
 
-  GetStudentPledgesReport(){
+  GetStudentPledgesReport() {
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "student_id": this.navData.student_id,
-      "school_id":this.userDetails.details.school_id
+      user_no: this.userDetails.details.user_no,
+      student_id: this.navData.student_id,
+      school_id: this.userDetails.details.school_id
     };
-    this.reportsApi.GetStudentPledgesReport(data).then(res => {
-      this.AllStudentPledgesReports = res.data;
-    },error=>{
-      this.dataProvider.hideLoading();
-      this.dataProvider.showToast(this.lang.report_error);
-    })
+    this.reportsApi.GetStudentPledgesReport(data).then(
+      res => {
+        this.AllStudentPledgesReports = res.data;
+      },
+      error => {
+        this.dataProvider.hideLoading();
+        this.dataProvider.showToast(this.lang.report_error);
+      }
+    );
   }
 
-  printReports(type){
-    if(type == "pledges"){
+  printReports(type) {
+    if (type == 'pledges') {
       let data = {
-        "user_no": this.userDetails.details.user_no,
-        "course_id": this.navData.course_id,
-        "student_id": this.navData.student_id,
-        "school_id":this.userDetails.details.school_id
+        user_no: this.userDetails.details.user_no,
+        course_id: this.navData.course_id,
+        student_id: this.navData.student_id,
+        school_id: this.userDetails.details.school_id
       };
-      this.dataProvider.run(() => this.reportsApi.generateStudentPledgesReportPDF(data)).then(res => {
-        let data = res.data;
-      let options: PrintOptions = { orientation: 'portrait'};
-      this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then((onSuccess:any)=>{
-      },(e:any)=>{
-      this.dataProvider.showToast(this.lang.report_error);
-      });
-      },error=>{
-        this.dataProvider.showToast(this.lang.report_error);
-      })
+      this.dataProvider
+        .run(() => this.reportsApi.generateStudentPledgesReportPDF(data))
+        .then(
+          res => {
+            let data = res.data;
+            let options: PrintOptions = { orientation: 'portrait' };
+            this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then(
+              (onSuccess: any) => {},
+              (e: any) => {
+                this.dataProvider.showToast(this.lang.report_error);
+              }
+            );
+          },
+          error => {
+            this.dataProvider.showToast(this.lang.report_error);
+          }
+        );
     }
-    if(type == "callOfParent"){
+    if (type == 'callOfParent') {
       let data = {
-        "user_no": this.userDetails.details.user_no,
-        "course_id": this.navData.course_id,
-        "student_id": this.navData.student_id,
-        "school_id":this.userDetails.details.school_id
+        user_no: this.userDetails.details.user_no,
+        course_id: this.navData.course_id,
+        student_id: this.navData.student_id,
+        school_id: this.userDetails.details.school_id
       };
-      this.dataProvider.run(() => this.reportsApi.generateCallOfStudentPDF(data)).then(res => {
-        let data = res.data;
-      let options: PrintOptions = { orientation: 'portrait'};
-      this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then((onSuccess:any)=>{
-      },(e:any)=>{
-      this.dataProvider.showToast(this.lang.report_error);
-      });
-      },error=>{
-        this.dataProvider.showToast(this.lang.report_error);
-      })
+      this.dataProvider
+        .run(() => this.reportsApi.generateCallOfStudentPDF(data))
+        .then(
+          res => {
+            let data = res.data;
+            let options: PrintOptions = { orientation: 'portrait' };
+            this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then(
+              (onSuccess: any) => {},
+              (e: any) => {
+                this.dataProvider.showToast(this.lang.report_error);
+              }
+            );
+          },
+          error => {
+            this.dataProvider.showToast(this.lang.report_error);
+          }
+        );
     }
-
   }
 
   showInventoryModal: boolean = false;
-  inventoryTab: string = 'titles'; 
-  
+  inventoryTab: string = 'titles';
+
   studentWallet: any = {};
   unlockedTitles: string[] = [];
   unlockedBadges: string[] = [];
@@ -1443,50 +1583,54 @@ export class StudentDetailPage implements OnInit {
   }
 
   fetchInventory(): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       let sid = this.studentDetails?.sid || this.navData?.student_id;
-      
-      let body = { 
+
+      let body = {
         sid: String(sid),
         userId: String(this.userDetails.details.user_no)
       };
-      
-      this.gamificationApi.getStudentInventory(body).then((res: any) => {
-        if (res && res.success) {
-          this.studentWallet = res.wallet;
-          this.unlockedTitles = res.unlocked_titles || [];
-          this.unlockedBadges = res.unlocked_badges || [];
-          
-          let rawActive = res.active_title;
-          if (rawActive !== undefined && rawActive !== null && rawActive !== 'null' && rawActive !== '') {
-              this.activeCraftedTitle = typeof rawActive === 'object' 
-                                        ? (rawActive.title_ar || rawActive.title_name || rawActive.title) 
-                                        : rawActive;
-          }
 
-          if (this.studentDetails) {
+      this.gamificationApi
+        .getStudentInventory(body)
+        .then((res: any) => {
+          if (res && res.success) {
+            this.studentWallet = res.wallet;
+            this.unlockedTitles = res.unlocked_titles || [];
+            this.unlockedBadges = res.unlocked_badges || [];
+
+            let rawActive = res.active_title;
+            if (rawActive !== undefined && rawActive !== null && rawActive !== 'null' && rawActive !== '') {
+              this.activeCraftedTitle =
+                typeof rawActive === 'object'
+                  ? rawActive.title_ar || rawActive.title_name || rawActive.title
+                  : rawActive;
+            }
+
+            if (this.studentDetails) {
               this.studentDetails.active_crafted_title = this.activeCraftedTitle;
-          }
-          
-          let skills = this.studentSkillData || this.studentDetails || {};
-          let points = this.studentTotalPoints || this.studentDetails?.student_points || 0;
+            }
 
-          if (this.gamification) {
+            let skills = this.studentSkillData || this.studentDetails || {};
+            let points = this.studentTotalPoints || this.studentDetails?.student_points || 0;
+
+            if (this.gamification) {
               this.studentTitle = this.gamification.getFinalStudentTitle(this.activeCraftedTitle, skills, points);
               this.processedTitles = this.gamification.processTitles(this.unlockedTitles);
               this.processedBadges = this.gamification.processBadges(this.unlockedBadges);
+            }
           }
-        }
-        
-        resolve();
-      }).catch(err => {
-        resolve();
-      });
+
+          resolve();
+        })
+        .catch(err => {
+          resolve();
+        });
     });
   }
 
   canCraft(cost: any): boolean {
-    if(!this.studentWallet) return false;
+    if (!this.studentWallet) return false;
     for (let skill in cost) {
       let spendableAmount = Number(this.studentWallet['spendable_' + skill]) || 0;
       if (spendableAmount < cost[skill]) return false;
@@ -1495,8 +1639,9 @@ export class StudentDetailPage implements OnInit {
   }
 
   async craftTitle(title: any) {
-    if(!this.canCraft(title.cost)) {
-      this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.'); return;
+    if (!this.canCraft(title.cost)) {
+      this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.');
+      return;
     }
 
     let sid = this.studentDetails?.sid || this.navData?.student_id;
@@ -1517,8 +1662,7 @@ export class StudentDetailPage implements OnInit {
       } else {
         this.dataProvider.errorALertMessage(res.msg);
       }
-    } catch(e) {
-    }
+    } catch (e) {}
   }
 
   async toggleTitle(titleCode: string | null) {
@@ -1536,10 +1680,13 @@ export class StudentDetailPage implements OnInit {
         this.activeCraftedTitle = titleCode;
         this.dataProvider.showToast(res.msg);
 
-        this.studentTitle = this.gamification.getFinalStudentTitle(titleCode, this.studentSkillData, this.studentTotalPoints);
+        this.studentTitle = this.gamification.getFinalStudentTitle(
+          titleCode,
+          this.studentSkillData,
+          this.studentTotalPoints
+        );
       }
-    } catch(e) {
-    }
+    } catch (e) {}
   }
 
   async switchCategory(selectedCategory: string) {
@@ -1547,11 +1694,11 @@ export class StudentDetailPage implements OnInit {
 
     if (this.category === 'absence' && !this.isAbsenceLoaded) {
       let followUpData = {
-        "date": this.navData.dateSelected || new Date().toISOString().split('T')[0],
-        "user_no": this.userDetails.details.user_no,
-        "session_id": this.userDetails.session_id,
-        "course_id": this.navData.course_id,
-        "school_id": this.userDetails.details.school_id
+        date: this.navData.dateSelected || new Date().toISOString().split('T')[0],
+        user_no: this.userDetails.details.user_no,
+        session_id: this.userDetails.session_id,
+        course_id: this.navData.course_id,
+        school_id: this.userDetails.details.school_id
       };
 
       try {
@@ -1561,7 +1708,8 @@ export class StudentDetailPage implements OnInit {
             let matched = followUpRes.data.students.find((s: any) => s.sid === this.navData.student_id);
             if (matched) {
               this.zone.run(() => {
-                this.studentDetails.unacceptable_absent_days = matched.unacceptable_absent_days !== undefined ? matched.unacceptable_absent_days : 0;
+                this.studentDetails.unacceptable_absent_days =
+                  matched.unacceptable_absent_days !== undefined ? matched.unacceptable_absent_days : 0;
                 this.studentDetails.suspend_days = matched.suspend_days !== undefined ? matched.suspend_days : 0;
                 this.studentDetails.medical_days = matched.medical_days !== undefined ? matched.medical_days : 0;
               });
@@ -1569,36 +1717,36 @@ export class StudentDetailPage implements OnInit {
           }
 
           let agg_ranking = this.notes && this.notes.agg_ranking ? Number(this.notes.agg_ranking) : 5;
-          if((Number(this.studentDetails.unacceptable_absent_days) == 10 || Number(this.studentDetails.unacceptable_absent_days) == 15) && agg_ranking < 4){
-             let message = `عزيزي ولي الأمر، نحيطكم علماً بأن المتعلم ${this.studentDetails.name} معرض لخطر التعثر الدراسي.`;
-             this.sendPushMessageToStudentParent(message);
+          if (
+            (Number(this.studentDetails.unacceptable_absent_days) == 10 ||
+              Number(this.studentDetails.unacceptable_absent_days) == 15) &&
+            agg_ranking < 4
+          ) {
+            let message = `عزيزي ولي الأمر، نحيطكم علماً بأن المتعلم ${this.studentDetails.name} معرض لخطر التعثر الدراسي.`;
+            this.sendPushMessageToStudentParent(message);
           }
 
           this.isAbsenceLoaded = true;
         });
-      } catch(e) {
+      } catch (e) {
         console.error(e);
       }
-    }
-
-    else if (this.category === 'pledgesAndCallOffParent' && !this.isReportsLoaded) {
+    } else if (this.category === 'pledgesAndCallOffParent' && !this.isReportsLoaded) {
       try {
         await this.dataProvider.run(async () => {
           this.getStudentCallOfReports();
           this.isReportsLoaded = true;
         });
-      } catch(e) {
+      } catch (e) {
         console.log(e);
       }
-    }
-
-    else if (this.category === 'notes' && !this.isNotesLoaded) {
+    } else if (this.category === 'notes' && !this.isNotesLoaded) {
       try {
         await this.dataProvider.run(async () => {
           await this.getNotes();
           this.isNotesLoaded = true;
         });
-      } catch(e) {
+      } catch (e) {
         console.error(e);
       }
     }
@@ -1614,7 +1762,7 @@ export class StudentDetailPage implements OnInit {
     if (!this.studentDetails) return '🌱 بطل في البداية';
 
     const activeTitle = this.studentDetails.active_crafted_title;
-    
+
     const skillsData = {
       cognitive: Number(this.studentDetails.cognitive || 0),
       social: Number(this.studentDetails.social || 0),
@@ -1631,11 +1779,12 @@ export class StudentDetailPage implements OnInit {
   getStudentTitle(student: any): string {
     if (!student) return '🌱 بطل في البداية';
 
-    const activeCode = student.active_crafted_title || 
-                       student.student_data?.active_crafted_title || 
-                       this.activeCraftedTitle || 
-                       student.active_title || 
-                       student.title;
+    const activeCode =
+      student.active_crafted_title ||
+      student.student_data?.active_crafted_title ||
+      this.activeCraftedTitle ||
+      student.active_title ||
+      student.title;
 
     const skillsData = {
       cognitive: Number(student.cognitive || this.studentSkillData?.cognitive || 0),
@@ -1663,6 +1812,4 @@ export class StudentDetailPage implements OnInit {
       this.navCtrl.back();
     }
   }
-  
-  
 }

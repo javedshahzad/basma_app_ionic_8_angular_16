@@ -15,10 +15,13 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
   selector: 'app-search-student',
   templateUrl: './search-student.page.html',
   styleUrls: ['./search-student.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SearchStudentPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   userdata: any;
   lang: any;
   students = <any>[];
@@ -42,7 +45,6 @@ export class SearchStudentPage implements OnInit {
     private schoolDirectoryApi: SchoolDirectoryApiService,
     private cdr: ChangeDetectorRef
   ) {
-
     // 🟢 3. التقاط البيانات متزامناً وبشكل مباشر من الـ Router لمنع الخطأ
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
@@ -50,7 +52,7 @@ export class SearchStudentPage implements OnInit {
       console.log('Received userdata:', this.userdata);
     }
 
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
@@ -78,7 +80,7 @@ export class SearchStudentPage implements OnInit {
 
   async getStudents() {
     let data = {
-      'school_id': this.userdata.school_id
+      school_id: this.userdata.school_id
     };
 
     try {
@@ -118,29 +120,32 @@ export class SearchStudentPage implements OnInit {
 
     this.searchTimeout = setTimeout(() => {
       let data = {
-        'school_id': this.userdata.school_id,
-        'search_str': input.trim()
+        school_id: this.userdata.school_id,
+        search_str: input.trim()
       };
-      
-      this.searchApi.serachStudent(data).then(res => {
-        if (res && res.data && res.data.response) {
-          this.students = res.data.response;
-          if (this.students.length > 20) {
-            this.allStudents = this.students.splice(0, 20);
+
+      this.searchApi
+        .serachStudent(data)
+        .then(res => {
+          if (res && res.data && res.data.response) {
+            this.students = res.data.response;
+            if (this.students.length > 20) {
+              this.allStudents = this.students.splice(0, 20);
+            } else {
+              this.allStudents = this.students;
+            }
           } else {
-            this.allStudents = this.students;
+            // تفريغ القائمة إذا لم توجد نتائج
+            this.students = [];
+            this.allStudents = [];
           }
-        } else {
-          // تفريغ القائمة إذا لم توجد نتائج
-          this.students = [];
-          this.allStudents = [];
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        this.dataProvider.showToast(error);
-        console.log(error);
-        this.cdr.markForCheck();
-      });
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          this.dataProvider.showToast(error);
+          console.log(error);
+          this.cdr.markForCheck();
+        });
     }, 500); // ينتظر نصف ثانية بعد آخر حرف يكتبه المستخدم
   }
 
@@ -152,12 +157,12 @@ export class SearchStudentPage implements OnInit {
         dateSelected: this.dataProvider.getFormatedDate(new Date())
       }
     };
-    
+
     this.zone.run(() => {
       this.router.navigate(['student-detail'], navigation);
     });
   }
-  
+
   doInfinite(infiniteScroll: any) {
     setTimeout(() => {
       // 🟢 تأمين إضافة الطلاب دون أخطاء

@@ -7,13 +7,11 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-admin-actions-popover',
   templateUrl: './admin-actions-popover.component.html',
-  styleUrls: ['./admin-actions-popover.component.scss'],
-  standalone: true, // إضافة هذا السطر
+  styleUrls: ['./admin-actions-popover.component.scss'], // إضافة هذا السطر
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminActionsPopoverComponent implements OnInit {
-
   // استقبال الصلاحيات لمعرفة الأزرار التي يجب إظهارها
   @Input() canEdit: boolean = false;
   @Input() canAdd: boolean = false;
@@ -26,5 +24,4 @@ export class AdminActionsPopoverComponent implements OnInit {
   async dismiss(action: string) {
     await this.popoverCtrl.dismiss({ selectedAction: action });
   }
-
 }

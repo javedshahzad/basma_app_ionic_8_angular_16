@@ -11,18 +11,19 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-add-review',
   templateUrl: './add-review.component.html',
   styleUrls: ['./add-review.component.scss'],
-  standalone: true,
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddReviewComponent implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   ratingStars: number;
   // @Input() lang;
   @Input() data;
-  @Input() student:any;
-  selections: any [] = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
-  postData: any [] = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
+  @Input() student: any;
+  selections: any[] = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
+  postData: any[] = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
   stars_array = [
     {
       title: 'متميز'
@@ -33,16 +34,12 @@ export class AddReviewComponent implements OnInit {
     {
       title: 'جيد'
     },
-     {
+    {
       title: 'مقبول'
     },
     {
       title: 'ضعيف'
-    },
-   
-    
-   
-    
+    }
   ];
   noteMessage: string = '';
   lang: any;
@@ -52,25 +49,30 @@ export class AddReviewComponent implements OnInit {
   showImageViewer: boolean = false;
   viewImageUrl: string = '';
 
-  constructor(public modalController: ModalController, public dataProvider: DataService,public translate: TranslateService, private cdr: ChangeDetectorRef) { }
+  constructor(
+    public modalController: ModalController,
+    public dataProvider: DataService,
+    public translate: TranslateService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-    console.log(this.data,this.student);
+    console.log(this.data, this.student);
     this.studentDetails = this.student;
-    if(this.studentDetails && (this.studentDetails.pic == 'null' || this.studentDetails.pic == null)){
-      this.studentDetails.pic = 'assets/imgs/default_avatar.png'
+    if (this.studentDetails && (this.studentDetails.pic == 'null' || this.studentDetails.pic == null)) {
+      this.studentDetails.pic = 'assets/imgs/default_avatar.png';
     }
-    console.log(this.studentDetails,"student details")
+    console.log(this.studentDetails, 'student details');
     // this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
-    this.translate.get("alertmessages").subscribe((val)=>{
+    this.translate.get('alertmessages').subscribe(val => {
       this.lang = val;
       this.cdr.markForCheck();
     });
-    if(this.data){
-      if(this.data.note){
+    if (this.data) {
+      if (this.data.note) {
         this.noteMessage = this.data.note;
       }
-      if(this.data.new_ratting){
+      if (this.data.new_ratting) {
         this.postData = JSON.parse(this.data.new_ratting);
         this.selections = this.postData;
       }
@@ -82,16 +84,16 @@ export class AddReviewComponent implements OnInit {
     // can "dismiss" itself and optionally pass back data
     this.modalController.dismiss({
       role: false,
-      'dismissed': true,
+      dismissed: true
     });
   }
 
   async openIndividualFollowupUrl() {
-      await Browser.open({ url: 'https://basmapp.com/IndividualFollow-upPlan.pdf' });
+    await Browser.open({ url: 'https://basmapp.com/IndividualFollow-upPlan.pdf' });
   }
 
   async openGroupCounselingSessionUrl() {
-      await Browser.open({ url: 'https://basmapp.com/GroupCounselingSession.pdf' });
+    await Browser.open({ url: 'https://basmapp.com/GroupCounselingSession.pdf' });
   }
 
   // أضف هاتين الدالتين لفتح وإغلاق الصورة المكبرة
@@ -107,7 +109,7 @@ export class AddReviewComponent implements OnInit {
     }, 300); // تأخير بسيط لجمالية الإغلاق
   }
 
-  getSelectedStars(){
+  getSelectedStars() {
     let stars_array = [
       {
         title: 'متميز'
@@ -124,71 +126,69 @@ export class AddReviewComponent implements OnInit {
       {
         title: 'ضعيف'
       }
-    ]
-    console.log(stars_array)
-      return stars_array;
+    ];
+    console.log(stars_array);
+    return stars_array;
     return new Array(5);
   }
   getSemArray() {
     let stars_array = [
-    {
-      title: 'متميز'
-    },
-    {
-      title: 'جيد جداً'
-    },
-    {
-      title: 'جيد'
-    },
-    {
-      title: 'مقبول'
-    },
-    {
-      title: 'ضعيف'
-    }
-  ]
-  console.log(stars_array)
+      {
+        title: 'متميز'
+      },
+      {
+        title: 'جيد جداً'
+      },
+      {
+        title: 'جيد'
+      },
+      {
+        title: 'مقبول'
+      },
+      {
+        title: 'ضعيف'
+      }
+    ];
+    console.log(stars_array);
     return stars_array;
   }
 
-  selectStarsForRating(post_data_index: number, index: number){
-    if(index === 0){
+  selectStarsForRating(post_data_index: number, index: number) {
+    if (index === 0) {
       index = 4;
-    } else if(index === 1){
+    } else if (index === 1) {
       index = 3;
-    }else if(index === 2){
+    } else if (index === 2) {
       index = 2;
-    }else if(index === 3){
+    } else if (index === 3) {
       index = 1;
-    }else if(index === 4){
+    } else if (index === 4) {
       index = 0;
     }
-    this.postData[post_data_index] = index+1;
-    this.selections= ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
-    for(let i=0;i<=index;i++){
+    this.postData[post_data_index] = index + 1;
+    this.selections = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+    for (let i = 0; i <= index; i++) {
       this.selections[post_data_index] = '#04855f';
     }
     console.log(this.postData);
   }
 
-  onClickSend(){
-    if(this.noteMessage && this.noteMessage.trim() != '') {
-      if(this.noteMessage.length <= 45) {
-    this.modalController.dismiss({ 
-        'dismissed': true,
-         data: this.postData,
-         noteMessage: this.noteMessage
-    });
-    }else {
+  onClickSend() {
+    if (this.noteMessage && this.noteMessage.trim() != '') {
+      if (this.noteMessage.length <= 45) {
+        this.modalController.dismiss({
+          dismissed: true,
+          data: this.postData,
+          noteMessage: this.noteMessage
+        });
+      } else {
         this.dataProvider.showToast(this.lang.max_note_length);
       }
-    }
-    else{
+    } else {
       this.dataProvider.showToast(this.lang.empty_note);
     }
   }
-  OpenDownloadFile(url){
-    window.open(url,"_blank");
+  OpenDownloadFile(url) {
+    window.open(url, '_blank');
   }
-
 }

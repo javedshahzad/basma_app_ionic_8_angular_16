@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';  
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
@@ -17,7 +17,8 @@ import { UserType } from '../constants/user-type';
   selector: 'app-parent-register',
   templateUrl: './parent-register.page.html',
   styleUrls: ['./parent-register.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ParentRegisterPage implements OnInit {
   parent: any = {};
@@ -34,7 +35,7 @@ export class ParentRegisterPage implements OnInit {
     private router: Router,
     public device: Device,
     public popoverController: PopoverController,
-    public platform: Platform, 
+    public platform: Platform,
     public dbProvider: DatabaseService,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private cdr: ChangeDetectorRef
@@ -50,7 +51,7 @@ export class ParentRegisterPage implements OnInit {
   ngOnInit() {}
 
   _keyPress(event: any) {
-    var charCode = (event.which) ? event.which : event.keyCode;
+    var charCode = event.which ? event.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57)) return false;
     return true;
   }
@@ -62,26 +63,28 @@ export class ParentRegisterPage implements OnInit {
       this.loggedinUser = earlyLoginData;
     }
 
-    if (this.platform.is("cordova") || this.platform.is("capacitor")) {
+    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
       this.user.device_id = this.device.uuid;
       if (this.platform.is('android')) {
         this.user.os_type = 1;
       } else {
         this.user.os_type = 2;
       }
-      let fcmToken = await this.storageSr.get("FcmToken");
+      let fcmToken = await this.storageSr.get('FcmToken');
       this.user.registration_id = fcmToken || 'empty_token';
     }
     this.cdr.markForCheck();
   }
 
   async presentPopover() {
-    if (this.popOver) { this.dissmissPopOver(); }
+    if (this.popOver) {
+      this.dissmissPopOver();
+    }
     this.popOver = await this.popoverController.create({
       component: LoaderComponent,
       backdropDismiss: false,
       translucent: false,
-      cssClass: 'loaderStyle',
+      cssClass: 'loaderStyle'
     });
     return this.popOver.present();
   }
@@ -97,14 +100,16 @@ export class ParentRegisterPage implements OnInit {
 
   async registerparent() {
     try {
-      const response = await this.dataProvider.run(() => this.dataProvider.registerNewParent({
-        "user_no": this.user_no,
-        "school_id": this.school_id,
-        "parentId": this.parent.parentId,
-        "parentName": this.parent.name,
-        "studentId": this.parent.studentId,
-        "password": this.parent.password
-      }));
+      const response = await this.dataProvider.run(() =>
+        this.dataProvider.registerNewParent({
+          user_no: this.user_no,
+          school_id: this.school_id,
+          parentId: this.parent.parentId,
+          parentName: this.parent.name,
+          studentId: this.parent.studentId,
+          password: this.parent.password
+        })
+      );
       this.dataProvider.showToast(response);
 
       this.user.email_id = this.parent.parentId;
@@ -118,55 +123,58 @@ export class ParentRegisterPage implements OnInit {
   // 🟢 دالة تسجيل الدخول المحدثة والآمنة
   async login() {
     await this.presentPopover();
-    
-    this.authProvider.doLogin(this.user).then(async (response) => {
-      this.dissmissPopOver();
-      
-      let isexist = false;
-      let index = -1;
-      
-      if (this.loggedinUser.length > 0) {
-        for (let i = 0; i < this.loggedinUser.length; i++) {
-          if (this.loggedinUser[i].email_id == this.user.email_id) {
-            isexist = true;
-            index = i;
+
+    this.authProvider
+      .doLogin(this.user)
+      .then(async response => {
+        this.dissmissPopOver();
+
+        let isexist = false;
+        let index = -1;
+
+        if (this.loggedinUser.length > 0) {
+          for (let i = 0; i < this.loggedinUser.length; i++) {
+            if (this.loggedinUser[i].email_id == this.user.email_id) {
+              isexist = true;
+              index = i;
+            }
           }
         }
-      }
 
-      let img: any = response.details.is_school_admin == 1 ? response.details.school_logo : response.details.pic;
-      let newLoginData = {
-        name: response.details.first_name,
-        email_id: this.user.email_id, 
-        password: this.user.password,
-        user_no: response.details.user_no,
-        image: img
-      };
+        let img: any = response.details.is_school_admin == 1 ? response.details.school_logo : response.details.pic;
+        let newLoginData = {
+          name: response.details.first_name,
+          email_id: this.user.email_id,
+          password: this.user.password,
+          user_no: response.details.user_no,
+          image: img
+        };
 
-      if (!isexist) {
-        this.loggedinUser.push(newLoginData);
-      } else {
-        this.loggedinUser[index] = newLoginData;
-      }
+        if (!isexist) {
+          this.loggedinUser.push(newLoginData);
+        } else {
+          this.loggedinUser[index] = newLoginData;
+        }
 
-      // حفظ بيانات الدخول السريع بأمان
-      await this.storageSr.set("earlyLogin", this.loggedinUser);
-      
-      this.authProvider.publishEvent(true);
-      this.authProvider.changeUser(true);
-      
-      if (response.details.user_type == UserType.Parent) {
-        this.router.navigate(['tabs/children'], { replaceUrl: true });
-      } else if (response.details.user_type == UserType.Student) {
-        this.router.navigate(['tabs/student-notes'], { replaceUrl: true });
-      } else {
-        this.router.navigate(['tabs'], { replaceUrl: true });
-      }
-      this.cdr.markForCheck();
-    }).catch((error) => {
-      this.dissmissPopOver();
-      this.dataProvider.errorALertMessage(error);
-      this.cdr.markForCheck();
-    });
+        // حفظ بيانات الدخول السريع بأمان
+        await this.storageSr.set('earlyLogin', this.loggedinUser);
+
+        this.authProvider.publishEvent(true);
+        this.authProvider.changeUser(true);
+
+        if (response.details.user_type == UserType.Parent) {
+          this.router.navigate(['tabs/children'], { replaceUrl: true });
+        } else if (response.details.user_type == UserType.Student) {
+          this.router.navigate(['tabs/student-notes'], { replaceUrl: true });
+        } else {
+          this.router.navigate(['tabs'], { replaceUrl: true });
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        this.dissmissPopOver();
+        this.dataProvider.errorALertMessage(error);
+        this.cdr.markForCheck();
+      });
   }
 }

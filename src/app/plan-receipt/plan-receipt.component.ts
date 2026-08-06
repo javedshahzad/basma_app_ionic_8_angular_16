@@ -8,9 +8,8 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-plan-receipt',
   templateUrl: './plan-receipt.component.html',
   styleUrls: ['./plan-receipt.component.scss'],
-  standalone: true,
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlanReceiptComponent implements OnInit {
   @Input() selectedPlan: any;
@@ -24,14 +23,16 @@ export class PlanReceiptComponent implements OnInit {
     public modalCtrl: ModalController,
     public translate: TranslateService,
     public platform: Platform
-  ) { }
+  ) {}
 
   ngOnInit() {
     // 🟢 معالجة آمنة للمتغيرات (تجنب الخطأ في حال تم تمرير Object جاهز)
     if (typeof this.selectedPlan === 'string') {
       try {
         this.selectedPlan = JSON.parse(this.selectedPlan);
-      } catch (e) { console.error('Error parsing selectedPlan', e); }
+      } catch (e) {
+        console.error('Error parsing selectedPlan', e);
+      }
     }
 
     // 🟢 تحويل isSuccess لقيمة منطقية صحيحة أياً كان نوع المدخل
@@ -42,10 +43,12 @@ export class PlanReceiptComponent implements OnInit {
       if (typeof this.receipt === 'string') {
         try {
           parsedReceipt = JSON.parse(this.receipt);
-        } catch (e) { console.error('Error parsing receipt', e); }
+        } catch (e) {
+          console.error('Error parsing receipt', e);
+        }
       }
-      
-      if (this.platform.is("android")) {
+
+      if (this.platform.is('android')) {
         this.OrderID = parsedReceipt?.orderId;
       } else {
         this.OrderID = parsedReceipt?.transactionId;
@@ -64,14 +67,14 @@ export class PlanReceiptComponent implements OnInit {
   OnCofirm() {
     this.modalCtrl.dismiss({
       dismissed: true,
-      isConfirm: true,
+      isConfirm: true
     });
   }
 
   OnDone() {
     this.modalCtrl.dismiss({
       dismissed: true,
-      isDone: true,
+      isDone: true
     });
   }
 }

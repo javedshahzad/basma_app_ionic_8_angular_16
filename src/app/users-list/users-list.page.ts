@@ -1,4 +1,12 @@
-import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -12,7 +20,8 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-users-list',
   templateUrl: './users-list.page.html',
   styleUrls: ['./users-list.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class UsersListPage implements OnInit {
   private destroyRef = inject(DestroyRef);
@@ -43,7 +52,7 @@ export class UsersListPage implements OnInit {
       if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
         let isUpdated = this.router.getCurrentNavigation().extras.state['isUpdated'];
         if (isUpdated) {
-          let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+          let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
           if (userLoggedIn) {
             this.userDetails = userLoggedIn;
             this.getUsers(false);
@@ -53,17 +62,16 @@ export class UsersListPage implements OnInit {
       this.cdr.markForCheck();
     });
 
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
   }
 
-
   // 🟢 4. استخدام التزامن للتخلص من الـ localStorage عند فتح الصفحة لأول مرة
   async ngOnInit() {
     this.show_loading = true;
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
@@ -80,49 +88,54 @@ export class UsersListPage implements OnInit {
     return user?.user_no ?? index;
   }
 
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
 
   closeModal() {
     this.modalController.dismiss({
-      'dismissed': true
+      dismissed: true
     });
   }
 
   goBack() {
-    this.navCtrl.navigateRoot(['/tabs', 'tab1'], { 
-      animated: true, 
-      animationDirection: 'back' 
+    this.navCtrl.navigateRoot(['/tabs', 'tab1'], {
+      animated: true,
+      animationDirection: 'back'
     });
   }
 
   getUsers(loader = true) {
     let data = {
-      'school_id': this.userDetails.details.school_id,
-      'user_no': this.userDetails.details.user_no
+      school_id: this.userDetails.details.school_id,
+      user_no: this.userDetails.details.user_no
     };
-    
-    this.dataProvider.getAllUsers(data).then(res => {
-      this.show_loading = false;
-      console.log('allUsersdata', res.data);
-      
-      if (res.session) {
-        this.selectedUsers = res.data;
-        if (this.selectedUsers.length > 1) {
-          this.trimmedUsers = this.selectedUsers.splice(0, 20);
+
+    this.dataProvider.getAllUsers(data).then(
+      res => {
+        this.show_loading = false;
+        console.log('allUsersdata', res.data);
+
+        if (res.session) {
+          this.selectedUsers = res.data;
+          if (this.selectedUsers.length > 1) {
+            this.trimmedUsers = this.selectedUsers.splice(0, 20);
+          } else {
+            this.trimmedUsers = this.selectedUsers;
+          }
         } else {
-          this.trimmedUsers = this.selectedUsers;
+          this.noUser = true;
+          console.log('err', res);
         }
-      } else {
+        this.cdr.markForCheck();
+      },
+      error => {
         this.noUser = true;
-        console.log('err', res);
+        this.show_loading = false;
+        console.log(error);
+        this.cdr.markForCheck();
       }
-      this.cdr.markForCheck();
-    }, error => {
-      this.noUser = true;
-      this.show_loading = false;
-      console.log(error);
-      this.cdr.markForCheck();
-    });
+    );
   }
 
   doInfinite(infiniteScroll: any) {
@@ -138,11 +151,10 @@ export class UsersListPage implements OnInit {
   }
 
   openEditPage(user) {
-    console.log("nav user1111", user);
+    console.log('nav user1111', user);
     const navigation: NavigationExtras = {
       state: { user: user }
     };
     this.router.navigate(['edit-user-profile'], navigation);
   }
-
 }

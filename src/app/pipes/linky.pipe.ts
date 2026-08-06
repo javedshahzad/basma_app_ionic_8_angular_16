@@ -2,10 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Pipe({
-  name: 'linky'
+  name: 'linky',
+  standalone: false
 })
 export class LinkyPipe implements PipeTransform {
-
   constructor(private sanitizer: DomSanitizer) {}
 
   transform(value: string): SafeHtml | string {
@@ -19,7 +19,7 @@ export class LinkyPipe implements PipeTransform {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
 
     // استبدال الرابط النصي بكود HTML (أزلنا (click) لأن Angular لا يقرأها هنا)
-    const linkedText = escaped.replace(urlRegex, (url) => {
+    const linkedText = escaped.replace(urlRegex, url => {
       return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-indigo-600 font-bold hover:text-indigo-800 underline transition-colors">${url}</a>`;
     });
 
@@ -34,5 +34,4 @@ export class LinkyPipe implements PipeTransform {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
   }
-
 }

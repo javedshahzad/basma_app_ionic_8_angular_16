@@ -1,18 +1,17 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'userSearch'
+  name: 'userSearch',
+  standalone: false
 })
 export class UserSearchPipe implements PipeTransform {
- 
   transform(trimmedUsers: any[], userSearchValue: string): any[] {
-    if(!trimmedUsers || !userSearchValue){
+    if (!trimmedUsers || !userSearchValue) {
       return trimmedUsers;
     }
     // 🟢 استخدام المُعامل الآمن (?.) لمنع انهيار البحث إذا كانت البيانات ناقصة
-    return trimmedUsers.filter(pro => 
+    return trimmedUsers.filter(pro =>
       pro?.first_name?.toLocaleLowerCase().includes(userSearchValue.toLocaleLowerCase())
     );
   }
-
 }

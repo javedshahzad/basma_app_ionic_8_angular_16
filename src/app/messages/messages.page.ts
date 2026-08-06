@@ -16,7 +16,8 @@ import { UserType } from '../constants/user-type';
   selector: 'app-messages',
   templateUrl: './messages.page.html',
   styleUrls: ['./messages.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class MessagesPage implements OnInit {
   readonly UserType = UserType;
@@ -27,9 +28,9 @@ export class MessagesPage implements OnInit {
   userDetails: any = {};
   noRecordFound: string = '';
   lang: any = {};
-  
+
   imageModal: boolean = false;
-  imageUrl: string = "";
+  imageUrl: string = '';
   popOver: any;
 
   // --- متغيرات نافذة الحذف ---
@@ -48,19 +49,19 @@ export class MessagesPage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
 
     this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.translate.get("alertmessages").subscribe((res) => {
+      this.translate.get('alertmessages').subscribe(res => {
         this.lang = res;
         this.cdr.markForCheck();
       });
     });
 
-    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res.changeUser) {
         this.reloadData();
       }
@@ -76,37 +77,40 @@ export class MessagesPage implements OnInit {
   // 🟢 1. دالة async للتعامل مع الذاكرة وجلب الرسائل بأمان
   async ionViewWillEnter() {
     await this.presentPopover();
-    
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
-    
+
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
+
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
-      
+
       let data = {
-        "user_no": this.userDetails.details.user_no,
-        "school_id": this.userDetails.details.school_id,
-        "session_id": this.userDetails.session_id
+        user_no: this.userDetails.details.user_no,
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id
       };
-      
-      this.dataProvider.getNotifications(data).then(response => {
-        this.dissmissPopOver();
-        if (response.session) {
-          this.notifications = response.data;
-          if (this.notifications.length == 0) {
-            this.noRecordFound = this.lang.no_private_msg || 'لا توجد رسائل حالياً.';
+
+      this.dataProvider
+        .getNotifications(data)
+        .then(response => {
+          this.dissmissPopOver();
+          if (response.session) {
+            this.notifications = response.data;
+            if (this.notifications.length == 0) {
+              this.noRecordFound = this.lang.no_private_msg || 'لا توجد رسائل حالياً.';
+            }
+          } else {
+            this.authProvider.flushLocalStorage();
+            this.router.navigate(['login'], { replaceUrl: true });
+            this.dataProvider.errorALertMessage(response.message);
           }
-        } else {
-          this.authProvider.flushLocalStorage();
-          this.router.navigate(['login'], { replaceUrl: true });
-          this.dataProvider.errorALertMessage(response.message);
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        console.log(error);
-        this.dissmissPopOver();
-        this.cdr.markForCheck();
-      });
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          console.log(error);
+          this.dissmissPopOver();
+          this.cdr.markForCheck();
+        });
     } else {
       this.dissmissPopOver();
       this.authProvider.flushLocalStorage();
@@ -145,34 +149,37 @@ export class MessagesPage implements OnInit {
   }
 
   async reloadData() {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
-    
+    let userLoggedIn = await this.storageSr.get('userloggedin');
+
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
-      
+
       let data = {
-        "user_no": this.userDetails.details.user_no,
-        "school_id": this.userDetails.details.school_id,
-        "session_id": this.userDetails.session_id
+        user_no: this.userDetails.details.user_no,
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id
       };
-      
-      this.dataProvider.getNotifications(data).then(response => {
-        if (response.session) {
-          this.notifications = response.data;
-          if (this.notifications.length == 0) {
-            this.noRecordFound = this.lang.no_private_msg || 'لا توجد رسائل حالياً.';
+
+      this.dataProvider
+        .getNotifications(data)
+        .then(response => {
+          if (response.session) {
+            this.notifications = response.data;
+            if (this.notifications.length == 0) {
+              this.noRecordFound = this.lang.no_private_msg || 'لا توجد رسائل حالياً.';
+            }
+          } else {
+            this.authProvider.flushLocalStorage();
+            this.router.navigate(['login'], { replaceUrl: true });
+            this.dataProvider.errorALertMessage(response.message);
           }
-        } else {
-          this.authProvider.flushLocalStorage();
-          this.router.navigate(['login'], { replaceUrl: true });
-          this.dataProvider.errorALertMessage(response.message);
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        console.log(error);
-        this.cdr.markForCheck();
-      });
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          console.log(error);
+          this.cdr.markForCheck();
+        });
     } else {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
@@ -200,32 +207,35 @@ export class MessagesPage implements OnInit {
 
   confirmDelete() {
     if (this.notificationToDeleteId == null) return;
-    
+
     this.presentPopover();
     let data = {
       user_no: this.userDetails.details.user_no,
       nid: this.notificationToDeleteId,
       session_id: this.userDetails.session_id
-    }
-    
-    this.dataProvider.deleteNotification(data).then((response) => {
-      this.dissmissPopOver();
-      if (response.session) {
-        this.dataProvider.showToast(response.message);
-        this.notifications.splice(this.notificationToDeleteIndex, 1);
+    };
+
+    this.dataProvider
+      .deleteNotification(data)
+      .then(response => {
+        this.dissmissPopOver();
+        if (response.session) {
+          this.dataProvider.showToast(response.message);
+          this.notifications.splice(this.notificationToDeleteIndex, 1);
+          this.closeDeleteModal();
+        } else {
+          this.authProvider.flushLocalStorage();
+          this.dataProvider.errorALertMessage(response.message);
+          this.closeDeleteModal();
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        this.dissmissPopOver();
+        this.dataProvider.errorALertMessage(error);
         this.closeDeleteModal();
-      } else {
-        this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(response.message);
-        this.closeDeleteModal();
-      }
-      this.cdr.markForCheck();
-    }).catch((error) => {
-      this.dissmissPopOver();
-      this.dataProvider.errorALertMessage(error);
-      this.closeDeleteModal();
-      this.cdr.markForCheck();
-    });
+        this.cdr.markForCheck();
+      });
   }
 
   openImageContainer(url) {
@@ -243,12 +253,15 @@ export class MessagesPage implements OnInit {
 
   downloadImage(imageUrl) {
     this.presentPopover();
-    this.dataProvider.downloadImage(imageUrl).then((res) => {
-      this.dissmissPopOver();
-      this.dataProvider.showToast(this.lang.download_complete || 'تم التنزيل بنجاح');
-    }).catch((error) => {
-      this.dissmissPopOver();
-      this.dataProvider.errorALertMessage(error);
-    });
+    this.dataProvider
+      .downloadImage(imageUrl)
+      .then(res => {
+        this.dissmissPopOver();
+        this.dataProvider.showToast(this.lang.download_complete || 'تم التنزيل بنجاح');
+      })
+      .catch(error => {
+        this.dissmissPopOver();
+        this.dataProvider.errorALertMessage(error);
+      });
   }
 }

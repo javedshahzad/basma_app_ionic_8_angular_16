@@ -1,4 +1,12 @@
-import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -6,7 +14,7 @@ import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder } from '@angular/forms';
 import { Filesystem } from '@capacitor/filesystem';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
@@ -18,10 +26,13 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
   selector: 'app-follow-bulletins',
   templateUrl: './follow-bulletins.page.html',
   styleUrls: ['./follow-bulletins.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FollowBulletinsPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   private destroyRef = inject(DestroyRef);
   lang: any;
   allUsers: any = [];
@@ -30,12 +41,12 @@ export class FollowBulletinsPage implements OnInit {
   selectedUsers: any = [];
   userDetails: any = {};
   selectedDocument: any = [];
-  
+
   inputText = true;
   inputUser = false;
   uploadStaus: any;
   cameraImage64: any = '';
-  
+
   searchQuery: string = '';
   searchTimeout: any;
   show_loading: boolean = false;
@@ -57,8 +68,7 @@ export class FollowBulletinsPage implements OnInit {
     private schoolDirectoryApi: SchoolDirectoryApiService,
     private cdr: ChangeDetectorRef
   ) {
-
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
@@ -72,22 +82,24 @@ export class FollowBulletinsPage implements OnInit {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state && navigation.extras.state['cameraImage']) {
       this.cameraImage64 = navigation.extras.state['cameraImage'].queryParams.base64Image;
-      
+
       if (this.cameraImage64) {
-        this.getImageToFile(this.cameraImage64).then((inputFile: any) => {
-          const fileName = inputFile.fileObj.name || "UNKNOWN.PNG";
-          const file = inputFile.fileObj || {};
-          file['extention'] = fileName.split(".").pop();
-          file['auto_created'] = true;
-          file['name'] = fileName;
-          file['imgBlob'] = inputFile.imgBlob;
-          file['currentImgSrc'] = (<any>window).Ionic.WebView.convertFileSrc(this.cameraImage64);
-          this.selectedDocument.push(file);
-          this.cdr.markForCheck();
-        }).catch((e: any) => {
-          console.log('getImageToFile ERROR', e);
-          this.cdr.markForCheck();
-        });
+        this.getImageToFile(this.cameraImage64)
+          .then((inputFile: any) => {
+            const fileName = inputFile.fileObj.name || 'UNKNOWN.PNG';
+            const file = inputFile.fileObj || {};
+            file['extention'] = fileName.split('.').pop();
+            file['auto_created'] = true;
+            file['name'] = fileName;
+            file['imgBlob'] = inputFile.imgBlob;
+            file['currentImgSrc'] = (<any>window).Ionic.WebView.convertFileSrc(this.cameraImage64);
+            this.selectedDocument.push(file);
+            this.cdr.markForCheck();
+          })
+          .catch((e: any) => {
+            console.log('getImageToFile ERROR', e);
+            this.cdr.markForCheck();
+          });
       }
     }
   }
@@ -96,7 +108,7 @@ export class FollowBulletinsPage implements OnInit {
 
   // 🟢 استبدال localStorage وجعل الدالة آمنة
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.getUsers();
@@ -144,7 +156,6 @@ export class FollowBulletinsPage implements OnInit {
 
         // 4. إرجاع النتيجة تماماً كما كانت تتوقعها الصفحة وبشكل صحي 100%
         resolve({ fileObj: fileObj, imgBlob: imgBlob });
-
       } catch (error) {
         console.error('Error reading file:', error);
         reject(error);
@@ -164,17 +175,17 @@ export class FollowBulletinsPage implements OnInit {
 
     for (let i = 0; i < files.length; i++) {
       let file: any = ev.target.files[i] ? ev.target.files[i] : <any>{};
-      
+
       if (file) {
-        let ext = file.name.split(".").reverse()[0].toLowerCase();
-        
+        let ext = file.name.split('.').reverse()[0].toLowerCase();
+
         const reader = new FileReader();
-        reader.onloadend = (e) => {
+        reader.onloadend = e => {
           file['currentImgSrc'] = reader.result;
           this.cdr.markForCheck();
-        }
+        };
         reader.readAsDataURL(file);
-        
+
         if (['jpg', 'png', 'doc', 'docx', 'pdf', 'jpeg'].includes(ext)) {
           file.extention = ext;
           this.selectedDocument.push(file);
@@ -187,31 +198,34 @@ export class FollowBulletinsPage implements OnInit {
 
   getUsers() {
     let data = {
-      'school_id': this.userDetails.details.school_id
-    }
+      school_id: this.userDetails.details.school_id
+    };
     this.show_loading = true;
-    this.schoolDirectoryApi.getSchoolUsers(data).then(res => {
-      this.show_loading = false;
-      if (res.data) {
-        this.users = res.data;
-        if (this.users.length > 20) {
-          this.allUsers = this.users.splice(0, 20);
-        } else {
-          this.allUsers = this.users;
+    this.schoolDirectoryApi
+      .getSchoolUsers(data)
+      .then(res => {
+        this.show_loading = false;
+        if (res.data) {
+          this.users = res.data;
+          if (this.users.length > 20) {
+            this.allUsers = this.users.splice(0, 20);
+          } else {
+            this.allUsers = this.users;
+          }
         }
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      this.show_loading = false;
-      this.dataProvider.showToast(error);
-      this.cdr.markForCheck();
-    })
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        this.show_loading = false;
+        this.dataProvider.showToast(error);
+        this.cdr.markForCheck();
+      });
   }
 
   doInfinite(infiniteScroll: any) {
     setTimeout(() => {
       if (this.users && this.users.length > 0) {
-         this.allUsers = this.allUsers.concat(this.users.splice(0, 20));
+        this.allUsers = this.allUsers.concat(this.users.splice(0, 20));
       }
       infiniteScroll.target.complete();
       this.cdr.markForCheck();
@@ -232,23 +246,26 @@ export class FollowBulletinsPage implements OnInit {
       let data = {
         input: input.trim(),
         school_id: this.userDetails.details.school_id
-      }
-      
-      this.searchApi.searchUser(data).then(resp => {
-        this.show_loading = false;
-        if (resp.data) {
-          this.users = resp.data;
-          if (this.users.length > 20) {
-            this.allUsers = this.users.splice(0, 20);
-          } else {
-            this.allUsers = this.users;
+      };
+
+      this.searchApi
+        .searchUser(data)
+        .then(resp => {
+          this.show_loading = false;
+          if (resp.data) {
+            this.users = resp.data;
+            if (this.users.length > 20) {
+              this.allUsers = this.users.splice(0, 20);
+            } else {
+              this.allUsers = this.users;
+            }
           }
-        }
-        this.cdr.markForCheck();
-      }).catch(err => {
-        this.show_loading = false;
-        this.cdr.markForCheck();
-      })
+          this.cdr.markForCheck();
+        })
+        .catch(err => {
+          this.show_loading = false;
+          this.cdr.markForCheck();
+        });
     }, 500); // تأخير نصف ثانية لحماية السيرفر
   }
 
@@ -263,12 +280,12 @@ export class FollowBulletinsPage implements OnInit {
   submit() {
     // إعادة تهيئة FormData لتجنب تكرار البيانات في حال فشل الطلب السابق
     let formdata = new FormData();
-    
+
     formdata.append('school_id', this.userDetails.details.school_id);
     formdata.append('sended_by', this.userDetails.details.user_no);
     formdata.append('sended_to', this.selectedUsers.join(',')); // إرسال كمصفوفة مفصولة بفواصل
     formdata.append('tital', this.tital);
-    
+
     for (let k in this.selectedDocument) {
       const fileEle = this.selectedDocument[k];
       if (fileEle.hasOwnProperty('auto_created') && fileEle.hasOwnProperty('imgBlob')) {
@@ -277,38 +294,40 @@ export class FollowBulletinsPage implements OnInit {
         formdata.append('files[]', fileEle);
       }
     }
-    
+
     this.dataProvider.showLoading();
-    this.dataProvider.createBulletins(formdata).subscribe(res => {
-      this.dataProvider.hideLoading();
-      this.dataProvider.showToast('تم الإرسال بنجاح');
-      this.router.navigate(['bulletins']);
-    }, e => {
-      this.dataProvider.hideLoading();
-      this.dataProvider.showToast('حدث خطأ أثناء الإرسال');
-    });
+    this.dataProvider.createBulletins(formdata).subscribe(
+      res => {
+        this.dataProvider.hideLoading();
+        this.dataProvider.showToast('تم الإرسال بنجاح');
+        this.router.navigate(['bulletins']);
+      },
+      e => {
+        this.dataProvider.hideLoading();
+        this.dataProvider.showToast('حدث خطأ أثناء الإرسال');
+      }
+    );
   }
 
   checkForm() {
     if (!this.selectedDocument || this.selectedDocument.length < 1) {
       this.dataProvider.showToast(this.lang.doc_error || 'الرجاء اختيار ملف واحد على الأقل');
       return false;
-    }
-    else if (!this.tital || this.tital.trim() == '') {
+    } else if (!this.tital || this.tital.trim() == '') {
       this.dataProvider.showToast(this.lang.title_error || 'الرجاء إدخال عنوان للنشرة');
       return false;
     }
     return true;
   }
 
-  selectUser(user, eve) {    
-    if(eve.detail.checked == true){
-      if(!this.selectedUsers.includes(user.user_no)){
+  selectUser(user, eve) {
+    if (eve.detail.checked == true) {
+      if (!this.selectedUsers.includes(user.user_no)) {
         this.selectedUsers.push(user.user_no);
       }
-    }else{
+    } else {
       let iof = this.selectedUsers.indexOf(user.user_no);
-      if(iof >= 0){
+      if (iof >= 0) {
         this.selectedUsers.splice(iof, 1);
       }
     }

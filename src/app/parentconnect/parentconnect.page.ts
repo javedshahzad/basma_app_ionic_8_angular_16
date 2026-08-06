@@ -1,4 +1,12 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import {
+  Component,
+  OnInit,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -17,10 +25,13 @@ import { UserType } from '../constants/user-type';
   selector: 'app-parentconnect',
   templateUrl: './parentconnect.page.html',
   styleUrls: ['./parentconnect.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ParentconnectPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   readonly UserType = UserType;
   lang: any = {};
   chats: any = [];
@@ -52,19 +63,19 @@ export class ParentconnectPage implements OnInit {
     private parentConnectApi: ParentConnectApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
-    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq) => {
-      this.translate.get("alertmessages").subscribe((res) => {
+    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(resq => {
+      this.translate.get('alertmessages').subscribe(res => {
         this.lang = res;
         this.cdr.markForCheck();
       });
     });
 
     // 🟢 الاشتراك بحدث تبديل المستخدم لتحديث الصفحة (يُفعل فقط إذا لم يكن هذا هو الدخول الأول)
-    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res && res.changeUser && this.isInitialLoadDone) {
         this.reloadData();
       }
@@ -75,30 +86,29 @@ export class ParentconnectPage implements OnInit {
 
   // 🟢 جلب البيانات عند دخول الصفحة بشكل آمن وسريع
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); 
-    
+    let userLoggedIn = await this.storageSr.get('userloggedin');
+
     if (userLoggedIn && userLoggedIn.details) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
-      
+
       // 🟢 تحديد مسار العودة الصحيح بناءً على نوع المستخدم
       if (this.userType == UserType.Admin) {
-        this.backHref = '/tabs/classlist'; 
+        this.backHref = '/tabs/classlist';
       } else if (this.userType == UserType.Student) {
-        this.backHref = '/tabs/student-titles'; 
+        this.backHref = '/tabs/student-titles';
       } else {
-        this.backHref = '/tabs/children'; 
+        this.backHref = '/tabs/children';
       }
 
       // 🟢 إذا لم تكن البيانات قد جُلبت مسبقاً، نقوم بجلبها الآن
       if (this.chats.length === 0) {
         this.getAllChats(true);
       } else {
-         // تحديث صامت في الخلفية بدون Loader مزعج
+        // تحديث صامت في الخلفية بدون Loader مزعج
         this.getAllChats(false);
       }
       this.isInitialLoadDone = true;
-
     } else {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
@@ -108,7 +118,7 @@ export class ParentconnectPage implements OnInit {
 
   async reloadData() {
     // 🟢 هذه الدالة تستخدم فقط عند تبديل الحساب لتحديث المحتوى بهدوء
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn && userLoggedIn.details) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
@@ -122,46 +132,50 @@ export class ParentconnectPage implements OnInit {
 
   getAllChats(showLoader: boolean = true) {
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "school_id": this.userDetails.details.school_id,
-      "session_id": this.userDetails.session_id,
-      "user_type": this.userDetails.details.user_type
+      user_no: this.userDetails.details.user_no,
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id,
+      user_type: this.userDetails.details.user_type
     };
-    
+
     if (showLoader) {
       this.dataProvider.showLoading();
     }
-    
-    this.parentConnectApi.getConnectChatList(data).then((response: any) => {
-      if (showLoader) {
-        this.dataProvider.hideLoading();
-      }
-      if (response.session) {
-        if (response.chatList && response.chatList.length > 0) {
-          this.chats = response.chatList;
-        } else {
-          this.chats = []; // تصفير المصفوفة
-          this.noDataFound = this.lang.no_connect_msg || 'لا توجد محادثات';
+
+    this.parentConnectApi
+      .getConnectChatList(data)
+      .then((response: any) => {
+        if (showLoader) {
+          this.dataProvider.hideLoading();
         }
-      } else {
-        this.dataProvider.errorALertMessage(response.message);
-        this.router.navigate(['login'], { replaceUrl: true });
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      if (showLoader) {
-        this.dataProvider.hideLoading();
-      }
-      this.cdr.markForCheck();
-    });
+        if (response.session) {
+          if (response.chatList && response.chatList.length > 0) {
+            this.chats = response.chatList;
+          } else {
+            this.chats = []; // تصفير المصفوفة
+            this.noDataFound = this.lang.no_connect_msg || 'لا توجد محادثات';
+          }
+        } else {
+          this.dataProvider.errorALertMessage(response.message);
+          this.router.navigate(['login'], { replaceUrl: true });
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        if (showLoader) {
+          this.dataProvider.hideLoading();
+        }
+        this.cdr.markForCheck();
+      });
   }
 
   createChatMessage() {
     let isOffline = false;
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      isOffline = (this.network.type === this.network.Connection.NONE || this.network.type === this.network.Connection.UNKNOWN);
+      isOffline =
+        this.network.type === this.network.Connection.NONE || this.network.type === this.network.Connection.UNKNOWN;
     } else {
-      isOffline = !navigator.onLine; 
+      isOffline = !navigator.onLine;
     }
 
     if (!isOffline) {
@@ -179,15 +193,15 @@ export class ParentconnectPage implements OnInit {
     this.showWarningModal = false;
     setTimeout(() => {
       this.createModal();
-    }, 200); 
+    }, 200);
   }
 
   async createModal() {
     const modal = await this.modalCtrl.create({
-      component: ConnectNewMessagePage,
+      component: ConnectNewMessagePage
     });
     await modal.present();
-    modal.onDidDismiss().then((refresh) => {
+    modal.onDidDismiss().then(refresh => {
       if (refresh && refresh.data) {
         this.getAllChats(true); // جلب البيانات بعد إضافة رسالة جديدة
       }
@@ -197,9 +211,10 @@ export class ParentconnectPage implements OnInit {
   openChat(chat: any) {
     let isOffline = false;
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      isOffline = (this.network.type === this.network.Connection.NONE || this.network.type === this.network.Connection.UNKNOWN);
+      isOffline =
+        this.network.type === this.network.Connection.NONE || this.network.type === this.network.Connection.UNKNOWN;
     } else {
-      isOffline = !navigator.onLine; 
+      isOffline = !navigator.onLine;
     }
 
     if (!isOffline) {
@@ -230,18 +245,21 @@ export class ParentconnectPage implements OnInit {
               chat_list_id: chat.id,
               session_id: this.userDetails.session_id
             };
-            this.dataProvider.run(() => this.parentConnectApi.closeParentConnectChat(data)).then((response: any) => {
-              if (response.session) {
-                chat.ticket_status = '1';
-                this.dataProvider.showToast(response.message);
-              } else {
-                this.dataProvider.errorALertMessage(response.message);
-              }
-              this.cdr.markForCheck();
-            }).catch(error => {
-              this.dataProvider.errorALertMessage(error);
-              this.cdr.markForCheck();
-            });
+            this.dataProvider
+              .run(() => this.parentConnectApi.closeParentConnectChat(data))
+              .then((response: any) => {
+                if (response.session) {
+                  chat.ticket_status = '1';
+                  this.dataProvider.showToast(response.message);
+                } else {
+                  this.dataProvider.errorALertMessage(response.message);
+                }
+                this.cdr.markForCheck();
+              })
+              .catch(error => {
+                this.dataProvider.errorALertMessage(error);
+                this.cdr.markForCheck();
+              });
           }
         }
       ]
@@ -265,18 +283,21 @@ export class ParentconnectPage implements OnInit {
               chat_list_id: chat.id,
               session_id: this.userDetails.session_id
             };
-            this.dataProvider.run(() => this.parentConnectApi.reopenParentConnectChat(data)).then((response: any) => {
-              if (response.session) {
-                chat.ticket_status = '0';
-                this.dataProvider.showToast(response.message);
-              } else {
-                this.dataProvider.errorALertMessage(response.message);
-              }
-              this.cdr.markForCheck();
-            }).catch(error => {
-              this.dataProvider.errorALertMessage(error);
-              this.cdr.markForCheck();
-            });
+            this.dataProvider
+              .run(() => this.parentConnectApi.reopenParentConnectChat(data))
+              .then((response: any) => {
+                if (response.session) {
+                  chat.ticket_status = '0';
+                  this.dataProvider.showToast(response.message);
+                } else {
+                  this.dataProvider.errorALertMessage(response.message);
+                }
+                this.cdr.markForCheck();
+              })
+              .catch(error => {
+                this.dataProvider.errorALertMessage(error);
+                this.cdr.markForCheck();
+              });
           }
         }
       ]
@@ -298,10 +319,13 @@ export class ParentconnectPage implements OnInit {
   }
 
   downloadImage(imageUrl: string) {
-    this.dataProvider.run(() => this.dataProvider.downloadImage(imageUrl)).then((res) => {
-      this.dataProvider.showToast(this.lang.download_complete || 'تم التنزيل بنجاح');
-    }).catch((error) => {
-      this.dataProvider.errorALertMessage(error);
-    });
+    this.dataProvider
+      .run(() => this.dataProvider.downloadImage(imageUrl))
+      .then(res => {
+        this.dataProvider.showToast(this.lang.download_complete || 'تم التنزيل بنجاح');
+      })
+      .catch(error => {
+        this.dataProvider.errorALertMessage(error);
+      });
   }
 }

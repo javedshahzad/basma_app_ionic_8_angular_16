@@ -9,29 +9,32 @@ import { ContactApiService } from '../service/contact-api/contact-api.service';
   templateUrl: './contact-us.page.html',
   styleUrls: ['./contact-us.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ContactUsPage implements OnInit {
-
-    user:any = {};
+  user: any = {};
 
   /**
    * Constructor
    * @param dataProvider Use for interacting with the API
    */
-  constructor(public dataProvider: DataService,private platform:Platform,private contactApi: ContactApiService) {
-  }
+  constructor(
+    public dataProvider: DataService,
+    private platform: Platform,
+    private contactApi: ContactApiService
+  ) {}
 
   /**
    * Send the query to backend
    * @param contactForm form from front end
    */
   async submitContactusForm(contactForm: NgForm) {
-    if (this.platform.is("android")) {
-      this.user.to_email = "android-support@basmapp.com";
-    } else if (this.platform.is("ios")) {
-      this.user.to_email = "ios-support@basmapp.com";
+    if (this.platform.is('android')) {
+      this.user.to_email = 'android-support@basmapp.com';
+    } else if (this.platform.is('ios')) {
+      this.user.to_email = 'ios-support@basmapp.com';
     } else {
-      this.user.to_email = "support@basmapp.com"; // 🟢 للويب والمنصات الأخرى
+      this.user.to_email = 'support@basmapp.com'; // 🟢 للويب والمنصات الأخرى
     }
 
     try {
@@ -42,7 +45,5 @@ export class ContactUsPage implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

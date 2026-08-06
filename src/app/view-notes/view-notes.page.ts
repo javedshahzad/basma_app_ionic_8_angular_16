@@ -1,4 +1,12 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import {
+  Component,
+  OnInit,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
@@ -16,10 +24,13 @@ import { UserType } from '../constants/user-type';
   selector: 'app-view-notes',
   templateUrl: './view-notes.page.html',
   styleUrls: ['./view-notes.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ViewNotesPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
   data: any = [];
@@ -35,7 +46,8 @@ export class ViewNotesPage implements OnInit {
   noteToDelete: any = null;
   noteIndexToDelete: number = -1;
 
-  constructor(public navCtrl: NavController,
+  constructor(
+    public navCtrl: NavController,
     public translate: TranslateService,
     public dataProvider: DataService,
     private documentService: DocumentService,
@@ -50,7 +62,7 @@ export class ViewNotesPage implements OnInit {
     private userManagementApi: UserManagementApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -71,16 +83,16 @@ export class ViewNotesPage implements OnInit {
 
   // 🟢 4. تفريغ ngOnInit واستخدام دالة مساعدة لدعم async/await
   ngOnInit() {
-     this.initializeData();
+    this.initializeData();
   }
 
   // 🟢 5. جلب بيانات المستخدم بشكل آمن (بدون localStorage)
   async initializeData(loader: boolean = true) {
     if (this.router.getCurrentNavigation()?.extras?.state) {
-        this.navData = this.router.getCurrentNavigation().extras.state['course'];
+      this.navData = this.router.getCurrentNavigation().extras.state['course'];
     }
 
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
@@ -136,14 +148,17 @@ export class ViewNotesPage implements OnInit {
       this.dataAll.splice(this.noteIndexToDelete, 1);
       this.data.splice(this.noteIndexToDelete, 1);
 
-      this.dataProvider.run(() => this.userManagementApi.deleteNote(deleteData)).then((res: any) => {
-        this.dataProvider.showToast(res.msg);
-        console.log("delete note res::::", res);
-        this.getAllClassNotes(false);
-      }).catch(error => {
-        console.log(error);
-        this.cdr.markForCheck();
-      });
+      this.dataProvider
+        .run(() => this.userManagementApi.deleteNote(deleteData))
+        .then((res: any) => {
+          this.dataProvider.showToast(res.msg);
+          console.log('delete note res::::', res);
+          this.getAllClassNotes(false);
+        })
+        .catch(error => {
+          console.log(error);
+          this.cdr.markForCheck();
+        });
     }
   }
 
@@ -152,23 +167,26 @@ export class ViewNotesPage implements OnInit {
     if (!course) return;
 
     let studentData = {
-      "user_no": this.userDetails.details.user_no,
-      "session_id": this.userDetails.session_id,
-      "course_id": course.cid,
-      "school_id": this.userDetails.details.school_id,
-    }
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id,
+      course_id: course.cid,
+      school_id: this.userDetails.details.school_id
+    };
     this.dataAll = [];
     if (loader) this.dataProvider.showLoading();
-    this.notesApi.getAllClassNotes(studentData).then(res => {
-      if (loader) this.dataProvider.hideLoading();
-      if (res) {
-        this.data = res;
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      if (loader) this.dataProvider.hideLoading();
-      this.cdr.markForCheck();
-    });
+    this.notesApi
+      .getAllClassNotes(studentData)
+      .then(res => {
+        if (loader) this.dataProvider.hideLoading();
+        if (res) {
+          this.data = res;
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        if (loader) this.dataProvider.hideLoading();
+        this.cdr.markForCheck();
+      });
   }
 
   openCalModal() {
@@ -180,5 +198,4 @@ export class ViewNotesPage implements OnInit {
     };
     this.router.navigate(['note-calendar'], navigation);
   }
-
 }

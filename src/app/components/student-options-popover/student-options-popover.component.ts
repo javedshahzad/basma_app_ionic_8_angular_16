@@ -7,15 +7,13 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-student-options-popover',
   templateUrl: './student-options-popover.component.html',
-  styleUrls: ['./student-options-popover.component.scss'], // أبقه إذا كان موجوداً
-  standalone: true,
+  styleUrls: ['./student-options-popover.component.scss'],
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentOptionsPopoverComponent implements OnInit {
-
   // 1. تعريف متغير لاستقبال بيانات الطالب من الصفحة الرئيسية
-  @Input() student: any; 
+  @Input() student: any;
 
   // 2. استدعاء PopoverController للتحكم في النافذة
   constructor(private popoverCtrl: PopoverController) {}
@@ -26,5 +24,4 @@ export class StudentOptionsPopoverComponent implements OnInit {
   async dismiss(action: string) {
     await this.popoverCtrl.dismiss({ selectedAction: action });
   }
-
 }

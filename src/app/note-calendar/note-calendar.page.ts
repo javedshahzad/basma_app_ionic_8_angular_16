@@ -12,10 +12,13 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-note-calendar',
   templateUrl: './note-calendar.page.html',
   styleUrls: ['./note-calendar.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class NoteCalendarPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   userDetails: any = {};
   note: any = [];
   lang: any;
@@ -26,11 +29,11 @@ export class NoteCalendarPage implements OnInit {
   // المتغيرات الخاصة بالتقويم
   highlightedDates: any[] = [];
   dates: any[] = []; // مصفوفة لتواريخ الطباعة
-  
+
   // المتغير لعرض الملاحظات في الواجهة
-  selectedNotes: any[] = []; 
-  
-  viewTitle: string = 'تقويم الامتحانات'; 
+  selectedNotes: any[] = [];
+
+  viewTitle: string = 'تقويم الامتحانات';
 
   constructor(
     private modalctrl: ModalController,
@@ -51,7 +54,7 @@ export class NoteCalendarPage implements OnInit {
       this.fromPage = navigation.extras.state['page'];
     }
 
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -59,10 +62,10 @@ export class NoteCalendarPage implements OnInit {
 
   // 🟢 تأمين البيانات من الضياع وجلب المستخدم بأمان
   async ngOnInit() {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      
+
       // تأمين بيانات التقويم في حال تم عمل Refresh
       if (this.note && this.note.length > 0) {
         await this.storageSr.set('calendarContext', {
@@ -93,11 +96,11 @@ export class NoteCalendarPage implements OnInit {
       this.note.forEach(element => {
         if (element.send_to == 'exam' && element.examNoteDate) {
           let d = new Date(element.examNoteDate);
-          
+
           // تأمين من التواريخ الخاطئة Invalid Date
           if (!isNaN(d.getTime())) {
             let dateString = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
-            
+
             highlights.push({
               date: dateString,
               textColor: '#ffffff',
@@ -113,10 +116,10 @@ export class NoteCalendarPage implements OnInit {
   // الدالة المحدثة: تقوم بتحديث تواريخ الطباعة + جلب ملاحظات الأيام المحددة
   onDateChange(event: any) {
     let val = event.detail.value;
-    
+
     // تصفير المصفوفات عند كل تغيير
-    this.dates = []; 
-    this.selectedNotes = []; 
+    this.dates = [];
+    this.selectedNotes = [];
     let selectedIsoDates: string[] = []; // مصفوفة مساعدة للمقارنة
 
     if (Array.isArray(val)) {
@@ -136,7 +139,7 @@ export class NoteCalendarPage implements OnInit {
           let d = new Date(n.examNoteDate);
           if (!isNaN(d.getTime())) {
             let dateStr = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
-            return selectedIsoDates.includes(dateStr); 
+            return selectedIsoDates.includes(dateStr);
           }
         }
         return false;
@@ -148,9 +151,9 @@ export class NoteCalendarPage implements OnInit {
   printReport() {
     if (!this.dates || this.dates.length === 0) {
       this.dataProvider.showToast(this.lang?.select_date || 'الرجاء تحديد تاريخ للطباعة');
-      return; 
+      return;
     }
-    
+
     this.stateCids = [];
     if (this.fromPage == 'student-note') {
       if (this.note && this.note.length > 0 && this.note[0].cid) {
@@ -175,29 +178,34 @@ export class NoteCalendarPage implements OnInit {
       is_multi: Array.isArray(this.stateCids) && this.stateCids.length > 1 ? true : false
     };
 
-    this.dataProvider.run(() => this.dataProvider.printAllClassNotes(data)).then(res => {
-      if (res && res.data) {
-        let printContent = res.data.replace(/(\r\n|\n|\r)/gm, '');
-        if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+    this.dataProvider
+      .run(() => this.dataProvider.printAllClassNotes(data))
+      .then(res => {
+        if (res && res.data) {
+          let printContent = res.data.replace(/(\r\n|\n|\r)/gm, '');
+          if (this.platform.is('cordova') || this.platform.is('capacitor')) {
             let options: PrintOptions = { orientation: 'portrait' };
-            this.printer.print(printContent, options).then((onSuccess: any) => {
-            }, (e: any) => {
-              this.dataProvider.showToast("تعذرت الطباعة من الجهاز");
-            });
-        } else {
+            this.printer.print(printContent, options).then(
+              (onSuccess: any) => {},
+              (e: any) => {
+                this.dataProvider.showToast('تعذرت الطباعة من الجهاز');
+              }
+            );
+          } else {
             let printWindow = window.open('', '_blank');
             if (printWindow) {
-                printWindow.document.write(printContent);
-                printWindow.document.close();
-                printWindow.focus();
-                setTimeout(() => printWindow.print(), 500);
+              printWindow.document.write(printContent);
+              printWindow.document.close();
+              printWindow.focus();
+              setTimeout(() => printWindow.print(), 500);
             } else {
-                this.dataProvider.showToast("يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة");
+              this.dataProvider.showToast('يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
             }
+          }
         }
-      }
-    }).catch(er => {
-      this.dataProvider.showToast(er);
-    });
+      })
+      .catch(er => {
+        this.dataProvider.showToast(er);
+      });
   }
 }

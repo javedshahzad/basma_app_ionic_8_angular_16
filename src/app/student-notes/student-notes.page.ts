@@ -1,4 +1,12 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import {
+  Component,
+  OnInit,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -15,10 +23,13 @@ import { NotesApiService } from '../service/notes-api/notes-api.service';
   selector: 'app-student-notes',
   templateUrl: './student-notes.page.html',
   styleUrls: ['./student-notes.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class StudentNotesPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   private destroyRef = inject(DestroyRef);
   lang: any;
   navData: any;
@@ -32,43 +43,43 @@ export class StudentNotesPage implements OnInit {
   showImageViewer: boolean = false;
   viewImageUrl: string = '';
 
-  constructor(public navCtrl: NavController,
-              public translate: TranslateService,
-              public dataProvider: DataService,
-              public authProvider: AuthService,
-              public alertCtrl: AlertController,
-              private route: ActivatedRoute,
-              public zone: NgZone,
-              private router: Router,
-              private platform: Platform, // 🟢 حقن Platform للتحقق من البيئة
-              public modalCtrl: ModalController,
-              private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
-              private notesApi: NotesApiService,
-              private cdr: ChangeDetectorRef
-             ) {
-
-    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
+  constructor(
+    public navCtrl: NavController,
+    public translate: TranslateService,
+    public dataProvider: DataService,
+    public authProvider: AuthService,
+    public alertCtrl: AlertController,
+    private route: ActivatedRoute,
+    public zone: NgZone,
+    private router: Router,
+    private platform: Platform, // 🟢 حقن Platform للتحقق من البيئة
+    public modalCtrl: ModalController,
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private notesApi: NotesApiService,
+    private cdr: ChangeDetectorRef
+  ) {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res.changeUser) {
         this.ionViewWillEnter();
       }
     });
 
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
 
-    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq) => {
-      this.translate.get("alertmessages").subscribe((res) => {
+    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(resq => {
+      this.translate.get('alertmessages').subscribe(res => {
         this.lang = res;
         this.cdr.markForCheck();
-      })
+      });
     });
   }
 
   ngOnInit() {}
 
-  // 🟢 دوال عرض الصور 
+  // 🟢 دوال عرض الصور
   showPhoto(url: string) {
     this.viewImageUrl = url;
     this.showImageViewer = true;
@@ -83,7 +94,7 @@ export class StudentNotesPage implements OnInit {
 
   // 🟢 3. جعل الدالة async لاستخدام StorageService الآمن بدلاً من localStorage
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
@@ -107,22 +118,25 @@ export class StudentNotesPage implements OnInit {
 
   getClassNotes() {
     let data = {
-      "student_id": this.userDetails.details.stu_id,
-      "school_id": this.userDetails.details.school_id,
-      "session_id": this.userDetails.session_id
+      student_id: this.userDetails.details.stu_id,
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
-    this.notesApi.getClassNotes(data).then(res => {
-      this.notes = res;
-      if (this.notes && this.notes.length > 0) {
-        this.noData = false;
-      } else {
-        this.noData = true;
-      }
-      this.cdr.markForCheck();
-    }).catch(Error => {
-      console.log(Error);
-      this.cdr.markForCheck();
-    })
+    this.notesApi
+      .getClassNotes(data)
+      .then(res => {
+        this.notes = res;
+        if (this.notes && this.notes.length > 0) {
+          this.noData = false;
+        } else {
+          this.noData = true;
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(Error => {
+        console.log(Error);
+        this.cdr.markForCheck();
+      });
   }
 
   // 🟢 4. إصلاح فتح الـ PDF ليواكب تحديثات الأجهزة الحديثة و Capacitor

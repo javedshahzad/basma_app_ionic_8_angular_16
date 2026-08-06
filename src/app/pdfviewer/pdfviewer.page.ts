@@ -7,11 +7,11 @@ import { NavController, Platform } from '@ionic/angular';
   templateUrl: './pdfviewer.page.html',
   styleUrls: ['./pdfviewer.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PdfviewerPage implements OnInit {
-  
   // 🟢 القيمة الافتراضية إذا لم يتم تمرير رابط
-  pdfUrl: string = 'https://basmapp.com/appmanual.pdf'; 
+  pdfUrl: string = 'https://basmapp.com/appmanual.pdf';
   pageTitle: string = 'دليل الاستخدام';
 
   constructor(
@@ -31,6 +31,5 @@ export class PdfviewerPage implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

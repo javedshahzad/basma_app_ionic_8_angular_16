@@ -4,6 +4,7 @@ import { GamificationEngineService } from '../../service/gamification-engine/gam
 @Component({
   selector: 'app-teacher-view',
   templateUrl: './teacher-view.component.html',
+  standalone: false
 })
 export class TeacherViewComponent {
   @Input() attendanceResponse: any = {};
@@ -21,12 +22,10 @@ export class TeacherViewComponent {
   @Output() onSetAllStatus = new EventEmitter<string>();
   @Output() onStudentClick = new EventEmitter<string>();
   @Output() onImageClick = new EventEmitter<any>();
-  @Output() onNoteClick = new EventEmitter<{event: any, student: any}>();
-  @Output() onSetStudentStatus = new EventEmitter<{student: any, status: string}>();
+  @Output() onNoteClick = new EventEmitter<{ event: any; student: any }>();
+  @Output() onSetStudentStatus = new EventEmitter<{ student: any; status: string }>();
 
-  constructor(public gamification: GamificationEngineService,) {}
-
-  
+  constructor(public gamification: GamificationEngineService) {}
 
   // 🟢 تقنية لتسريع أداء قائمة الطلاب (تمنع إعادة رسم الشاشة بالكامل)
   trackByStudent(index: number, student: any) {
@@ -35,7 +34,7 @@ export class TeacherViewComponent {
 
   // 🟢 تقنية لتسريع أداء قائمة الحصص
   trackByPeriod(index: number, period: any) {
-    return index; 
+    return index;
   }
 
   // حساب إجمالي نقاط الطلاب في الصف

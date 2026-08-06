@@ -6,17 +6,16 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './profile-image.page.html',
   styleUrls: ['./profile-image.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ProfileImagePage implements OnInit {
-  
   @Input() pic: string = ''; // تحديد القيمة الافتراضية
 
   constructor(
     private modalCtrl: ModalController // جعلها private واستخدام الاسم المتعارف عليه
-  ) { }
+  ) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   // 🟢 دالة مخصصة لإغلاق النافذة بطريقة نظيفة
   closeModal() {

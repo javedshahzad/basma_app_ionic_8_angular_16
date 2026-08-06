@@ -13,32 +13,34 @@ import { FollowupFieldsApiService } from '../service/followup-fields-api/followu
   selector: 'app-followup-add-fields',
   templateUrl: './followup-add-fields.page.html',
   styleUrls: ['./followup-add-fields.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class FollowupAddFieldsPage implements OnInit {
-
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   userDetails: any = {};
   lang: any = {};
   fields: Array<any> = [];
   navData: any;
-  show_loading: boolean = false; 
+  show_loading: boolean = false;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public dataProvider: DataService,
-    public authProvider: AuthService, 
+    public authProvider: AuthService,
     public translate: TranslateService,
-    public alertCtrl: AlertController, 
+    public alertCtrl: AlertController,
     private route: ActivatedRoute,
     private router: Router,
-    public zone: NgZone, 
+    public zone: NgZone,
     public platform: Platform,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private followupFieldsApi: FollowupFieldsApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
@@ -63,15 +65,15 @@ export class FollowupAddFieldsPage implements OnInit {
       this.navData = await this.storageSr.get('followUpAddFieldsContext');
     }
 
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn && userLoggedIn.details) {
       this.userDetails = userLoggedIn;
-      
+
       if (this.navData) {
         this.getFields();
       } else {
         this.show_loading = false;
-        console.error("⚠️ لم يتم العثور على بيانات الفصل حتى بعد محاولة الاستعادة.");
+        console.error('⚠️ لم يتم العثور على بيانات الفصل حتى بعد محاولة الاستعادة.');
       }
     } else {
       this.show_loading = false;
@@ -82,41 +84,46 @@ export class FollowupAddFieldsPage implements OnInit {
 
   getFields() {
     // 🔍 استخراج معرّف الفصل بدقة (cid أو course_id)
-    const courseId = this.navData?.course?.cid || 
-                     this.navData?.course?.course_id || 
-                     this.navData?.course_id || 
-                     this.navData?.cid || '';
+    const courseId =
+      this.navData?.course?.cid ||
+      this.navData?.course?.course_id ||
+      this.navData?.course_id ||
+      this.navData?.cid ||
+      '';
 
     if (!courseId) {
-       this.show_loading = false;
-       this.dataProvider.showToast("عفواً، لم يتم التعرف على الفصل.");
-       this.cdr.markForCheck();
-       return;
+      this.show_loading = false;
+      this.dataProvider.showToast('عفواً، لم يتم التعرف على الفصل.');
+      this.cdr.markForCheck();
+      return;
     }
 
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "school_id": this.userDetails.details.school_id,
-      "session_id": this.userDetails.session_id,
-      "course_id": courseId
+      user_no: this.userDetails.details.user_no,
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id,
+      course_id: courseId
     };
 
     // جلب الحقول السابقة من السيرفر
-    this.followupFieldsApi.getFollowupFields(data).then((res: any) => {
-      this.show_loading = false;
-      if (res && res.data) {
-        this.fields = res.data;
-        // معالجة حالة التبديل (Toggle) لتظهر بشكل صحيح
-        this.fields.forEach(f => {
-          f.absent_marks = (f.absent_marks == 1 || f.absent_marks == '1' || f.absent_marks === true);
-        });
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      this.show_loading = false;
-      console.error("Error fetching fields:", error);
-      this.cdr.markForCheck();
-    });
+    this.followupFieldsApi
+      .getFollowupFields(data)
+      .then((res: any) => {
+        this.show_loading = false;
+        if (res && res.data) {
+          this.fields = res.data;
+          // معالجة حالة التبديل (Toggle) لتظهر بشكل صحيح
+          this.fields.forEach(f => {
+            f.absent_marks = f.absent_marks == 1 || f.absent_marks == '1' || f.absent_marks === true;
+          });
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        this.show_loading = false;
+        console.error('Error fetching fields:', error);
+        this.cdr.markForCheck();
+      });
   }
 
   addExtraFields() {
@@ -126,7 +133,7 @@ export class FollowupAddFieldsPage implements OnInit {
         field_max_marks: '',
         marks_on_present: '',
         absent_marks: true,
-        marks_id: 0 
+        marks_id: 0
       });
     });
   }
@@ -142,7 +149,9 @@ export class FollowupAddFieldsPage implements OnInit {
           {
             text: 'حذف',
             cssClass: 'text-rose-500 font-bold',
-            handler: () => { this.executeDeleteField(index, field); }
+            handler: () => {
+              this.executeDeleteField(index, field);
+            }
           }
         ]
       });
@@ -154,39 +163,47 @@ export class FollowupAddFieldsPage implements OnInit {
 
   executeDeleteField(index: number, field: any) {
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "session_id": this.userDetails.session_id,
-      "id": field.id
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id,
+      id: field.id
     };
-    
-    this.dataProvider.run(() => this.followupFieldsApi.deleteFollowupFields(data)).then((res: any) => {
-      this.fields.splice(index, 1);
-      this.dataProvider.showToast("تم الحذف بنجاح");
-      this.cdr.markForCheck();
-    }).catch(() => {});
+
+    this.dataProvider
+      .run(() => this.followupFieldsApi.deleteFollowupFields(data))
+      .then((res: any) => {
+        this.fields.splice(index, 1);
+        this.dataProvider.showToast('تم الحذف بنجاح');
+        this.cdr.markForCheck();
+      })
+      .catch(() => {});
   }
 
   submitFields() {
     if (this.checkField()) {
-      const courseId = this.navData?.course?.cid ||
-                       this.navData?.course?.course_id ||
-                       this.navData?.course_id ||
-                       this.navData?.cid || '';
+      const courseId =
+        this.navData?.course?.cid ||
+        this.navData?.course?.course_id ||
+        this.navData?.course_id ||
+        this.navData?.cid ||
+        '';
 
       let data = {
-        "field": this.fields,
-        "user_no": this.userDetails.details.user_no,
-        "school_id": this.userDetails.details.school_id,
-        "session_id": this.userDetails.session_id,
-        "course_id": courseId
+        field: this.fields,
+        user_no: this.userDetails.details.user_no,
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id,
+        course_id: courseId
       };
 
-      this.dataProvider.run(() => this.followupFieldsApi.saveFollowupFields(data)).then((res: any) => {
-        if (res && res.data) {
-          this.dataProvider.showToast(this.lang.field_added || 'تم الحفظ بنجاح');
-          this.goBackToStudentList();
-        }
-      }).catch(() => {});
+      this.dataProvider
+        .run(() => this.followupFieldsApi.saveFollowupFields(data))
+        .then((res: any) => {
+          if (res && res.data) {
+            this.dataProvider.showToast(this.lang.field_added || 'تم الحفظ بنجاح');
+            this.goBackToStudentList();
+          }
+        })
+        .catch(() => {});
     }
   }
 
@@ -197,8 +214,8 @@ export class FollowupAddFieldsPage implements OnInit {
     }
     for (let field of this.fields) {
       // تحويل القيم إلى أرقام للسيرفر (1 للصح، 0 للخطأ)
-      field.absent_marks = (field.absent_marks === true || field.absent_marks == 1) ? 1 : 0;
-      
+      field.absent_marks = field.absent_marks === true || field.absent_marks == 1 ? 1 : 0;
+
       if (!field.field_name?.trim()) {
         this.dataProvider.showToast('اسم الحقل مطلوب');
         return false;

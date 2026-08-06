@@ -1,4 +1,12 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  NgZone,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  DestroyRef,
+  inject
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, Platform, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -19,27 +27,28 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
   selector: 'app-post-news',
   templateUrl: './post-news.page.html',
   styleUrls: ['./post-news.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PostNewsPage implements OnInit {
   private destroyRef = inject(DestroyRef);
-  
+
   news = {
-    'title': '',
-    'news_description': '',
-    'user_no': '',
-    'user_type': '',
-    'type': '',
-    'school_id': '',
-    'countryCode': ''
+    title: '',
+    news_description: '',
+    user_no: '',
+    user_type: '',
+    type: '',
+    school_id: '',
+    countryCode: ''
   };
-  
+
   media: any = ''; // تم التعديل لتقبل (نص Base64 أو ملف حقيقي)
   mediaName: string = '';
   mediaKey: string = '';
   mediaType: string = '';
   safeUrl: any = false;
-  
+
   lang: any = {};
   userDetails: any = {};
   location_lang: any;
@@ -56,20 +65,21 @@ export class PostNewsPage implements OnInit {
     public translate: TranslateService,
     public dataProvider: DataService,
     private router: Router,
-    private fileUpload: FileUploadService, 
+    private fileUpload: FileUploadService,
     public alertCtrl: AlertController,
-    private sanitizer: DomSanitizer, 
+    private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     public zone: NgZone,
     private storageSr: StorageService,
     private cdr: ChangeDetectorRef
   ) {
-                
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async (res: any) => {
       if (res && res.edit && res.news) {
         try {
           this.processIncomingNews(JSON.parse(res.news));
-        } catch (e) { console.error("Error parsing news queryParams", e); }
+        } catch (e) {
+          console.error('Error parsing news queryParams', e);
+        }
       }
     });
 
@@ -81,40 +91,52 @@ export class PostNewsPage implements OnInit {
       }
     }
 
-    this.translate.get("alertmessages").subscribe((res) => { this.lang = res; });
-    this.translate.get("location").subscribe((res) => { this.location_lang = res; });
+    this.translate.get('alertmessages').subscribe(res => {
+      this.lang = res;
+    });
+    this.translate.get('location').subscribe(res => {
+      this.location_lang = res;
+    });
   }
 
   processIncomingNews(passedNewsData: any) {
     this.zone.run(() => {
       this.edit = true;
       this.passed_news = passedNewsData;
-      
+
       try {
         let rawContent = this.passed_news.content || this.passed_news.news_description || '';
-        
+
         if (typeof rawContent === 'object' && rawContent['changingThisBreaksApplicationSecurity']) {
-           rawContent = rawContent['changingThisBreaksApplicationSecurity'];
+          rawContent = rawContent['changingThisBreaksApplicationSecurity'];
         }
 
-        let cleanText = rawContent.replace(/<[^>]*>?/gm, ''); 
+        let cleanText = rawContent.replace(/<[^>]*>?/gm, '');
 
         if (cleanText === 'undefined' || cleanText === 'null') {
-            cleanText = '';
+          cleanText = '';
         }
 
         this.news.news_description = cleanText;
 
         let titleText = this.passed_news.title;
-        this.news.title = (titleText === 'undefined' || titleText === 'null' || !titleText) ? '' : titleText;
+        this.news.title = titleText === 'undefined' || titleText === 'null' || !titleText ? '' : titleText;
 
         let mediaUrl = '';
-        if (this.passed_news.news_image && this.passed_news.news_image !== 'null' && this.passed_news.news_image !== '') {
-            mediaUrl = this.passed_news.news_image;
-            this.mediaKey = 'image';
-        } else if (this.passed_news.video_url && this.passed_news.video_url !== 'null' && this.passed_news.video_url !== '') {
-            mediaUrl = this.passed_news.video_url;
-            this.mediaKey = 'video';
+        if (
+          this.passed_news.news_image &&
+          this.passed_news.news_image !== 'null' &&
+          this.passed_news.news_image !== ''
+        ) {
+          mediaUrl = this.passed_news.news_image;
+          this.mediaKey = 'image';
+        } else if (
+          this.passed_news.video_url &&
+          this.passed_news.video_url !== 'null' &&
+          this.passed_news.video_url !== ''
+        ) {
+          mediaUrl = this.passed_news.video_url;
+          this.mediaKey = 'video';
         }
 
         if (mediaUrl) {
@@ -122,13 +144,12 @@ export class PostNewsPage implements OnInit {
             let serverUrl = environment.serverURL.endsWith('/') ? environment.serverURL : environment.serverURL + '/';
             mediaUrl = serverUrl + mediaUrl;
           }
-          this.safeUrl = mediaUrl; 
+          this.safeUrl = mediaUrl;
         }
 
         this.cdr.detectChanges();
-
       } catch (e) {
-        console.error("Error parsing news data", e);
+        console.error('Error parsing news data', e);
       }
     });
   }
@@ -136,9 +157,9 @@ export class PostNewsPage implements OnInit {
   ngOnInit() {}
 
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); 
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     this.AvailablePlan = await this.storageSr.get('availablePlan');
-    
+
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.news.user_no = this.userDetails.details.user_no;
@@ -151,16 +172,16 @@ export class PostNewsPage implements OnInit {
   }
 
   moveBack() {
-     this.navCtrl.back();
+    this.navCtrl.back();
   }
 
   viewAttachment() {
     let url = '';
-    
+
     if (this.media && typeof this.media === 'string' && this.media !== '') {
-        url = this.media; 
+      url = this.media;
     } else if (this.safeUrl && typeof this.safeUrl === 'string') {
-        url = this.safeUrl;
+      url = this.safeUrl;
     }
 
     if (url) {
@@ -180,38 +201,41 @@ export class PostNewsPage implements OnInit {
 
   closeFullscreenImage() {
     this.showImageViewer = false;
-    setTimeout(() => { this.viewImageUrl = ''; this.cdr.markForCheck(); }, 300);
+    setTimeout(() => {
+      this.viewImageUrl = '';
+      this.cdr.markForCheck();
+    }, 300);
   }
 
   sendNews() {
     if (this.AvailablePlan?.isExpire) {
-      this.dataProvider.showToast("This feature is part of subscription plan. Please subscribe plan!");
+      this.dataProvider.showToast('This feature is part of subscription plan. Please subscribe plan!');
       return;
     }
-    
+
     if (this.news.news_description === '' || this.news.news_description.length > 300) {
       this.dataProvider.showToast(this.lang.max_body || 'نص الخبر يجب أن يكون أقل من 300 حرف');
       return;
     }
 
-    if(this.media !== '') {
-       this.news.type = this.mediaType.includes('video') ? 'video' : 'image';
+    if (this.media !== '') {
+      this.news.type = this.mediaType.includes('video') ? 'video' : 'image';
     } else {
-       this.news.type = this.mediaKey || 'text'; 
+      this.news.type = this.mediaKey || 'text';
     }
 
-    let newsData: any; 
-    let apiEndpoint = 'postNews'; 
-    
+    let newsData: any;
+    let apiEndpoint = 'postNews';
+
     if (this.edit) {
-      newsData = { 
-          ...this.news, 
-          id: this.passed_news.id || this.passed_news.news_id, 
-          news_id: this.passed_news.id || this.passed_news.news_id,
-          old_image: this.passed_news.news_image,
-          old_video: this.passed_news.video_url
+      newsData = {
+        ...this.news,
+        id: this.passed_news.id || this.passed_news.news_id,
+        news_id: this.passed_news.id || this.passed_news.news_id,
+        old_image: this.passed_news.news_image,
+        old_video: this.passed_news.video_url
       };
-      apiEndpoint = 'editNews'; 
+      apiEndpoint = 'editNews';
     } else {
       newsData = this.news;
     }
@@ -220,12 +244,12 @@ export class PostNewsPage implements OnInit {
 
     this.fileUpload.uploadfile(this.media, newsData, apiEndpoint, (res: any) => {
       this.dataProvider.hideLoading();
-      
+
       if (res) {
         if (this.dataProvider.newsUpdated) {
           this.dataProvider.newsUpdated.next({ ...newsData, id: newsData.news_id });
         }
-        
+
         this.dataProvider.showToast(this.lang.news_posted || 'تمت العملية بنجاح');
         this.resetForm();
         this.navCtrl.navigateBack(['/tabs/news']);
@@ -238,9 +262,13 @@ export class PostNewsPage implements OnInit {
 
   resetForm() {
     this.news = {
-      'title': '', 'news_description': '', 'user_no': this.userDetails?.details?.user_no,
-      'type': '', 'user_type': this.userDetails?.details?.user_type, 
-      'school_id': this.userDetails?.details?.school_id, 'countryCode': ''
+      title: '',
+      news_description: '',
+      user_no: this.userDetails?.details?.user_no,
+      type: '',
+      user_type: this.userDetails?.details?.user_type,
+      school_id: this.userDetails?.details?.school_id,
+      countryCode: ''
     };
     this.media = '';
     this.safeUrl = false;
@@ -254,8 +282,18 @@ export class PostNewsPage implements OnInit {
       header: this.lang.image_option || 'اختيار صورة',
       mode: 'md',
       buttons: [
-        { text: this.lang.camera || 'الكاميرا', handler: () => { this.captureImage(CameraSource.Camera); } },
-        { text: this.lang.gallery || 'المعرض', handler: () => { this.captureImage(CameraSource.Photos); } },
+        {
+          text: this.lang.camera || 'الكاميرا',
+          handler: () => {
+            this.captureImage(CameraSource.Camera);
+          }
+        },
+        {
+          text: this.lang.gallery || 'المعرض',
+          handler: () => {
+            this.captureImage(CameraSource.Photos);
+          }
+        },
         { text: this.lang.alert_btn_cancel_text || 'إلغاء', role: 'cancel', cssClass: 'text-rose-500 font-bold' }
       ]
     });
@@ -289,7 +327,7 @@ export class PostNewsPage implements OnInit {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'video/*';
-    
+
     input.onchange = (event: any) => {
       const file = event.target.files[0];
       if (file) {
@@ -300,7 +338,7 @@ export class PostNewsPage implements OnInit {
         this.cdr.detectChanges();
       }
     };
-    
+
     // محاكاة النقر لفتح المعرض/الكاميرا بشكل آمن
     input.click();
   }
@@ -310,8 +348,8 @@ export class PostNewsPage implements OnInit {
     this.safeUrl = false;
     this.mediaKey = '';
     if (this.edit && this.passed_news) {
-        this.passed_news.news_image = null;
-        this.passed_news.video_url = null;
+      this.passed_news.news_image = null;
+      this.passed_news.video_url = null;
     }
   }
 }

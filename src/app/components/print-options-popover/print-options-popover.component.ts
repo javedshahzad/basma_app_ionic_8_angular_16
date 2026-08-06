@@ -8,13 +8,11 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-print-options-popover',
   templateUrl: './print-options-popover.component.html',
   styleUrls: ['./print-options-popover.component.scss'],
-  standalone: true,
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PrintOptionsPopoverComponent implements OnInit {
-
-  constructor(private popoverController: PopoverController) { }
+  constructor(private popoverController: PopoverController) {}
 
   ngOnInit() {}
 

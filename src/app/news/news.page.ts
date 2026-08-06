@@ -1,4 +1,14 @@
-import { Component, OnInit, ViewChild, ElementRef, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Platform, AlertController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -20,11 +30,13 @@ import { UserType } from '../constants/user-type';
   selector: 'app-news',
   templateUrl: './news.page.html',
   styleUrls: ['./news.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class NewsPage implements OnInit {
-
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   readonly UserType = UserType;
   @ViewChild('videoPlayer') mVideoPlayer: ElementRef;
   private destroyRef = inject(DestroyRef);
@@ -38,7 +50,7 @@ export class NewsPage implements OnInit {
   country_code: any;
   country: any;
   countries: any[] = [];
-  selected_country = { code: "", name: "Worldwide" };
+  selected_country = { code: '', name: 'Worldwide' };
   show_loading: boolean = false;
   message: any = {};
 
@@ -69,15 +81,27 @@ export class NewsPage implements OnInit {
     private newsApi: NewsApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => { this.lang = res; this.cdr.markForCheck(); });
-    this.translate.get("location").subscribe((res) => { this.location_lang = res; this.cdr.markForCheck(); });
-
-    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.translate.get("alertmessages").subscribe((res) => { this.lang = res; this.cdr.markForCheck(); });
-      this.translate.get("location").subscribe((res) => { this.location_lang = res; this.cdr.markForCheck(); });
+    this.translate.get('alertmessages').subscribe(res => {
+      this.lang = res;
+      this.cdr.markForCheck();
+    });
+    this.translate.get('location').subscribe(res => {
+      this.location_lang = res;
+      this.cdr.markForCheck();
     });
 
-    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
+    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.translate.get('alertmessages').subscribe(res => {
+        this.lang = res;
+        this.cdr.markForCheck();
+      });
+      this.translate.get('location').subscribe(res => {
+        this.location_lang = res;
+        this.cdr.markForCheck();
+      });
+    });
+
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res.changeUser) {
         this.loadDataSafely(false);
       }
@@ -88,11 +112,11 @@ export class NewsPage implements OnInit {
       this.dataProvider.newsUpdated.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updatedNews: any) => {
         if (this.allNews && this.allNews.length > 0) {
           let index = this.allNews.findIndex(news => news.id === updatedNews.id || news.id === updatedNews.news_id);
-          
+
           if (index !== -1) {
             this.allNews[index].title = updatedNews.title;
             if (updatedNews.news_description) {
-               this.allNews[index].content = this.urlify(updatedNews.news_description);
+              this.allNews[index].content = this.urlify(updatedNews.news_description);
             }
           } else {
             this.getNews(0, 0, this.country_code, false);
@@ -112,21 +136,21 @@ export class NewsPage implements OnInit {
   }
 
   ionViewWillLeave() {
-    if (this.platform.is("cordova")) {
+    if (this.platform.is('cordova')) {
       this.screen.lock(this.screen.ORIENTATIONS.PORTRAIT).catch(err => console.log(err));
     }
   }
 
-  // 🟢 دالة آمنة لتحميل البيانات والاعتماد على الـ StorageService 
+  // 🟢 دالة آمنة لتحميل البيانات والاعتماد على الـ StorageService
   async loadDataSafely(showSkeleton: boolean) {
     if (showSkeleton) this.show_loading = true;
 
     // جلب اللغة والدول بأمان
-    let appLang = await this.storageSr.get('language') || 'ar';
+    let appLang = (await this.storageSr.get('language')) || 'ar';
     this.countries = appLang === 'en' ? this.geo.getEnCountries() : this.geo.getAllCountries();
     this.filteredCountries = [...this.countries];
 
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
 
@@ -155,7 +179,10 @@ export class NewsPage implements OnInit {
 
   closeFullscreenImage() {
     this.showImageViewer = false;
-    setTimeout(() => { this.viewImageUrl = ''; this.cdr.markForCheck(); }, 300);
+    setTimeout(() => {
+      this.viewImageUrl = '';
+      this.cdr.markForCheck();
+    }, 300);
   }
 
   addNews() {
@@ -170,8 +197,8 @@ export class NewsPage implements OnInit {
     const escaped = this.escapeHtml(text);
 
     var urlRegex = /(https?:\/\/[^\s]+)/g;
-    let parsedText = escaped.replace(urlRegex, function(url: string) {
-        return `<a href="${url}" class="text-indigo-600 font-bold hover:text-indigo-800 underline transition-colors">${url}</a>`;
+    let parsedText = escaped.replace(urlRegex, function (url: string) {
+      return `<a href="${url}" class="text-indigo-600 font-bold hover:text-indigo-800 underline transition-colors">${url}</a>`;
     });
     return this.sanitizer.bypassSecurityTrustHtml(parsedText);
   }
@@ -186,46 +213,49 @@ export class NewsPage implements OnInit {
   }
 
   getNews(start: number, newsPerPage: number, countryCode: any, loading: boolean = true): Promise<any> {
-    return new Promise((resolve) => {
-      this.newsApi.getNewsJoin(start, newsPerPage, this.userDetails.details, countryCode).then((totalNews) => {
-        this.dataProvider.unread = false;
-        this.show_loading = false; 
-        this.allNews = [];
-        
-        if (totalNews && totalNews.length > 0) {
-          this.originalNews = JSON.parse(JSON.stringify(totalNews));
-          this.originalNews.forEach(news => {
-            news.content = this.urlify(news.content);
-            let date = news.ago.split(' ');
-            if (date.length > 20) {
-              news.ago = date[2] + ' ' + date[1] + ' ' + date[0];
-            }
-          });
+    return new Promise(resolve => {
+      this.newsApi
+        .getNewsJoin(start, newsPerPage, this.userDetails.details, countryCode)
+        .then(totalNews => {
+          this.dataProvider.unread = false;
+          this.show_loading = false;
+          this.allNews = [];
 
-          if (this.originalNews.length > 1) {
-            this.allNews = this.originalNews.splice(0, 20);
+          if (totalNews && totalNews.length > 0) {
+            this.originalNews = JSON.parse(JSON.stringify(totalNews));
+            this.originalNews.forEach(news => {
+              news.content = this.urlify(news.content);
+              let date = news.ago.split(' ');
+              if (date.length > 20) {
+                news.ago = date[2] + ' ' + date[1] + ' ' + date[0];
+              }
+            });
+
+            if (this.originalNews.length > 1) {
+              this.allNews = this.originalNews.splice(0, 20);
+            } else {
+              this.allNews = this.originalNews;
+            }
+
+            // فتح الشاشة في حالة تشغيل فيديو
+            for (let i = 0; i < this.allNews.length; i++) {
+              if (this.allNews[i].video_url != '') {
+                if (this.platform.is('cordova')) this.screen.unlock();
+                break;
+              }
+            }
           } else {
-            this.allNews = this.originalNews;
+            this.noDataFound = this.lang.no_news || 'لا توجد أخبار';
           }
-
-          // فتح الشاشة في حالة تشغيل فيديو
-          for (let i = 0; i < this.allNews.length; i++) {
-            if (this.allNews[i].video_url != '') {
-              if (this.platform.is("cordova")) this.screen.unlock();
-              break;
-            }
-          }
-        } else {
-          this.noDataFound = this.lang.no_news || 'لا توجد أخبار';
-        }
-        this.cdr.markForCheck();
-        resolve(true);
-      }).catch((err) => {
-        this.show_loading = false;
-        this.dataProvider.errorALertMessage(err);
-        this.cdr.markForCheck();
-        resolve(false);
-      });
+          this.cdr.markForCheck();
+          resolve(true);
+        })
+        .catch(err => {
+          this.show_loading = false;
+          this.dataProvider.errorALertMessage(err);
+          this.cdr.markForCheck();
+          resolve(false);
+        });
     });
   }
 
@@ -249,9 +279,9 @@ export class NewsPage implements OnInit {
   // 🟢 إصلاح دالة فتح الروابط من داخل النص
   async openUrl(event: any) {
     if (event.target && (event.target.tagName === 'A' || event.target.tagName === 'a')) {
-      event.preventDefault(); 
+      event.preventDefault();
       let url = event.target.getAttribute('href');
-      
+
       if (url) {
         try {
           // استخدام متصفح كاباسيتور الحديث والآمن (يعمل على أندرويد، آيفون، والويب تلقائياً)
@@ -270,44 +300,48 @@ export class NewsPage implements OnInit {
     if (!this.userDetails || !this.userDetails.details || !news) return false;
 
     let currentUser = this.userDetails.details;
-    
-    let isSuperAdmin = (currentUser.user_type == UserType.Admin || currentUser.is_school_admin == '1');
-    let isSameSchool = (news.school_id == currentUser.school_id || news.user_id == currentUser.user_no);
-    let isCreator = (news.user_no == currentUser.user_no || news.created_by == currentUser.user_no);
+
+    let isSuperAdmin = currentUser.user_type == UserType.Admin || currentUser.is_school_admin == '1';
+    let isSameSchool = news.school_id == currentUser.school_id || news.user_id == currentUser.user_no;
+    let isCreator = news.user_no == currentUser.user_no || news.created_by == currentUser.user_no;
 
     return (isSuperAdmin && isSameSchool) || isCreator;
   }
 
   async changeLike(news: any) {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       if (news.already_like == 'true' || news.already_like == true) {
-        this.newsApi.dislikeNewsPost({
-          session_id: this.userDetails.session_id,
-          news_id: news.id,
-          user_no: this.userDetails?.details?.user_no
-        }).then(response => {
-          if (response.session) {
-            news.already_like = 'false';
-            news.total_likes = parseInt(news.total_likes) - 1;
-          }
-          this.cdr.markForCheck();
-        });
+        this.newsApi
+          .dislikeNewsPost({
+            session_id: this.userDetails.session_id,
+            news_id: news.id,
+            user_no: this.userDetails?.details?.user_no
+          })
+          .then(response => {
+            if (response.session) {
+              news.already_like = 'false';
+              news.total_likes = parseInt(news.total_likes) - 1;
+            }
+            this.cdr.markForCheck();
+          });
       } else {
-        this.newsApi.likeNewsPost({
-          session_id: this.userDetails.session_id,
-          news_id: news.id,
-          user_no: this.userDetails.details.user_no
-        }).then(response => {
-          if (response.session) {
-            news.already_like = 'true';
-            news.total_likes = parseInt(news.total_likes) + 1;
-          }
-          this.cdr.markForCheck();
-        });
+        this.newsApi
+          .likeNewsPost({
+            session_id: this.userDetails.session_id,
+            news_id: news.id,
+            user_no: this.userDetails.details.user_no
+          })
+          .then(response => {
+            if (response.session) {
+              news.already_like = 'true';
+              news.total_likes = parseInt(news.total_likes) + 1;
+            }
+            this.cdr.markForCheck();
+          });
       }
     } else {
-      this.dataProvider.showToast("الرجاء تسجيل الدخول أولاً");
+      this.dataProvider.showToast('الرجاء تسجيل الدخول أولاً');
     }
   }
 
@@ -339,7 +373,7 @@ export class NewsPage implements OnInit {
 
     let data = {
       user_no: this.userDetails.details.user_no,
-      session_id:  this.userDetails.session_id
+      session_id: this.userDetails.session_id
     };
 
     try {
@@ -372,16 +406,15 @@ export class NewsPage implements OnInit {
       this.filteredCountries = [...this.countries];
     } else {
       const query = this.countrySearchQuery.toLowerCase();
-      this.filteredCountries = this.countries.filter(c => 
-        (c.ar_name && c.ar_name.toLowerCase().includes(query)) ||
-        (c.name && c.name.toLowerCase().includes(query))
+      this.filteredCountries = this.countries.filter(
+        c => (c.ar_name && c.ar_name.toLowerCase().includes(query)) || (c.name && c.name.toLowerCase().includes(query))
       );
     }
   }
 
   selectCountry(selected: any) {
-    this.isCountryModalOpen = false; 
-    if (this.country?.code === selected.code) return; 
+    this.isCountryModalOpen = false;
+    if (this.country?.code === selected.code) return;
 
     this.country = selected;
     this.country_code = selected.code;
@@ -392,7 +425,7 @@ export class NewsPage implements OnInit {
   }
 
   clearCountryFilter(event: Event) {
-    event.stopPropagation(); 
+    event.stopPropagation();
     if (!this.country) return;
 
     this.country = null;

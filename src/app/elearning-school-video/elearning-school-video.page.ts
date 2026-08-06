@@ -13,19 +13,21 @@ import { ElearningApiService } from '../service/elearning-api/elearning-api.serv
   selector: 'app-elearning-school-video',
   templateUrl: './elearning-school-video.page.html',
   styleUrls: ['./elearning-school-video.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ElearningSchoolVideoPage implements OnInit {
-
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   categories: any = [];
   school: any = {};
   country_code: any;
   location_lang: any;
   country: any;
   selected_country = {
-    code: "",
-    name: "Worldwide"
+    code: '',
+    name: 'Worldwide'
   };
   show_loading: boolean = true;
 
@@ -42,7 +44,7 @@ export class ElearningSchoolVideoPage implements OnInit {
     private elearningApi: ElearningApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("location").subscribe((res) => {
+    this.translate.get('location').subscribe(res => {
       this.location_lang = res;
       this.cdr.markForCheck();
     });
@@ -53,13 +55,12 @@ export class ElearningSchoolVideoPage implements OnInit {
       if (navigation && navigation.extras && navigation.extras.state) {
         this.school = navigation.extras.state['schoolInfo'];
         this.country_code = navigation.extras.state['country_code'];
-        
+
         // حفظ البيانات مؤقتاً لتجنب ضياعها عند تحديث الصفحة
         await this.storageSr.set('currentElearningSchool', {
           schoolInfo: this.school,
           country_code: this.country_code
         });
-
       } else {
         // استعادة البيانات إذا ضاعت
         let savedData = await this.storageSr.get('currentElearningSchool');
@@ -82,18 +83,21 @@ export class ElearningSchoolVideoPage implements OnInit {
 
   getElerningMaterials(c_dode) {
     this.show_loading = true;
-    this.elearningApi.getElearningMaterials(this.school.id, c_dode).then((materialList) => {
-      this.show_loading = false;
-      // 🟢 إضافة متغير 'isOpen' للتحكم بفتح وإغلاق القوائم بطريقة Angular صحيحة بدلاً من DOM
-      this.categories = materialList.map((cat: any) => {
-        return { ...cat, isOpen: false };
+    this.elearningApi
+      .getElearningMaterials(this.school.id, c_dode)
+      .then(materialList => {
+        this.show_loading = false;
+        // 🟢 إضافة متغير 'isOpen' للتحكم بفتح وإغلاق القوائم بطريقة Angular صحيحة بدلاً من DOM
+        this.categories = materialList.map((cat: any) => {
+          return { ...cat, isOpen: false };
+        });
+        this.cdr.markForCheck();
+      })
+      .catch(err => {
+        this.show_loading = false;
+        this.dataProvider.errorALertMessage(err);
+        this.cdr.markForCheck();
       });
-      this.cdr.markForCheck();
-    }).catch((err) => {
-      this.show_loading = false;
-      this.dataProvider.errorALertMessage(err);
-      this.cdr.markForCheck();
-    });
   }
 
   // 🟢 دالة Angular الصافية للتحكم بالـ Accordion (فتح وإغلاق القوائم)
@@ -123,7 +127,8 @@ export class ElearningSchoolVideoPage implements OnInit {
           handler: () => {
             this.getElerningMaterials(this.country_code);
           }
-        }, {
+        },
+        {
           text: this.location_lang.international,
           handler: () => {
             this.getElerningMaterials(null);

@@ -10,50 +10,48 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-duration-subscription',
   templateUrl: './duration-subscription.component.html',
   styleUrls: ['./duration-subscription.component.scss'],
-  standalone: true,
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DurationSubscriptionComponent implements OnInit {
-  
   @Input() subscriptionName!: string;
   @Input() subscriptionOption!: string;
   @Input() subscriptionData!: string | any; // قد تأتي كنص أو كائن
 
   choosePlan: any = null;
   subscriptionPlan: any = [];
-  selectedValue: string = "";
-  
+  selectedValue: string = '';
+
   readonly standard_yearly_price: number = 94.99;
   readonly premium_yearly_price: number = 139.99;
 
   constructor(
     private modalCtrl: ModalController, // تم تصحيح الاسم
     public translate: TranslateService,
-    public dataProvider: DataService, 
+    public dataProvider: DataService
   ) {}
 
   ngOnInit() {
     // 🟢 حماية صلبة ضد أخطاء السيرفر عند تحويل الـ JSON
     try {
       if (this.subscriptionData) {
-        this.subscriptionPlan = typeof this.subscriptionData === 'string' 
-          ? JSON.parse(this.subscriptionData) 
-          : this.subscriptionData;
+        this.subscriptionPlan =
+          typeof this.subscriptionData === 'string' ? JSON.parse(this.subscriptionData) : this.subscriptionData;
       }
     } catch (error) {
-      console.error("Error parsing subscription data:", error);
+      console.error('Error parsing subscription data:', error);
       this.subscriptionPlan = [];
     }
 
     // 🟢 استخراج خطة الاشتراك وحساب الخصومات بأمان
     if (this.subscriptionPlan && this.subscriptionPlan.length > 0) {
       let foundPlan = this.subscriptionPlan.find((x: any) => x.slug === this.subscriptionName?.toLowerCase());
-      
+
       if (foundPlan) {
         this.choosePlan = { ...foundPlan };
         this.choosePlan.original = parseFloat(this.choosePlan.amount || '0') * 12;
-        this.choosePlan.discounted_price = this.subscriptionName === 'Standard' ? this.standard_yearly_price : this.premium_yearly_price;
+        this.choosePlan.discounted_price =
+          this.subscriptionName === 'Standard' ? this.standard_yearly_price : this.premium_yearly_price;
         this.choosePlan.total_discount = this.choosePlan.original - this.choosePlan.discounted_price;
       }
     }
@@ -66,11 +64,11 @@ export class DurationSubscriptionComponent implements OnInit {
 
   chooseSubscription() {
     if (this.selectedValue) {
-      let total_price = this.selectedValue === "1" ? Number(this.choosePlan.amount) : this.choosePlan.discounted_price;
-      
+      let total_price = this.selectedValue === '1' ? Number(this.choosePlan.amount) : this.choosePlan.discounted_price;
+
       this.choosePlan.total_price = total_price;
       this.choosePlan.month = this.selectedValue;
-      
+
       this.modalCtrl.dismiss({
         dismissed: true,
         name: this.subscriptionName,
@@ -78,7 +76,7 @@ export class DurationSubscriptionComponent implements OnInit {
         selectedPlan: this.choosePlan
       });
     } else {
-      this.dataProvider.showToast("الرجاء اختيار مدة الاشتراك أولاً!");
+      this.dataProvider.showToast('الرجاء اختيار مدة الاشتراك أولاً!');
     }
   }
 

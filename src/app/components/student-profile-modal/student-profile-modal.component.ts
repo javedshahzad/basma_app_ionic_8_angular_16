@@ -11,9 +11,8 @@ import { UserType } from '../../constants/user-type';
   selector: 'app-student-profile-modal',
   templateUrl: './student-profile-modal.component.html',
   styleUrls: ['./student-profile-modal.component.scss'],
-  standalone: true,
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentProfileModalComponent implements OnInit {
   readonly UserType = UserType;
@@ -39,11 +38,11 @@ export class StudentProfileModalComponent implements OnInit {
     private modalCtrl: ModalController,
     public gamification: GamificationEngineService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.fetchStudentSkillsAndTitle();
-    
+
     // 🟢 الحل الذكي: إجبار المودال على تحديث واجهته كل نصف ثانية لاصطياد الصورة الجديدة
     this.intervalId = setInterval(() => {
       this.cdr.detectChanges();
@@ -62,35 +61,37 @@ export class StudentProfileModalComponent implements OnInit {
     try {
       // 🟢 1. الإصلاح: استخدام الدالة الصحيحة للمهارات وإرسال (sid)
       const skillRes: any = await this.dataProvider.getStudentSkillTree({ sid: this.student.sid });
-      
+
       this.isLoadingSkills = false;
 
       // 🟢 2. الإصلاح: إزالة شرط (session) والاعتماد على (success) فقط
       if (skillRes && skillRes.success) {
-        
         this.studentSkillData = skillRes.skills || {};
         this.studentTotalPoints = Number(skillRes.total_points || 0);
-        
+
         // 🟢 3. الإصلاح: اللقب المفعل نأخذه من بيانات الطالب الممررة للمودال أو من السيرفر
-        let activeCraftedTitle = skillRes.active_title || this.student?.active_crafted_title || null; 
+        let activeCraftedTitle = skillRes.active_title || this.student?.active_crafted_title || null;
 
         // المحرك المركزي يقرر اللقب النهائي
-        this.studentTitle = this.gamification.getFinalStudentTitle(activeCraftedTitle, this.studentSkillData, this.studentTotalPoints);
-
+        this.studentTitle = this.gamification.getFinalStudentTitle(
+          activeCraftedTitle,
+          this.studentSkillData,
+          this.studentTotalPoints
+        );
       } else {
-        this.studentTitle = '🌱 بطل في البداية'; 
+        this.studentTitle = '🌱 بطل في البداية';
       }
     } catch (error) {
       this.isLoadingSkills = false;
-      this.studentTitle = '⚠️ تعذر جلب اللقب'; 
+      this.studentTitle = '⚠️ تعذر جلب اللقب';
     }
   }
 
   triggerCamera(event: any) {
-    if(this.onPhotoClick) {
+    if (this.onPhotoClick) {
       // 1. استدعاء الدالة الممررة من الصفحة الأم
       this.onPhotoClick(event);
-      
+
       // 2. 🟢 إجبار المودال على فحص التغييرات بعد فترة قصيرة للسماح للصورة بالتحميل
       setTimeout(() => {
         this.cdr.detectChanges();
@@ -99,7 +100,7 @@ export class StudentProfileModalComponent implements OnInit {
   }
 
   // 🟢 دالة عرض الصورة بحجم الشاشة
-  triggerFullscreen(pic: any) { 
+  triggerFullscreen(pic: any) {
     // نتحقق من وجود الدالة الممررة من الصفحة الأم ووجود رابط للصورة
     if (this.onFullscreenClick && pic) {
       this.onFullscreenClick(pic);
@@ -109,5 +110,4 @@ export class StudentProfileModalComponent implements OnInit {
   closeModal() {
     this.modalCtrl.dismiss();
   }
-  
 }

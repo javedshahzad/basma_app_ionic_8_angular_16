@@ -13,15 +13,18 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
   // 🟢 إصلاح مسارات الملفات لكي لا يظهر خطأ (Module not found)
   templateUrl: './user-selection.page.html',
   styleUrls: ['./user-selection.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 // 🟢 إصلاح اسم الكلاس ليكون UserSelectionPage
 export class UserSelectionPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
-  
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   // المتغيرات التي تمرر من النافذة الأب (إن وجدت)
   @Input() preSelectedUsers: any[] = [];
-  
+
   allUsers: any = [];
   filteredUsers: any = [];
   userDetails: any;
@@ -29,7 +32,7 @@ export class UserSelectionPage implements OnInit {
   noUser = false;
   lang: any;
   show_loading: boolean = true;
-  
+
   // متغيرات البحث
   searchQuery: string = '';
   searchTimeout: any;
@@ -48,7 +51,7 @@ export class UserSelectionPage implements OnInit {
     private schoolDirectoryApi: SchoolDirectoryApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -57,7 +60,7 @@ export class UserSelectionPage implements OnInit {
   // 🟢 استخدام التزامن للتخلص من الـ localStorage عند فتح الصفحة
   async ngOnInit() {
     this.show_loading = true;
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
@@ -79,39 +82,42 @@ export class UserSelectionPage implements OnInit {
   // 🟢 إغلاق النافذة المنبثقة دون حفظ التغييرات
   dismiss() {
     this.modalController.dismiss({
-      'dismissed': true
+      dismissed: true
     });
   }
 
   // 🟢 إغلاق النافذة المنبثقة وإرسال المستخدمين المحددين للصفحة الأب
   confirmSelection() {
     this.modalController.dismiss({
-      'dismissed': false,
-      'selectedUsers': this.selectedUsers
+      dismissed: false,
+      selectedUsers: this.selectedUsers
     });
   }
 
   // 🟢 جلب جميع المستخدمين
   getUsers() {
     let data = {
-      'school_id': this.userDetails.details.school_id,
-      'user_no': this.userDetails.details.user_no
+      school_id: this.userDetails.details.school_id,
+      user_no: this.userDetails.details.user_no
     };
-    
-    this.schoolDirectoryApi.getAllSchoolUsers(data).then(res => {
-      this.show_loading = false;
-      if (res.session) {
-        this.allUsers = res.data;
-        this.filteredUsers = [...this.allUsers]; // تهيئة القائمة المفلترة
-      } else {
+
+    this.schoolDirectoryApi
+      .getAllSchoolUsers(data)
+      .then(res => {
+        this.show_loading = false;
+        if (res.session) {
+          this.allUsers = res.data;
+          this.filteredUsers = [...this.allUsers]; // تهيئة القائمة المفلترة
+        } else {
+          this.noUser = true;
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
         this.noUser = true;
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      this.noUser = true;
-      this.show_loading = false;
-      this.cdr.markForCheck();
-    });
+        this.show_loading = false;
+        this.cdr.markForCheck();
+      });
   }
 
   // 🟢 دالة البحث المحلية (لا تضغط على السيرفر)
@@ -119,13 +125,13 @@ export class UserSelectionPage implements OnInit {
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);
     }
-    
+
     this.searchTimeout = setTimeout(() => {
       if (!this.searchQuery || this.searchQuery.trim() === '') {
         this.filteredUsers = [...this.allUsers];
         return;
       }
-      
+
       const searchTerm = this.searchQuery.toLowerCase();
       this.filteredUsers = this.allUsers.filter((user: any) => {
         // البحث بالاسم الأول أو اسم المستخدم
@@ -140,7 +146,7 @@ export class UserSelectionPage implements OnInit {
   // 🟢 تحديد أو إلغاء تحديد المستخدم
   toggleUserSelection(user: any) {
     const index = this.selectedUsers.findIndex((u: any) => u.user_no === user.user_no);
-    
+
     if (index > -1) {
       // المستخدم موجود بالفعل، نقوم بإزالته
       this.selectedUsers.splice(index, 1);

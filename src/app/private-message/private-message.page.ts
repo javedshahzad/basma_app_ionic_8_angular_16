@@ -1,4 +1,12 @@
-﻿import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import {
+  Component,
+  OnInit,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -13,36 +21,39 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-private-message',
   templateUrl: './private-message.page.html',
   styleUrls: ['./private-message.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PrivateMessagePage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   private destroyRef = inject(DestroyRef);
   notifications: any = [];
   noRecordFound: string = '';
   lang: any = {};
   userDetails: any = {};
-  
+
   // 🟢 متغيرات عارض الصور الحديث
   showImageViewer: boolean = false;
-  viewImageUrl: string = "";
+  viewImageUrl: string = '';
 
   constructor(
-    public navCtrl: NavController, 
-    public authProvider: AuthService, 
-    public dataProvider: DataService, 
+    public navCtrl: NavController,
+    public authProvider: AuthService,
+    public dataProvider: DataService,
     public translate: TranslateService,
     private router: Router,
-    public zone: NgZone, 
+    public zone: NgZone,
     public alertCtrl: AlertController,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
-    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res.changeUser) {
         this.reloadData();
       }
@@ -53,32 +64,35 @@ export class PrivateMessagePage implements OnInit {
 
   // 🟢 جعل الدالة async للتعامل الآمن مع الذاكرة
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
-    
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
+
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       let data = {
-        "user_no": this.userDetails.details.user_no,
-        "school_id": this.userDetails.details.school_id,
-        "session_id": this.userDetails.session_id
+        user_no: this.userDetails.details.user_no,
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id
       };
-      
-      this.dataProvider.run(() => this.dataProvider.getNotifications(data)).then(response => {
-        if (response.session) {
-          this.dataProvider.private_message = false;
-          this.notifications = response.data;
-          if (this.notifications.length == 0) {
-            this.noRecordFound = this.lang.no_private_msg || 'لا توجد رسائل خاصة';
+
+      this.dataProvider
+        .run(() => this.dataProvider.getNotifications(data))
+        .then(response => {
+          if (response.session) {
+            this.dataProvider.private_message = false;
+            this.notifications = response.data;
+            if (this.notifications.length == 0) {
+              this.noRecordFound = this.lang.no_private_msg || 'لا توجد رسائل خاصة';
+            }
+          } else {
+            this.authProvider.flushLocalStorage();
+            this.dataProvider.errorALertMessage(response.message);
+            this.router.navigate(['login'], { replaceUrl: true });
           }
-        } else {
-          this.authProvider.flushLocalStorage();
-          this.dataProvider.errorALertMessage(response.message);
-          this.router.navigate(['login'], { replaceUrl: true });
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        this.cdr.markForCheck();
-      });
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          this.cdr.markForCheck();
+        });
     } else {
       this.dataProvider.hideLoading();
       this.authProvider.flushLocalStorage();
@@ -95,30 +109,33 @@ export class PrivateMessagePage implements OnInit {
   }
 
   async reloadData() {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       let data = {
-        "user_no": this.userDetails.details.user_no,
-        "school_id": this.userDetails.details.school_id,
-        "session_id": this.userDetails.session_id
+        user_no: this.userDetails.details.user_no,
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id
       };
-      
-      this.dataProvider.getNotifications(data).then(response => {
-        if (response.session) {
-          this.notifications = response.data;
-          if (this.notifications.length == 0) {
-            this.noRecordFound = this.lang.no_private_msg || 'لا توجد رسائل خاصة';
+
+      this.dataProvider
+        .getNotifications(data)
+        .then(response => {
+          if (response.session) {
+            this.notifications = response.data;
+            if (this.notifications.length == 0) {
+              this.noRecordFound = this.lang.no_private_msg || 'لا توجد رسائل خاصة';
+            }
+          } else {
+            this.authProvider.flushLocalStorage();
+            this.dataProvider.errorALertMessage(response.message);
+            this.router.navigate(['login'], { replaceUrl: true });
           }
-        } else {
-          this.authProvider.flushLocalStorage();
-          this.dataProvider.errorALertMessage(response.message);
-          this.router.navigate(['login'], { replaceUrl: true });
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        this.cdr.markForCheck();
-      });
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          this.cdr.markForCheck();
+        });
     } else {
       this.authProvider.flushLocalStorage();
       this.router.navigate(['login'], { replaceUrl: true });
@@ -126,7 +143,7 @@ export class PrivateMessagePage implements OnInit {
   }
 
   async deleteNotification(notificationId, index) {
-   const alert = await this.alertCtrl.create({
+    const alert = await this.alertCtrl.create({
       message: this.lang.want_to_delete || 'هل أنت متأكد من الحذف؟',
       backdropDismiss: false,
       mode: 'ios',
@@ -140,30 +157,33 @@ export class PrivateMessagePage implements OnInit {
               user_no: this.userDetails.details.user_no,
               nid: notificationId,
               session_id: this.userDetails.session_id
-            }
-            this.dataProvider.run(() => this.dataProvider.deleteNotification(data)).then((response) => {
-              if (response.session) {
-                this.dataProvider.showToast(response.message);
-                this.notifications.splice(index, 1);
-              } else {
-                this.authProvider.flushLocalStorage();
-                this.dataProvider.errorALertMessage(response.message);
-                this.router.navigate(['login'], { replaceUrl: true });
-              }
-              this.cdr.markForCheck();
-            }).catch((error) => {
-              this.dataProvider.errorALertMessage(error);
-              this.cdr.markForCheck();
-            })
+            };
+            this.dataProvider
+              .run(() => this.dataProvider.deleteNotification(data))
+              .then(response => {
+                if (response.session) {
+                  this.dataProvider.showToast(response.message);
+                  this.notifications.splice(index, 1);
+                } else {
+                  this.authProvider.flushLocalStorage();
+                  this.dataProvider.errorALertMessage(response.message);
+                  this.router.navigate(['login'], { replaceUrl: true });
+                }
+                this.cdr.markForCheck();
+              })
+              .catch(error => {
+                this.dataProvider.errorALertMessage(error);
+                this.cdr.markForCheck();
+              });
           }
         }
       ]
     });
-   await alert.present();
+    await alert.present();
   }
 
   // 🟢 دوال عرض الصور المحدثة لتتوافق مع تصميم النظام
-  openImageContainer(url){
+  openImageContainer(url) {
     this.viewImageUrl = url;
     this.showImageViewer = true;
   }
@@ -175,11 +195,14 @@ export class PrivateMessagePage implements OnInit {
     }, 300);
   }
 
-  downloadImage(imageUrl){
-    this.dataProvider.run(() => this.dataProvider.downloadImage(imageUrl)).then((res)=>{
-      this.dataProvider.showToast(this.lang.download_complete || 'تم التحميل بنجاح');
-    }).catch((error)=>{
-      this.dataProvider.errorALertMessage(error);
-    });
+  downloadImage(imageUrl) {
+    this.dataProvider
+      .run(() => this.dataProvider.downloadImage(imageUrl))
+      .then(res => {
+        this.dataProvider.showToast(this.lang.download_complete || 'تم التحميل بنجاح');
+      })
+      .catch(error => {
+        this.dataProvider.errorALertMessage(error);
+      });
   }
 }

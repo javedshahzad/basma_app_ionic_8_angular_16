@@ -1,4 +1,14 @@
-﻿import { Component, OnInit, ViewChild, ElementRef, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ScreenOrientation } from '@awesome-cordova-plugins/screen-orientation/ngx';
 import { NavController, Platform } from '@ionic/angular';
@@ -14,10 +24,13 @@ import { ElearningApiService } from '../service/elearning-api/elearning-api.serv
   selector: 'app-playvideo',
   templateUrl: './playvideo.page.html',
   styleUrls: ['./playvideo.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class PlayvideoPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   @ViewChild('videoPlayer', { static: false }) mVideoPlayer: ElementRef;
 
   material: any = {};
@@ -40,7 +53,7 @@ export class PlayvideoPage implements OnInit {
   ) {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const nav = this.router.getCurrentNavigation();
-      
+
       // 🟢 الحماية ضد التحديث (Refresh)
       if (nav && nav.extras && nav.extras.state) {
         this.materialId = nav.extras.state['materialId'];
@@ -60,7 +73,7 @@ export class PlayvideoPage implements OnInit {
 
   // 🟢 إعادة قفل الشاشة للوضع العمودي عند الخروج من الصفحة
   ionViewWillLeave() {
-    if (this.platform.is("cordova") || this.platform.is("capacitor")) {
+    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
       this.screen.lock(this.screen.ORIENTATIONS.PORTRAIT).catch(() => {});
     }
   }
@@ -77,7 +90,6 @@ export class PlayvideoPage implements OnInit {
       setTimeout(() => {
         this.setupNativeVideoEvents();
       }, 500);
-
     } catch (err) {
       this.dataProvider.errorALertMessage(err);
       this.cdr.markForCheck();
@@ -96,13 +108,13 @@ export class PlayvideoPage implements OnInit {
   setupNativeVideoEvents() {
     if (this.mVideoPlayer && this.mVideoPlayer.nativeElement) {
       const video = this.mVideoPlayer.nativeElement;
-      video.addEventListener("play", () => {
-        if (this.platform.is("cordova") || this.platform.is("capacitor")) {
+      video.addEventListener('play', () => {
+        if (this.platform.is('cordova') || this.platform.is('capacitor')) {
           this.screen.unlock();
         }
       });
-      video.addEventListener("ended", () => {
-        if (this.platform.is("cordova") || this.platform.is("capacitor")) {
+      video.addEventListener('ended', () => {
+        if (this.platform.is('cordova') || this.platform.is('capacitor')) {
           this.screen.lock(this.screen.ORIENTATIONS.PORTRAIT).catch(() => {});
         }
       });
@@ -113,11 +125,12 @@ export class PlayvideoPage implements OnInit {
   share(video: any) {
     let content = video.material_description || video.material_title;
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      let videoUrl = (video.material_video_file && video.material_video_file !== '') 
-                     ? video.material_video_file 
-                     : video.material_video_link;
-                     
-      this.socialSharing.share(content, video.material_title, null, videoUrl).catch((err) => {
+      let videoUrl =
+        video.material_video_file && video.material_video_file !== ''
+          ? video.material_video_file
+          : video.material_video_link;
+
+      this.socialSharing.share(content, video.material_title, null, videoUrl).catch(err => {
         console.log(err);
       });
     }

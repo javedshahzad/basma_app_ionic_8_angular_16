@@ -14,41 +14,44 @@ import { ReportsApiService } from '../service/reports-api/reports-api.service';
   selector: 'app-warning-report',
   templateUrl: './warning-report.page.html',
   styleUrls: ['./warning-report.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class WarningReportPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   userDetails: any = {};
   reportData: any = [];
   reportType: any = 'callOfParentAndPledges';
-  
+
   callOfStudentsReport: any = [];
   AllStudentPledgesReports: any = [];
-  
+
   show_loading: boolean = false;
 
-  constructor(public navCtrl: NavController,
-              public translate: TranslateService,
-              public dataProvider: DataService,
-              public authProvider: AuthService,
-              public alertCtrl: AlertController,
-              private route: ActivatedRoute,
-              public zone: NgZone,
-              private router: Router,
-              private printer: Printer,
-              private platform: Platform, // 🟢 حقن المنصة للتحقق من بيئة العمل
-              public modalCtrl: ModalController,
-              private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
-              private reportsApi: ReportsApiService,
-              private cdr: ChangeDetectorRef
-             ) {
-  }
+  constructor(
+    public navCtrl: NavController,
+    public translate: TranslateService,
+    public dataProvider: DataService,
+    public authProvider: AuthService,
+    public alertCtrl: AlertController,
+    private route: ActivatedRoute,
+    public zone: NgZone,
+    private router: Router,
+    private printer: Printer,
+    private platform: Platform, // 🟢 حقن المنصة للتحقق من بيئة العمل
+    public modalCtrl: ModalController,
+    private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
+    private reportsApi: ReportsApiService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {}
 
   // 🟢 3. التخلص من localStorage واستخدام async/await
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
@@ -72,35 +75,38 @@ export class WarningReportPage implements OnInit {
   // 🟢 جلب الإنذارات
   getAllWarning(loader: boolean = true) {
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "session_id": this.userDetails.session_id,
-      "school_id": this.userDetails.details.school_id,
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id,
+      school_id: this.userDetails.details.school_id
     };
-    
+
     if (loader) {
       this.show_loading = true;
     }
-    
-    this.dataProvider.getAllWarning(data).then(res => {
-      this.show_loading = false;
-      if (res) {
-        this.reportData = res;
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      this.show_loading = false;
-      console.log(error);
-      this.cdr.markForCheck();
-    });
+
+    this.dataProvider
+      .getAllWarning(data)
+      .then(res => {
+        this.show_loading = false;
+        if (res) {
+          this.reportData = res;
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        this.show_loading = false;
+        console.log(error);
+        this.cdr.markForCheck();
+      });
   }
 
   // 🟢 4. تحديث دالة الطباعة لتتوافق مع Capacitor/متصفح
   async printReport(i) {
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "session_id": this.userDetails.session_id,
-      "school_id": this.userDetails.details.school_id,
-      "report_number": i + 1
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id,
+      school_id: this.userDetails.details.school_id,
+      report_number: i + 1
     };
 
     try {
@@ -139,7 +145,7 @@ export class WarningReportPage implements OnInit {
       printWindow.document.write(htmlContent);
       printWindow.document.close();
       printWindow.focus();
-      
+
       setTimeout(() => {
         printWindow.print();
       }, 1000);
@@ -151,33 +157,39 @@ export class WarningReportPage implements OnInit {
   // 🟢 جلب الاستدعاءات
   getStudentCallOfReports() {
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "student_id": this.userDetails.details.stu_id,
-      "school_id": this.userDetails.details.school_id
+      user_no: this.userDetails.details.user_no,
+      student_id: this.userDetails.details.stu_id,
+      school_id: this.userDetails.details.school_id
     };
-    this.reportsApi.GetAllCallOfStudentReport(data).then(res => {
-      this.callOfStudentsReport = res.data;
-      this.cdr.markForCheck();
-    }).catch(error => {
-      console.log(error);
-      this.cdr.markForCheck();
-    });
+    this.reportsApi
+      .GetAllCallOfStudentReport(data)
+      .then(res => {
+        this.callOfStudentsReport = res.data;
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        console.log(error);
+        this.cdr.markForCheck();
+      });
     this.GetStudentPledgesReport();
   }
 
   // 🟢 جلب التعهدات
   GetStudentPledgesReport() {
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "student_id": this.userDetails.details.stu_id,
-      "school_id": this.userDetails.details.school_id
+      user_no: this.userDetails.details.user_no,
+      student_id: this.userDetails.details.stu_id,
+      school_id: this.userDetails.details.school_id
     };
-    this.reportsApi.GetStudentPledgesReport(data).then(res => {
-      this.AllStudentPledgesReports = res.data;
-      this.cdr.markForCheck();
-    }).catch(error => {
-      console.log(error);
-      this.cdr.markForCheck();
-    });
+    this.reportsApi
+      .GetStudentPledgesReport(data)
+      .then(res => {
+        this.AllStudentPledgesReports = res.data;
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        console.log(error);
+        this.cdr.markForCheck();
+      });
   }
 }

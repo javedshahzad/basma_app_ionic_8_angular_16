@@ -6,7 +6,7 @@ import { SubscriptionService } from '../service/subscription/subscription.servic
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
-import "cordova-plugin-purchase/www/store";
+import 'cordova-plugin-purchase/www/store';
 import { DurationSubscriptionComponent } from '../duration-subscription/duration-subscription.component';
 import { PlanReceiptComponent } from '../plan-receipt/plan-receipt.component';
 
@@ -19,34 +19,37 @@ import { UserType } from '../constants/user-type';
   selector: 'app-available-plan',
   templateUrl: './available-plan.page.html',
   styleUrls: ['./available-plan.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AvailablePlanPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   lang: any;
   plans: any = [];
-  
+
   // 🟢 إعطاء بنية افتراضية فارغة لحماية HTML من الانهيار قبل وصول البيانات الحقيقية
   userDetails: any = { details: { is_school_admin: 0 } };
-  
+
   availablePlan: any = {
     plan: { slug: '' },
     exp_date: '',
     billingPeriodUnit: ''
   };
-  
+
   monthly_plan_ammount: number = 1.99;
   yearly_plan_ammount: number = 19.99;
-  StoreProducts: any[]; // CdvPurchase.Product[];  
+  StoreProducts: any[]; // CdvPurchase.Product[];
 
   // --- متغيرات نافذة كود التفعيل (Voucher Modal) ---
   showVoucherModal: boolean = false;
   voucherCode: string = '';
 
   constructor(
-    public navCtrl: NavController, 
-    public translate: TranslateService, 
-    public dataProvider: DataService, 
+    public navCtrl: NavController,
+    public translate: TranslateService,
+    public dataProvider: DataService,
     private ref: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
@@ -58,7 +61,7 @@ export class AvailablePlanPage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن الخدمة
     private planApi: PlanApiService
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.ref.markForCheck();
     });
@@ -66,7 +69,7 @@ export class AvailablePlanPage implements OnInit {
 
   // 🟢 استخدام التزامن لجلب البيانات بأمان عند فتح الصفحة
   async ngOnInit() {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       if (this.userDetails.details.user_type === UserType.Admin) {
@@ -81,17 +84,20 @@ export class AvailablePlanPage implements OnInit {
 
   getPlan() {
     let data = { userId: '' };
-    this.planApi.getPlan(data).then((res: any) => {
-      if (res && res.response) {
-        this.plans = res.response;
-        const sortOrder = ["Basic Plan: Free", "Standard Plan", "Premium Plan"];
-        this.plans = this.plans.sort((a, b) => sortOrder.indexOf(a.name) - sortOrder.indexOf(b.name));
-      }
-      this.ref.markForCheck();
-    }).catch(e => {
-      console.log("Error fetching plans:", e);
-      this.ref.markForCheck();
-    });
+    this.planApi
+      .getPlan(data)
+      .then((res: any) => {
+        if (res && res.response) {
+          this.plans = res.response;
+          const sortOrder = ['Basic Plan: Free', 'Standard Plan', 'Premium Plan'];
+          this.plans = this.plans.sort((a, b) => sortOrder.indexOf(a.name) - sortOrder.indexOf(b.name));
+        }
+        this.ref.markForCheck();
+      })
+      .catch(e => {
+        console.log('Error fetching plans:', e);
+        this.ref.markForCheck();
+      });
   }
 
   getUserPlan() {
@@ -99,32 +105,35 @@ export class AvailablePlanPage implements OnInit {
       user_no: this.userDetails.details.user_no,
       school_id: this.userDetails.details.school_id
     };
-    
-    this.dataProvider.run(() => this.planApi.getUserPlan(data)).then(async (res: any) => {
-      if (res && res.response) {
-        this.availablePlan = res.response;
-        this.availablePlan.cardColor = res.response.isExpire ? 'rgb(249 169 5)' : '#43a047';
-        // حفظ الخطة المحدثة في الذاكرة لتستخدمها العمليات الأخرى
-        await this.storageSr.set("availablePlan", this.availablePlan);
-      } else {
-        this.availablePlan = { plan: { slug: '' } };
-      }
-      this.ref.markForCheck();
-    }).catch(e => {
-      this.ref.markForCheck();
-    });
+
+    this.dataProvider
+      .run(() => this.planApi.getUserPlan(data))
+      .then(async (res: any) => {
+        if (res && res.response) {
+          this.availablePlan = res.response;
+          this.availablePlan.cardColor = res.response.isExpire ? 'rgb(249 169 5)' : '#43a047';
+          // حفظ الخطة المحدثة في الذاكرة لتستخدمها العمليات الأخرى
+          await this.storageSr.set('availablePlan', this.availablePlan);
+        } else {
+          this.availablePlan = { plan: { slug: '' } };
+        }
+        this.ref.markForCheck();
+      })
+      .catch(e => {
+        this.ref.markForCheck();
+      });
   }
 
   subscribe(data: any, i: number) {
     var p = 0;
     if (this.userDetails.details.user_type === UserType.Admin) {
-      if (data.slug == "standard") {
+      if (data.slug == 'standard') {
         p = 0;
         this.durationSubscription('Standard', p, data);
-      } else if (data.slug == "premium") {
+      } else if (data.slug == 'premium') {
         p = 1;
         this.durationSubscription('Premium', p, data);
-      } else if (data.slug == "free") {
+      } else if (data.slug == 'free') {
         this.subcribeToServerFreePlan();
       }
     }
@@ -133,47 +142,47 @@ export class AvailablePlanPage implements OnInit {
   async durationSubscription(subscribeName: string, option: any, subscribe_data: any) {
     const modal = await this.modalController.create({
       component: DurationSubscriptionComponent,
-      backdropDismiss: true, 
+      backdropDismiss: true,
       initialBreakpoint: 0.45,
       breakpoints: [0, 0.45, 0.75],
       cssClass: 'half-modal',
       componentProps: {
         subscriptionName: subscribeName,
         subscriptionOption: option,
-        subscriptionData: JSON.stringify(this.plans),
-      },
+        subscriptionData: JSON.stringify(this.plans)
+      }
     });
 
     await modal.present();
     const { data } = await modal.onDidDismiss();
     if (data) {
       var p = -1;
-      if (data.name == "Standard") {
+      if (data.name == 'Standard') {
         var selectedPlan = data.selectedPlan;
         var months = data.month;
         p = data.month == '1' ? 0 : 2;
         this.showreceiptModal(months, selectedPlan, p, subscribe_data);
-      } else if (data.name == "Premium") {
+      } else if (data.name == 'Premium') {
         var selectedPlan = data.selectedPlan;
         var months = data.month;
         p = data.month == '1' ? 1 : 3;
         this.showreceiptModal(months, selectedPlan, p, subscribe_data);
-      } 
+      }
     }
   }
 
   async showreceiptModal(months: any, selectedPlan: any, p: number, subscribe_data: any) {
     const modal = await this.modalController.create({
       component: PlanReceiptComponent,
-      mode: "ios",
-      backdropDismiss: false, 
+      mode: 'ios',
+      backdropDismiss: false,
       cssClass: 'plan-receipt-modal',
       componentProps: {
         selectedPlan: JSON.stringify(selectedPlan),
         isSuccess: false
-      },
+      }
     });
-    
+
     await modal.present();
     const { data } = await modal.onDidDismiss();
     if (data && data.isConfirm) {
@@ -209,44 +218,50 @@ export class AvailablePlanPage implements OnInit {
     let storedPlan = await this.storageSr.get('availablePlan');
 
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "school_id": this.userDetails.details.school_id,
-      "code": this.voucherCode,
-      "plan_id": storedPlan?.plan?.id || this.availablePlan?.plan?.id || 1 // تعيين افتراضي لمنع الأخطاء
+      user_no: this.userDetails.details.user_no,
+      school_id: this.userDetails.details.school_id,
+      code: this.voucherCode,
+      plan_id: storedPlan?.plan?.id || this.availablePlan?.plan?.id || 1 // تعيين افتراضي لمنع الأخطاء
     };
 
-    this.dataProvider.run(() => this.dataProvider.ApplyVoucherCode(data)).then(res => {
-      if (res.success) {
-        this.dataProvider.showToast(res.msg);
-        this.closeVoucherModal();
-        this.getUserPlan(); // 🟢 تحديث واجهة الباقة فوراً بدلاً من الانتقال الأعمى للقائمة
-      } else {
-        this.dataProvider.showToast(res.msg);
-      }
-    }).catch(error => {
-      this.dataProvider.showToast("حدث خطأ في الاتصال، حاول مرة أخرى.");
-    });
+    this.dataProvider
+      .run(() => this.dataProvider.ApplyVoucherCode(data))
+      .then(res => {
+        if (res.success) {
+          this.dataProvider.showToast(res.msg);
+          this.closeVoucherModal();
+          this.getUserPlan(); // 🟢 تحديث واجهة الباقة فوراً بدلاً من الانتقال الأعمى للقائمة
+        } else {
+          this.dataProvider.showToast(res.msg);
+        }
+      })
+      .catch(error => {
+        this.dataProvider.showToast('حدث خطأ في الاتصال، حاول مرة أخرى.');
+      });
   }
 
   subcribeToServerFreePlan() {
     let data = {
       plan_id: 1,
       iap_id: Date.now().toString(),
-      paymentType: "Free",
+      paymentType: 'Free',
       billingPeriod: 1,
-      billingPeriodUnit: "month",
-      ammount: 0.00,
+      billingPeriodUnit: 'month',
+      ammount: 0.0,
       user_id: this.userDetails.details.user_no,
       school: this.userDetails.details.school_id
     };
-    
-    this.planApi.purchase(data).then((res: any) => {
-      if (res.success) {
-        this.dataProvider.showToast('تم تفعيل الباقة الأساسية المجانية بنجاح');
-        this.getUserPlan(); // تحديث الواجهة بدلاً من الانتقال المباشر
-      }
-    }).catch(e => {
-      this.dataProvider.showToast('حدث خطأ في عملية الاشتراك');
-    });
+
+    this.planApi
+      .purchase(data)
+      .then((res: any) => {
+        if (res.success) {
+          this.dataProvider.showToast('تم تفعيل الباقة الأساسية المجانية بنجاح');
+          this.getUserPlan(); // تحديث الواجهة بدلاً من الانتقال المباشر
+        }
+      })
+      .catch(e => {
+        this.dataProvider.showToast('حدث خطأ في عملية الاشتراك');
+      });
   }
 }

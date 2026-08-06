@@ -7,10 +7,9 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-student-modal',
-  templateUrl: './add-student-modal.component.html',
-  standalone: true, // إضافة هذا السطر
+  templateUrl: './add-student-modal.component.html', // إضافة هذا السطر
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddStudentModalComponent {
   @Input() addStudentLang: any; // لاستقبال نصوص الترجمة من الصفحة الأب
@@ -18,7 +17,10 @@ export class AddStudentModalComponent {
   newStudentName: string = '';
   newStudentId: string = '';
 
-  constructor(private modalCtrl: ModalController, private dataProvider: DataService) {}
+  constructor(
+    private modalCtrl: ModalController,
+    private dataProvider: DataService
+  ) {}
 
   hideModal() {
     this.modalCtrl.dismiss();
@@ -29,7 +31,7 @@ export class AddStudentModalComponent {
     if (this.newStudentName.trim() === '') {
       this.dataProvider.showToast(this.addStudentLang?.invalid_stu_name || 'اسم الطالب غير صالح');
       return;
-    } 
+    }
     if (!this.newStudentId || Number(this.newStudentId) === 0) {
       this.dataProvider.showToast(this.addStudentLang?.invalid_stu_id || 'رقم الطالب غير صالح');
       return;

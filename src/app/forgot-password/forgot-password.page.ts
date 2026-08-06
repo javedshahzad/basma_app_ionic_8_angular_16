@@ -10,10 +10,10 @@ import { PasswordResetApiService } from '../service/password-reset-api/password-
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.page.html',
   styleUrls: ['./forgot-password.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ForgotPasswordPage implements OnInit {
-  
   // 🟢 استدعاء المحتوى للتحكم في التمرير (Scrolling) بطريقة Angular الآمنة
   @ViewChild(IonContent, { static: false }) content: IonContent;
 
@@ -22,27 +22,27 @@ export class ForgotPasswordPage implements OnInit {
   otp: any = '';
   password: any = '';
   confirm_password: any = '';
-  
+
   enterEmail = true;
   enterPassword = false;
   enterOtp = false;
-  
+
   canEditEmail = true;
   canEditOTP = true;
   canEditPass = true;
-  
+
   emailError = '';
   otpError = '';
   passwordError = '';
   confirm_passwordError = '';
-  
+
   lang: any = {};
   step = 0;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public dataProvider: DataService,
-    public authProvider: AuthService, 
+    public authProvider: AuthService,
     public translate: TranslateService,
     private route: ActivatedRoute,
     private router: Router,
@@ -50,11 +50,11 @@ export class ForgotPasswordPage implements OnInit {
     private passwordResetApi: PasswordResetApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
-    
+
     // 🟢 استلام البريد الإلكتروني إذا تم تحويله من صفحة الدخول
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
@@ -75,29 +75,32 @@ export class ForgotPasswordPage implements OnInit {
 
   sendOTP() {
     let pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-    
+
     if (!this.email || this.email.trim() === '') {
       this.emailError = this.lang.email_empty || 'البريد الإلكتروني مطلوب';
     } else if (!this.email.match(pattern)) {
       this.emailError = this.lang.email_valid || 'صيغة البريد الإلكتروني غير صحيحة';
     } else {
       this.emailError = '';
-      let data = { 'email': this.email.trim() };
-      
-      this.dataProvider.run(() => this.passwordResetApi.submitEmail(data)).then(res => {
-        if (res.session) {
-          this.step++;
-          this.canEditEmail = false;
-          this.enterOtp = true;
-          this.scrollToBottom();
-        } else {
-          this.emailError = res.message;
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        this.dataProvider.showToast(error);
-        this.cdr.markForCheck();
-      });
+      let data = { email: this.email.trim() };
+
+      this.dataProvider
+        .run(() => this.passwordResetApi.submitEmail(data))
+        .then(res => {
+          if (res.session) {
+            this.step++;
+            this.canEditEmail = false;
+            this.enterOtp = true;
+            this.scrollToBottom();
+          } else {
+            this.emailError = res.message;
+          }
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          this.dataProvider.showToast(error);
+          this.cdr.markForCheck();
+        });
     }
   }
 
@@ -107,24 +110,27 @@ export class ForgotPasswordPage implements OnInit {
     } else {
       this.otpError = '';
       let data = {
-        'email': this.email.trim(),
-        'otp': this.otp.trim()
+        email: this.email.trim(),
+        otp: this.otp.trim()
       };
-      
-      this.dataProvider.run(() => this.passwordResetApi.checkOtp(data)).then(res => {
-        if (res.session) {
-          this.canEditOTP = false;
-          this.enterPassword = true;
-          this.step++;
-          this.scrollToBottom();
-        } else {
-          this.otpError = res.message;
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        this.dataProvider.showToast(error);
-        this.cdr.markForCheck();
-      });
+
+      this.dataProvider
+        .run(() => this.passwordResetApi.checkOtp(data))
+        .then(res => {
+          if (res.session) {
+            this.canEditOTP = false;
+            this.enterPassword = true;
+            this.step++;
+            this.scrollToBottom();
+          } else {
+            this.otpError = res.message;
+          }
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          this.dataProvider.showToast(error);
+          this.cdr.markForCheck();
+        });
     }
   }
 
@@ -142,29 +148,32 @@ export class ForgotPasswordPage implements OnInit {
       this.passwordError = '';
       this.confirm_passwordError = '';
       let data = {
-        'email': this.email.trim(),
-        'password': this.password,
-        'c_password': this.confirm_password
+        email: this.email.trim(),
+        password: this.password,
+        c_password: this.confirm_password
       };
-      
-      this.dataProvider.run(() => this.passwordResetApi.resetPassword(data)).then(res => {
-        if (res.session) {
-          this.step++;
-          this.canEditPass = false;
-          this.dataProvider.showToast(res.message);
-          
-          // توجيه لصفحة تسجيل الدخول بهدوء
-          setTimeout(() => {
-            this.router.navigate(['login'], { replaceUrl: true });
-          }, 1500);
-        } else {
-          this.dataProvider.showToast(res.message);
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        this.dataProvider.showToast(error);
-        this.cdr.markForCheck();
-      });
+
+      this.dataProvider
+        .run(() => this.passwordResetApi.resetPassword(data))
+        .then(res => {
+          if (res.session) {
+            this.step++;
+            this.canEditPass = false;
+            this.dataProvider.showToast(res.message);
+
+            // توجيه لصفحة تسجيل الدخول بهدوء
+            setTimeout(() => {
+              this.router.navigate(['login'], { replaceUrl: true });
+            }, 1500);
+          } else {
+            this.dataProvider.showToast(res.message);
+          }
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          this.dataProvider.showToast(error);
+          this.cdr.markForCheck();
+        });
     }
   }
 }

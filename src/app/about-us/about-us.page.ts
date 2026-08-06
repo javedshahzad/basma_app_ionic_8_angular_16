@@ -6,18 +6,17 @@ import { Browser } from '@capacitor/browser';
   templateUrl: './about-us.page.html',
   styleUrls: ['./about-us.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AboutUsPage implements OnInit {
-
-    constructor() {
-  }
+  constructor() {}
 
   /**
    * Used to open the weblink
-   * @param url 
+   * @param url
    */
-  async openUrl(url){
-     await Browser.open({ url: url });
+  async openUrl(url) {
+    await Browser.open({ url: url });
   }
 
   openPDF(url: string) {
@@ -25,8 +24,5 @@ export class AboutUsPage implements OnInit {
     //browser.show();
   }
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }
- 

@@ -16,13 +16,16 @@ import { NotesApiService } from '../service/notes-api/notes-api.service';
   selector: 'app-tasks-calendar',
   templateUrl: './tasks-calendar.page.html',
   styleUrls: ['./tasks-calendar.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class TasksCalendarPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   classes: any = [];
   selectedClass: any = [];
-  noDataFound: string = "";
+  noDataFound: string = '';
   userType: any;
   popOver: any;
   lang: any = {};
@@ -32,7 +35,18 @@ export class TasksCalendarPage implements OnInit {
   dataAll: any = [];
   userDetails: any = {};
   category: any;
-  classBackgroundColor = ["#ff7043", "#2962ff", "#43a047", "#6d4c41", "#ffab00", "#00b0ff", "#651fff", "#2962ff", "#d81b60", "#6a1b9a"];
+  classBackgroundColor = [
+    '#ff7043',
+    '#2962ff',
+    '#43a047',
+    '#6d4c41',
+    '#ffab00',
+    '#00b0ff',
+    '#651fff',
+    '#2962ff',
+    '#d81b60',
+    '#6a1b9a'
+  ];
   isLoading: boolean = false; // 🟢 إضافة حالة للتحميل
 
   constructor(
@@ -52,11 +66,11 @@ export class TasksCalendarPage implements OnInit {
     private notesApi: NotesApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("sidemenu").subscribe((res) => {
+    this.translate.get('sidemenu').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang1 = response;
       this.cdr.markForCheck();
     });
@@ -64,7 +78,7 @@ export class TasksCalendarPage implements OnInit {
 
   // 🟢 3. جعل الدالة async لاستخدام StorageService الآمن
   async ngOnInit(loader: boolean = true) {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
@@ -83,7 +97,7 @@ export class TasksCalendarPage implements OnInit {
       component: LoaderComponent,
       backdropDismiss: true,
       translucent: false,
-      cssClass: 'loaderStyle',
+      cssClass: 'loaderStyle'
     });
     return this.popOver.present();
   }
@@ -103,65 +117,67 @@ export class TasksCalendarPage implements OnInit {
       this.isLoading = true;
       this.presentPopover();
     }
-    
+
     let data = {
-      "user_no": this.userDetails.details.user_no,
-      "school_id": this.userDetails.details.school_id,
-      "session_id": this.userDetails.session_id
+      user_no: this.userDetails.details.user_no,
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
 
-    this.dataProvider.getCourses(data).then(response => {
-      if (loader) {
-        this.dissmissPopOver();
-        this.isLoading = false;
-      }
-      
-      if (response.session) {
-        this.syncService.syncOffileData();
-        let courses = response.data;
-        
-        if (response.linkData != undefined) {
-          this.authProvider.piblisEvenetActiveLink(response.linkData);
+    this.dataProvider
+      .getCourses(data)
+      .then(response => {
+        if (loader) {
+          this.dissmissPopOver();
+          this.isLoading = false;
         }
-        
-        if (courses && courses.length > 0) {
-          let i = 0;
-          this.classes = courses;
 
-          this.classes.forEach((course) => {
-            course.backgroundColor = this.classBackgroundColor[i];
-            i++;
-            if (i == 9) i = 0;
-          })
+        if (response.session) {
+          this.syncService.syncOffileData();
+          let courses = response.data;
+
+          if (response.linkData != undefined) {
+            this.authProvider.piblisEvenetActiveLink(response.linkData);
+          }
+
+          if (courses && courses.length > 0) {
+            let i = 0;
+            this.classes = courses;
+
+            this.classes.forEach(course => {
+              course.backgroundColor = this.classBackgroundColor[i];
+              i++;
+              if (i == 9) i = 0;
+            });
+          } else {
+            this.noDataFound = this.lang.no_class_found;
+            this.classes = [];
+          }
         } else {
-          this.noDataFound = this.lang.no_class_found;
-          this.classes = [];
+          this.authProvider.flushLocalStorage();
+          this.router.navigate(['login'], { replaceUrl: true });
         }
-      } else {
-        this.authProvider.flushLocalStorage();
-        this.router.navigate(['login'], { replaceUrl: true });
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      if (loader) {
-        this.dissmissPopOver();
-        this.isLoading = false;
-      }
-      this.cdr.markForCheck();
-    });
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        if (loader) {
+          this.dissmissPopOver();
+          this.isLoading = false;
+        }
+        this.cdr.markForCheck();
+      });
   }
 
   async openCalendar() {
     if (this.selectedClass.length < 1) {
       this.dataProvider.showToast(this.lang1.select_class || 'الرجاء تحديد صف واحد على الأقل');
     } else {
-
       let studentData = {
-        "user_no": this.userDetails.details.user_no,
-        "session_id": this.userDetails.session_id,
-        "course_id": JSON.stringify(this.selectedClass), // 🟢 الإبقاء على JSON للـ API
-        "school_id": this.userDetails.details.school_id,
-      }
+        user_no: this.userDetails.details.user_no,
+        session_id: this.userDetails.session_id,
+        course_id: JSON.stringify(this.selectedClass), // 🟢 الإبقاء على JSON للـ API
+        school_id: this.userDetails.details.school_id
+      };
 
       try {
         const res = await this.dataProvider.run(() => this.notesApi.getAllClassNotes(studentData));
@@ -191,5 +207,4 @@ export class TasksCalendarPage implements OnInit {
       });
     }
   }
-
 }

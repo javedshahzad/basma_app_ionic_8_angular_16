@@ -13,18 +13,22 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-view-application-details',
   templateUrl: './view-application-details.page.html',
   styleUrls: ['./view-application-details.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ViewApplicationDetailsPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   AppData: any;
   formattedSeminars: string[] = [];
 
-  // 🔴 متغيرات التحكم في نافذة عرض الصورة 
+  // 🔴 متغيرات التحكم في نافذة عرض الصورة
   showImageViewer: boolean = false;
   viewImageUrl: string = '';
 
-  constructor(public navCtrl: NavController,
+  constructor(
+    public navCtrl: NavController,
     public dataProvider: DataService,
     public authProvider: AuthService,
     public translate: TranslateService,
@@ -35,13 +39,13 @@ export class ViewApplicationDetailsPage implements OnInit {
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     private cdr: ChangeDetectorRef
   ) {
-      // 🟢 3. قراءة البيانات بشكل آمن ومباشر من الـ Router خارج الـ subscribe لمنع خطأ الـ Null
-      const navigation = this.router.getCurrentNavigation();
-      if (navigation && navigation.extras && navigation.extras.state) {
-        this.AppData = navigation.extras.state['AppData'];
-        this.processSeminars(); 
-      }
+    // 🟢 3. قراءة البيانات بشكل آمن ومباشر من الـ Router خارج الـ subscribe لمنع خطأ الـ Null
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation && navigation.extras && navigation.extras.state) {
+      this.AppData = navigation.extras.state['AppData'];
+      this.processSeminars();
     }
+  }
 
   // 🟢 4. استخدام التخزين الآمن لحماية الشاشة من الضياع عند عمل Refresh
   async ngOnInit() {
@@ -61,7 +65,7 @@ export class ViewApplicationDetailsPage implements OnInit {
 
   processSeminars() {
     if (!this.AppData || !this.AppData.absent_seminars) return;
-    
+
     let strVal = String(this.AppData.absent_seminars);
     let splitVals = strVal.split(',');
     this.formattedSeminars = [];
@@ -70,12 +74,10 @@ export class ViewApplicationDetailsPage implements OnInit {
       let cleanPart = part.trim();
 
       if (cleanPart.toLowerCase().includes('sem')) {
-        this.formattedSeminars.push(cleanPart.replace(/sem(inar)?\s*-\s*/ig, 'الحصة '));
-      } 
-      else if (!isNaN(Number(cleanPart)) && cleanPart !== '') {
+        this.formattedSeminars.push(cleanPart.replace(/sem(inar)?\s*-\s*/gi, 'الحصة '));
+      } else if (!isNaN(Number(cleanPart)) && cleanPart !== '') {
         this.formattedSeminars.push('الحصة ' + cleanPart);
-      } 
-      else {
+      } else {
         this.formattedSeminars.push(cleanPart);
       }
     });
@@ -93,5 +95,4 @@ export class ViewApplicationDetailsPage implements OnInit {
       this.viewImageUrl = '';
     }, 300); // تأخير بسيط لجمالية الإغلاق (Fade out)
   }
-
 }

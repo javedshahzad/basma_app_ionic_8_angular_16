@@ -6,6 +6,7 @@ import { UserType } from '../../constants/user-type';
   selector: 'app-classlist-options-popover',
   templateUrl: './classlist-options-popover.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ClasslistOptionsPopoverComponent {
   readonly UserType = UserType;

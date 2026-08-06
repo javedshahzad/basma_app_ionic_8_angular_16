@@ -11,10 +11,13 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
   selector: 'app-add-parent',
   templateUrl: './add-parent.page.html',
   styleUrls: ['./add-parent.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class AddParentPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   userdata: any;
   parentForm: FormGroup;
   submitted: boolean = false;
@@ -29,7 +32,7 @@ export class AddParentPage implements OnInit {
   studentSearchQuery: string = '';
   filteredStudents: any[] = [];
   isFetchingStudents: boolean = false;
-  
+
   constructor(
     public formBuilder: FormBuilder,
     public dataProvider: DataService,
@@ -38,13 +41,13 @@ export class AddParentPage implements OnInit {
     private parentManagementApi: ParentManagementApiService,
     private storageSr: StorageService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res)=>{
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
-    this.translate.get("reg_parent").subscribe((res)=>{
+    this.translate.get('reg_parent').subscribe(res => {
       this.lang1 = res;
       this.cdr.markForCheck();
     });
@@ -55,10 +58,10 @@ export class AddParentPage implements OnInit {
       parentID: ['', Validators.required],
       parentName: ['', Validators.required],
       parentPassword: ['', [Validators.required]],
-      selected_student: [[], [Validators.required]], // تم تعديله ليكون مصفوفة افتراضياً
+      selected_student: [[], [Validators.required]] // تم تعديله ليكون مصفوفة افتراضياً
     });
 
-    this.userdata = await this.storageSr.get("userloggedin");
+    this.userdata = await this.storageSr.get('userloggedin');
     if (this.userdata) {
       this.getStudents();
     } else {
@@ -67,27 +70,32 @@ export class AddParentPage implements OnInit {
     this.cdr.markForCheck();
   }
 
-  get f() { return this.parentForm.controls; }
+  get f() {
+    return this.parentForm.controls;
+  }
 
   // 🟢 جلب الأبناء/الطلاب من السيرفر
-  getStudents(){
+  getStudents() {
     this.isFetchingStudents = true;
-  	let data={
-  		'school_id': this.userdata.details.school_id
-  	}
-    this.schoolDirectoryApi.getSchoolStudents(data).then(res => {
-      this.isFetchingStudents = false;
-      if(res.data){
-        this.students = res.data;
-        this.filteredStudents = [...this.students];
-      }
-      this.cdr.markForCheck();
-    }).catch(error=>{
-      this.isFetchingStudents = false;
-      this.dataProvider.showToast(error);
-      console.log(error);
-      this.cdr.markForCheck();
-    })
+    let data = {
+      school_id: this.userdata.details.school_id
+    };
+    this.schoolDirectoryApi
+      .getSchoolStudents(data)
+      .then(res => {
+        this.isFetchingStudents = false;
+        if (res.data) {
+          this.students = res.data;
+          this.filteredStudents = [...this.students];
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        this.isFetchingStudents = false;
+        this.dataProvider.showToast(error);
+        console.log(error);
+        this.cdr.markForCheck();
+      });
   }
 
   // =====================================
@@ -104,9 +112,7 @@ export class AddParentPage implements OnInit {
       this.filteredStudents = [...this.students];
     } else {
       const query = this.studentSearchQuery.toLowerCase();
-      this.filteredStudents = this.students.filter(s => 
-        s.name && s.name.toLowerCase().includes(query)
-      );
+      this.filteredStudents = this.students.filter(s => s.name && s.name.toLowerCase().includes(query));
     }
   }
 
@@ -118,13 +124,13 @@ export class AddParentPage implements OnInit {
   toggleStudent(student: any) {
     let currentSelection = [...(this.f['selected_student'].value || [])];
     const index = currentSelection.findIndex((s: any) => s.sid === student.sid);
-    
+
     if (index > -1) {
       currentSelection.splice(index, 1);
     } else {
       currentSelection.push(student);
     }
-    
+
     // تحديث قيمة الـ FormGroup
     this.parentForm.patchValue({ selected_student: currentSelection });
     this.parentForm.get('selected_student').markAsTouched();
@@ -135,17 +141,17 @@ export class AddParentPage implements OnInit {
   // =====================================
   removeStudent(student: any, event: Event) {
     // إيقاف الحدث حتى لا يتم فتح النافذة بالخطأ عند الضغط على زر الحذف
-    event.stopPropagation(); 
-    
+    event.stopPropagation();
+
     // جلب القائمة الحالية للطلاب المحددين
     let currentSelection = [...(this.f['selected_student'].value || [])];
-    
+
     // البحث عن الطالب المراد حذفه
     const index = currentSelection.findIndex((s: any) => s.sid === student.sid);
-    
+
     if (index > -1) {
       currentSelection.splice(index, 1); // حذفه من المصفوفة
-      
+
       // تحديث قيمة الـ Form وعكس التغيير على الواجهة
       this.parentForm.patchValue({ selected_student: currentSelection });
       this.parentForm.get('selected_student').markAsTouched();
@@ -167,45 +173,47 @@ export class AddParentPage implements OnInit {
   // 🟢 إرسال البيانات
   // =====================================
   onSubmit() {
-    this.submitted = true;  
-    
-    if(this.parentForm.invalid || this.f['selected_student'].value.length === 0) {
-        this.dataProvider.showToast('الرجاء تعبئة جميع الحقول المطلوبة');
-        return;
+    this.submitted = true;
+
+    if (this.parentForm.invalid || this.f['selected_student'].value.length === 0) {
+      this.dataProvider.showToast('الرجاء تعبئة جميع الحقول المطلوبة');
+      return;
     } else {
       this.signUpData = {
-        "parentID" : this.f['parentID'].value,
-        "parentName" : this.f['parentName'].value,
-        "password" : this.f['parentPassword'].value,
-        "selected_students" : JSON.stringify(this.f['selected_student'].value),
-        "school_id" : this.userdata.details.school_id,
-        "user_no" : this.userdata.details.user_no
-      }
+        parentID: this.f['parentID'].value,
+        parentName: this.f['parentName'].value,
+        password: this.f['parentPassword'].value,
+        selected_students: JSON.stringify(this.f['selected_student'].value),
+        school_id: this.userdata.details.school_id,
+        user_no: this.userdata.details.user_no
+      };
 
-      this.show_loading = true; 
-      
-      this.parentManagementApi.createNewParent(this.signUpData).then((response)=>{
-        this.show_loading = false;
-        this.dataProvider.showToast(response);
-        
-        // 🟢 إرسال إشارة صريحة للقائمة بأن هناك بيانات جديدة يجب تحميلها
-        const navigationExtras = {
-          state: { isUpdated: true }
-        };
-        this.router.navigate(['requested-parent'], navigationExtras);
-        this.cdr.markForCheck();
-      }).catch((err)=>{
-        this.show_loading = false;
-        this.dataProvider.errorALertMessage(err);
-        this.cdr.markForCheck();
-      });
+      this.show_loading = true;
+
+      this.parentManagementApi
+        .createNewParent(this.signUpData)
+        .then(response => {
+          this.show_loading = false;
+          this.dataProvider.showToast(response);
+
+          // 🟢 إرسال إشارة صريحة للقائمة بأن هناك بيانات جديدة يجب تحميلها
+          const navigationExtras = {
+            state: { isUpdated: true }
+          };
+          this.router.navigate(['requested-parent'], navigationExtras);
+          this.cdr.markForCheck();
+        })
+        .catch(err => {
+          this.show_loading = false;
+          this.dataProvider.errorALertMessage(err);
+          this.cdr.markForCheck();
+        });
     }
   }
 
   _keyPress(event: any) {
-    var charCode = (event.which) ? event.which : event.keyCode
-    if (charCode > 31 && (charCode < 48 || charCode > 57))
-      return false;
+    var charCode = event.which ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) return false;
     return true;
   }
 }

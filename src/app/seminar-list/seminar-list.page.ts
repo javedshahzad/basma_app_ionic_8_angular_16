@@ -16,16 +16,19 @@ import { HolidaysApiService } from '../service/holidays-api/holidays-api.service
   selector: 'app-seminar-list',
   templateUrl: './seminar-list.page.html',
   styleUrls: ['./seminar-list.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SeminarListPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   navData: any;
   lang: any;
   userDetails: any;
   userType: any;
   holidayString: any = '';
-  currentEvents = <any>[]; 
+  currentEvents = <any>[];
   isHoliday: boolean = false;
   seminarList = <any>[];
 
@@ -35,16 +38,16 @@ export class SeminarListPage implements OnInit {
   showCalenderModal: boolean = false;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public dataProvider: DataService,
-    public authProvider: AuthService, 
+    public authProvider: AuthService,
     public translate: TranslateService,
-    public alertCtrl: AlertController, 
+    public alertCtrl: AlertController,
     public network: Network,
     private printer: Printer,
     private route: ActivatedRoute,
     private router: Router,
-    public zone: NgZone, 
+    public zone: NgZone,
     public platform: Platform,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
     private holidaysApi: HolidaysApiService,
@@ -58,24 +61,24 @@ export class SeminarListPage implements OnInit {
     }
 
     this.dateSelected = new Date();
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
   }
 
   // 🟢 4. جعل الدالة async للتخلص من localStorage واستخدام القراءة الآمنة
-  async ngOnInit() { 
+  async ngOnInit() {
     // 🌟 توليد التاريخ المحلي الصافي YYYY-MM-DD لمنع قفز الأشهر
     const now = new Date();
     const year = now.getFullYear();
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
-    
+
     this.calendarDate = `${year}-${month}-${day}`;
     this.dateSelected = new Date(this.calendarDate);
 
-    // 🟢 حماية بيانات الـ Router من الضياع عند الـ Refresh 
+    // 🟢 حماية بيانات الـ Router من الضياع عند الـ Refresh
     if (this.navData) {
       await this.storageSr.set('currentSeminarData', this.navData);
     } else {
@@ -85,38 +88,40 @@ export class SeminarListPage implements OnInit {
       }
     }
 
-    let userLoggedIn = await this.storageSr.get("userloggedin"); // 👈 القراءة الآمنة
+    let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
-      
+
       let data = {
-        "user_no": this.userDetails.details.user_no,
-        "school_id": this.userDetails.details.school_id,
-        "session_id": this.userDetails.session_id
+        user_no: this.userDetails.details.user_no,
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id
       };
 
-      this.holidaysApi.getHolidays(data).then(response => {
-        if (response) {
-          this.holidayString = response.holiday_string || '';
+      this.holidaysApi
+        .getHolidays(data)
+        .then(response => {
+          if (response) {
+            this.holidayString = response.holiday_string || '';
 
-          const year = this.dateSelected.getFullYear();
-          const month = String(this.dateSelected.getMonth() + 1).padStart(2, '0');
-          const day = String(this.dateSelected.getDate()).padStart(2, '0');
-          const formattedDate = `${year}-${month}-${day}`;
+            const year = this.dateSelected.getFullYear();
+            const month = String(this.dateSelected.getMonth() + 1).padStart(2, '0');
+            const day = String(this.dateSelected.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
 
-          this.isHoliday = this.holidayString.includes(formattedDate);
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        this.dataProvider.hideLoading();
-        console.error('API Error:', error);
-        this.dataProvider.errorALertMessage(error);
-        this.cdr.markForCheck();
-      });
+            this.isHoliday = this.holidayString.includes(formattedDate);
+          }
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          this.dataProvider.hideLoading();
+          console.error('API Error:', error);
+          this.dataProvider.errorALertMessage(error);
+          this.cdr.markForCheck();
+        });
 
       this.getClasses();
-
     } else {
       this.dataProvider.hideLoading();
       this.authProvider.flushLocalStorage();
@@ -127,36 +132,39 @@ export class SeminarListPage implements OnInit {
 
   getClasses(loader: boolean = true) {
     if (loader) this.dataProvider.showLoading();
-    
+
     let studentData = {
-      "date": this.dataProvider.getFormatedDate(this.dateSelected),
-      "user_no": this.userDetails.details.user_no,
-      "session_id": this.userDetails.session_id,
-      "seminar_no": this.navData,
-      "school_id": this.userDetails.details.school_id,
-    }
-    
-    this.dataProvider.getSeminarClassList(studentData).then(res => {
-      if (loader) this.dataProvider.hideLoading();
-      
-      if (res?.session) {
-        console.log('seminar class', res.data);
-        this.seminarList = res.data;
-      } else {
-        this.seminarList = [];
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      if (loader) this.dataProvider.hideLoading();
-      console.error('API Error:', error);
-      this.cdr.markForCheck();
-    });
+      date: this.dataProvider.getFormatedDate(this.dateSelected),
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id,
+      seminar_no: this.navData,
+      school_id: this.userDetails.details.school_id
+    };
+
+    this.dataProvider
+      .getSeminarClassList(studentData)
+      .then(res => {
+        if (loader) this.dataProvider.hideLoading();
+
+        if (res?.session) {
+          console.log('seminar class', res.data);
+          this.seminarList = res.data;
+        } else {
+          this.seminarList = [];
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        if (loader) this.dataProvider.hideLoading();
+        console.error('API Error:', error);
+        this.cdr.markForCheck();
+      });
   }
 
   onDaySelect(event: any) {
     if (event && event.detail && event.detail.value) {
       let selectedIsoDate = event.detail.value;
-      let dateString = selectedIsoDate.split('T')[0]; 
+      let dateString = selectedIsoDate.split('T')[0];
       let dateObj = new Date(selectedIsoDate);
       let currentDate = new Date();
 
@@ -164,18 +172,18 @@ export class SeminarListPage implements OnInit {
       currentDate.setHours(0, 0, 0, 0);
 
       if (this.holidayString && this.holidayString.indexOf(dateString) > -1) {
-        this.dataProvider.showToast(this.lang.holiday || "هذا اليوم عطلة");
-        return; 
+        this.dataProvider.showToast(this.lang.holiday || 'هذا اليوم عطلة');
+        return;
       }
 
       if (dateObj.getTime() <= currentDate.getTime()) {
         this.calendarDate = dateString;
         this.dateSelected = dateObj;
-        
+
         this.hideCalenderModal();
-        this.getClasses(); 
+        this.getClasses();
       } else {
-        this.dataProvider.showToast(this.lang.future_date || "لا يمكن اختيار تاريخ مستقبلي");
+        this.dataProvider.showToast(this.lang.future_date || 'لا يمكن اختيار تاريخ مستقبلي');
       }
     }
   }
@@ -191,29 +199,31 @@ export class SeminarListPage implements OnInit {
   // 🟢 5. تأمين دالة الطباعة ودعم المتصفح
   printReport() {
     const printSection = document.getElementById('printSection');
-    
-    if(!printSection) {
+
+    if (!printSection) {
       this.dataProvider.showToast('تعذر العثور على محتوى للطباعة');
       return;
     }
 
-    this.dataProvider.run<string>(() => domtoimage.toPng(printSection)).then((dataUrl) => {
-      if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        let printUrl = dataUrl.replace("data:image/png;base64,","base64://");
-        let options: PrintOptions = { orientation: 'portrait' };
-        
-        this.printer.print(printUrl.replace(/(\r\n|\n|\r)/gm, ''), options).then(
-          (onSuccess: any) => console.log('printer.print', onSuccess),
-          (e: any) => {
-            console.log('printer.print error', e);
-            this.dataProvider.showToast('تعذرت الطباعة من الجهاز');
-          }
-        );
-      } else {
-        // دعم طباعة المتصفح
-        let printWindow = window.open('', '_blank');
-        if (printWindow) {
-          printWindow.document.write(`
+    this.dataProvider
+      .run<string>(() => domtoimage.toPng(printSection))
+      .then(dataUrl => {
+        if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+          let printUrl = dataUrl.replace('data:image/png;base64,', 'base64://');
+          let options: PrintOptions = { orientation: 'portrait' };
+
+          this.printer.print(printUrl.replace(/(\r\n|\n|\r)/gm, ''), options).then(
+            (onSuccess: any) => console.log('printer.print', onSuccess),
+            (e: any) => {
+              console.log('printer.print error', e);
+              this.dataProvider.showToast('تعذرت الطباعة من الجهاز');
+            }
+          );
+        } else {
+          // دعم طباعة المتصفح
+          let printWindow = window.open('', '_blank');
+          if (printWindow) {
+            printWindow.document.write(`
             <html>
               <head>
                 <title>طباعة التقرير</title>
@@ -227,17 +237,18 @@ export class SeminarListPage implements OnInit {
               </body>
             </html>
           `);
-          printWindow.document.close();
-          printWindow.focus();
-          setTimeout(() => printWindow.print(), 500);
-        } else {
-          this.dataProvider.showToast('يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => printWindow.print(), 500);
+          } else {
+            this.dataProvider.showToast('يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
+          }
         }
-      }
-    }).catch((error) => {
-      console.error('oops, something went wrong!', error);
-      this.dataProvider.showToast('تعذر إنشاء صورة للطباعة');
-    });
+      })
+      .catch(error => {
+        console.error('oops, something went wrong!', error);
+        this.dataProvider.showToast('تعذر إنشاء صورة للطباعة');
+      });
   }
 
   checkDateSelected = (date: Date) => date.toDateString() === this.dateSelected.toDateString();

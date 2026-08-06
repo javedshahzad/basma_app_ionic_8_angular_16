@@ -7,13 +7,14 @@ import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
-import { StorageService } from '../service/storage.service'; 
+import { StorageService } from '../service/storage.service';
 
 @Component({
   selector: 'app-school-registration',
   templateUrl: './school-registration.page.html',
   styleUrls: ['./school-registration.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SchoolRegistrationPage implements OnInit {
   school: any = {
@@ -26,11 +27,11 @@ export class SchoolRegistrationPage implements OnInit {
     school_image: '',
     country_code: ''
   };
-  
+
   school_logo: any = './assets/imgs/logo.png';
   school_image: any = '';
   lang: any = {};
-  selected_country = { code: "", name: "" };
+  selected_country = { code: '', name: '' };
   countries: any[] = [];
   countryDetails: any = {};
   AgreeOnTosPP = true;
@@ -46,7 +47,7 @@ export class SchoolRegistrationPage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين الجديدة
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -58,7 +59,7 @@ export class SchoolRegistrationPage implements OnInit {
 
   // 🟢 جلب اللغة والدولة بشكل آمن
   async getCountry() {
-    let currentLang = await this.storageSr.get('language') || 'ar';
+    let currentLang = (await this.storageSr.get('language')) || 'ar';
     if (currentLang === 'en') {
       this.countries = this.geo.getEnCountries();
     } else {
@@ -80,7 +81,7 @@ export class SchoolRegistrationPage implements OnInit {
   }
 
   openUrl(url) {
-    window.open(url, "_system");
+    window.open(url, '_system');
   }
 
   // 🟢 عملية التسجيل المحدثة
@@ -89,7 +90,7 @@ export class SchoolRegistrationPage implements OnInit {
       this.presentAlert(this.lang.select_country || 'الرجاء اختيار الدولة', false);
       return;
     }
-    
+
     if (this.AgreeOnTosPP === false) {
       this.presentAlert(this.lang.agree_terms_error || 'الرجاء الموافقة على الشروط والأحكام', false);
       return;
@@ -101,7 +102,9 @@ export class SchoolRegistrationPage implements OnInit {
       const response = await this.dataProvider.run(() => this.authProvider.registerSchool(this.school));
       this.presentAlert(response, true);
       // التوجيه لصفحة تسجيل الدخول بعد النجاح
-      setTimeout(() => { this.router.navigate(['login']); }, 2000);
+      setTimeout(() => {
+        this.router.navigate(['login']);
+      }, 2000);
     } catch (err) {
       this.dataProvider.errorALertMessage(err);
     }
@@ -122,8 +125,18 @@ export class SchoolRegistrationPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: this.lang.image_option || 'خيارات الصورة',
       buttons: [
-        { text: this.lang.camera || 'الكاميرا', handler: () => { this.openCamera(type); } },
-        { text: this.lang.gallery || 'المعرض', handler: () => { this.openGallery(type); } }
+        {
+          text: this.lang.camera || 'الكاميرا',
+          handler: () => {
+            this.openCamera(type);
+          }
+        },
+        {
+          text: this.lang.gallery || 'المعرض',
+          handler: () => {
+            this.openGallery(type);
+          }
+        }
       ]
     });
     await alert.present();
@@ -133,7 +146,7 @@ export class SchoolRegistrationPage implements OnInit {
     const options: ImageOptions = {
       quality: 100,
       resultType: CameraResultType.Base64,
-      source: CameraSource.Camera,
+      source: CameraSource.Camera
     };
     const image = await Camera.getPhoto(options);
     if (image) {
@@ -145,7 +158,7 @@ export class SchoolRegistrationPage implements OnInit {
     const options: ImageOptions = {
       quality: 79,
       resultType: CameraResultType.Base64,
-      source: CameraSource.Photos,
+      source: CameraSource.Photos
     };
     const image = await Camera.getPhoto(options);
     if (image) {

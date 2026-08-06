@@ -5,6 +5,7 @@ import { UserType } from '../../constants/user-type';
 @Component({
   selector: 'app-supervisor-view',
   templateUrl: './supervisor-view.component.html',
+  standalone: false
 })
 export class SupervisorViewComponent {
   readonly UserType = UserType;
@@ -19,10 +20,10 @@ export class SupervisorViewComponent {
   @Output() onChangeAttendanceStatusAll = new EventEmitter<number>();
   @Output() onStudentClick = new EventEmitter<string>();
   @Output() onImageClick = new EventEmitter<any>();
-  @Output() onNoteClick = new EventEmitter<{event: any, student: any}>();
-  @Output() onChangeAttendanceStatus = new EventEmitter<{student: any, sem: number, index: number}>();
+  @Output() onNoteClick = new EventEmitter<{ event: any; student: any }>();
+  @Output() onChangeAttendanceStatus = new EventEmitter<{ student: any; sem: number; index: number }>();
 
-  constructor(public gamification: GamificationEngineService,) {}
+  constructor(public gamification: GamificationEngineService) {}
 
   // 🟢 تقنية لتسريع أداء قائمة الطلاب (تمنع إعادة رسم الشاشة بالكامل)
   trackByStudent(index: number, student: any) {
@@ -31,7 +32,7 @@ export class SupervisorViewComponent {
 
   // 🟢 تقنية لتسريع أداء قائمة الحصص
   trackByPeriod(index: number, period: any) {
-    return index; 
+    return index;
   }
 
   getTotalPoints(): number {

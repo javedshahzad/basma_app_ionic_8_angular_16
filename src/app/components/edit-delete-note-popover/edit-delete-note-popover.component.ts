@@ -7,14 +7,12 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-edit-delete-note-popover',
   templateUrl: './edit-delete-note-popover.component.html',
-  styleUrls: ['./edit-delete-note-popover.component.scss'],
-  standalone: true, // إضافة هذا السطر
+  styleUrls: ['./edit-delete-note-popover.component.scss'], // إضافة هذا السطر
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditDeleteNotePopoverComponent implements OnInit {
-
-  constructor(private popoverController: PopoverController) { }
+  constructor(private popoverController: PopoverController) {}
 
   ngOnInit() {}
 

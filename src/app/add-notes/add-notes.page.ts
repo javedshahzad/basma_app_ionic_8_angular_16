@@ -18,19 +18,13 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-add-notes',
   templateUrl: './add-notes.page.html',
   styleUrls: ['./add-notes.page.scss'],
-  standalone: true, 
-  imports: [
-    CommonModule, 
-    FormsModule, 
-    IonicModule, 
-    TranslateModule, 
-    IonicSelectableComponent,
-    PipesModule
-  ],
+  imports: [CommonModule, FormsModule, IonicModule, TranslateModule, IonicSelectableComponent, PipesModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddNotesPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   private destroyRef = inject(DestroyRef);
   notes: any = {
     sendTo: '',
@@ -42,10 +36,10 @@ export class AddNotesPage implements OnInit {
     school_id: '',
     classId: '',
     type: '',
-    examNoteDate:'',
+    examNoteDate: '',
     semno: ''
   };
-  
+
   lang: any = {};
   userDetails: any = {};
   ticketImage: string = ''; // سنخزن هنا الـ Base64 الصافي
@@ -71,7 +65,7 @@ export class AddNotesPage implements OnInit {
     private storageSr: StorageService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -94,13 +88,13 @@ export class AddNotesPage implements OnInit {
     this.notes.examNoteDate = dayjs(new Date()).toISOString();
   }
 
-  getSeminars(){
+  getSeminars() {
     return Array(parseInt(localStorage.getItem('class_total_sem') || '0'));
   }
 
   async ionViewWillEnter() {
-    let userData = await this.storageSr.get("userloggedin");
-    if(userData) {
+    let userData = await this.storageSr.get('userloggedin');
+    if (userData) {
       this.userDetails = userData;
     }
     this.cdr.markForCheck();
@@ -110,15 +104,15 @@ export class AddNotesPage implements OnInit {
     if (!this.notes.sendTo) {
       this.dataProvider.showToast(this.lang.select_type);
     } else {
-      if(this.notes.sendTo === 'exam'){
-        if(!this.notes.seminir_no) return;
-        if(this.notes.examNoteDate === '') return;
+      if (this.notes.sendTo === 'exam') {
+        if (!this.notes.seminir_no) return;
+        if (this.notes.examNoteDate === '') return;
       }
-      
+
       this.notes.classId = this.class_id;
       this.notes.user_no = this.userDetails.details.user_no;
       this.notes.school_id = this.userDetails.details.school_id;
-      
+
       let media: any;
       if (this.notes.ticketImage && this.notes.ticketImage != '') {
         media = this.notes.ticketImage;
@@ -138,8 +132,18 @@ export class AddNotesPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: this.lang.image_option,
       buttons: [
-        { text: this.lang.camera, handler: () => { this.openCamera(CameraSource.Camera); } },
-        { text: this.lang.gallery, handler: () => { this.openCamera(CameraSource.Photos); } },
+        {
+          text: this.lang.camera,
+          handler: () => {
+            this.openCamera(CameraSource.Camera);
+          }
+        },
+        {
+          text: this.lang.gallery,
+          handler: () => {
+            this.openCamera(CameraSource.Photos);
+          }
+        },
         { text: this.lang.cancel || 'إلغاء', role: 'cancel', cssClass: 'text-rose-500 font-bold' }
       ]
     });
@@ -184,9 +188,9 @@ export class AddNotesPage implements OnInit {
 
   onSelectFiles(ev: any) {
     let files: any = ev && ev.target && ev.target.files ? ev.target.files : <any>{};
-    if(files.length === 0) return;
-    
-    let ext = files[0].name.split(".").reverse()[0];
+    if (files.length === 0) return;
+
+    let ext = files[0].name.split('.').reverse()[0];
     if (ext == 'pdf' || ext == 'PDF') {
       this.notes.pdf = files[0];
       this.mediaType = 'application/pdf';
@@ -203,38 +207,41 @@ export class AddNotesPage implements OnInit {
     this.formdata.append('sendTo', this.notes.sendTo);
     this.formdata.append('description', this.notes.description);
     this.formdata.append('studentIds', (this.notes.studentIds || []).join('#'));
-    
-    if(this.notes.ticketImage) {
-        this.formdata.append('ticketImage', this.notes.ticketImage);
+
+    if (this.notes.ticketImage) {
+      this.formdata.append('ticketImage', this.notes.ticketImage);
     }
-    
+
     this.formdata.append('user_no', this.userDetails.details.user_no);
     this.formdata.append('classId', this.class_id);
     this.formdata.append('school_id', this.userDetails.details.school_id);
     this.formdata.append('type', this.mediaType);
     this.formdata.append('examNoteDate', this.notes.examNoteDate);
     this.formdata.append('seminir_no', this.notes.seminir_no);
-    
+
     if (imgBlob) {
       this.formdata.append('file', imgBlob, fileName);
     } else if (this.notes.pdf) {
       this.formdata.append('file', this.notes.pdf);
     }
-    
+
     this.dataProvider.showLoading();
-    this.dataProvider.createclassNotes(this.formdata).subscribe(res => {
-      this.dataProvider.hideLoading();
-      this.dataProvider.showToast(this.lang.note_created);
-      const navigation: NavigationExtras = {
-        state: { isUpdated: true, course: { cid: this.class_id } }
-      };
-      this.router.navigate(['view-notes'], navigation);
-    }, e => {
-      this.dataProvider.hideLoading();
-      this.dataProvider.showToast(this.lang.usnexpectedError);
-      this.uploadStaus = false;
-      this.cdr.markForCheck();
-    });
+    this.dataProvider.createclassNotes(this.formdata).subscribe(
+      res => {
+        this.dataProvider.hideLoading();
+        this.dataProvider.showToast(this.lang.note_created);
+        const navigation: NavigationExtras = {
+          state: { isUpdated: true, course: { cid: this.class_id } }
+        };
+        this.router.navigate(['view-notes'], navigation);
+      },
+      e => {
+        this.dataProvider.hideLoading();
+        this.dataProvider.showToast(this.lang.usnexpectedError);
+        this.uploadStaus = false;
+        this.cdr.markForCheck();
+      }
+    );
   }
 
   startUpload(imgBase64) {
@@ -249,6 +256,6 @@ export class AddNotesPage implements OnInit {
     const blob = this.dataProvider.dataURItoBlob('data:image/jpeg;base64,' + fileBase64);
     this.uploadPdfToServer(blob, this.dataProvider.generateRandomFileName('jpg'));
   }
- 
+
   ngOnInit() {}
 }

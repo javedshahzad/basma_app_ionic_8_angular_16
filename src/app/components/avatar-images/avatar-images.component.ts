@@ -10,25 +10,26 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-avatar-images',
   templateUrl: './avatar-images.component.html',
-  styleUrls: ['./avatar-images.component.scss'],
-  standalone: true, // إضافة هذا السطر
+  styleUrls: ['./avatar-images.component.scss'], // إضافة هذا السطر
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AvatarImagesComponent implements OnInit {
-  trackByIndex(index: number): number { return index; }
-  imageList = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21];
+  trackByIndex(index: number): number {
+    return index;
+  }
+  imageList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21];
   DocUrl: string;
-  
+
   // 🔴 متغير جديد لتتبع الصورة التي تم النقر عليها
-  selectedImageId: number | null = null; 
+  selectedImageId: number | null = null;
 
   constructor(
     public modalController: ModalController,
     public dataProvider: DataService,
     public translate: TranslateService
   ) {
-      this.DocUrl = environment.docUrl;
+    this.DocUrl = environment.docUrl;
   }
 
   ngOnInit() {}
@@ -39,12 +40,12 @@ export class AvatarImagesComponent implements OnInit {
 
   onSelectImage(i: number) {
     // 1. تحديد الصورة النشطة (الشاشة ستتحدث تلقائياً بفضل Angular)
-    this.selectedImageId = i; 
-    
+    this.selectedImageId = i;
+
     // 2. تجهيز الرابط
     let url = `${this.DocUrl}/uploads/avatar/Asset-${i}.png`;
-    console.log("Selected Avatar URL:", url);
-    
+    console.log('Selected Avatar URL:', url);
+
     // 3. إغلاق النافذة وتمرير الصورة بعد تأثير بصري قصير
     setTimeout(() => {
       this.modalController.dismiss({

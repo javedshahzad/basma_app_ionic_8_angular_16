@@ -13,15 +13,18 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-view-bulletin',
   templateUrl: './view-bulletin.page.html',
   styleUrls: ['./view-bulletin.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ViewBulletinPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   lang: any = {};
   bulletin: any = {};
   userDetails: any = {};
   navData: any;
-  
+
   // متغيرات عارض الصور
   showImageViewer: boolean = false;
   viewImageUrl: string = '';
@@ -39,7 +42,7 @@ export class ViewBulletinPage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -56,8 +59,8 @@ export class ViewBulletinPage implements OnInit {
 
   // 🟢 جلب المستخدم وتأمين البيانات من الضياع عند الـ Refresh
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
-    
+    let userLoggedIn = await this.storageSr.get('userloggedin');
+
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
 
@@ -111,7 +114,9 @@ export class ViewBulletinPage implements OnInit {
 
   closeFullscreenImage() {
     this.showImageViewer = false;
-    setTimeout(() => { this.viewImageUrl = ''; }, 300);
+    setTimeout(() => {
+      this.viewImageUrl = '';
+    }, 300);
   }
 
   forwardBulletin() {

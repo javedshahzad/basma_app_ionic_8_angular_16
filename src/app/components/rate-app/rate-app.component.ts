@@ -8,32 +8,30 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-rate-app',
   templateUrl: './rate-app.component.html',
   styleUrls: ['./rate-app.component.scss'],
-  standalone: true,
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RateAppComponent implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   @Input() lang;
   @Input() data;
   noteDescription: any;
-  noteMessage: string = "";
+  noteMessage: string = '';
   providedStars: any = 1;
   showNoteModal: boolean = false;
   selections: any = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
   aggStars: any = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
   ratingStars: number = 1;
-  constructor(public popoverController: PopoverController) {
-  }
+  constructor(public popoverController: PopoverController) {}
 
   ngOnInit() {
-
     console.log(this.lang, this.data);
-    console.log("reate app data::::", this.data);
+    console.log('reate app data::::', this.data);
     this.noteMessage = this.data?.note;
     this.providedStars = this.data?.rating;
-    console.log("this.noteMessage:::", this.noteMessage);
-
+    console.log('this.noteMessage:::', this.noteMessage);
 
     this.selections = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
     for (let i = 0; i < (this.data?.rating || 0); i++) {
@@ -83,11 +81,11 @@ export class RateAppComponent implements OnInit {
   }
 
   closePopup(data) {
-    this.popoverController.dismiss(data)
+    this.popoverController.dismiss(data);
   }
   /* for rating */
   rate() {
-    const inputElement = document.getElementById("textArea") as HTMLInputElement;
+    const inputElement = document.getElementById('textArea') as HTMLInputElement;
     let i = inputElement.value;
     let stars: any;
     if (this.providedStars) {
@@ -98,7 +96,7 @@ export class RateAppComponent implements OnInit {
     let data = {
       stars: stars,
       description: i
-    }
+    };
     // console.log(data);
     this.closePopup(data);
   }
@@ -117,16 +115,15 @@ export class RateAppComponent implements OnInit {
     for (let i = 0; i <= index; i++) {
       this.selections[i] = '#04855f';
     }
-    console.log("stars for rating", this.providedStars);
+    console.log('stars for rating', this.providedStars);
   }
   /* modal open for rating having 5 stars*/
   openNoteModal() {
     this.ratingStars = 1;
-    this.selections = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee']
+    this.selections = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
     this.showNoteModal = true;
   }
   hideNoteModal() {
     this.showNoteModal = false;
   }
-
 }

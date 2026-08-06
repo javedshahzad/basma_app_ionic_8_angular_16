@@ -7,9 +7,8 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-skill-tree-modal',
   templateUrl: './skill-tree-modal.component.html',
-  standalone: true,
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SkillTreeModalComponent {
   @Input() student: any; // لاستقبال بيانات الطالب المختار

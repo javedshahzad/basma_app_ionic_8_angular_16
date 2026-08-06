@@ -1,10 +1,18 @@
 import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, NavParams, AlertController, Platform, PopoverController, ActionSheetController, ModalController } from '@ionic/angular';
+import {
+  NavController,
+  NavParams,
+  AlertController,
+  Platform,
+  PopoverController,
+  ActionSheetController,
+  ModalController
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
-import { CameraResultType , Camera , ImageOptions, CameraSource } from '@capacitor/camera';
+import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
 import { Network } from '@awesome-cordova-plugins/network/ngx';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
@@ -15,7 +23,7 @@ import { AvatarImagesComponent } from '../components/avatar-images/avatar-images
 import { ImageOptionPopoverComponent } from '../components/image-option-popover/image-option-popover.component';
 import { StudentPointsPopoverComponent } from '../components/student-points-popover/student-points-popover.component';
 import { StudentOptionsPopoverComponent } from '../components/student-options-popover/student-options-popover.component';
-import { AddReviewComponent } from '../add-review/add-review.component'; 
+import { AddReviewComponent } from '../add-review/add-review.component';
 import { StudentProfileModalComponent } from '../components/student-profile-modal/student-profile-modal.component';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
@@ -31,6 +39,7 @@ import { UserType } from '../constants/user-type';
   selector: 'app-students',
   templateUrl: './students.page.html',
   styleUrls: ['./students.page.scss'],
+  standalone: false
 })
 export class StudentsPage implements OnInit {
   readonly UserType = UserType;
@@ -48,7 +57,7 @@ export class StudentsPage implements OnInit {
   lang: any = {};
   delayRule: number = 5;
   editMode: boolean = false;
-  holidayString: string = "";
+  holidayString: string = '';
   currentEvents: any = [];
   isHoliday: boolean = false;
   noDataFound: string = '';
@@ -59,7 +68,7 @@ export class StudentsPage implements OnInit {
 
   // متغيرات الملاحظات
   canAddStudentNote: boolean = true;
-  noteMessage: string = "";
+  noteMessage: string = '';
   studentData: any;
   ratingStars: number = 1;
   selections: any = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
@@ -70,88 +79,91 @@ export class StudentsPage implements OnInit {
   viewImageUrl: string = '';
 
   constructor(
-      public navCtrl: NavController, 
-      public dataProvider: DataService,
-      public authProvider: AuthService, 
-      public translate: TranslateService,
-      public alertCtrl: AlertController, 
-      public network: Network,
-      private route : ActivatedRoute,
-      private router: Router,
-      public zone: NgZone, 
-      public platform: Platform,
-      public popoverController: PopoverController,
-      public actionSheetController: ActionSheetController, 
-      public modalController: ModalController,
-      private fileUpload: FileUploadService,
-      private storageSr: StorageService,
-      private cdr: ChangeDetectorRef,
-      private imageService: ImageProcessingService,
-      private studentUi: StudentUiService,
-      private attendanceApi: AttendanceApiService,
-      private holidaysApi: HolidaysApiService,
-      private studentEngagement: StudentEngagementService
-    ) {
-
-      this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
+    public navCtrl: NavController,
+    public dataProvider: DataService,
+    public authProvider: AuthService,
+    public translate: TranslateService,
+    public alertCtrl: AlertController,
+    public network: Network,
+    private route: ActivatedRoute,
+    private router: Router,
+    public zone: NgZone,
+    public platform: Platform,
+    public popoverController: PopoverController,
+    public actionSheetController: ActionSheetController,
+    public modalController: ModalController,
+    private fileUpload: FileUploadService,
+    private storageSr: StorageService,
+    private cdr: ChangeDetectorRef,
+    private imageService: ImageProcessingService,
+    private studentUi: StudentUiService,
+    private attendanceApi: AttendanceApiService,
+    private holidaysApi: HolidaysApiService,
+    private studentEngagement: StudentEngagementService
+  ) {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const nav = this.router.getCurrentNavigation();
       if (nav && nav.extras.state) {
         this.navData = nav.extras.state['course'];
         await this.storageSr.set('currentStudentsCourse', this.navData);
       } else {
         this.navData = await this.storageSr.get('currentStudentsCourse');
-        if(!this.navData) {
+        if (!this.navData) {
           this.navCtrl.back();
           return;
         }
       }
-        
-      let userLoggedIn = await this.storageSr.get("userloggedin"); 
-      
+
+      let userLoggedIn = await this.storageSr.get('userloggedin');
+
       if (userLoggedIn) {
         this.dateSelected = new Date();
         this.userDetails = userLoggedIn;
         this.userType = this.userDetails.details.user_type;
         let data = {
-          "user_no": this.userDetails.details.user_no,
-          "school_id": this.userDetails.details.school_id,
-          "session_id": this.userDetails.session_id
+          user_no: this.userDetails.details.user_no,
+          school_id: this.userDetails.details.school_id,
+          session_id: this.userDetails.session_id
         };
-        this.holidaysApi.getHolidays(data).then(response => {
-          if (response && response.holidays.length > 0) {
-            this.holidayString = response.holiday_string;
-            this.checkIfHoliday();
-          }
-        }).catch(error => {
-          this.dataProvider.hideLoading();
-        });
-        
+        this.holidaysApi
+          .getHolidays(data)
+          .then(response => {
+            if (response && response.holidays.length > 0) {
+              this.holidayString = response.holiday_string;
+              this.checkIfHoliday();
+            }
+          })
+          .catch(error => {
+            this.dataProvider.hideLoading();
+          });
+
         this.show_loading = true;
         this.getStudents();
-        
       } else {
         this.dataProvider.hideLoading();
         this.authProvider.flushLocalStorage();
-        this.router.navigate(['login'],{replaceUrl:true});
+        this.router.navigate(['login'], { replaceUrl: true });
       }
     });
 
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
     });
 
-    this.translate.get("student-details").subscribe((val) => {
+    this.translate.get('student-details').subscribe(val => {
       this.student_detailse = val;
     });
   }
- 
+
   ngOnInit() {}
 
   trackByStudent(index: number, student: any): any {
     return student?.sid ?? index;
   }
 
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
 
   ionViewWillEnter() {
     this.getStudentPoints();
@@ -161,7 +173,7 @@ export class StudentsPage implements OnInit {
   checkIfHoliday() {
     let day: any = this.dateSelected.getDate();
     day = day < 10 ? '0' + day : day;
-    let month: any = this.dateSelected.getMonth() + 1; 
+    let month: any = this.dateSelected.getMonth() + 1;
     month = month < 10 ? '0' + month : month;
     let strint_date = this.dateSelected.getFullYear() + '-' + month + '-' + day;
     this.isHoliday = this.holidayString.indexOf(strint_date) > -1;
@@ -173,28 +185,28 @@ export class StudentsPage implements OnInit {
     });
   }
 
-  async getStudents(loader:boolean = true) {
-    if(loader) this.show_loading = true;
+  async getStudents(loader: boolean = true) {
+    if (loader) this.show_loading = true;
     let course = this.navData;
     this.courseInfo = course;
     let studentData = {
-      "date": this.dataProvider.getFormatedDate(this.dateSelected),
-      "user_no": this.userDetails.details.user_no,
-      "session_id": this.userDetails.session_id,
-      "course_id": course.cid,
-      "school_id": this.userDetails.details.school_id
+      date: this.dataProvider.getFormatedDate(this.dateSelected),
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id,
+      course_id: course.cid,
+      school_id: this.userDetails.details.school_id
     };
-    
-    let delayClassLocalAtt = await this.storageSr.get("delayclasslocalatt");
-    if(delayClassLocalAtt){
+
+    let delayClassLocalAtt = await this.storageSr.get('delayclasslocalatt');
+    if (delayClassLocalAtt) {
       let attendance = delayClassLocalAtt;
-      Object.keys(attendance).map(async (courseId)=>{
-        if(!this.checkCurrentDate(new Date(attendance[courseId].date))){
-          await this.storageSr.remove("delayclasslocalatt");
+      Object.keys(attendance).map(async courseId => {
+        if (!this.checkCurrentDate(new Date(attendance[courseId].date))) {
+          await this.storageSr.remove('delayclasslocalatt');
         }
       });
     }
-    
+
     this.dataProvider.getDelayClassStudentList(studentData).then(async res => {
       this.show_loading = false;
       if (res.success) {
@@ -203,22 +215,22 @@ export class StudentsPage implements OnInit {
         this.students = responseData.students;
         this.attMarkBegin = false;
         this.attendanceSheet = {};
-        
+
         if (this.students.length == 0) {
           this.noDataFound = this.lang.no_students_in_class;
         }
-        
-        if(this.checkDateSelected(new Date())){
-          let currentDelayClassLocalAtt = await this.storageSr.get("delayclasslocalatt") || {}; 
+
+        if (this.checkDateSelected(new Date())) {
+          let currentDelayClassLocalAtt = (await this.storageSr.get('delayclasslocalatt')) || {};
           responseData.date = this.dataProvider.getFormatedDate(this.dateSelected);
           currentDelayClassLocalAtt[course.cid] = responseData;
-          await this.storageSr.set("delayclasslocalatt", currentDelayClassLocalAtt); 
+          await this.storageSr.set('delayclasslocalatt', currentDelayClassLocalAtt);
         }
       } else {
         this.show_loading = false;
         this.authProvider.flushLocalStorage();
         this.dataProvider.errorALertMessage(res.message);
-        this.router.navigate(['login'],{replaceUrl:true});
+        this.router.navigate(['login'], { replaceUrl: true });
       }
     });
   }
@@ -231,25 +243,25 @@ export class StudentsPage implements OnInit {
         // إذا قام بإلغاء التعديل، نصفر التغييرات ونعيد تحميل البيانات
         this.attendanceSheet = {};
         this.attMarkBegin = false;
-        this.dataProvider.showToast("تم إلغاء التعديلات");
+        this.dataProvider.showToast('تم إلغاء التعديلات');
         this.getStudents(false);
       } else {
-        this.dataProvider.showToast(this.lang.edit_mode_enabled || "تم تفعيل وضع التعديل");
+        this.dataProvider.showToast(this.lang.edit_mode_enabled || 'تم تفعيل وضع التعديل');
       }
     } else {
-      this.dataProvider.showToast(this.lang.not_permission_to_enable || "ليس لديك صلاحية لتفعيل هذا النمط");
+      this.dataProvider.showToast(this.lang.not_permission_to_enable || 'ليس لديك صلاحية لتفعيل هذا النمط');
     }
   }
 
   // 🟢 تعديل دالة النقر على الغياب لتدعم الرسائل الذكية
   changeAttendanceStatus(student: any) {
     if (this.isHoliday) {
-      this.dataProvider.showToast(this.lang.holiday || "لا يمكن التعديل في يوم عطلة");
+      this.dataProvider.showToast(this.lang.holiday || 'لا يمكن التعديل في يوم عطلة');
       return;
     }
 
     if (student.suspend_leave || student.medical_leave) {
-      this.dataProvider.showToast(this.lang.att_modification_error || "الطالب مجاز طبياً أو موقوف");
+      this.dataProvider.showToast(this.lang.att_modification_error || 'الطالب مجاز طبياً أو موقوف');
       return;
     }
 
@@ -257,21 +269,21 @@ export class StudentsPage implements OnInit {
       if (this.editMode) {
         this.toggleAttendance(student);
       } else {
-        this.dataProvider.showToast("يرجى تفعيل وضع التعديل من الزر بالأسفل أولاً");
+        this.dataProvider.showToast('يرجى تفعيل وضع التعديل من الزر بالأسفل أولاً');
       }
     } else if (this.userType == UserType.Moderator && this.checkDateSelected(new Date())) {
       // 🟢 المشرف الإداري لا يحتاج لتفعيل نمط التعديل
       this.toggleAttendance(student);
     } else {
-      this.dataProvider.showToast(this.lang.att_modification_error || "لا تملك صلاحية التعديل");
+      this.dataProvider.showToast(this.lang.att_modification_error || 'لا تملك صلاحية التعديل');
     }
   }
 
-  openStudentDetail(student_id: string,student: any) {
+  openStudentDetail(student_id: string, student: any) {
     if (!this.attMarkBegin) {
       const navigation: NavigationExtras = {
-      state : {
-         student_id: student_id,
+        state: {
+          student_id: student_id,
           course_id: this.navData.cid,
           dateSelected: this.dataProvider.getFormatedDate(this.dateSelected),
           total_delay: student.total_delay
@@ -280,16 +292,15 @@ export class StudentsPage implements OnInit {
       this.zone.run(() => {
         this.router.navigate(['student-detail'], navigation);
       });
-    } else {  
-      this.dataProvider.showToast(this.lang.complete_att_submission || "يرجى حفظ الغياب أولاً");
+    } else {
+      this.dataProvider.showToast(this.lang.complete_att_submission || 'يرجى حفظ الغياب أولاً');
     }
   }
 
   async openUserImageModal(student: any) {
     if (!this.attMarkBegin) {
-
       // 🟢🟢 السطر السحري المفقود الذي يحل المشكلة جذرياً 🟢🟢
-      this.student = student; 
+      this.student = student;
 
       let behaviour = this.lang.no_behaviour;
       if (student.agg_ranking > 0 && student.agg_ranking < 2.6) behaviour = this.lang.warning_behaviour;
@@ -306,8 +317,12 @@ export class StudentsPage implements OnInit {
           student: this.student, // 🟢 تم التمرير من المتغير المربوط بالواجهة
           userType: this.userType,
           editMode: this.editMode,
-          onPhotoClick: (event: any) => { this.takePicture(event); },
-          onFullscreenClick: (url: string) => { this.openFullscreenImage(url); }
+          onPhotoClick: (event: any) => {
+            this.takePicture(event);
+          },
+          onFullscreenClick: (url: string) => {
+            this.openFullscreenImage(url);
+          }
         }
       });
       return await modal.present();
@@ -325,14 +340,14 @@ export class StudentsPage implements OnInit {
     this.showImageViewer = false;
     setTimeout(() => {
       this.viewImageUrl = '';
-    }, 300); 
+    }, 300);
   }
 
   openCalenderModal() {
-    if (this.platform.is('cordova') || this.platform.is('capacitor')) { 
+    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
       if (this.network.type === this.network.Connection.NONE || this.network.type === this.network.Connection.UNKNOWN) {
         this.dataProvider.showToast(this.lang.no_internet);
-        return; 
+        return;
       }
     }
     this.showCalenderModal = true;
@@ -346,16 +361,16 @@ export class StudentsPage implements OnInit {
     if (!event.detail.value) return;
     let selectedDate = new Date(event.detail.value);
     let currentDate = new Date();
-    currentDate.setHours(23, 59, 59, 999); 
+    currentDate.setHours(23, 59, 59, 999);
 
     if (selectedDate.getTime() > currentDate.getTime()) {
-      this.dataProvider.showToast(this.lang.future_date || "لا يمكن اختيار تاريخ مستقبلي");
-      return; 
+      this.dataProvider.showToast(this.lang.future_date || 'لا يمكن اختيار تاريخ مستقبلي');
+      return;
     }
 
     this.dateSelected = selectedDate;
     this.checkIfHoliday();
-    
+
     if (this.isHoliday) {
       this.dataProvider.showToast(this.lang.holiday);
     }
@@ -368,17 +383,21 @@ export class StudentsPage implements OnInit {
     this.attMarkBegin = true;
     this.attNotMarked = false;
 
-    if (student.sheet['cem-1']) { 
-      student.sheet['cem-1'] = false; 
+    if (student.sheet['cem-1']) {
+      student.sheet['cem-1'] = false;
       this.attendanceSheet['sid-' + student.sid] = '0';
     } else {
-      student.sheet['cem-1'] = true; 
+      student.sheet['cem-1'] = true;
       this.attendanceSheet['sid-' + student.sid] = '1';
     }
   }
 
   checkDateSelected(date: Date) {
-    return (date.getDate() == this.dateSelected.getDate() && date.getMonth() == this.dateSelected.getMonth() && date.getFullYear() == this.dateSelected.getFullYear());
+    return (
+      date.getDate() == this.dateSelected.getDate() &&
+      date.getMonth() == this.dateSelected.getMonth() &&
+      date.getFullYear() == this.dateSelected.getFullYear()
+    );
   }
 
   // 🟢 تحديث دالة الحفظ لتقوم بإغلاق وضع التعديل تلقائياً
@@ -387,60 +406,66 @@ export class StudentsPage implements OnInit {
       this.dataProvider.showLoading();
       let data: any = {};
       data.sheet = {};
-      data.sheet["cem-1"] = {};
+      data.sheet['cem-1'] = {};
       data.user_no = this.userDetails.details.user_no;
       data.session_id = this.userDetails.session_id;
       data.cid = this.navData.cid;
       data.date = this.dataProvider.getFormatedDate(this.dateSelected);
       data.school_id = this.userDetails.details.school_id;
-      
-      Object.keys(this.attendanceSheet).map((key) => {
-        data.sheet["cem-1"][key] = this.attendanceSheet[key];
+
+      Object.keys(this.attendanceSheet).map(key => {
+        data.sheet['cem-1'][key] = this.attendanceSheet[key];
       });
-      
-      let submittedByUser = (this.userType == UserType.Admin) ? 1 : (this.userType == UserType.Moderator ? 2 : 0);
-      
-      if(this.platform.is('cordova') || this.platform.is('capacitor')){ 
-        if(this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN){
-          this.attendanceApi.markDelayAttendance(data, submittedByUser).then((response) => {
-            this.dataProvider.hideLoading();
-            if (response) {
-              // 🟢 بعد الحفظ بنجاح: أغلق نمط التعديل وأعد تحميل الطلاب
-              this.editMode = false;
-              this.attMarkBegin = false;
-              this.getStudents(false);
-              this.dataProvider.showToast("تم الحفظ بنجاح");
-            }
-          }).catch((error) => {
-            this.dataProvider.hideLoading();
-            this.dataProvider.errorALertMessage(error);
-          });
+
+      let submittedByUser = this.userType == UserType.Admin ? 1 : this.userType == UserType.Moderator ? 2 : 0;
+
+      if (this.platform.is('cordova') || this.platform.is('capacitor')) {
+        if (this.network.type != this.network.Connection.NONE && this.network.type != this.network.Connection.UNKNOWN) {
+          this.attendanceApi
+            .markDelayAttendance(data, submittedByUser)
+            .then(response => {
+              this.dataProvider.hideLoading();
+              if (response) {
+                // 🟢 بعد الحفظ بنجاح: أغلق نمط التعديل وأعد تحميل الطلاب
+                this.editMode = false;
+                this.attMarkBegin = false;
+                this.getStudents(false);
+                this.dataProvider.showToast('تم الحفظ بنجاح');
+              }
+            })
+            .catch(error => {
+              this.dataProvider.hideLoading();
+              this.dataProvider.errorALertMessage(error);
+            });
         } else {
           this.dataProvider.hideLoading();
-          let delayAttendance = await this.storageSr.get("delayattendance") || [];
-          delayAttendance.push({attendance: data, submittedByUser: submittedByUser});
-          await this.storageSr.set("delayattendance", delayAttendance);
-          
+          let delayAttendance = (await this.storageSr.get('delayattendance')) || [];
+          delayAttendance.push({ attendance: data, submittedByUser: submittedByUser });
+          await this.storageSr.set('delayattendance', delayAttendance);
+
           // 🟢 للإرسال في وضع الأوفلاين أيضاً
           this.editMode = false;
           this.attMarkBegin = false;
-          this.dataProvider.showToast(this.lang.offline_att_stored || "تم الحفظ أوفلاين");
-          this.getStudents(false); 
+          this.dataProvider.showToast(this.lang.offline_att_stored || 'تم الحفظ أوفلاين');
+          this.getStudents(false);
         }
       } else {
-        this.attendanceApi.markDelayAttendance(data, submittedByUser).then((response) => {
-          this.dataProvider.hideLoading();
-          if (response) {
-            // 🟢 للمتصفح أيضاً
-            this.editMode = false;
-            this.attMarkBegin = false;
-            this.getStudents(false);
-            this.dataProvider.showToast("تم الحفظ بنجاح");
-          }
-        }).catch((error) => {
-          this.dataProvider.hideLoading();
-          this.dataProvider.errorALertMessage(error);
-        });
+        this.attendanceApi
+          .markDelayAttendance(data, submittedByUser)
+          .then(response => {
+            this.dataProvider.hideLoading();
+            if (response) {
+              // 🟢 للمتصفح أيضاً
+              this.editMode = false;
+              this.attMarkBegin = false;
+              this.getStudents(false);
+              this.dataProvider.showToast('تم الحفظ بنجاح');
+            }
+          })
+          .catch(error => {
+            this.dataProvider.hideLoading();
+            this.dataProvider.errorALertMessage(error);
+          });
       }
     } else {
       this.dataProvider.showToast(this.lang.select_att_to_update);
@@ -461,13 +486,12 @@ export class StudentsPage implements OnInit {
       await popover.present();
 
       const { data } = await popover.onDidDismiss();
-      
+
       this.zone.run(() => {
         if (data && data.selectedAction === 'review') this.openNoteModal(student, 'review');
         if (data && data.selectedAction === 'note') this.openNoteModal(student, 'note');
-        if (data && data.selectedAction === 'points') this.presentPointsActionSheet(event, student); 
+        if (data && data.selectedAction === 'points') this.presentPointsActionSheet(event, student);
       });
-      
     } else {
       const actionSheet = await this.actionSheetController.create({
         header: `إجراءات الطالب: ${student.name}`,
@@ -475,26 +499,41 @@ export class StudentsPage implements OnInit {
         mode: 'md',
         buttons: [
           {
-            text: (this.student_detailse && this.student_detailse.student_review) ? this.student_detailse.student_review : 'تقييم الطالب',
+            text:
+              this.student_detailse && this.student_detailse.student_review
+                ? this.student_detailse.student_review
+                : 'تقييم الطالب',
             icon: 'star-outline',
-            handler: () => { this.openNoteModal(student, 'review'); },
+            handler: () => {
+              this.openNoteModal(student, 'review');
+            }
           },
           {
-            text: (this.student_detailse && this.student_detailse.student_note) ? this.student_detailse.student_note : 'إضافة ملاحظة',
+            text:
+              this.student_detailse && this.student_detailse.student_note
+                ? this.student_detailse.student_note
+                : 'إضافة ملاحظة',
             icon: 'document-text-outline',
-            handler: () => { this.openNoteModal(student, 'note'); },
+            handler: () => {
+              this.openNoteModal(student, 'note');
+            }
           },
           {
-            text: (this.student_detailse && this.student_detailse.student_point) ? this.student_detailse.student_point : 'نقاط الطالب',
+            text:
+              this.student_detailse && this.student_detailse.student_point
+                ? this.student_detailse.student_point
+                : 'نقاط الطالب',
             icon: 'medal-outline',
-            handler: () => { this.presentPointsActionSheet(null, student); },
+            handler: () => {
+              this.presentPointsActionSheet(null, student);
+            }
           },
           {
-            text: (this.student_detailse && this.student_detailse.cancel) ? this.student_detailse.cancel : 'إلغاء',
+            text: this.student_detailse && this.student_detailse.cancel ? this.student_detailse.cancel : 'إلغاء',
             icon: 'close',
             role: 'cancel',
-            cssClass: 'text-rose-500 font-bold',
-          },
+            cssClass: 'text-rose-500 font-bold'
+          }
         ]
       });
       await actionSheet.present();
@@ -533,7 +572,7 @@ export class StudentsPage implements OnInit {
   createButtons(student: any) {
     let buttons = [];
     for (var index in this.student_points) {
-      let pointValue = this.student_points[index]; 
+      let pointValue = this.student_points[index];
       let button = {
         text: pointValue,
         icon: 'add-circle-outline',
@@ -541,47 +580,47 @@ export class StudentsPage implements OnInit {
         handler: () => {
           this.addStudentPoints(pointValue, student);
         }
-      }
+      };
       buttons.push(button);
     }
-    
+
     buttons.push({
-      text: (this.student_detailse && this.student_detailse.cancel) ? this.student_detailse.cancel : 'إلغاء',
+      text: this.student_detailse && this.student_detailse.cancel ? this.student_detailse.cancel : 'إلغاء',
       icon: 'close',
       role: 'cancel',
       cssClass: 'text-rose-500 font-bold border-t border-slate-100',
       handler: () => {}
     });
-    
+
     return buttons;
   }
 
-  addStudentPoints(point: any, student: any){
+  addStudentPoints(point: any, student: any) {
     let body = {
       sid: student.sid,
       userId: this.userDetails.details.user_no,
       points: point
-    }
+    };
     this.studentEngagement.awardSkillPoints(body).then(res => {
-      if(res.success){
+      if (res.success) {
         this.dataProvider.showToast(res.msg);
       }
-    })
+    });
   }
 
-  async openNoteModal(student: any, mode: any){
-    if(mode === 'note'){
+  async openNoteModal(student: any, mode: any) {
+    if (mode === 'note') {
       this.studentData = student;
       this.showNoteModal = true;
     } else {
       this.studentData = student;
       const modal = await this.modalController.create({
         component: AddReviewComponent,
-        cssClass: 'my-custom-class',
+        cssClass: 'my-custom-class'
       });
       modal.onDidDismiss().then(data => {
-        if(data && data.data && data.data.data){
-          this.ratingStars = (data.data.data);
+        if (data && data.data && data.data.data) {
+          this.ratingStars = data.data.data;
           this.noteMessage = data.data.noteMessage;
           this.addNotesNote();
         }
@@ -589,79 +628,84 @@ export class StudentsPage implements OnInit {
       return await modal.present();
     }
   }
-  
-  hideNoteModal(){
+
+  hideNoteModal() {
     this.showNoteModal = false;
   }
-  
-  getSelectedStars(){
+
+  getSelectedStars() {
     return new Array(5);
   }
-  
-  selectStarsForRating(index:number){
-    this.ratingStars = index+1;
-    this.selections= ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
-    for(let i=0;i<=index;i++){
+
+  selectStarsForRating(index: number) {
+    this.ratingStars = index + 1;
+    this.selections = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+    for (let i = 0; i <= index; i++) {
       this.selections[i] = '#04855f';
     }
   }
 
-  addNotesNote(){
-    if(this.noteMessage && this.noteMessage.trim() != '') { 
-      if(this.noteMessage.length <= 45) {
-        if(this.canAddStudentNote) {
+  addNotesNote() {
+    if (this.noteMessage && this.noteMessage.trim() != '') {
+      if (this.noteMessage.length <= 45) {
+        if (this.canAddStudentNote) {
           let data = {
             sid: this.studentData.sid,
             note: this.noteMessage,
             user_id: this.userDetails.details.user_no,
             rating: this.ratingStars,
             new_rating: JSON.stringify(this.ratingStars)
-          }
-          this.studentEngagement.addNote(data).then((note_id)=>{
-            this.noteMessage = '';
-            this.showNoteModal = false;
-            this.dataProvider.showToast(this.lang.add_review_success_message);
-          }).catch(error=>{
-            this.dataProvider.hideLoading();
-            this.dataProvider.errorALertMessage(error);
-          })
-        }else{
-          this.dataProvider.showToast(this.lang.already_submit_note);  
+          };
+          this.studentEngagement
+            .addNote(data)
+            .then(note_id => {
+              this.noteMessage = '';
+              this.showNoteModal = false;
+              this.dataProvider.showToast(this.lang.add_review_success_message);
+            })
+            .catch(error => {
+              this.dataProvider.hideLoading();
+              this.dataProvider.errorALertMessage(error);
+            });
+        } else {
+          this.dataProvider.showToast(this.lang.already_submit_note);
         }
-      }else {
+      } else {
         this.dataProvider.showToast(this.lang.max_note_length);
       }
-    }else{
+    } else {
       this.dataProvider.showToast(this.lang.empty_note);
     }
   }
 
-  addTextNotesNote(){
-    if(this.noteMessage && this.noteMessage.trim() != '') {
-      if(this.noteMessage.length <= 45) {
-        if(this.canAddStudentNote) {
+  addTextNotesNote() {
+    if (this.noteMessage && this.noteMessage.trim() != '') {
+      if (this.noteMessage.length <= 45) {
+        if (this.canAddStudentNote) {
           let data = {
             sid: this.studentData.sid,
             note: this.noteMessage,
             user_id: this.userDetails.details.user_no,
             rating: 0,
-            new_rating: JSON.stringify([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
-          }
-          this.dataProvider.run(() => this.studentEngagement.addNote(data)).then((note_id)=>{
-            this.noteMessage = '';
-            this.showNoteModal = false;
-            this.dataProvider.showToast(this.lang.add_note_success_message);
-          }).catch(error=>{
-            this.dataProvider.errorALertMessage(error);
-          })
-        }else{
-          this.dataProvider.showToast(this.lang.already_submit_note);  
+            new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+          };
+          this.dataProvider
+            .run(() => this.studentEngagement.addNote(data))
+            .then(note_id => {
+              this.noteMessage = '';
+              this.showNoteModal = false;
+              this.dataProvider.showToast(this.lang.add_note_success_message);
+            })
+            .catch(error => {
+              this.dataProvider.errorALertMessage(error);
+            });
+        } else {
+          this.dataProvider.showToast(this.lang.already_submit_note);
         }
-      }else {
+      } else {
         this.dataProvider.showToast(this.lang.max_note_length);
       }
-    }
-    else{
+    } else {
       this.dataProvider.showToast(this.lang.empty_note);
     }
   }
@@ -691,9 +735,27 @@ export class StudentsPage implements OnInit {
           cssClass: 'custom-action-sheet',
           mode: 'md',
           buttons: [
-            { text: this.lang.camera || 'التقاط بالكاميرا', icon: 'camera-outline', handler: () => { this.openCamera(); } },
-            { text: this.lang.gallery || 'اختيار من المعرض', icon: 'image-outline', handler: () => { this.openGallery(); } },
-            { text: this.lang.avatar || 'اختيار صورة رمزية', icon: 'people-circle-outline', handler: () => { this.OpenAvatarModel(); } },
+            {
+              text: this.lang.camera || 'التقاط بالكاميرا',
+              icon: 'camera-outline',
+              handler: () => {
+                this.openCamera();
+              }
+            },
+            {
+              text: this.lang.gallery || 'اختيار من المعرض',
+              icon: 'image-outline',
+              handler: () => {
+                this.openGallery();
+              }
+            },
+            {
+              text: this.lang.avatar || 'اختيار صورة رمزية',
+              icon: 'people-circle-outline',
+              handler: () => {
+                this.OpenAvatarModel();
+              }
+            },
             { text: this.lang.cancel || 'إلغاء', icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold' }
           ]
         });
@@ -711,9 +773,9 @@ export class StudentsPage implements OnInit {
       source: CameraSource.Camera,
       width: 500,
       height: 500,
-      allowEditing: true,
+      allowEditing: true
     };
-    Camera.getPhoto(options).then((imageData) => {
+    Camera.getPhoto(options).then(imageData => {
       if (imageData) {
         this.ChangeStudentProfileAvatar(imageData.base64String);
       }
@@ -727,9 +789,9 @@ export class StudentsPage implements OnInit {
       source: CameraSource.Photos,
       width: 500,
       height: 500,
-      allowEditing: true,
+      allowEditing: true
     };
-    Camera.getPhoto(options).then((imageData) => {
+    Camera.getPhoto(options).then(imageData => {
       if (imageData) {
         this.ChangeStudentProfileAvatar(imageData.base64String);
       }
@@ -738,40 +800,43 @@ export class StudentsPage implements OnInit {
 
   async OpenAvatarModel() {
     const data = await this.studentUi.openAvatarModal(this.student);
-    
+
     if (data && data.image_url) {
       // تنظيف الرابط من السلاش المزدوج
-      let cleanUrl = data.image_url.replace(/([^:]\/)\/+/g, "$1");
-      
+      let cleanUrl = data.image_url.replace(/([^:]\/)\/+/g, '$1');
+
       // التحديث الفوري للصورة في الشاشة لراحة المستخدم (Optimistic UI)
       this.zone.run(() => {
         this.student.pic = cleanUrl;
-        
+
         if (this.students && this.students.length > 0) {
-           const idx = this.students.findIndex((s: any) => s.sid === this.student.sid);
-           if (idx > -1) {
-             this.students[idx].pic = cleanUrl;
-             // ❌ تم حذف سطر الاستنساخ {...} هنا أيضاً!
-           }
+          const idx = this.students.findIndex((s: any) => s.sid === this.student.sid);
+          if (idx > -1) {
+            this.students[idx].pic = cleanUrl;
+            // ❌ تم حذف سطر الاستنساخ {...} هنا أيضاً!
+          }
         }
         this.cdr.detectChanges();
       });
 
       // إكمال المعالجة والرفع للسيرفر
       this.dataProvider.showLoading();
-      this.imageService.convertUrlToBase64(cleanUrl).then(base64 => {
-        this.ChangeStudentProfileAvatar(base64);
-      }).catch(err => {
-        this.dataProvider.hideLoading();
-        this.dataProvider.errorALertMessage("تعذر معالجة الصورة، يرجى المحاولة مجدداً.");
-      });
+      this.imageService
+        .convertUrlToBase64(cleanUrl)
+        .then(base64 => {
+          this.ChangeStudentProfileAvatar(base64);
+        })
+        .catch(err => {
+          this.dataProvider.hideLoading();
+          this.dataProvider.errorALertMessage('تعذر معالجة الصورة، يرجى المحاولة مجدداً.');
+        });
     }
   }
 
   convertImageUrlToBase64(url: string) {
     this.dataProvider.showLoading();
     const img = new Image();
-    img.crossOrigin = 'Anonymous'; 
+    img.crossOrigin = 'Anonymous';
     img.onload = () => {
       try {
         const canvas = document.createElement('canvas');
@@ -784,10 +849,10 @@ export class StudentsPage implements OnInit {
         this.ChangeStudentProfileAvatar(pureBase64);
       } catch (e) {
         this.dataProvider.hideLoading();
-        this.dataProvider.errorALertMessage("إعدادات المتصفح تمنع قراءة الصورة. يرجى التجربة من الجوال.");
+        this.dataProvider.errorALertMessage('إعدادات المتصفح تمنع قراءة الصورة. يرجى التجربة من الجوال.');
       }
     };
-    img.onerror = (error) => {
+    img.onerror = error => {
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
         try {
           this.DownloadAndReadFilePath(url);
@@ -796,7 +861,7 @@ export class StudentsPage implements OnInit {
         }
       } else {
         this.dataProvider.hideLoading();
-        this.dataProvider.errorALertMessage("المتصفح يمنع تحميل الصورة. يرجى التجربة من التطبيق.");
+        this.dataProvider.errorALertMessage('المتصفح يمنع تحميل الصورة. يرجى التجربة من التطبيق.');
       }
     };
     img.src = url + '?t=' + new Date().getTime();
@@ -810,10 +875,9 @@ export class StudentsPage implements OnInit {
         path: nativeUrl
       });
       let base64String = contents.data as string;
-      
+
       // 🟢 هذا هو السطر الذي كان مفقوداً ويتسبب في توقف العملية بصمت!
       this.ChangeStudentProfileAvatar(base64String);
-
     } catch (e) {
       console.error('Error reading student file:', e);
       this.dataProvider.hideLoading();
@@ -828,7 +892,9 @@ export class StudentsPage implements OnInit {
         const pureBase64 = base64.includes(',') ? base64.split(',')[1] : base64;
         this.ChangeStudentProfileAvatar(pureBase64);
       };
-      reader.onerror = () => { this.dataProvider.hideLoading(); };
+      reader.onerror = () => {
+        this.dataProvider.hideLoading();
+      };
       reader.readAsDataURL(file);
     } catch (e) {
       this.dataProvider.hideLoading();
@@ -858,16 +924,16 @@ export class StudentsPage implements OnInit {
           this.student.pic = newPicUrl;
 
           if (this.students && this.students.length > 0) {
-             const idx = this.students.findIndex((s: any) => s.sid === this.student.sid);
-             if (idx > -1) {
-                this.students[idx].pic = newPicUrl;
-                // ❌ تم حذف سطر الاستنساخ {...} لكي يبقى المودال متصلاً بالبيانات!
-             }
+            const idx = this.students.findIndex((s: any) => s.sid === this.student.sid);
+            if (idx > -1) {
+              this.students[idx].pic = newPicUrl;
+              // ❌ تم حذف سطر الاستنساخ {...} لكي يبقى المودال متصلاً بالبيانات!
+            }
           }
           this.cdr.detectChanges();
         });
 
-        this.dataProvider.showToast("تم تحديث صورة الطالب بنجاح");
+        this.dataProvider.showToast('تم تحديث صورة الطالب بنجاح');
       } else {
         this.authProvider.flushLocalStorage();
         this.dataProvider.errorALertMessage(result.message);
@@ -875,13 +941,16 @@ export class StudentsPage implements OnInit {
       }
     } catch (error) {
       this.dataProvider.hideLoading();
-      this.dataProvider.errorALertMessage("حدث خطأ في الاتصال بالخادم.");
+      this.dataProvider.errorALertMessage('حدث خطأ في الاتصال بالخادم.');
     }
   }
 
   checkCurrentDate(date: Date) {
     let currentDate = new Date();
-    return (date.getDate() == currentDate.getDate() && date.getMonth() == currentDate.getMonth() && date.getFullYear() == currentDate.getFullYear());
+    return (
+      date.getDate() == currentDate.getDate() &&
+      date.getMonth() == currentDate.getMonth() &&
+      date.getFullYear() == currentDate.getFullYear()
+    );
   }
-
 }

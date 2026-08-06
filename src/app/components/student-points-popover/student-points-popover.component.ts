@@ -4,17 +4,17 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
-
 @Component({
   selector: 'app-student-points-popover',
   templateUrl: './student-points-popover.component.html',
-  standalone: true,
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentPointsPopoverComponent {
-  trackByIndex(index: number): number { return index; }
-  
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   @Input() student: any;
   @Input() points: any[] = []; // استقبال مصفوفة النقاط من السيرفر
 

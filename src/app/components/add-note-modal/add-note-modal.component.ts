@@ -7,15 +7,17 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-note-modal',
-  templateUrl: './add-note-modal.component.html',
-  standalone: true, // إضافة هذا السطر
+  templateUrl: './add-note-modal.component.html', // إضافة هذا السطر
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddNoteModalComponent {
   noteMessage: string = '';
 
-  constructor(private modalCtrl: ModalController, private dataProvider: DataService) {}
+  constructor(
+    private modalCtrl: ModalController,
+    private dataProvider: DataService
+  ) {}
 
   hideModal() {
     this.modalCtrl.dismiss();

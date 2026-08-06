@@ -14,10 +14,13 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
   selector: 'app-select-bulletins-user',
   templateUrl: './select-bulletins-user.page.html',
   styleUrls: ['./select-bulletins-user.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class SelectBulletinsUserPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   userdata: any;
   lang: any;
   allUsers: any = [];
@@ -28,20 +31,20 @@ export class SelectBulletinsUserPage implements OnInit {
   bulletinId: any;
   selectedUsers: any = [];
   type: any;
-  
+
   // 🟢 متغيرات البحث الجديدة
-  searchQuery: string = ''; 
+  searchQuery: string = '';
   searchTimeout: any;
   show_loading: boolean = false;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public dataProvider: DataService,
     public translate: TranslateService,
-    public alertCtrl: AlertController, 
+    public alertCtrl: AlertController,
     private route: ActivatedRoute,
     private router: Router,
-    public zone: NgZone, 
+    public zone: NgZone,
     public platform: Platform,
     private storageSr: StorageService, // 🟢 حقن الخدمة
     private bulletinsApi: BulletinsApiService,
@@ -58,7 +61,7 @@ export class SelectBulletinsUserPage implements OnInit {
       this.bulletinId = navigation.extras.state['bulletinId'];
     }
 
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
@@ -68,11 +71,11 @@ export class SelectBulletinsUserPage implements OnInit {
 
   // 🟢 استخدام async/await لجلب البيانات بأمان
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin"); 
-    
+    let userLoggedIn = await this.storageSr.get('userloggedin');
+
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      
+
       // تأمين بيانات الـ Router في حال تحديث الصفحة (Refresh)
       if (this.data || this.bulletinId || this.formData) {
         await this.storageSr.set('bulletinShareContext', {
@@ -102,26 +105,29 @@ export class SelectBulletinsUserPage implements OnInit {
   }
 
   getUsers() {
-    let data = { 'school_id': this.userDetails.details.school_id };
-    
+    let data = { school_id: this.userDetails.details.school_id };
+
     this.show_loading = true;
-    this.schoolDirectoryApi.getSchoolUsers(data).then(res => {
-      this.show_loading = false;
-      if (res && res.data) {
-        // 🟢 إضافة متغير isChecked لربطه بالـ HTML بأمان لعدم استخدام id
-        this.users = res.data.map(u => ({ ...u, isChecked: false }));
-        if (this.users.length > 20) {
-          this.allUsers = this.users.splice(0, 20);
-        } else {
-          this.allUsers = this.users;
+    this.schoolDirectoryApi
+      .getSchoolUsers(data)
+      .then(res => {
+        this.show_loading = false;
+        if (res && res.data) {
+          // 🟢 إضافة متغير isChecked لربطه بالـ HTML بأمان لعدم استخدام id
+          this.users = res.data.map(u => ({ ...u, isChecked: false }));
+          if (this.users.length > 20) {
+            this.allUsers = this.users.splice(0, 20);
+          } else {
+            this.allUsers = this.users;
+          }
         }
-      }
-      this.cdr.markForCheck();
-    }).catch(error => {
-      this.show_loading = false;
-      this.dataProvider.showToast(error);
-      this.cdr.markForCheck();
-    });
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        this.show_loading = false;
+        this.dataProvider.showToast(error);
+        this.cdr.markForCheck();
+      });
   }
 
   // 🟢 دالة البحث المدرعة بـ Debounce لتخفيف الضغط
@@ -139,38 +145,41 @@ export class SelectBulletinsUserPage implements OnInit {
         input: input.trim(),
         school_id: this.userDetails.details.school_id
       };
-      
-      this.searchApi.searchUser(data).then(resp => {
-        this.show_loading = false;
-        if (resp && resp.data) {
-          this.users = resp.data.map(u => {
-            // الحفاظ على حالة الاختيار عند البحث الجديد
-            let isChecked = this.selectedUsers.includes(u.user_no);
-            return { ...u, isChecked: isChecked };
-          });
-          
-          if (this.users.length > 20) {
-            this.allUsers = this.users.splice(0, 20);
-          } else {
-            this.allUsers = this.users;
+
+      this.searchApi
+        .searchUser(data)
+        .then(resp => {
+          this.show_loading = false;
+          if (resp && resp.data) {
+            this.users = resp.data.map(u => {
+              // الحفاظ على حالة الاختيار عند البحث الجديد
+              let isChecked = this.selectedUsers.includes(u.user_no);
+              return { ...u, isChecked: isChecked };
+            });
+
+            if (this.users.length > 20) {
+              this.allUsers = this.users.splice(0, 20);
+            } else {
+              this.allUsers = this.users;
+            }
           }
-        }
-        this.cdr.markForCheck();
-      }).catch(err => {
-        this.show_loading = false;
-        console.log(err);
-        this.cdr.markForCheck();
-      });
+          this.cdr.markForCheck();
+        })
+        .catch(err => {
+          this.show_loading = false;
+          console.log(err);
+          this.cdr.markForCheck();
+        });
     }, 500);
   }
-  
+
   // 🟢 التخلص من الاعتماد على הـ DOM وتحديث الـ Array فقط
   selectUser(user, event) {
     // إيقاف الانتشار لعدم تفعيل النقر مرتين إذا تم الضغط على السطر بالكامل
-    if(event.stopPropagation) event.stopPropagation();
+    if (event.stopPropagation) event.stopPropagation();
 
     let isChecked = event.detail.checked;
-    
+
     if (isChecked) {
       if (user.user_no !== this.userDetails.details.user_no) {
         if (!this.selectedUsers.includes(user.user_no)) {
@@ -179,7 +188,10 @@ export class SelectBulletinsUserPage implements OnInit {
       } else {
         this.dataProvider.showToast(this.lang.same_user || 'لا يمكنك إرسال النشرة لنفسك');
         // إلغاء الاختيار برمجياً دون الحاجة لـ document.getElementById
-        setTimeout(() => { user.isChecked = false; this.cdr.markForCheck(); }, 0);
+        setTimeout(() => {
+          user.isChecked = false;
+          this.cdr.markForCheck();
+        }, 0);
       }
     } else {
       let index = this.selectedUsers.indexOf(user.user_no);
@@ -196,24 +208,30 @@ export class SelectBulletinsUserPage implements OnInit {
         return;
       }
       this.data.users = this.selectedUsers.join(','); // تحويل المصفوفة لنص مفصول بفواصل حسب المتطلبات الشائعة
-      this.dataProvider.run(() => this.bulletinsApi.shareBulletins(this.data)).then(res => {
-        this.dataProvider.showToast(res.message);
-        this.router.navigate(['bulletins']);
-      }).catch(err => {
-        this.dataProvider.showToast(err.message || 'خطأ غير متوقع');
-      });
+      this.dataProvider
+        .run(() => this.bulletinsApi.shareBulletins(this.data))
+        .then(res => {
+          this.dataProvider.showToast(res.message);
+          this.router.navigate(['bulletins']);
+        })
+        .catch(err => {
+          this.dataProvider.showToast(err.message || 'خطأ غير متوقع');
+        });
     } else if (this.type === 'create') {
       if (user && user.user_no !== this.userDetails.details.user_no) {
         this.formData.append('users', user.user_no); // إرسال المستخدم مباشرة
         this.dataProvider.showLoading();
-        this.dataProvider.createBulletins(this.formData).subscribe(res => {
-          this.dataProvider.hideLoading();
-          this.dataProvider.showToast(res.message || 'تمت المشاركة بنجاح');
-          this.router.navigate(['bulletins']);
-        }, err => {
-          this.dataProvider.hideLoading();
-          this.dataProvider.showToast(err.message || 'خطأ غير متوقع');
-        });
+        this.dataProvider.createBulletins(this.formData).subscribe(
+          res => {
+            this.dataProvider.hideLoading();
+            this.dataProvider.showToast(res.message || 'تمت المشاركة بنجاح');
+            this.router.navigate(['bulletins']);
+          },
+          err => {
+            this.dataProvider.hideLoading();
+            this.dataProvider.showToast(err.message || 'خطأ غير متوقع');
+          }
+        );
       } else {
         this.dataProvider.showToast(this.lang.same_user || 'لا يمكنك الإرسال لنفسك');
       }

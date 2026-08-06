@@ -5,9 +5,9 @@ import { ModalController } from '@ionic/angular';
   selector: 'app-edit-class-modal',
   templateUrl: './edit-class-modal.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class EditClassModalComponent {
-  
   // 📥 استقبال بيانات الصف والقوائم المنسدلة من الصفحة الرئيسية
   @Input() editingClass: any = {};
   @Input() userLevels: any[] = [];

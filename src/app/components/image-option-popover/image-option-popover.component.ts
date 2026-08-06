@@ -6,10 +6,9 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-image-option-popover',
-  templateUrl: './image-option-popover.component.html',
-  standalone: true, // إضافة هذا السطر
+  templateUrl: './image-option-popover.component.html', // إضافة هذا السطر
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImageOptionPopoverComponent {
   constructor(private popoverCtrl: PopoverController) {}

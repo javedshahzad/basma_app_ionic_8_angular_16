@@ -1,10 +1,18 @@
-import { Component, OnInit, NgZone, ViewChild, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  NgZone,
+  ViewChild,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { NavController, AlertController, IonContent, Platform } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { Location } from '@angular/common'; 
+import { Location } from '@angular/common';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
 
@@ -17,28 +25,28 @@ import { UserType } from '../constants/user-type';
   selector: 'app-connect-chat',
   templateUrl: './connect-chat.page.html',
   styleUrls: ['./connect-chat.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ConnectChatPage implements OnInit, OnDestroy {
-
   @ViewChild('contentArea') private contentArea: IonContent; // 🟢 تعريف صحيح للمحتوى
 
   userDetails: any = { details: {} };
   chat: any = {};
-  message: string = "";
+  message: string = '';
   messages: any = [];
   lastMessageId: number = 0;
   chatInterval: any;
   attachment: string = '';
-  lang: any = {}
+  lang: any = {};
   image: string = '';
   navData: any;
-  
+
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public translate: TranslateService,
-    public dataProvider: DataService, 
-    public authProvider: AuthService, 
+    public dataProvider: DataService,
+    public authProvider: AuthService,
     public alertCtrl: AlertController,
     private _location: Location,
     private photoViewer: PhotoViewer,
@@ -48,7 +56,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
     private parentConnectApi: ParentConnectApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
@@ -63,7 +71,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
 
   ngOnInit() {}
 
-  // 🟢 4. دورة الحياة المتزامنة الآمنة 
+  // 🟢 4. دورة الحياة المتزامنة الآمنة
   async ionViewWillEnter() {
     this.messages = []; // تصفير الرسائل لتجنب التكرار
 
@@ -77,8 +85,8 @@ export class ConnectChatPage implements OnInit, OnDestroy {
     }
 
     // جلب بيانات المستخدم بالطريقة الآمنة بدلاً من localStorage
-    let userLoggedIn = await this.storageSr.get("userloggedin");
-    
+    let userLoggedIn = await this.storageSr.get('userloggedin');
+
     if (userLoggedIn && userLoggedIn.details) {
       this.userDetails = userLoggedIn;
 
@@ -98,7 +106,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
 
         // 🟢 تنظيف المؤقت القديم إن وجد، ثم تشغيل الجديد (كل 5 ثوانٍ)
         if (this.chatInterval) clearInterval(this.chatInterval);
-        
+
         this.chatInterval = setInterval(() => {
           this.getChats(this.lastMessageId);
         }, 5000);
@@ -126,7 +134,7 @@ export class ConnectChatPage implements OnInit, OnDestroy {
     return message?.id ?? index;
   }
 
-  showPhoto(url: string){
+  showPhoto(url: string) {
     this.photoViewer.show(url);
   }
 
@@ -140,23 +148,25 @@ export class ConnectChatPage implements OnInit, OnDestroy {
       last_msg_id: 0
     };
 
-    this.dataProvider.run(() => this.parentConnectApi.getParentConnectChatMessages(data)).then((response: any) => {
-      if (response.session) {
-        let length = response.chat.length;
-        if (length > 0) {
-          response.chat.forEach((message: any) => {
-            this.messages.push(message);
-          });
-          this.lastMessageId = response.chat[length - 1].id;
-          this.scrollToBottom();
+    this.dataProvider
+      .run(() => this.parentConnectApi.getParentConnectChatMessages(data))
+      .then((response: any) => {
+        if (response.session) {
+          let length = response.chat.length;
+          if (length > 0) {
+            response.chat.forEach((message: any) => {
+              this.messages.push(message);
+            });
+            this.lastMessageId = response.chat[length - 1].id;
+            this.scrollToBottom();
+          }
+          this.cdr.markForCheck();
+        } else {
+          this.dataProvider.errorALertMessage(response.message);
+          this.router.navigate(['login'], { replaceUrl: true });
         }
-        this.cdr.markForCheck();
-      } else {
-        this.dataProvider.errorALertMessage(response.message);
-        this.router.navigate(['login'], { replaceUrl: true });
-      }
-    }).catch((error) => {
-    });
+      })
+      .catch(error => {});
   }
 
   getChats(lastMessageId: number) {
@@ -168,34 +178,37 @@ export class ConnectChatPage implements OnInit, OnDestroy {
       chat_id: this.chat.id,
       last_msg_id: lastMessageId
     };
-    
-    this.parentConnectApi.getParentConnectChatMessages(data).then((response: any) => {
-      if (response.session) {
-        let length = response.chat.length;
-        if (length > 0) {
-          let msgLength = this.messages.length;
-          response.chat.forEach((message: any) => {
-            if (msgLength > 0 && message.id < this.messages[msgLength - 1].id) {
-              this.messages.push(message);
-            } else {
-              let msg = this.messages.filter((oldMsg: any) => oldMsg.id == message.id);
-              if (msg.length == 0) {
+
+    this.parentConnectApi
+      .getParentConnectChatMessages(data)
+      .then((response: any) => {
+        if (response.session) {
+          let length = response.chat.length;
+          if (length > 0) {
+            let msgLength = this.messages.length;
+            response.chat.forEach((message: any) => {
+              if (msgLength > 0 && message.id < this.messages[msgLength - 1].id) {
                 this.messages.push(message);
+              } else {
+                let msg = this.messages.filter((oldMsg: any) => oldMsg.id == message.id);
+                if (msg.length == 0) {
+                  this.messages.push(message);
+                }
               }
-            }
-          });
-          this.lastMessageId = response.chat[length - 1].id;
-          this.scrollToBottom();
+            });
+            this.lastMessageId = response.chat[length - 1].id;
+            this.scrollToBottom();
+          }
+          this.cdr.markForCheck();
+        } else {
+          this.dataProvider.errorALertMessage(response.message);
+          if (this.chatInterval) clearInterval(this.chatInterval);
+          this.router.navigate(['login'], { replaceUrl: true });
         }
-        this.cdr.markForCheck();
-      } else {
-        this.dataProvider.errorALertMessage(response.message);
-        if (this.chatInterval) clearInterval(this.chatInterval);
-        this.router.navigate(['login'], { replaceUrl: true });
-      }
-    }).catch((error) => {
-      console.log(error);
-    });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   // 🟢 دالة مساعدة للتمرير لأسفل المحادثة بسلاسة
@@ -215,12 +228,15 @@ export class ConnectChatPage implements OnInit, OnDestroy {
   sendMessage() {
     if ((this.message && this.message.trim() != '') || this.attachment != '') {
       if (this.message.length > 140) {
-        this.dataProvider.showToast(this.lang.max_body || "النص طويل جداً");
+        this.dataProvider.showToast(this.lang.max_body || 'النص طويل جداً');
       } else {
         this.image = '';
 
         let data = {};
-        if (this.userDetails.details.user_type == UserType.Parent || this.userDetails.details.user_type == UserType.Student) {
+        if (
+          this.userDetails.details.user_type == UserType.Parent ||
+          this.userDetails.details.user_type == UserType.Student
+        ) {
           data = {
             session_id: this.userDetails.session_id,
             user_no: this.userDetails.details.user_no,
@@ -248,96 +264,112 @@ export class ConnectChatPage implements OnInit, OnDestroy {
             }
           };
         }
-        
-        this.dataProvider.run(() => this.parentConnectApi.sendParentConnectChatMsg(data)).then((response: any) => {
-          if (response.session) {
-            this.dataProvider.showToast(response.message);
-            if (this.lastMessageId < response.msg_id) {
-              if (response.attachment_url) {
-                this.messages.push({
-                  receiver: 'false',
-                  message: this.message,
-                  id: response.msg_id,
-                  attachment_url: response.attachment_url
-                });
-              } else {
-                this.messages.push({
-                  receiver: 'false',
-                  message: this.message,
-                  id: response.msg_id
-                });
+
+        this.dataProvider
+          .run(() => this.parentConnectApi.sendParentConnectChatMsg(data))
+          .then((response: any) => {
+            if (response.session) {
+              this.dataProvider.showToast(response.message);
+              if (this.lastMessageId < response.msg_id) {
+                if (response.attachment_url) {
+                  this.messages.push({
+                    receiver: 'false',
+                    message: this.message,
+                    id: response.msg_id,
+                    attachment_url: response.attachment_url
+                  });
+                } else {
+                  this.messages.push({
+                    receiver: 'false',
+                    message: this.message,
+                    id: response.msg_id
+                  });
+                }
+                this.scrollToBottom();
               }
-              this.scrollToBottom();
+              this.message = '';
+              this.attachment = '';
+            } else {
+              this.dataProvider.errorALertMessage(response.message);
+              this.router.navigate(['login'], { replaceUrl: true });
             }
-            this.message = '';
-            this.attachment = '';
-          } else {
-            this.dataProvider.errorALertMessage(response.message);
-            this.router.navigate(['login'], { replaceUrl: true });
-          }
-          this.cdr.markForCheck();
-        }).catch((error) => {
-          this.dataProvider.errorALertMessage(error);
-          this.cdr.markForCheck();
-        });
+            this.cdr.markForCheck();
+          })
+          .catch(error => {
+            this.dataProvider.errorALertMessage(error);
+            this.cdr.markForCheck();
+          });
       }
     }
   }
 
-  async takePicture(){
+  async takePicture() {
     const alert = await this.alertCtrl.create({
       header: this.lang.image_option || 'اختر',
       buttons: [
-        { text: this.lang.camera || 'الكاميرا', handler: () => { this.openCamera(); } },
-        { text: this.lang.gallery || 'المعرض', handler: () => { this.openGallery(); } }
+        {
+          text: this.lang.camera || 'الكاميرا',
+          handler: () => {
+            this.openCamera();
+          }
+        },
+        {
+          text: this.lang.gallery || 'المعرض',
+          handler: () => {
+            this.openGallery();
+          }
+        }
       ]
     });
     await alert.present();
   }
 
-  openCamera(){
+  openCamera() {
     const options: ImageOptions = {
       quality: 100,
       resultType: CameraResultType.Base64,
       source: CameraSource.Camera,
       width: 500,
       height: 500,
-      allowEditing: true,
+      allowEditing: true
     };
 
-    Camera.getPhoto(options).then((imageData) => {
-      if(imageData && imageData.base64String){
-        this.attachment = "data:image/png;base64," + imageData.base64String;
+    Camera.getPhoto(options).then(imageData => {
+      if (imageData && imageData.base64String) {
+        this.attachment = 'data:image/png;base64,' + imageData.base64String;
         this.image = 'data:image/jpeg;base64,' + imageData.base64String;
       }
       this.cdr.markForCheck();
     });
   }
 
-  openGallery(){
+  openGallery() {
     const options: ImageOptions = {
       quality: 100,
       resultType: CameraResultType.Base64,
       source: CameraSource.Photos,
       width: 500,
       height: 500,
-      allowEditing: true,
+      allowEditing: true
     };
 
-    Camera.getPhoto(options).then((imageData) => {
-      if(imageData && imageData.base64String){
-        this.attachment = "data:image/png;base64," + imageData.base64String;
+    Camera.getPhoto(options).then(imageData => {
+      if (imageData && imageData.base64String) {
+        this.attachment = 'data:image/png;base64,' + imageData.base64String;
         this.image = 'data:image/jpeg;base64,' + imageData.base64String;
       }
       this.cdr.markForCheck();
     });
   }
 
-  downloadImage(imageUrl: string){
-    this.dataProvider.run(() => this.dataProvider.downloadImage(imageUrl)).then((res) => {
-      this.dataProvider.showToast(this.lang.download_complete || "تم التنزيل");
-    }).catch((error) => {
-      this.dataProvider.errorALertMessage(error);
-    });
+  downloadImage(imageUrl: string) {
+    this.dataProvider
+      .run(() => this.dataProvider.downloadImage(imageUrl))
+      .then(res => {
+        this.dataProvider.showToast(this.lang.download_complete || 'تم التنزيل');
+      })
+      .catch(error => {
+        this.dataProvider.errorALertMessage(error);
+      });
   }
 }

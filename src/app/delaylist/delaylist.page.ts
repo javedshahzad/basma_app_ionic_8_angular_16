@@ -1,4 +1,12 @@
-import { Component, OnInit, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  NgZone,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -15,21 +23,35 @@ import { StorageService } from '../service/storage.service';
   selector: 'app-delaylist',
   templateUrl: './delaylist.page.html',
   styleUrls: ['./delaylist.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class DelaylistPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   private destroyRef = inject(DestroyRef);
 
   classes: any = [];
-  noDataFound: string = "";
+  noDataFound: string = '';
   userType: any;
   editMode: boolean = false;
   lang: any = {};
   userDetails: any = { details: {} }; // قيمة افتراضية آمنة
-  
+
   // ألوان الفصول الجذابة
-  classBackgroundColor = ["#ff7043", "#2962ff", "#43a047", "#6d4c41", "#ffab00", "#00b0ff", "#651fff", "#2962ff", "#d81b60", "#6a1b9a"];
+  classBackgroundColor = [
+    '#ff7043',
+    '#2962ff',
+    '#43a047',
+    '#6d4c41',
+    '#ffab00',
+    '#00b0ff',
+    '#651fff',
+    '#2962ff',
+    '#d81b60',
+    '#6a1b9a'
+  ];
   popOver: any;
   isLoading: boolean = true; // 🟢 للتحكم بشاشة التحميل (Skeleton)
 
@@ -46,14 +68,14 @@ export class DelaylistPage implements OnInit {
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private cdr: ChangeDetectorRef
   ) {
-    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res.changeUser) {
         this.loadClasses();
       }
     });
 
-    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((resq) => {
-      this.translate.get("alertmessages").subscribe((res) => {
+    this.dataProvider.language.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(resq => {
+      this.translate.get('alertmessages').subscribe(res => {
         this.lang = res;
         this.cdr.markForCheck();
       });
@@ -66,7 +88,7 @@ export class DelaylistPage implements OnInit {
       component: LoaderComponent,
       backdropDismiss: true,
       translucent: false,
-      cssClass: 'loaderStyle',
+      cssClass: 'loaderStyle'
     });
     return this.popOver.present();
   }
@@ -81,7 +103,7 @@ export class DelaylistPage implements OnInit {
   }
 
   ngOnInit() {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -97,44 +119,47 @@ export class DelaylistPage implements OnInit {
     this.isLoading = true;
     this.classes = []; // تفريغ القائمة القديمة
 
-    let userLoggedIn = await this.storageSr.get("userloggedin"); 
+    let userLoggedIn = await this.storageSr.get('userloggedin');
 
     if (userLoggedIn && userLoggedIn.details) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
-      
+
       let data = {
-        "user_no": this.userDetails.details.user_no,
-        "school_id": this.userDetails.details.school_id,
-        "session_id": this.userDetails.session_id
+        user_no: this.userDetails.details.user_no,
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id
       };
 
-      this.dataProvider.getCourses(data).then(response => {
-        this.isLoading = false;
+      this.dataProvider
+        .getCourses(data)
+        .then(response => {
+          this.isLoading = false;
 
-        if (response.session) {
-          let courses = response.data;
-          if (courses && courses.length > 0) {
-            let i = 0;
-            this.classes = courses.map(course => {
-              course.backgroundColor = this.classBackgroundColor[i];
-              i = (i + 1) % this.classBackgroundColor.length; // تأمين الدوران بين الألوان
-              return course;
-            });
+          if (response.session) {
+            let courses = response.data;
+            if (courses && courses.length > 0) {
+              let i = 0;
+              this.classes = courses.map(course => {
+                course.backgroundColor = this.classBackgroundColor[i];
+                i = (i + 1) % this.classBackgroundColor.length; // تأمين الدوران بين الألوان
+                return course;
+              });
+            } else {
+              this.noDataFound = this.lang.no_class_found || 'لا توجد فصول متاحة';
+            }
           } else {
-            this.noDataFound = this.lang.no_class_found || "لا توجد فصول متاحة";
+            this.authProvider.flushLocalStorage();
+            this.router.navigate(['login'], { replaceUrl: true });
+            this.dataProvider.errorALertMessage(response.message);
           }
-        } else {
-          this.authProvider.flushLocalStorage();
-          this.router.navigate(['login'], { replaceUrl: true });
-          this.dataProvider.errorALertMessage(response.message);
-        }
-        this.cdr.markForCheck();
-      }).catch(error => {
-        this.isLoading = false;
-        this.noDataFound = "حدث خطأ في الاتصال بالسيرفر";
-        this.cdr.markForCheck();
-      });
+          this.cdr.markForCheck();
+        })
+        .catch(error => {
+          this.isLoading = false;
+          this.noDataFound = 'حدث خطأ في الاتصال بالسيرفر';
+          this.cdr.markForCheck();
+        });
     } else {
       this.isLoading = false;
       this.authProvider.flushLocalStorage();
@@ -150,14 +175,14 @@ export class DelaylistPage implements OnInit {
         message: this.lang.givecourse || 'تعديل بيانات الفصل',
         backdropDismiss: false,
         inputs: [
-          { type: "text", value: course.name, name: "courseName", placeholder: this.lang.enter_value_placeholder },
-          { type: "text", value: course.desc, name: "courseDesc", placeholder: this.lang.enter_value_placeholder }
+          { type: 'text', value: course.name, name: 'courseName', placeholder: this.lang.enter_value_placeholder },
+          { type: 'text', value: course.desc, name: 'courseDesc', placeholder: this.lang.enter_value_placeholder }
         ],
         buttons: [
           { text: this.lang.alert_btn_cancel_text || 'إلغاء', role: 'cancel' },
           {
             text: this.lang.alert_btn_submit_text || 'حفظ',
-            handler: (data) => {
+            handler: data => {
               if (data.courseName?.trim() && data.courseDesc?.trim()) {
                 let postData = {
                   cid: course.cid,
@@ -166,22 +191,25 @@ export class DelaylistPage implements OnInit {
                   course: { name: data.courseName, desc: data.courseDesc }
                 };
 
-                this.dataProvider.updateCourseDesc(postData).then((response: any) => {
-                  if (response.session) {
-                    course.name = data.courseName;
-                    course.desc = data.courseDesc;
-                    this.editMode = false;
-                  } else {
-                    this.authProvider.flushLocalStorage();
-                    this.dataProvider.errorALertMessage(response.message);
-                  }
-                  this.cdr.markForCheck();
-                }).catch((error) => {
-                  this.dataProvider.errorALertMessage(error);
-                  this.cdr.markForCheck();
-                });
+                this.dataProvider
+                  .updateCourseDesc(postData)
+                  .then((response: any) => {
+                    if (response.session) {
+                      course.name = data.courseName;
+                      course.desc = data.courseDesc;
+                      this.editMode = false;
+                    } else {
+                      this.authProvider.flushLocalStorage();
+                      this.dataProvider.errorALertMessage(response.message);
+                    }
+                    this.cdr.markForCheck();
+                  })
+                  .catch(error => {
+                    this.dataProvider.errorALertMessage(error);
+                    this.cdr.markForCheck();
+                  });
               } else {
-                this.dataProvider.showToast(this.lang.can_not_empty || "لا يمكن ترك الحقول فارغة");
+                this.dataProvider.showToast(this.lang.can_not_empty || 'لا يمكن ترك الحقول فارغة');
               }
             }
           }
@@ -194,7 +222,7 @@ export class DelaylistPage implements OnInit {
         state: { course: course }
       };
       this.zone.run(() => {
-        this.router.navigate(['students'], navigation); 
+        this.router.navigate(['students'], navigation);
       });
     }
   }

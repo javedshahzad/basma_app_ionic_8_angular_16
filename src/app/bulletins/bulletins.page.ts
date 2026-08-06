@@ -17,10 +17,13 @@ import { UserType } from '../constants/user-type';
   selector: 'app-bulletins',
   templateUrl: './bulletins.page.html',
   styleUrls: ['./bulletins.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class BulletinsPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   readonly UserType = UserType;
   lang: any;
   userDetails: any;
@@ -45,7 +48,7 @@ export class BulletinsPage implements OnInit {
     private bulletinsApi: BulletinsApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((response) => {
+    this.translate.get('alertmessages').subscribe(response => {
       this.lang = response;
       this.cdr.markForCheck();
     });
@@ -58,7 +61,7 @@ export class BulletinsPage implements OnInit {
     this.allBullentins = [];
 
     // 🟢 استخدام StorageService الآمن
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.userType = this.userDetails.details.user_type;
@@ -75,25 +78,28 @@ export class BulletinsPage implements OnInit {
       user_no: this.userDetails.details.user_no,
       school_id: this.userDetails.details.school_id
     };
-    
-    this.bulletinsApi.getBulletins(data).then(res => {
-      this.isLoading = false; // إخفاء التحميل
-      if (res) {
-        this.bulletins = res.data;
-        if (this.bulletins) {
-          if (this.bulletins.length > 1) {
-            this.allBullentins = this.bulletins.splice(0, 20);
-          } else {
-            this.allBullentins = this.bulletins;
+
+    this.bulletinsApi
+      .getBulletins(data)
+      .then(res => {
+        this.isLoading = false; // إخفاء التحميل
+        if (res) {
+          this.bulletins = res.data;
+          if (this.bulletins) {
+            if (this.bulletins.length > 1) {
+              this.allBullentins = this.bulletins.splice(0, 20);
+            } else {
+              this.allBullentins = this.bulletins;
+            }
           }
         }
-      }
-      this.cdr.markForCheck();
-    }).catch(e => {
-      this.isLoading = false;
-      console.log(e);
-      this.cdr.markForCheck();
-    });
+        this.cdr.markForCheck();
+      })
+      .catch(e => {
+        this.isLoading = false;
+        console.log(e);
+        this.cdr.markForCheck();
+      });
   }
 
   doInfinite(infiniteScroll: any) {
@@ -114,14 +120,14 @@ export class BulletinsPage implements OnInit {
   }
 
   openImage(image) {
-    this.photoViewer.show(image); 
+    this.photoViewer.show(image);
   }
 
   opendoc(pdf) {
     let link = 'https://docs.google.com/viewer?url=' + pdf;
     window.open(link, '_system');
   }
-  
+
   openPdf(pdf: string) {
     window.open(pdf, '_system');
   }
@@ -146,10 +152,10 @@ export class BulletinsPage implements OnInit {
       });
       if (image && image.base64String) {
         let base64Image = 'data:image/jpeg;base64,' + image.base64String;
-        this.addBulletin(base64Image); 
+        this.addBulletin(base64Image);
       }
-    } catch(e) { 
-      console.log("Camera Error: ", e); 
+    } catch (e) {
+      console.log('Camera Error: ', e);
     }
   }
 }

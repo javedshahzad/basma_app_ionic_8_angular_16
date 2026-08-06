@@ -13,10 +13,13 @@ import { SearchApiService } from '../service/search-api/search-api.service';
   selector: 'app-manage-teacher',
   templateUrl: './manage-teacher.page.html',
   styleUrls: ['./manage-teacher.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false
 })
 export class ManageTeacherPage implements OnInit {
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
   course: any;
   userDetails: any;
   lang: any;
@@ -25,17 +28,17 @@ export class ManageTeacherPage implements OnInit {
   selectedTeacher: any = [];
   trimmedTeacher: any = [];
   show_loading: boolean = false;
-  
+
   // 🟢 متغيرات البحث الآمن
   searchQuery: string = '';
   searchTimeout: any;
 
   constructor(
-    public navCtrl: NavController, 
+    public navCtrl: NavController,
     public translate: TranslateService,
-    public dataProvider: DataService, 
-    public authProvider: AuthService,  
-    public alertCtrl: AlertController, 
+    public dataProvider: DataService,
+    public authProvider: AuthService,
+    public alertCtrl: AlertController,
     private route: ActivatedRoute,
     public zone: NgZone,
     private router: Router,
@@ -44,7 +47,7 @@ export class ManageTeacherPage implements OnInit {
     private searchApi: SearchApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.translate.get("alertmessages").subscribe((res) => {
+    this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();
     });
@@ -63,7 +66,7 @@ export class ManageTeacherPage implements OnInit {
 
   // 🟢 استخدام async/await للتعامل مع الذاكرة وجلب المعلمين بأمان
   async ionViewWillEnter() {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.getTeacher(true);
@@ -74,7 +77,7 @@ export class ManageTeacherPage implements OnInit {
   }
 
   async refreshData() {
-    let userLoggedIn = await this.storageSr.get("userloggedin");
+    let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.getTeacher(false); // تحديث بدون Loading
@@ -84,35 +87,38 @@ export class ManageTeacherPage implements OnInit {
 
   getTeacher(loader = true) {
     let data = {
-      'class_id': '',
-      'school_id': this.userDetails.details.school_id,
-      'user_no': this.userDetails.details.user_no
+      class_id: '',
+      school_id: this.userDetails.details.school_id,
+      user_no: this.userDetails.details.user_no
     };
 
     if (loader) this.dataProvider.showLoading();
 
-    this.dataProvider.getTeachers(data).then(res => {
-      if (loader) this.dataProvider.hideLoading();
-      this.show_loading = true;
+    this.dataProvider.getTeachers(data).then(
+      res => {
+        if (loader) this.dataProvider.hideLoading();
+        this.show_loading = true;
 
-      if (res.session) {
-        this.selectedTeacher = res.data;
-        if (this.selectedTeacher.length > 20) {
+        if (res.session) {
+          this.selectedTeacher = res.data;
+          if (this.selectedTeacher.length > 20) {
             this.trimmedTeacher = [...this.selectedTeacher].slice(0, 20);
-        } else {
+          } else {
             this.trimmedTeacher = [...this.selectedTeacher];
+          }
+          this.noTeacher = res.data.length < 1;
+        } else {
+          this.noTeacher = true;
         }
-        this.noTeacher = res.data.length < 1;
-      } else {
+        this.cdr.markForCheck();
+      },
+      error => {
         this.noTeacher = true;
+        if (loader) this.dataProvider.hideLoading();
+        console.log(error);
+        this.cdr.markForCheck();
       }
-      this.cdr.markForCheck();
-    }, error => {
-      this.noTeacher = true;
-      if (loader) this.dataProvider.hideLoading();
-      console.log(error);
-      this.cdr.markForCheck();
-    });
+    );
   }
 
   doInfinite(infiniteScroll: any) {
@@ -127,10 +133,10 @@ export class ManageTeacherPage implements OnInit {
 
   openEditPage(teacher) {
     const navigation: NavigationExtras = {
-      state: { 
+      state: {
         user: teacher,
         returnPath: 'manage-teacher'
-      } 
+      }
     };
     this.zone.run(() => {
       this.router.navigate(['edit-user-profile'], navigation);
@@ -152,7 +158,7 @@ export class ManageTeacherPage implements OnInit {
   // 🟢 2. دالة البحث المحدثة والمحمية بالكامل (Debounce + ngModel)
   filterList() {
     let input = this.searchQuery;
-    
+
     if (!input || input.trim() === '') {
       this.trimmedTeacher = [...this.selectedTeacher].slice(0, 20);
       this.noTeacher = this.trimmedTeacher.length === 0;
@@ -167,32 +173,35 @@ export class ManageTeacherPage implements OnInit {
 
     this.searchTimeout = setTimeout(() => {
       let data = {
-        'keyword': input.trim(),
-        'school_id': this.userDetails.details.school_id,
-        'pageno': 0
+        keyword: input.trim(),
+        school_id: this.userDetails.details.school_id,
+        pageno: 0
       };
-        
-      this.searchApi.searTeacher(data).then((res: any) => {
-        if (res && res.data) {
-          let teacher = res.data.profile ? res.data.profile : (Array.isArray(res.data) ? res.data : []);
-          
-          if (teacher && teacher.length > 0) {
-            this.trimmedTeacher = teacher.slice(0, 20);
-            this.noTeacher = false;
+
+      this.searchApi
+        .searTeacher(data)
+        .then((res: any) => {
+          if (res && res.data) {
+            let teacher = res.data.profile ? res.data.profile : Array.isArray(res.data) ? res.data : [];
+
+            if (teacher && teacher.length > 0) {
+              this.trimmedTeacher = teacher.slice(0, 20);
+              this.noTeacher = false;
+            } else {
+              this.trimmedTeacher = [];
+              this.noTeacher = true;
+            }
           } else {
             this.trimmedTeacher = [];
             this.noTeacher = true;
           }
-        } else {
+          this.cdr.markForCheck();
+        })
+        .catch(err => {
           this.trimmedTeacher = [];
           this.noTeacher = true;
-        }
-        this.cdr.markForCheck();
-      }).catch(err => {
-        this.trimmedTeacher = [];
-        this.noTeacher = true;
-        this.cdr.markForCheck();
-      });
+          this.cdr.markForCheck();
+        });
     }, 500); // الانتظار نصف ثانية بعد توقف المستخدم عن الطباعة
   }
 }
