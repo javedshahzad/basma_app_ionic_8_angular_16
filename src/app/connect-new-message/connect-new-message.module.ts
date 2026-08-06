@@ -10,13 +10,13 @@ import { ConnectNewMessagePage } from './connect-new-message.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ConnectNewMessagePageRoutingModule,
-    PipesModule
-  ],
-  declarations: [ConnectNewMessagePage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ConnectNewMessagePageRoutingModule,
+        PipesModule,
+        ConnectNewMessagePage
+    ]
 })
 export class ConnectNewMessagePageModule {}

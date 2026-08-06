@@ -1,19 +1,20 @@
 ﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, Platform } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { DataService } from '../service/data/data.service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-add-class',
-  templateUrl: './add-class.page.html',
-  styleUrls: ['./add-class.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-add-class',
+    templateUrl: './add-class.page.html',
+    styleUrls: ['./add-class.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, NgClass, TranslatePipe]
 })
 export class AddClassPage implements OnInit {
   trackByIndex(index: number): number {

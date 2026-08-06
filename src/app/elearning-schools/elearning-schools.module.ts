@@ -13,14 +13,14 @@ import { PipesModule } from '../pipes/pipes.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ElearningSchoolsPageRoutingModule,
-    PipesModule,
-    TranslateModule
-  ],
-  declarations: [ElearningSchoolsPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ElearningSchoolsPageRoutingModule,
+        PipesModule,
+        TranslateModule,
+        ElearningSchoolsPage
+    ]
 })
 export class ElearningSchoolsPageModule {}

@@ -10,13 +10,13 @@ import { SelectMessageUserPage } from './select-message-user.page';
 import { PipesModule } from '../../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SelectMessageUserPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [SelectMessageUserPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SelectMessageUserPageRoutingModule,
+        PipesModule,
+        SelectMessageUserPage
+    ]
 })
 export class SelectMessageUserPageModule {}

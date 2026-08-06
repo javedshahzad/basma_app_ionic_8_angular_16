@@ -11,7 +11,7 @@
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ScreenOrientation } from '@capacitor/screen-orientation';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, Platform, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Share } from '@capacitor/share';
@@ -19,13 +19,16 @@ import { Share } from '@capacitor/share';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { ElearningApiService } from '../service/elearning-api/elearning-api.service';
+import { NgIf, NgFor } from '@angular/common';
+import { SafePipe } from '../pipes/safe/safe.pipe';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-playvideo',
-  templateUrl: './playvideo.page.html',
-  styleUrls: ['./playvideo.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-playvideo',
+    templateUrl: './playvideo.page.html',
+    styleUrls: ['./playvideo.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, SafePipe, TranslatePipe]
 })
 export class PlayvideoPage implements OnInit {
   trackByIndex(index: number): number {

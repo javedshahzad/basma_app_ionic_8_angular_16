@@ -16,26 +16,24 @@ describe('ClasslistOptionsPopoverComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ClasslistOptionsPopoverComponent],
-      imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule],
-      providers: [
+    imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, ClasslistOptionsPopoverComponent],
+    providers: [
         { provide: AppRate, useValue: {} },
         {
-          provide: IonicStorage,
-          useValue: {
-            create: () =>
-              Promise.resolve({
-                get: () => Promise.resolve(null),
-                set: () => Promise.resolve(),
-                remove: () => Promise.resolve(),
-                clear: () => Promise.resolve()
-              })
-          }
+            provide: IonicStorage,
+            useValue: {
+                create: () => Promise.resolve({
+                    get: () => Promise.resolve(null),
+                    set: () => Promise.resolve(),
+                    remove: () => Promise.resolve(),
+                    clear: () => Promise.resolve()
+                })
+            }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(ClasslistOptionsPopoverComponent);
     component = fixture.componentInstance;

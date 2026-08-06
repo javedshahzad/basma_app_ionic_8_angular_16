@@ -1,16 +1,8 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import {
-  NavController,
-  NavParams,
-  AlertController,
-  PopoverController,
-  Platform,
-  ModalController,
-  ActionSheetController
-} from '@ionic/angular';
+import { NavController, NavParams, AlertController, PopoverController, Platform, ModalController, ActionSheetController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DatabaseService } from '../service/database/database.service';
@@ -37,14 +29,16 @@ import { GamificationApiService } from '../service/gamification-api/gamification
 import { StorageService } from '../service/storage.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { UserType } from '../constants/user-type';
+import { NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, DecimalPipe, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 const env = environment;
 
 @Component({
-  selector: 'app-student-detail',
-  templateUrl: './student-detail.page.html',
-  styleUrls: ['./student-detail.page.scss'],
-  standalone: false
+    selector: 'app-student-detail',
+    templateUrl: './student-detail.page.html',
+    styleUrls: ['./student-detail.page.scss'],
+    imports: [IonicModule, NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, FormsModule, DecimalPipe, DatePipe, TranslatePipe]
 })
 export class StudentDetailPage implements OnInit {
   readonly UserType = UserType;

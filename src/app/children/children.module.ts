@@ -10,13 +10,13 @@ import { ChildrenPage } from './children.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    PipesModule,
-    IonicModule,
-    ChildrenPageRoutingModule
-  ],
-  declarations: [ChildrenPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        PipesModule,
+        IonicModule,
+        ChildrenPageRoutingModule,
+        ChildrenPage
+    ]
 })
 export class ChildrenPageModule {}

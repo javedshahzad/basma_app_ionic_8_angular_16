@@ -8,10 +8,10 @@
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, Platform, ActionSheetController, PopoverController } from '@ionic/angular';
+import { NavController, AlertController, Platform, ActionSheetController, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
@@ -19,13 +19,15 @@ import { StorageService } from '../service/storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { UserType } from '../constants/user-type';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgClass, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-edit-user-profile',
-  templateUrl: './edit-user-profile.page.html',
-  styleUrls: ['./edit-user-profile.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-edit-user-profile',
+    templateUrl: './edit-user-profile.page.html',
+    styleUrls: ['./edit-user-profile.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgIf, NgClass, NgFor, TranslatePipe]
 })
 export class EditUserProfilePage implements OnInit {
   trackByIndex(index: number): number {

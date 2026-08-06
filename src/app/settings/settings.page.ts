@@ -1,10 +1,10 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, Platform, AlertController } from '@ionic/angular';
+import { NavController, Platform, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
 
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 import { Storage } from '@ionic/storage';
@@ -17,13 +17,15 @@ import { StorageService } from '../service/storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { UserType } from '../constants/user-type';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.page.html',
-  styleUrls: ['./settings.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-settings',
+    templateUrl: './settings.page.html',
+    styleUrls: ['./settings.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
 export class SettingsPage implements OnInit {
   trackByIndex(index: number): number {

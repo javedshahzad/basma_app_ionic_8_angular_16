@@ -13,18 +13,16 @@ import { TeacherViewComponent } from '../components/teacher-view/teacher-view.co
 import { SupervisorViewComponent } from '../components/supervisor-view/supervisor-view.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ListStudentPageRoutingModule,
-    PipesModule,
-  ],
-  schemas:[CUSTOM_ELEMENTS_SCHEMA,NO_ERRORS_SCHEMA],
-  declarations: [
-    ListStudentPage,
-    TeacherViewComponent,
-    SupervisorViewComponent
-  ]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ListStudentPageRoutingModule,
+        PipesModule,
+        ListStudentPage,
+        TeacherViewComponent,
+        SupervisorViewComponent,
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
 })
 export class ListStudentPageModule {}

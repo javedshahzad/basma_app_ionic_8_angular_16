@@ -1,19 +1,19 @@
 ﻿import { Component, OnInit, NgZone, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, NavParams, AlertController, Platform } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { NavController, NavParams, AlertController, Platform, IonicModule } from '@ionic/angular';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DataService } from '../../service/data/data.service';
-import { Location } from '@angular/common';
+import { Location, NgIf, NgFor } from '@angular/common';
 import { SearchApiService } from '../../service/search-api/search-api.service';
 import { StorageService } from '../../service/storage.service';
 import { SchoolDirectoryApiService } from '../../service/school-directory-api/school-directory-api.service';
 
 @Component({
-  selector: 'app-select-message-user',
-  templateUrl: './select-message-user.page.html',
-  styleUrls: ['./select-message-user.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-select-message-user',
+    templateUrl: './select-message-user.page.html',
+    styleUrls: ['./select-message-user.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
 export class SelectMessageUserPage implements OnInit {
   trackByIndex(index: number): number {

@@ -10,15 +10,16 @@ import { PipesModule } from '../pipes/pipes.module';
 import { TranslateModule } from '@ngx-translate/core'; // 🟢 استيراد هام للترجمة
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    BulletinsPageRoutingModule,
-    PipesModule,
-    TranslateModule // 🟢 إضافته هنا
-  ],
-  declarations: [BulletinsPage],
-  providers: []
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        BulletinsPageRoutingModule,
+        PipesModule,
+        TranslateModule // 🟢 إضافته هنا
+        ,
+        BulletinsPage
+    ],
+    providers: []
 })
 export class BulletinsPageModule {}

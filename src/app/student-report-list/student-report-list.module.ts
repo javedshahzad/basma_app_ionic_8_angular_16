@@ -10,13 +10,13 @@ import { StudentReportListPage } from './student-report-list.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    PipesModule,
-    IonicModule,
-    StudentReportListPageRoutingModule,
-  ],
-  declarations: [StudentReportListPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        PipesModule,
+        IonicModule,
+        StudentReportListPageRoutingModule,
+        StudentReportListPage,
+    ]
 })
 export class StudentReportListPageModule {}

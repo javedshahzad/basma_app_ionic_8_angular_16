@@ -10,13 +10,13 @@ import { DelaylistPage } from './delaylist.page';
 
 import { PipesModule } from '../pipes/pipes.module';
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    DelaylistPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [DelaylistPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        DelaylistPageRoutingModule,
+        PipesModule,
+        DelaylistPage
+    ]
 })
 export class DelaylistPageModule {}

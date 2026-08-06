@@ -10,13 +10,13 @@ import { WarningReportPage } from './warning-report.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    WarningReportPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [WarningReportPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        WarningReportPageRoutingModule,
+        PipesModule,
+        WarningReportPage
+    ]
 })
 export class WarningReportPageModule {}

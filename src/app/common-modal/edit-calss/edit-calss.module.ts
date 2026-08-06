@@ -10,13 +10,13 @@ import { EditCalssPage } from './edit-calss.page';
 import { PipesModule } from '../../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PipesModule,
-    EditCalssPageRoutingModule
-  ],
-  declarations: [EditCalssPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PipesModule,
+        EditCalssPageRoutingModule,
+        EditCalssPage
+    ]
 })
 export class EditCalssPageModule {}

@@ -10,17 +10,18 @@ import { IonicSelectableComponent } from 'ionic-selectable';
 import { TranslateModule } from '@ngx-translate/core'; 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SchoolRegistrationPageRoutingModule,
-    PipesModule,
-    IonicSelectableComponent,
-    TranslateModule // 🟢 تفعيل الترجمة في الصفحة
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [IonicSelectableComponent],
-  declarations: [SchoolRegistrationPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SchoolRegistrationPageRoutingModule,
+        PipesModule,
+        IonicSelectableComponent,
+        TranslateModule // 🟢 تفعيل الترجمة في الصفحة
+        ,
+        SchoolRegistrationPage
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    providers: [IonicSelectableComponent]
 })
 export class SchoolRegistrationPageModule {}

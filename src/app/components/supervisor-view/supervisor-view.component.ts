@@ -1,11 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
 import { UserType } from '../../constants/user-type';
+import { NgIf, NgFor, NgClass, DecimalPipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
-  selector: 'app-supervisor-view',
-  templateUrl: './supervisor-view.component.html',
-  standalone: false
+    selector: 'app-supervisor-view',
+    templateUrl: './supervisor-view.component.html',
+    imports: [NgIf, IonicModule, NgFor, NgClass, DecimalPipe]
 })
 export class SupervisorViewComponent {
   readonly UserType = UserType;

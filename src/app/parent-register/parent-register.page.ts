@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, IonicModule } from '@ionic/angular';
 import { LoaderComponent } from '../components/loader/loader.component';
 import { LoginModel } from '../model/login.model';
 import { NavController, Platform } from '@ionic/angular';
@@ -12,13 +12,16 @@ import { Device } from '@capacitor/device';
 // 🟢 استيراد خدمة التخزين الموحدة
 import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-parent-register',
-  templateUrl: './parent-register.page.html',
-  styleUrls: ['./parent-register.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-parent-register',
+    templateUrl: './parent-register.page.html',
+    styleUrls: ['./parent-register.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
 })
 export class ParentRegisterPage implements OnInit {
   parent: any = {};

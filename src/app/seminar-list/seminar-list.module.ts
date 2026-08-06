@@ -10,13 +10,13 @@ import { SeminarListPage } from './seminar-list.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SeminarListPageRoutingModule,
-    PipesModule,
-  ],
-  declarations: [SeminarListPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SeminarListPageRoutingModule,
+        PipesModule,
+        SeminarListPage,
+    ]
 })
 export class SeminarListPageModule {}

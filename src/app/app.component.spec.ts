@@ -50,30 +50,30 @@ describe('AppComponent', () => {
     dataProviderSpy.run.and.callFake((fn: any) => fn());
 
     TestBed.configureTestingModule({
-      declarations: [AppComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot()],
-      providers: [
+    declarations: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [RouterTestingModule.withRoutes([]), TranslateModule.forRoot()],
+    providers: [
         { provide: Platform, useValue: jasmine.createSpyObj('Platform', { ready: Promise.resolve(), is: false }) },
         { provide: StorageService, useValue: storageSrSpy },
         { provide: TranslateService, useValue: translateSpy },
         { provide: AuthService, useValue: { event: authEvent } },
         { provide: DataService, useValue: dataProviderSpy },
         { provide: DatabaseService, useValue: jasmine.createSpyObj('DatabaseService', {
-            openDataBase: Promise.resolve(),
-            createTable: undefined
-          }) },
+                openDataBase: Promise.resolve(),
+                createTable: undefined
+            }) },
         { provide: IonicStorage, useValue: { create: () => Promise.resolve({ get: () => Promise.resolve(null), set: () => Promise.resolve(), remove: () => Promise.resolve(), clear: () => Promise.resolve() }) } },
         { provide: NavController, useValue: jasmine.createSpyObj('NavController', ['navigateRoot']) },
-        { provide: FcmService, useValue: { getPlan: fcmGetPlan, initPush: () => {} } },
+        { provide: FcmService, useValue: { getPlan: fcmGetPlan, initPush: () => { } } },
         { provide: SyncService, useValue: {} },
         { provide: DeviceApiService, useValue: {} },
         { provide: MenuController, useValue: jasmine.createSpyObj('MenuController', ['close']) },
         { provide: ToastController, useValue: {} },
         { provide: HttpClient, useValue: {} },
         { provide: PlanApiService, useValue: {} },
-      ],
-    }).compileComponents();
+    ],
+}).compileComponents();
   }));
 
   let appFixture: any;

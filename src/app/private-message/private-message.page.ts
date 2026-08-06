@@ -8,21 +8,22 @@
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-private-message',
-  templateUrl: './private-message.page.html',
-  styleUrls: ['./private-message.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-private-message',
+    templateUrl: './private-message.page.html',
+    styleUrls: ['./private-message.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
 export class PrivateMessagePage implements OnInit {
   trackByIndex(index: number): number {

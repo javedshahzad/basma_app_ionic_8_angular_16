@@ -10,13 +10,13 @@ import { PrivateMessagePage } from './private-message.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PrivateMessagePageRoutingModule,
-    PipesModule
-  ],
-  declarations: [PrivateMessagePage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PrivateMessagePageRoutingModule,
+        PipesModule,
+        PrivateMessagePage
+    ]
 })
 export class PrivateMessagePageModule {}

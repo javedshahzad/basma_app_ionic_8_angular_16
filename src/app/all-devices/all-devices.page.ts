@@ -1,18 +1,20 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { Router } from '@angular/router';
 import { Device } from '@capacitor/device';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
+import { NgIf, NgFor, NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-all-devices',
-  templateUrl: './all-devices.page.html',
-  styleUrls: ['./all-devices.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-all-devices',
+    templateUrl: './all-devices.page.html',
+    styleUrls: ['./all-devices.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, NgClass, TranslatePipe]
 })
 export class AllDevicesPage implements OnInit {
   trackByIndex(index: number): number {

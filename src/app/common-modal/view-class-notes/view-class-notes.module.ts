@@ -10,13 +10,13 @@ import { ViewClassNotesPage } from './view-class-notes.page';
 import { PipesModule } from '../../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    PipesModule,
-    IonicModule,
-    ViewClassNotesPageRoutingModule
-  ],
-  declarations: [ViewClassNotesPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        PipesModule,
+        IonicModule,
+        ViewClassNotesPageRoutingModule,
+        ViewClassNotesPage
+    ]
 })
 export class ViewClassNotesPageModule {}

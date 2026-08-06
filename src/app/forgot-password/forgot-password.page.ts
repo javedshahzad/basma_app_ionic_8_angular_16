@@ -1,17 +1,19 @@
 import { Component, OnInit, NgZone, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, Platform, IonContent } from '@ionic/angular';
+import { NavController, AlertController, Platform, IonContent, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PasswordResetApiService } from '../service/password-reset-api/password-reset-api.service';
+import { NgIf, NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-forgot-password',
-  templateUrl: './forgot-password.page.html',
-  styleUrls: ['./forgot-password.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-forgot-password',
+    templateUrl: './forgot-password.page.html',
+    styleUrls: ['./forgot-password.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgClass, FormsModule, TranslatePipe]
 })
 export class ForgotPasswordPage implements OnInit {
   // 🟢 استدعاء المحتوى للتحكم في التمرير (Scrolling) بطريقة Angular الآمنة

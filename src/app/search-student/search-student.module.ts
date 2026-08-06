@@ -10,13 +10,13 @@ import { SearchStudentPage } from './search-student.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SearchStudentPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [SearchStudentPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SearchStudentPageRoutingModule,
+        PipesModule,
+        SearchStudentPage
+    ]
 })
 export class SearchStudentPageModule {}

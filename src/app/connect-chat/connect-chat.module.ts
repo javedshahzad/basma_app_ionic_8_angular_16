@@ -11,13 +11,13 @@ import { PipesModule } from '../pipes/pipes.module';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ConnectChatPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [ConnectChatPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ConnectChatPageRoutingModule,
+        PipesModule,
+        ConnectChatPage
+    ]
 })
 export class ConnectChatPageModule {}

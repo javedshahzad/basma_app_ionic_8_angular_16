@@ -1,17 +1,9 @@
 import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  NavController,
-  AlertController,
-  Platform,
-  ModalController,
-  ActionSheetController,
-  MenuController,
-  PopoverController
-} from '@ionic/angular';
+import { NavController, AlertController, Platform, ModalController, ActionSheetController, MenuController, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
@@ -27,6 +19,10 @@ import { StorageService } from '../service/storage.service';
 import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
+import { NgClass, NgIf, NgFor, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { SupervisorViewComponent } from '../components/supervisor-view/supervisor-view.component';
+import { TeacherViewComponent } from '../components/teacher-view/teacher-view.component';
 
 export enum UserRole {
   Admin = '1',
@@ -50,10 +46,10 @@ export enum TeacherTypeEnum {
 }
 
 @Component({
-  selector: 'app-list-student',
-  templateUrl: './list-student.page.html',
-  styleUrls: ['./list-student.page.scss'],
-  standalone: false
+    selector: 'app-list-student',
+    templateUrl: './list-student.page.html',
+    styleUrls: ['./list-student.page.scss'],
+    imports: [IonicModule, NgClass, NgIf, FormsModule, NgFor, SupervisorViewComponent, TeacherViewComponent, DatePipe, TranslatePipe]
 })
 export class ListStudentPage implements OnInit {
   trackByIndex(index: number): number {

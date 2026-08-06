@@ -1,19 +1,21 @@
 import { Component, OnInit, NgZone, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, Platform } from '@ionic/angular';
+import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { NgIf, NgFor, NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-elearning-schools',
-  templateUrl: './elearning-schools.page.html',
-  styleUrls: ['./elearning-schools.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-elearning-schools',
+    templateUrl: './elearning-schools.page.html',
+    styleUrls: ['./elearning-schools.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, FormsModule, NgClass, TranslatePipe]
 })
 export class ElearningSchoolsPage implements OnInit {
   trackByIndex(index: number): number {

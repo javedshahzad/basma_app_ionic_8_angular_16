@@ -10,13 +10,13 @@ import { ParentRegisterPage } from './parent-register.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    PipesModule,
-    IonicModule,
-    ParentRegisterPageRoutingModule
-  ],
-  declarations: [ParentRegisterPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        PipesModule,
+        IonicModule,
+        ParentRegisterPageRoutingModule,
+        ParentRegisterPage
+    ]
 })
 export class ParentRegisterPageModule {}

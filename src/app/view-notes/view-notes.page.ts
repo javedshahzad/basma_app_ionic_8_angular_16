@@ -8,9 +8,9 @@
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, ModalController } from '@ionic/angular';
+import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { DocumentService } from '../service/document/document.service';
@@ -19,13 +19,14 @@ import { StorageService } from '../service/storage.service';
 import { NotesApiService } from '../service/notes-api/notes-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { UserType } from '../constants/user-type';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-view-notes',
-  templateUrl: './view-notes.page.html',
-  styleUrls: ['./view-notes.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-view-notes',
+    templateUrl: './view-notes.page.html',
+    styleUrls: ['./view-notes.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
 export class ViewNotesPage implements OnInit {
   trackByIndex(index: number): number {

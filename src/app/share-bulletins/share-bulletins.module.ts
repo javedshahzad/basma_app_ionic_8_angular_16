@@ -12,14 +12,15 @@ import { PipesModule } from '../pipes/pipes.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ShareBulletinsPageRoutingModule,
-    PipesModule,
-    TranslateModule // 🟢 تفعيل الترجمة
-  ],
-  declarations: [ShareBulletinsPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ShareBulletinsPageRoutingModule,
+        PipesModule,
+        TranslateModule // 🟢 تفعيل الترجمة
+        ,
+        ShareBulletinsPage
+    ]
 })
 export class ShareBulletinsPageModule {}

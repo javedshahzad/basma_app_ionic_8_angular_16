@@ -1,21 +1,23 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, Platform, AlertController, ModalController } from '@ionic/angular';
+import { NavController, Platform, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
 import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
 import { StorageService } from '../service/storage.service';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-connect-new-message',
-  templateUrl: './connect-new-message.page.html',
-  styleUrls: ['./connect-new-message.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-connect-new-message',
+    templateUrl: './connect-new-message.page.html',
+    styleUrls: ['./connect-new-message.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
 })
 export class ConnectNewMessagePage implements OnInit {
   userDetails: any = {};

@@ -8,23 +8,24 @@
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, ModalController, Platform } from '@ionic/angular';
+import { NavController, AlertController, ModalController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Browser } from '@capacitor/browser';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { NotesApiService } from '../service/notes-api/notes-api.service';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-student-notes',
-  templateUrl: './student-notes.page.html',
-  styleUrls: ['./student-notes.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-student-notes',
+    templateUrl: './student-notes.page.html',
+    styleUrls: ['./student-notes.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
 export class StudentNotesPage implements OnInit {
   trackByIndex(index: number): number {

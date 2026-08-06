@@ -10,13 +10,14 @@ import { StudentTitlesPage } from './student-titles.page';
 import { TranslateModule } from '@ngx-translate/core'; 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    StudentTitlesPageRoutingModule,
-    TranslateModule // 🟢 2. قمنا بإضافتها هنا ليتعرف عليها ملف الـ HTML
-  ],
-  declarations: [StudentTitlesPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        StudentTitlesPageRoutingModule,
+        TranslateModule // 🟢 2. قمنا بإضافتها هنا ليتعرف عليها ملف الـ HTML
+        ,
+        StudentTitlesPage
+    ]
 })
 export class StudentTitlesPageModule {}

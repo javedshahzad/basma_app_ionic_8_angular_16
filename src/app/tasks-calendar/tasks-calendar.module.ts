@@ -10,13 +10,13 @@ import { TasksCalendarPage } from './tasks-calendar.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PipesModule,
-    TasksCalendarPageRoutingModule
-  ],
-  declarations: [TasksCalendarPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PipesModule,
+        TasksCalendarPageRoutingModule,
+        TasksCalendarPage
+    ]
 })
 export class TasksCalendarPageModule {}

@@ -8,10 +8,10 @@
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, NavParams, AlertController, Platform } from '@ionic/angular';
+import { NavController, NavParams, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 //import { TabsPage } from '../tabs/tabs';
 
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
@@ -19,13 +19,16 @@ import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { UserType } from '../constants/user-type';
+import { FormsModule } from '@angular/forms';
+import { IonicSelectableComponent } from 'ionic-selectable';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-edit-teacher-profile',
-  templateUrl: './edit-teacher-profile.page.html',
-  styleUrls: ['./edit-teacher-profile.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-edit-teacher-profile',
+    templateUrl: './edit-teacher-profile.page.html',
+    styleUrls: ['./edit-teacher-profile.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, IonicSelectableComponent, NgIf, TranslatePipe]
 })
 export class EditTeacherProfilePage implements OnInit {
   trackByIndex(index: number): number {

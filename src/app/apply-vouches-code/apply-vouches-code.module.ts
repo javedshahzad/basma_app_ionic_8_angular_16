@@ -9,12 +9,12 @@ import { ApplyVouchesCodePageRoutingModule } from './apply-vouches-code-routing.
 import { ApplyVouchesCodePage } from './apply-vouches-code.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ApplyVouchesCodePageRoutingModule
-  ],
-  declarations: [ApplyVouchesCodePage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ApplyVouchesCodePageRoutingModule,
+        ApplyVouchesCodePage
+    ]
 })
 export class ApplyVouchesCodePageModule {}

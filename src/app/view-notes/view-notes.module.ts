@@ -12,15 +12,14 @@ import { NoteCalendarPageModule } from '../note-calendar/note-calendar.module';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ViewNotesPageRoutingModule,
-    PipesModule,
-    NoteCalendarPageModule
-    
-  ],
-  declarations: [ViewNotesPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ViewNotesPageRoutingModule,
+        PipesModule,
+        NoteCalendarPageModule,
+        ViewNotesPage
+    ]
 })
 export class ViewNotesPageModule {}

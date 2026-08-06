@@ -11,14 +11,14 @@ import { PipesModule } from '../pipes/pipes.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PlayvideoPageRoutingModule,
-    PipesModule,
-    TranslateModule,
-  ],
-  declarations: [PlayvideoPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PlayvideoPageRoutingModule,
+        PipesModule,
+        TranslateModule,
+        PlayvideoPage,
+    ]
 })
 export class PlayvideoPageModule {}

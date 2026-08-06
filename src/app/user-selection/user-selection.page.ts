@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, NgZone, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, ModalController } from '@ionic/angular';
+import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,14 +7,16 @@ import { Router, ActivatedRoute } from '@angular/router';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { FormsModule } from '@angular/forms';
+import { NgFor, NgClass, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-user-selection',
-  // 🟢 إصلاح مسارات الملفات لكي لا يظهر خطأ (Module not found)
-  templateUrl: './user-selection.page.html',
-  styleUrls: ['./user-selection.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-user-selection',
+    // 🟢 إصلاح مسارات الملفات لكي لا يظهر خطأ (Module not found)
+    templateUrl: './user-selection.page.html',
+    styleUrls: ['./user-selection.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgFor, NgClass, NgIf]
 })
 // 🟢 إصلاح اسم الكلاس ليكون UserSelectionPage
 export class UserSelectionPage implements OnInit {

@@ -10,13 +10,13 @@ import { ViewBulletinPage } from './view-bulletin.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ViewBulletinPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [ViewBulletinPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ViewBulletinPageRoutingModule,
+        PipesModule,
+        ViewBulletinPage
+    ]
 })
 export class ViewBulletinPageModule {}

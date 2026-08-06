@@ -9,14 +9,15 @@ import { AddParentPage } from './add-parent.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    AddParentPageRoutingModule,
-    PipesModule,
-    ReactiveFormsModule // 🟢 ReactiveForms لا زال مطلوباً لكود الـ Validation الخاص بك
-  ],
-  declarations: [AddParentPage],
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        AddParentPageRoutingModule,
+        PipesModule,
+        ReactiveFormsModule // 🟢 ReactiveForms لا زال مطلوباً لكود الـ Validation الخاص بك
+        ,
+        AddParentPage
+    ],
 })
 export class AddParentPageModule {}

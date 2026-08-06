@@ -17,30 +17,29 @@ describe('UsersListPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [UsersListPage],
-      imports: [
+    imports: [
         IonicModule.forRoot(),
         TranslateModule.forRoot(),
-        RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }])
-      ],
-      providers: [
+        RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }]),
+        UsersListPage
+    ],
+    providers: [
         { provide: AppRate, useValue: {} },
         {
-          provide: IonicStorage,
-          useValue: {
-            create: () =>
-              Promise.resolve({
-                get: () => Promise.resolve(null),
-                set: () => Promise.resolve(),
-                remove: () => Promise.resolve(),
-                clear: () => Promise.resolve()
-              })
-          }
+            provide: IonicStorage,
+            useValue: {
+                create: () => Promise.resolve({
+                    get: () => Promise.resolve(null),
+                    set: () => Promise.resolve(),
+                    remove: () => Promise.resolve(),
+                    clear: () => Promise.resolve()
+                })
+            }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(UsersListPage);
     component = fixture.componentInstance;

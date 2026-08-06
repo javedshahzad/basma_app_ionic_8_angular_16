@@ -9,13 +9,13 @@ import { ProfileImagePage } from './profile-image.page';
 import { PinchZoomModule } from '@mtnair/ngx-pinch-zoom';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ProfileImagePageRoutingModule, 
-    PinchZoomModule
-  ],
-  declarations: [ProfileImagePage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ProfileImagePageRoutingModule,
+        PinchZoomModule,
+        ProfileImagePage
+    ]
 })
 export class ProfileImagePageModule {}

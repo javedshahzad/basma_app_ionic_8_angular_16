@@ -1,21 +1,23 @@
 ﻿import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { PopoverController, AlertController, NavController, Platform, MenuController } from '@ionic/angular';
+import { PopoverController, AlertController, NavController, Platform, MenuController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DatabaseService } from '../service/database/database.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DataService } from './../service/data/data.service';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { NgIf, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-student-profile',
-  templateUrl: './edit-student-profile.page.html',
-  styleUrls: ['./edit-student-profile.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-edit-student-profile',
+    templateUrl: './edit-student-profile.page.html',
+    styleUrls: ['./edit-student-profile.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
 export class EditStudentProfilePage implements OnInit {
   trackByIndex(index: number): number {

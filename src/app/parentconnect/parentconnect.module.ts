@@ -10,13 +10,13 @@ import { ParentconnectPage } from './parentconnect.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ParentconnectPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [ParentconnectPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ParentconnectPageRoutingModule,
+        PipesModule,
+        ParentconnectPage
+    ]
 })
 export class ParentconnectPageModule {}

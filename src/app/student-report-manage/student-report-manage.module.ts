@@ -11,14 +11,14 @@ import { PipesModule } from '../pipes/pipes.module';
 import { IonicSelectableComponent } from 'ionic-selectable';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PipesModule,
-    StudentReportManagePageRoutingModule,
-    IonicSelectableComponent
-  ],
-  declarations: [StudentReportManagePage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PipesModule,
+        StudentReportManagePageRoutingModule,
+        IonicSelectableComponent,
+        StudentReportManagePage
+    ]
 })
 export class StudentReportManagePageModule {}

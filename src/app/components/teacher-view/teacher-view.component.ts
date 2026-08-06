@@ -1,10 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
+import { NgIf, NgFor, NgClass, NgSwitch, NgSwitchCase, NgTemplateOutlet, DecimalPipe } from '@angular/common';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
-  selector: 'app-teacher-view',
-  templateUrl: './teacher-view.component.html',
-  standalone: false
+    selector: 'app-teacher-view',
+    templateUrl: './teacher-view.component.html',
+    imports: [NgIf, IonicModule, NgFor, NgClass, NgSwitch, NgSwitchCase, NgTemplateOutlet, DecimalPipe]
 })
 export class TeacherViewComponent {
   @Input() attendanceResponse: any = {};

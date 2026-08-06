@@ -8,14 +8,14 @@ import { NewsPage } from './news.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PipesModule,
-    NewsPageRoutingModule
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [NewsPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PipesModule,
+        NewsPageRoutingModule,
+        NewsPage
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class NewsPageModule {}

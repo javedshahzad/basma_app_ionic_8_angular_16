@@ -1,25 +1,20 @@
 ﻿import { Component, OnInit, NgZone, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import {
-  NavController,
-  ModalController,
-  MenuController,
-  ToastController,
-  AlertController,
-  LoadingController
-} from '@ionic/angular';
+import { NavController, ModalController, MenuController, ToastController, AlertController, LoadingController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { StorageService } from '../service/storage.service';
+import { FormsModule } from '@angular/forms';
+import { NgClass, NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-create-class',
-  templateUrl: './create-class.page.html',
-  styleUrls: ['./create-class.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-create-class',
+    templateUrl: './create-class.page.html',
+    styleUrls: ['./create-class.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgClass, NgIf, NgFor, TranslatePipe]
 })
 export class CreateClassPage implements OnInit {
   trackByIndex(index: number): number {

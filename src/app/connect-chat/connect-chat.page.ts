@@ -7,12 +7,12 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { NavController, AlertController, IonContent, Platform } from '@ionic/angular';
+import { NavController, AlertController, IonContent, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { Location } from '@angular/common';
+import { Location, NgIf, NgFor, NgClass } from '@angular/common';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
 
@@ -20,13 +20,15 @@ import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor
 import { StorageService } from '../service/storage.service';
 import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
 import { UserType } from '../constants/user-type';
+import { FormsModule } from '@angular/forms';
+import { LinkyPipe } from '../pipes/linky.pipe';
 
 @Component({
-  selector: 'app-connect-chat',
-  templateUrl: './connect-chat.page.html',
-  styleUrls: ['./connect-chat.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-connect-chat',
+    templateUrl: './connect-chat.page.html',
+    styleUrls: ['./connect-chat.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, NgClass, FormsModule, LinkyPipe, TranslatePipe]
 })
 export class ConnectChatPage implements OnInit, OnDestroy {
   @ViewChild('contentArea') private contentArea: IonContent; // 🟢 تعريف صحيح للمحتوى

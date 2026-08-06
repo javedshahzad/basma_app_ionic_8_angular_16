@@ -1,19 +1,20 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, AlertController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
+import { NavController, AlertController, IonicModule } from '@ionic/angular';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { NgIf, NgClass, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-view-application-details',
-  templateUrl: './view-application-details.page.html',
-  styleUrls: ['./view-application-details.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-view-application-details',
+    templateUrl: './view-application-details.page.html',
+    styleUrls: ['./view-application-details.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgClass, NgFor, TranslatePipe]
 })
 export class ViewApplicationDetailsPage implements OnInit {
   trackByIndex(index: number): number {

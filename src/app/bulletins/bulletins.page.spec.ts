@@ -17,27 +17,25 @@ describe('BulletinsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [BulletinsPage],
-      imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule],
-      providers: [
+    imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, BulletinsPage],
+    providers: [
         { provide: AppRate, useValue: {} },
-        { provide: PhotoViewer, useValue: { show: () => {} } },
+        { provide: PhotoViewer, useValue: { show: () => { } } },
         {
-          provide: IonicStorage,
-          useValue: {
-            create: () =>
-              Promise.resolve({
-                get: () => Promise.resolve(null),
-                set: () => Promise.resolve(),
-                remove: () => Promise.resolve(),
-                clear: () => Promise.resolve()
-              })
-          }
+            provide: IonicStorage,
+            useValue: {
+                create: () => Promise.resolve({
+                    get: () => Promise.resolve(null),
+                    set: () => Promise.resolve(),
+                    remove: () => Promise.resolve(),
+                    clear: () => Promise.resolve()
+                })
+            }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(BulletinsPage);
     component = fixture.componentInstance;

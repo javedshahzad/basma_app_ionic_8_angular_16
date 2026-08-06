@@ -1,21 +1,23 @@
 ﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, Platform } from '@ionic/angular';
+import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-manage-student',
-  templateUrl: './manage-student.page.html',
-  styleUrls: ['./manage-student.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-manage-student',
+    templateUrl: './manage-student.page.html',
+    styleUrls: ['./manage-student.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgIf, NgFor, TranslatePipe]
 })
 export class ManageStudentPage implements OnInit {
   trackByIndex(index: number): number {

@@ -19,46 +19,45 @@ describe('SchoolRegistrationPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SchoolRegistrationPage],
-      imports: [
+    imports: [
         IonicModule.forRoot(),
         TranslateModule.forRoot(),
         RouterTestingModule,
         FormsModule,
-        IonicSelectableComponent
-      ],
-      providers: [
+        IonicSelectableComponent,
+        SchoolRegistrationPage
+    ],
+    providers: [
         { provide: AppRate, useValue: {} },
         {
-          provide: GeoServiceProvider,
-          useValue: {
-            getAllCountries: () => [],
-            getEnCountries: () => [],
-            getArCountries: () => [],
-            get_country_name: () => '',
-            getCountryName: () => '',
-            getCountryDetails: () => ({}),
-            getCountryPhone: () => '',
-            getCountriesData: () => [],
-            getMyLocation: () => Promise.resolve({})
-          }
+            provide: GeoServiceProvider,
+            useValue: {
+                getAllCountries: () => [],
+                getEnCountries: () => [],
+                getArCountries: () => [],
+                get_country_name: () => '',
+                getCountryName: () => '',
+                getCountryDetails: () => ({}),
+                getCountryPhone: () => '',
+                getCountriesData: () => [],
+                getMyLocation: () => Promise.resolve({})
+            }
         },
         {
-          provide: IonicStorage,
-          useValue: {
-            create: () =>
-              Promise.resolve({
-                get: () => Promise.resolve(null),
-                set: () => Promise.resolve(),
-                remove: () => Promise.resolve(),
-                clear: () => Promise.resolve()
-              })
-          }
+            provide: IonicStorage,
+            useValue: {
+                create: () => Promise.resolve({
+                    get: () => Promise.resolve(null),
+                    set: () => Promise.resolve(),
+                    remove: () => Promise.resolve(),
+                    clear: () => Promise.resolve()
+                })
+            }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(SchoolRegistrationPage);
     component = fixture.componentInstance;

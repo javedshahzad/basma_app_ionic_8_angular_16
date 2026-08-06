@@ -1,12 +1,13 @@
 import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, IonicModule } from '@ionic/angular';
+import { PinchZoomModule } from '@mtnair/ngx-pinch-zoom';
 
 @Component({
-  selector: 'app-profile-image',
-  templateUrl: './profile-image.page.html',
-  styleUrls: ['./profile-image.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-profile-image',
+    templateUrl: './profile-image.page.html',
+    styleUrls: ['./profile-image.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, PinchZoomModule]
 })
 export class ProfileImagePage implements OnInit {
   @Input() pic: string = ''; // تحديد القيمة الافتراضية

@@ -8,22 +8,20 @@ import { UserSearchPipe } from './user-search.pipe';
 import { LinkyPipe } from './linky.pipe';
 
 @NgModule({
-  declarations: [
-    DateFormatPipe,
-    SafePipe,
-    UserSearchPipe,
-    LinkyPipe
-  ],
-  imports: [
-    CommonModule,
-    TranslateModule.forChild() 
-  ],
-  exports: [
-    DateFormatPipe,
-    SafePipe,
-    UserSearchPipe, 
-    LinkyPipe,
-    TranslateModule
-  ] 
+    imports: [
+        CommonModule,
+        TranslateModule.forChild(),
+        DateFormatPipe,
+        SafePipe,
+        UserSearchPipe,
+        LinkyPipe
+    ],
+    exports: [
+        DateFormatPipe,
+        SafePipe,
+        UserSearchPipe,
+        LinkyPipe,
+        TranslateModule
+    ]
 })
 export class PipesModule {}

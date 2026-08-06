@@ -1,8 +1,8 @@
 import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, Platform, PopoverController } from '@ionic/angular';
+import { NavController, AlertController, Platform, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Router, NavigationExtras } from '@angular/router';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
@@ -11,13 +11,15 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { StorageService } from '../service/storage.service';
 import { BulletinsApiService } from '../service/bulletins-api/bulletins-api.service';
 import { UserType } from '../constants/user-type';
+import { NgIf, NgFor, NgClass } from '@angular/common';
+import { DateFormatPipe } from '../pipes/date-format/date-format.pipe';
 
 @Component({
-  selector: 'app-bulletins',
-  templateUrl: './bulletins.page.html',
-  styleUrls: ['./bulletins.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-bulletins',
+    templateUrl: './bulletins.page.html',
+    styleUrls: ['./bulletins.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, NgClass, DateFormatPipe, TranslatePipe]
 })
 export class BulletinsPage implements OnInit {
   trackByIndex(index: number): number {

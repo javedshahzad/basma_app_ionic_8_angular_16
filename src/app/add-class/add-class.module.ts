@@ -10,13 +10,13 @@ import { AddClassPage } from './add-class.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PipesModule,
-    AddClassPageRoutingModule
-  ],
-  declarations: [AddClassPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PipesModule,
+        AddClassPageRoutingModule,
+        AddClassPage
+    ]
 })
 export class AddClassPageModule {}

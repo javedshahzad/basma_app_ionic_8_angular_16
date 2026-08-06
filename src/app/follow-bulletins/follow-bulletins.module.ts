@@ -10,14 +10,14 @@ import { PipesModule } from '../pipes/pipes.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    IonicModule,
-    FollowBulletinsPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [FollowBulletinsPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        IonicModule,
+        FollowBulletinsPageRoutingModule,
+        PipesModule,
+        FollowBulletinsPage
+    ]
 })
 export class FollowBulletinsPageModule {}

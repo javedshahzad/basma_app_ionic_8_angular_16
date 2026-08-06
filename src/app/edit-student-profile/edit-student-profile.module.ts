@@ -10,13 +10,13 @@ import { EditStudentProfilePage } from './edit-student-profile.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    EditStudentProfilePageRoutingModule,
-    PipesModule
-  ],
-  declarations: [EditStudentProfilePage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        EditStudentProfilePageRoutingModule,
+        PipesModule,
+        EditStudentProfilePage
+    ]
 })
 export class EditStudentProfilePageModule {}

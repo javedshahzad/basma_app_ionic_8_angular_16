@@ -8,13 +8,13 @@
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, Platform, AlertController, ModalController } from '@ionic/angular';
+import { NavController, Platform, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 
 import { UserSelectionPage } from '../user-selection/user-selection.page';
 
 import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { environment } from '../../environments/environment';
 
@@ -23,15 +23,17 @@ import { StorageService } from '../service/storage.service';
 
 import { AuthService } from '../service/auth/auth.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgFor } from '@angular/common';
 
 const env = environment;
 
 @Component({
-  selector: 'app-sendmessage',
-  templateUrl: './sendmessage.page.html',
-  styleUrls: ['./sendmessage.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-sendmessage',
+    templateUrl: './sendmessage.page.html',
+    styleUrls: ['./sendmessage.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgIf, NgFor, TranslatePipe]
 })
 export class SendmessagePage implements OnInit {
   trackByIndex(index: number): number {

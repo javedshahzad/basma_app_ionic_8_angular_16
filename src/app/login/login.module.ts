@@ -10,13 +10,13 @@ import { LoginPage } from './login.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    LoginPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [LoginPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        LoginPageRoutingModule,
+        PipesModule,
+        LoginPage
+    ]
 })
 export class LoginPageModule {}

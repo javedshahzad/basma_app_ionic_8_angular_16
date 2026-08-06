@@ -13,13 +13,13 @@ import { PipesModule } from '../pipes/pipes.module';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    MessagesPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [MessagesPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        MessagesPageRoutingModule,
+        PipesModule,
+        MessagesPage
+    ]
 })
 export class MessagesPageModule {}

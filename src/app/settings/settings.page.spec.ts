@@ -18,41 +18,39 @@ describe('SettingsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [SettingsPage],
-      imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, FormsModule],
-      providers: [
+    imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, FormsModule, SettingsPage],
+    providers: [
         { provide: AppRate, useValue: {} },
         {
-          provide: GeoServiceProvider,
-          useValue: {
-            getAllCountries: () => [],
-            getEnCountries: () => [],
-            getArCountries: () => [],
-            get_country_name: () => '',
-            getCountryName: () => '',
-            getCountryDetails: () => ({}),
-            getCountryPhone: () => '',
-            getCountriesData: () => [],
-            getMyLocation: () => Promise.resolve({})
-          }
+            provide: GeoServiceProvider,
+            useValue: {
+                getAllCountries: () => [],
+                getEnCountries: () => [],
+                getArCountries: () => [],
+                get_country_name: () => '',
+                getCountryName: () => '',
+                getCountryDetails: () => ({}),
+                getCountryPhone: () => '',
+                getCountriesData: () => [],
+                getMyLocation: () => Promise.resolve({})
+            }
         },
         {
-          provide: IonicStorage,
-          useValue: {
-            create: () =>
-              Promise.resolve({
-                get: () => Promise.resolve(null),
-                set: () => Promise.resolve(),
-                remove: () => Promise.resolve(),
-                clear: () => Promise.resolve()
-              }),
-            get: () => Promise.resolve(null)
-          }
+            provide: IonicStorage,
+            useValue: {
+                create: () => Promise.resolve({
+                    get: () => Promise.resolve(null),
+                    set: () => Promise.resolve(),
+                    remove: () => Promise.resolve(),
+                    clear: () => Promise.resolve()
+                }),
+                get: () => Promise.resolve(null)
+            }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(SettingsPage);
     component = fixture.componentInstance;

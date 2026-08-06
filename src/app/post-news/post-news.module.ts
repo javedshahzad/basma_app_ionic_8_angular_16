@@ -12,16 +12,16 @@ import { PipesModule } from '../pipes/pipes.module';
 import { IonicSelectableComponent } from 'ionic-selectable';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PipesModule,
-    PostNewsPageRoutingModule,
-    IonicSelectableComponent
-  ],
-  providers: [IonicSelectableComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [PostNewsPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PipesModule,
+        PostNewsPageRoutingModule,
+        IonicSelectableComponent,
+        PostNewsPage
+    ],
+    providers: [IonicSelectableComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class PostNewsPageModule {}

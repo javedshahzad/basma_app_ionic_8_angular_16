@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController } from '@ionic/angular';
+import { NavController, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,13 +9,14 @@ import { GamificationEngineService } from '../service/gamification-engine/gamifi
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-student-titles',
-  templateUrl: './student-titles.page.html',
-  styleUrls: ['./student-titles.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-student-titles',
+    templateUrl: './student-titles.page.html',
+    styleUrls: ['./student-titles.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, NgClass]
 })
 export class StudentTitlesPage implements OnInit {
   trackByIndex(index: number): number {

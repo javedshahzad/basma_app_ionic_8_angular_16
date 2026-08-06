@@ -1,9 +1,9 @@
 import { Component, OnInit, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, ModalController } from '@ionic/angular';
+import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
 import { LoaderComponent } from '../components/loader/loader.component';
@@ -11,13 +11,14 @@ import { LoaderComponent } from '../components/loader/loader.component';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-messages',
-  templateUrl: './messages.page.html',
-  styleUrls: ['./messages.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-messages',
+    templateUrl: './messages.page.html',
+    styleUrls: ['./messages.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
 export class MessagesPage implements OnInit {
   readonly UserType = UserType;

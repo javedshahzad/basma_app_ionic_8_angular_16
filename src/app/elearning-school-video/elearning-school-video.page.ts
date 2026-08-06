@@ -1,20 +1,21 @@
 import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, Platform, ModalController } from '@ionic/angular';
+import { NavController, AlertController, Platform, ModalController, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { ElearningApiService } from '../service/elearning-api/elearning-api.service';
+import { NgIf, NgFor, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-elearning-school-video',
-  templateUrl: './elearning-school-video.page.html',
-  styleUrls: ['./elearning-school-video.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-elearning-school-video',
+    templateUrl: './elearning-school-video.page.html',
+    styleUrls: ['./elearning-school-video.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, NgClass, TranslatePipe]
 })
 export class ElearningSchoolVideoPage implements OnInit {
   trackByIndex(index: number): number {

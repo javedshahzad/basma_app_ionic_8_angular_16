@@ -8,22 +8,23 @@
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, ModalController } from '@ionic/angular';
+import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 import { GamificationEngineService } from '../service/gamification-engine/gamification-engine.service';
 import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
+import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-children',
-  templateUrl: './children.page.html',
-  styleUrls: ['./children.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-children',
+    templateUrl: './children.page.html',
+    styleUrls: ['./children.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, NgStyle, NgClass, TranslatePipe]
 })
 export class ChildrenPage implements OnInit {
   trackByIndex(index: number): number {

@@ -1,8 +1,8 @@
 import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, NavParams, AlertController, PopoverController, Platform } from '@ionic/angular';
+import { NavController, NavParams, AlertController, PopoverController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DatabaseService } from '../service/database/database.service';
@@ -16,15 +16,17 @@ import { StorageService } from '../service/storage.service';
 import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { UserType } from '../constants/user-type';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
 
 const env = environment;
 
 @Component({
-  selector: 'app-student-report-manage',
-  templateUrl: './student-report-manage.page.html',
-  styleUrls: ['./student-report-manage.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-student-report-manage',
+    templateUrl: './student-report-manage.page.html',
+    styleUrls: ['./student-report-manage.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgIf, NgClass, NgFor, DatePipe, TranslatePipe]
 })
 export class StudentReportManagePage implements OnInit {
   trackByIndex(index: number): number {

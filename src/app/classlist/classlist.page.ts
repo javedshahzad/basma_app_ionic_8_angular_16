@@ -1,18 +1,10 @@
 import { Component, OnInit, NgZone, ViewChild, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  NavController,
-  AlertController,
-  ModalController,
-  ItemReorderEventDetail,
-  Platform,
-  ActionSheetController,
-  PopoverController
-} from '@ionic/angular';
+import { NavController, AlertController, ModalController, ItemReorderEventDetail, Platform, ActionSheetController, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { CreateClassPage } from '../create-class/create-class.page';
 import { LoaderComponent } from '../components/loader/loader.component';
@@ -29,12 +21,14 @@ import { StorageService } from '../service/storage.service';
 import { SyncService } from '../service/sync/sync.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { UserType } from '../constants/user-type';
+import { NgIf, NgClass, NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-classlist',
-  templateUrl: './classlist.page.html',
-  styleUrls: ['./classlist.page.scss'],
-  standalone: false
+    selector: 'app-classlist',
+    templateUrl: './classlist.page.html',
+    styleUrls: ['./classlist.page.scss'],
+    imports: [IonicModule, NgIf, NgClass, NgFor, FormsModule, TranslatePipe]
 })
 export class ClasslistPage implements OnInit {
   readonly UserType = UserType;

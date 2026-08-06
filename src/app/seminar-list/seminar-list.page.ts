@@ -1,8 +1,8 @@
 ﻿import { Component, OnInit, NgZone, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, Platform } from '@ionic/angular';
+import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 import domtoimage from 'dom-to-image';
@@ -10,13 +10,14 @@ import domtoimage from 'dom-to-image';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-seminar-list',
-  templateUrl: './seminar-list.page.html',
-  styleUrls: ['./seminar-list.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-seminar-list',
+    templateUrl: './seminar-list.page.html',
+    styleUrls: ['./seminar-list.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, DatePipe, TranslatePipe]
 })
 export class SeminarListPage implements OnInit {
   trackByIndex(index: number): number {

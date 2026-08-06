@@ -6,12 +6,12 @@ import { NoteCalendarPageRoutingModule } from './note-calendar-routing.module';
 import { NoteCalendarPage } from './note-calendar.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    NoteCalendarPageRoutingModule
-  ],
-  declarations: [NoteCalendarPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        NoteCalendarPageRoutingModule,
+        NoteCalendarPage
+    ]
 })
 export class NoteCalendarPageModule {}

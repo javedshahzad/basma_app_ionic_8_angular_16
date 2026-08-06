@@ -11,14 +11,15 @@ import { PipesModule } from '../pipes/pipes.module';
 import { TranslateModule } from '@ngx-translate/core'; // 🟢 إضافة هامة
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ContactUsPageRoutingModule,
-    PipesModule,
-    TranslateModule // 🟢 استيراد الوحدة هنا
-  ],
-  declarations: [ContactUsPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ContactUsPageRoutingModule,
+        PipesModule,
+        TranslateModule // 🟢 استيراد الوحدة هنا
+        ,
+        ContactUsPage
+    ]
 })
 export class ContactUsPageModule {}

@@ -11,14 +11,14 @@ import { IonicSelectableComponent } from 'ionic-selectable';
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SendmessagePageRoutingModule,
-    PipesModule,
-    IonicSelectableComponent
-  ],
-  declarations: [SendmessagePage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SendmessagePageRoutingModule,
+        PipesModule,
+        IonicSelectableComponent,
+        SendmessagePage
+    ]
 })
 export class SendmessagePageModule {}

@@ -10,13 +10,13 @@ import { FollowupStudentListPage } from './followup-student-list.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PipesModule,
-    FollowupStudentListPageRoutingModule,
-  ],
-  declarations: [FollowupStudentListPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PipesModule,
+        FollowupStudentListPageRoutingModule,
+        FollowupStudentListPage,
+    ]
 })
 export class FollowupStudentListPageModule {}

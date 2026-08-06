@@ -1,17 +1,9 @@
 import { Component, OnInit, NgZone, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  NavController,
-  NavParams,
-  AlertController,
-  Platform,
-  PopoverController,
-  ActionSheetController,
-  ModalController
-} from '@ionic/angular';
+import { NavController, NavParams, AlertController, Platform, PopoverController, ActionSheetController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
 import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
@@ -34,12 +26,14 @@ import { AttendanceApiService } from '../service/attendance-api/attendance-api.s
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { UserType } from '../constants/user-type';
+import { NgClass, NgIf, NgFor, DecimalPipe, DatePipe } from '@angular/common';
+import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 
 @Component({
-  selector: 'app-students',
-  templateUrl: './students.page.html',
-  styleUrls: ['./students.page.scss'],
-  standalone: false
+    selector: 'app-students',
+    templateUrl: './students.page.html',
+    styleUrls: ['./students.page.scss'],
+    imports: [IonicModule, NgClass, ɵɵDir, NgIf, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf, NgFor, DecimalPipe, DatePipe, TranslatePipe]
 })
 export class StudentsPage implements OnInit {
   readonly UserType = UserType;

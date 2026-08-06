@@ -1,9 +1,9 @@
 ﻿import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { NavController, Platform, AlertController, ModalController } from '@ionic/angular';
-import { Location } from '@angular/common';
+import { NavController, Platform, AlertController, ModalController, IonicModule } from '@ionic/angular';
+import { Location, NgIf, NgFor, NgClass, DatePipe } from '@angular/common';
 import { DataService } from '../service/data/data.service';
 import { SubscriptionService } from '../service/subscription/subscription.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import 'cordova-plugin-purchase/www/store';
@@ -14,13 +14,14 @@ import { PlanReceiptComponent } from '../plan-receipt/plan-receipt.component';
 import { StorageService } from '../service/storage.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
 import { UserType } from '../constants/user-type';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-available-plan',
-  templateUrl: './available-plan.page.html',
-  styleUrls: ['./available-plan.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-available-plan',
+    templateUrl: './available-plan.page.html',
+    styleUrls: ['./available-plan.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, NgClass, FormsModule, DatePipe, TranslatePipe]
 })
 export class AvailablePlanPage implements OnInit {
   trackByIndex(index: number): number {

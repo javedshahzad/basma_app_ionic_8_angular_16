@@ -1,16 +1,17 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../service/data/data.service';
 import { StorageService } from '../service/storage.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-apply-vouches-code',
-  templateUrl: './apply-vouches-code.page.html',
-  styleUrls: ['./apply-vouches-code.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-apply-vouches-code',
+    templateUrl: './apply-vouches-code.page.html',
+    styleUrls: ['./apply-vouches-code.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule]
 })
 export class ApplyVouchesCodePage implements OnInit {
   trackByIndex(index: number): number {

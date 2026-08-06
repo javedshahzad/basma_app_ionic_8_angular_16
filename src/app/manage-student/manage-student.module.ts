@@ -10,13 +10,13 @@ import { ManageStudentPage } from './manage-student.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ManageStudentPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [ManageStudentPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ManageStudentPageRoutingModule,
+        PipesModule,
+        ManageStudentPage
+    ]
 })
 export class ManageStudentPageModule {}

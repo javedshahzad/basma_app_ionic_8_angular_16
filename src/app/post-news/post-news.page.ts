@@ -8,7 +8,7 @@ import {
   inject
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, Platform, AlertController } from '@ionic/angular';
+import { NavController, Platform, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { FileUploadService } from '../service/file-upload/file-upload.service';
@@ -22,13 +22,15 @@ import { environment } from '../../environments/environment';
 
 // 🟢 استيراد كاميرا كاباسيتور الحديثة
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { FormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-post-news',
-  templateUrl: './post-news.page.html',
-  styleUrls: ['./post-news.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-post-news',
+    templateUrl: './post-news.page.html',
+    styleUrls: ['./post-news.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgIf]
 })
 export class PostNewsPage implements OnInit {
   private destroyRef = inject(DestroyRef);

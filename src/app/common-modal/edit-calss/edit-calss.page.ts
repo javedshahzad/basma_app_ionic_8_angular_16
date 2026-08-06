@@ -1,18 +1,19 @@
 ﻿import { Component, OnInit, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, ModalController } from '@ionic/angular';
+import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DataService } from '../../service/data/data.service';
 import { DatabaseService } from '../../service/database/database.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { CreateClassPage } from '../../create-class/create-class.page';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-edit-calss',
-  templateUrl: './edit-calss.page.html',
-  styleUrls: ['./edit-calss.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-edit-calss',
+    templateUrl: './edit-calss.page.html',
+    styleUrls: ['./edit-calss.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
 export class EditCalssPage implements OnInit {
   trackByIndex(index: number): number {

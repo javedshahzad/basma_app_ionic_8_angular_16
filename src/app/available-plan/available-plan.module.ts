@@ -12,14 +12,14 @@ import { SubscriptionService } from '../service/subscription/subscription.servic
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    AvailablePlanPageRoutingModule,
-    PipesModule
-  ],
-  providers:[SubscriptionService],
-  declarations: [AvailablePlanPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        AvailablePlanPageRoutingModule,
+        PipesModule,
+        AvailablePlanPage
+    ],
+    providers: [SubscriptionService]
 })
 export class AvailablePlanPageModule {}

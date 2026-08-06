@@ -17,30 +17,29 @@ describe('AddUserPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [AddUserPage],
-      imports: [
+    imports: [
         IonicModule.forRoot(),
         TranslateModule.forRoot(),
-        RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }])
-      ],
-      providers: [
+        RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }]),
+        AddUserPage
+    ],
+    providers: [
         { provide: AppRate, useValue: {} },
         {
-          provide: IonicStorage,
-          useValue: {
-            create: () =>
-              Promise.resolve({
-                get: () => Promise.resolve(null),
-                set: () => Promise.resolve(),
-                remove: () => Promise.resolve(),
-                clear: () => Promise.resolve()
-              })
-          }
+            provide: IonicStorage,
+            useValue: {
+                create: () => Promise.resolve({
+                    get: () => Promise.resolve(null),
+                    set: () => Promise.resolve(),
+                    remove: () => Promise.resolve(),
+                    clear: () => Promise.resolve()
+                })
+            }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-      ]
-    }).compileComponents();
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(AddUserPage);
     component = fixture.componentInstance;

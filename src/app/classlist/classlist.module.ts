@@ -11,18 +11,15 @@ import { ClasslistOptionsPopoverComponent } from '../components/classlist-option
 import { EditClassModalComponent } from '../components/edit-class-modal/edit-class-modal.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ClasslistPageRoutingModule,
-    PipesModule
-  ],
-  // 🟢 2. إضافة المكونات إلى مصفوفة التصريحات ليتعرف عليها Angular
-  declarations: [
-    ClasslistPage,
-    ClasslistOptionsPopoverComponent,
-    EditClassModalComponent
-  ]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        ClasslistPageRoutingModule,
+        PipesModule,
+        ClasslistPage,
+        ClasslistOptionsPopoverComponent,
+        EditClassModalComponent
+    ]
 })
 export class ClasslistPageModule {}

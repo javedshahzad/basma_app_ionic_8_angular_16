@@ -6,13 +6,15 @@ import { DataService } from '../service/data/data.service';
 import { Router } from '@angular/router';
 // 🟢 1. استيراد خدمة التخزين الجديدة
 import { StorageService } from '../service/storage.service';
+import { IonicModule } from '@ionic/angular';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-tabs',
-  templateUrl: './tabs.page.html',
-  styleUrls: ['./tabs.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-tabs',
+    templateUrl: './tabs.page.html',
+    styleUrls: ['./tabs.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf]
 })
 export class TabsPage implements OnInit {
   private destroyRef = inject(DestroyRef);

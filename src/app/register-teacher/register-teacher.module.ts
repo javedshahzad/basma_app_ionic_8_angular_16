@@ -10,13 +10,13 @@ import { RegisterTeacherPage } from './register-teacher.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RegisterTeacherPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [RegisterTeacherPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        RegisterTeacherPageRoutingModule,
+        PipesModule,
+        RegisterTeacherPage
+    ]
 })
 export class RegisterTeacherPageModule {}

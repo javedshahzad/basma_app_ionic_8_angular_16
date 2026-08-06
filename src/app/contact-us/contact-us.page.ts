@@ -1,15 +1,17 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormsModule } from '@angular/forms';
 import { DataService } from '../service/data/data.service';
-import { Platform } from '@ionic/angular';
+import { Platform, IonicModule } from '@ionic/angular';
 import { ContactApiService } from '../service/contact-api/contact-api.service';
+import { NgIf } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-contact-us',
-  templateUrl: './contact-us.page.html',
-  styleUrls: ['./contact-us.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-contact-us',
+    templateUrl: './contact-us.page.html',
+    styleUrls: ['./contact-us.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
 })
 export class ContactUsPage implements OnInit {
   user: any = {};

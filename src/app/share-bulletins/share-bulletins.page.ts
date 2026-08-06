@@ -1,19 +1,21 @@
 import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, AlertController, Platform } from '@ionic/angular';
+import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين لحماية البيانات
 import { StorageService } from '../service/storage.service';
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-share-bulletins',
-  templateUrl: './share-bulletins.page.html',
-  styleUrls: ['./share-bulletins.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-share-bulletins',
+    templateUrl: './share-bulletins.page.html',
+    styleUrls: ['./share-bulletins.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, FormsModule, TranslatePipe]
 })
 export class ShareBulletinsPage implements OnInit {
   lang: any = {};

@@ -1,18 +1,20 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ParentManagementApiService } from '../service/parent-management-api/parent-management-api.service';
 import { StorageService } from '../service/storage.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { IonicModule } from '@ionic/angular';
+import { NgClass, NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-add-parent',
-  templateUrl: './add-parent.page.html',
-  styleUrls: ['./add-parent.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-add-parent',
+    templateUrl: './add-parent.page.html',
+    styleUrls: ['./add-parent.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, FormsModule, ReactiveFormsModule, NgClass, NgIf, NgFor, TranslatePipe]
 })
 export class AddParentPage implements OnInit {
   trackByIndex(index: number): number {

@@ -1,18 +1,19 @@
 import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'app-follow-up-student',
-  templateUrl: './follow-up-student.page.html',
-  styleUrls: ['./follow-up-student.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-follow-up-student',
+    templateUrl: './follow-up-student.page.html',
+    styleUrls: ['./follow-up-student.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
 export class FollowUpStudentPage implements OnInit {
   trackByIndex(index: number): number {

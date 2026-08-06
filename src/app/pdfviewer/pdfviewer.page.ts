@@ -1,13 +1,14 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, Platform, IonicModule } from '@ionic/angular';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
 @Component({
-  selector: 'app-pdfviewer',
-  templateUrl: './pdfviewer.page.html',
-  styleUrls: ['./pdfviewer.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-pdfviewer',
+    templateUrl: './pdfviewer.page.html',
+    styleUrls: ['./pdfviewer.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgxExtendedPdfViewerModule]
 })
 export class PdfviewerPage implements OnInit {
   // 🟢 القيمة الافتراضية إذا لم يتم تمرير رابط

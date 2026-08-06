@@ -10,14 +10,14 @@ import { AddUserPage } from './add-user.page';
 import { PipesModule } from '../pipes/pipes.module';
 import { IonicSelectableComponent } from 'ionic-selectable';
 @NgModule({
-  imports: [
-    CommonModule,
-    PipesModule,
-    FormsModule,
-    IonicModule,
-    AddUserPageRoutingModule,
-    IonicSelectableComponent
-  ],
-  declarations: [AddUserPage]
+    imports: [
+        CommonModule,
+        PipesModule,
+        FormsModule,
+        IonicModule,
+        AddUserPageRoutingModule,
+        IonicSelectableComponent,
+        AddUserPage
+    ]
 })
 export class AddUserPageModule {}

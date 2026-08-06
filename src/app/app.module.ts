@@ -40,46 +40,47 @@ export function createTranslateLoader(http: HttpClient) {
 }
 
 @NgModule({
-  declarations: [AppComponent, LoaderComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent],
-  imports: [
-    BrowserModule,
-    IonicModule.forRoot({ mode: 'md' }),
-    IonicStorageModule.forRoot({
-      name: '__basma_db',
-      driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage]
-    }),
-    AppRoutingModule,
-    PipesModule,
-    FormsModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
-    })
-  ],
-  providers: [
-    DataService,
-    AuthService,
-    DocumentService,
-    StudentDataService,
-    DatabaseService,
-    FileUploadService,
-    GeoServiceProvider,
-    PhotoViewer,
-    Printer,
-    AppRate,
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: MyInterceptor,
-      multi: true
-    },
-    { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideHttpClient(withInterceptorsFromDi())
-  ]
+    declarations: [AppComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
+        IonicModule.forRoot({ mode: 'md' }),
+        IonicStorageModule.forRoot({
+            name: '__basma_db',
+            driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage]
+        }),
+        AppRoutingModule,
+        PipesModule,
+        FormsModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: createTranslateLoader,
+                deps: [HttpClient]
+            }
+        }),
+        LoaderComponent
+    ],
+    providers: [
+        DataService,
+        AuthService,
+        DocumentService,
+        StudentDataService,
+        DatabaseService,
+        FileUploadService,
+        GeoServiceProvider,
+        PhotoViewer,
+        Printer,
+        AppRate,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: MyInterceptor,
+            multi: true
+        },
+        { provide: ErrorHandler, useClass: GlobalErrorHandler },
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
 })
 export class AppModule {}

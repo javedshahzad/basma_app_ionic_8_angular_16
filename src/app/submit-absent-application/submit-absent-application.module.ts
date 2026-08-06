@@ -10,13 +10,13 @@ import { SubmitAbsentApplicationPage } from './submit-absent-application.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SubmitAbsentApplicationPageRoutingModule,
-    PipesModule,
-  ],
-  declarations: [SubmitAbsentApplicationPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SubmitAbsentApplicationPageRoutingModule,
+        PipesModule,
+        SubmitAbsentApplicationPage,
+    ]
 })
 export class SubmitAbsentApplicationPageModule {}

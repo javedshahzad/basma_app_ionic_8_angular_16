@@ -10,13 +10,13 @@ import { SettingsPage } from './settings.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SettingsPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [SettingsPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SettingsPageRoutingModule,
+        PipesModule,
+        SettingsPage
+    ]
 })
 export class SettingsPageModule {}

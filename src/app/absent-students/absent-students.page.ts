@@ -1,25 +1,21 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import {
-  NavController,
-  AlertController,
-  PopoverController,
-  ModalController,
-  ActionSheetController
-} from '@ionic/angular';
+import { NavController, AlertController, PopoverController, ModalController, ActionSheetController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf, NgFor } from '@angular/common';
 import { AbsentApplicationApiService } from '../service/absent-application-api/absent-application-api.service';
 import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
+import { IonicSelectableComponent } from 'ionic-selectable';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-absent-students',
-  templateUrl: './absent-students.page.html',
-  styleUrls: ['./absent-students.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-absent-students',
+    templateUrl: './absent-students.page.html',
+    styleUrls: ['./absent-students.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, IonicSelectableComponent, DatePipe, TranslatePipe]
 })
 export class AbsentStudentsPage implements OnInit {
   trackByIndex(index: number): number {

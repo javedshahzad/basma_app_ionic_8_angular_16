@@ -10,11 +10,11 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Platform, AlertController } from '@ionic/angular';
+import { Platform, AlertController, IonicModule } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DataService } from '../service/data/data.service';
 import { Browser } from '@capacitor/browser';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../service/auth/auth.service';
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { Router } from '@angular/router';
@@ -24,13 +24,15 @@ import { GeoServiceProvider } from '../service/geo-service/geo-service';
 import { StorageService } from '../service/storage.service';
 import { NewsApiService } from '../service/news-api/news-api.service';
 import { UserType } from '../constants/user-type';
+import { NgIf, NgFor, NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-news',
-  templateUrl: './news.page.html',
-  styleUrls: ['./news.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-news',
+    templateUrl: './news.page.html',
+    styleUrls: ['./news.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, NgClass, FormsModule, TranslatePipe]
 })
 export class NewsPage implements OnInit {
   trackByIndex(index: number): number {

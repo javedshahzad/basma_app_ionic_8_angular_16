@@ -1,19 +1,20 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
-import { ModalController, Platform } from '@ionic/angular';
+import { ModalController, Platform, IonicModule } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../service/data/data.service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-note-calendar',
-  templateUrl: './note-calendar.page.html',
-  styleUrls: ['./note-calendar.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-note-calendar',
+    templateUrl: './note-calendar.page.html',
+    styleUrls: ['./note-calendar.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgFor, DatePipe]
 })
 export class NoteCalendarPage implements OnInit {
   trackByIndex(index: number): number {

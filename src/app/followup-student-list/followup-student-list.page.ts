@@ -8,17 +8,10 @@ import {
   inject
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  NavController,
-  AlertController,
-  Platform,
-  ModalController,
-  ActionSheetController,
-  PopoverController
-} from '@ionic/angular';
+import { NavController, AlertController, Platform, ModalController, ActionSheetController, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
@@ -37,13 +30,15 @@ import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { UserType } from '../constants/user-type';
+import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-followup-student-list',
-  templateUrl: './followup-student-list.page.html',
-  styleUrls: ['./followup-student-list.page.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: false
+    selector: 'app-followup-student-list',
+    templateUrl: './followup-student-list.page.html',
+    styleUrls: ['./followup-student-list.page.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [IonicModule, NgIf, NgClass, NgFor, FormsModule, DatePipe, TranslatePipe]
 })
 export class FollowupStudentListPage implements OnInit {
   readonly UserType = UserType;

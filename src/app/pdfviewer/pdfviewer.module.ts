@@ -11,14 +11,14 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { TranslateModule } from '@ngx-translate/core'; // 🟢 إضافة الترجمة
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    PdfviewerPageRoutingModule,
-    NgxExtendedPdfViewerModule,
-    TranslateModule
-  ],
-  declarations: [PdfviewerPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        PdfviewerPageRoutingModule,
+        NgxExtendedPdfViewerModule,
+        TranslateModule,
+        PdfviewerPage
+    ]
 })
 export class PdfviewerPageModule {}

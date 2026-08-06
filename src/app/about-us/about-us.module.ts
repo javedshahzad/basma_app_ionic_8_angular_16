@@ -10,13 +10,13 @@ import { AboutUsPage } from './about-us.page';
 import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    AboutUsPageRoutingModule,
-    PipesModule
-  ],
-  declarations: [AboutUsPage]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        AboutUsPageRoutingModule,
+        PipesModule,
+        AboutUsPage
+    ]
 })
 export class AboutUsPageModule {}
