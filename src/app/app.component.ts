@@ -1,6 +1,7 @@
 ﻿import { Device } from '@capacitor/device';
 import { UserType } from './constants/user-type';
-import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Platform, MenuController, NavController, IonicModule } from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from './service/auth/auth.service';
@@ -36,6 +37,8 @@ declare var cordova: any;
     imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
 export class AppComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
+
   trackByIndex(index: number): number {
     return index;
   }
@@ -120,14 +123,14 @@ export class AppComponent implements OnInit {
       // `use()` was fired without waiting, which is exactly what caused the
       // "first click doesn't work, second click works" bug when switching
       // languages later in the app (see changeLanguage()).
-      this.translate.use(this.selectedLanguage).subscribe(() => {
+      this.translate.use(this.selectedLanguage).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         this.dataProvider.language.next(this.selectedLanguage);
         this.setAppDirection(this.selectedLanguage);
         this.initializeApp();
       });
     });
 
-    this.auth.event.subscribe(async (status: any) => {
+    this.auth.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async (status: any) => {
       if (status === true || (status && (status.loggedin || status.changeUser))) {
         this.loggedin = true;
         this.cdr.markForCheck();
@@ -163,7 +166,7 @@ export class AppComponent implements OnInit {
       }
     });
 
-    this.fcm.getPlan.subscribe(res => {
+    this.fcm.getPlan.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res) {
         this.getUserPlan();
       }
@@ -181,7 +184,7 @@ export class AppComponent implements OnInit {
       this.requestNotificationPermission();
       this.fcm.initPush();
 
-      this.translate.get(['sidemenu', 'alertmessages', 'app_rate', 'switch_account']).subscribe(response => {
+      this.translate.get(['sidemenu', 'alertmessages', 'app_rate', 'switch_account']).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(response => {
         this.lang = response;
         this.cdr.markForCheck();
         this.dbProvider.openDataBase().then(async () => {
@@ -281,7 +284,7 @@ export class AppComponent implements OnInit {
           }
         });
 
-        this.platform.resume.subscribe(() => {
+        this.platform.resume.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
           setTimeout(async () => {
             if ((await Network.getStatus()).connected) {
               this.runNetwork = true;
@@ -291,7 +294,7 @@ export class AppComponent implements OnInit {
         });
       }
 
-      this.auth.event.subscribe(data => {
+      this.auth.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(data => {
         if (data && data.activeLink) {
           this.activeLink = data.activeLink;
           this.cdr.markForCheck();
@@ -557,7 +560,7 @@ export class AppComponent implements OnInit {
 
     await this.storageSr.set('language', newLang);
 
-    this.translate.use(newLang).subscribe({
+    this.translate.use(newLang).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.selectedLanguage = newLang;
         this.changedLanguage = newLang === 'ar' ? 'العربية' : 'English';
@@ -566,7 +569,7 @@ export class AppComponent implements OnInit {
         this.dataProvider.language.next(newLang);
         this.cdr.markForCheck();
 
-        this.translate.get(['sidemenu', 'alertmessages', 'app_rate']).subscribe(response => {
+        this.translate.get(['sidemenu', 'alertmessages', 'app_rate']).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(response => {
           this.lang = response;
           this.updateMenuTranslations();
           this.cdr.markForCheck();
@@ -692,6 +695,7 @@ export class AppComponent implements OnInit {
           environment.serverURL +
             `get_user_type?user_no=${userInfo.details.user_no}&code=${userInfo.details.country_code}&school_id=${userInfo?.details.school_id}`
         )
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(async (res: any) => {
           if (res.user_type) {
             this.dataProvider.unread = res.unread;
@@ -844,7 +848,7 @@ export class AppComponent implements OnInit {
   }
 
   getAppStatus() {
-    this.platform.pause.subscribe(async () => {});
-    this.platform.resume.subscribe(async () => {});
+    this.platform.pause.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async () => {});
+    this.platform.resume.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async () => {});
   }
 }

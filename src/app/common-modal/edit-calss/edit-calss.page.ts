@@ -1,4 +1,5 @@
-﻿import { Component, OnInit, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DataService } from '../../service/data/data.service';
@@ -19,6 +20,8 @@ import { NgIf, NgFor } from '@angular/common';
     imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
 export class EditCalssPage implements OnInit {
+  private destroyRef = inject(DestroyRef);
+
   trackByIndex(index: number): number {
     return index;
   }
@@ -51,7 +54,7 @@ export class EditCalssPage implements OnInit {
       this.lang = res;
       this.cdr.markForCheck();
     });
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const navigation = this.router.getCurrentNavigation();
       if (navigation && navigation.extras && navigation.extras.state) {
         this.navData = navigation.extras.state;

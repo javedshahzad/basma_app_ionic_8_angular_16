@@ -1,4 +1,5 @@
-import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -18,6 +19,8 @@ import { NgIf, NgFor, NgClass } from '@angular/common';
     imports: [IonicModule, NgIf, NgFor, NgClass, TranslatePipe]
 })
 export class ElearningSchoolVideoPage implements OnInit {
+  private destroyRef = inject(DestroyRef);
+
   trackByIndex(index: number): number {
     return index;
   }
@@ -51,7 +54,7 @@ export class ElearningSchoolVideoPage implements OnInit {
     });
 
     // 🟢 التقاط البيانات بأمان لمنع الانهيار
-    this.route.queryParams.subscribe(async params => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const navigation = this.router.getCurrentNavigation();
       if (navigation && navigation.extras && navigation.extras.state) {
         this.school = navigation.extras.state['schoolInfo'];

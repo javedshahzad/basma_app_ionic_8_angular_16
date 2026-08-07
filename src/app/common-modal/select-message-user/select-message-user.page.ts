@@ -1,4 +1,5 @@
-﻿import { Component, OnInit, NgZone, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, NgZone, Input, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, NavParams, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
@@ -16,6 +17,8 @@ import { SchoolDirectoryApiService } from '../../service/school-directory-api/sc
     imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
 export class SelectMessageUserPage implements OnInit {
+  private destroyRef = inject(DestroyRef);
+
   trackByIndex(index: number): number {
     return index;
   }
@@ -41,7 +44,7 @@ export class SelectMessageUserPage implements OnInit {
     private schoolDirectoryApi: SchoolDirectoryApiService,
     private cdr: ChangeDetectorRef
   ) {
-    this.route.queryParams.subscribe((params: any) => {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params: any) => {
       this.selectedUsers = params.selectedUsers ? params.selectedUsers : [];
       this.selectedUsersShow = params.selectedUsersShow;
       const navigation = this.router.getCurrentNavigation();
