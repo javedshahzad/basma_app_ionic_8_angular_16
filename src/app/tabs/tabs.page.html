@@ -14,7 +14,7 @@
       <ion-icon name="analytics-outline"></ion-icon>
     </ion-tab-button> 
 
-    <ion-tab-button tab="news" [style.display]="(!isParent && hide_new != '1' && !isStudent) ? 'flex' : 'none'">
+    <ion-tab-button tab="news" [style.display]="(!isParent && hide_new !== '1' && !isStudent) ? 'flex' : 'none'">
       <ion-badge *ngIf="dataProvider.unread" class="lineone-badge" mode="md"></ion-badge>
       <ion-icon name="megaphone-outline"></ion-icon>
     </ion-tab-button>
@@ -31,7 +31,7 @@
       <ion-icon name="alert-circle-outline"></ion-icon>
     </ion-tab-button>
 
-    <ion-tab-button tab="news" [style.display]="(isStudent && hide_new != '1') ? 'flex' : 'none'">
+    <ion-tab-button tab="news" [style.display]="(isStudent && hide_new !== '1') ? 'flex' : 'none'">
       <ion-badge *ngIf="dataProvider.unread" class="lineone-badge" mode="md"></ion-badge>
       <ion-icon name="megaphone-outline"></ion-icon>
     </ion-tab-button>
@@ -40,7 +40,7 @@
       <ion-icon name="people-outline"></ion-icon>
     </ion-tab-button>
 
-    <ion-tab-button tab="news" [style.display]="(isParent && hide_new != '1') ? 'flex' : 'none'">
+    <ion-tab-button tab="news" [style.display]="(isParent && hide_new !== '1') ? 'flex' : 'none'">
       <ion-icon name="megaphone-outline"></ion-icon>
     </ion-tab-button>
 

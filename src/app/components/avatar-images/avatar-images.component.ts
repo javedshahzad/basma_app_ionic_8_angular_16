@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../service/data/data.service';
@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AvatarImagesComponent implements OnInit {
+export class AvatarImagesComponent {
   trackByIndex(index: number): number {
     return index;
   }
@@ -32,7 +32,6 @@ export class AvatarImagesComponent implements OnInit {
     this.DocUrl = environment.docUrl;
   }
 
-  ngOnInit() {}
 
   dismiss() {
     this.modalController.dismiss();

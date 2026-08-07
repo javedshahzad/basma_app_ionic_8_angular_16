@@ -49,8 +49,8 @@
               </ion-col>
             </ion-row>
 
-            <ng-container *ngIf="i == 1">
-              <ion-row class="menu-item" (click)="openPage('absent-students')" *ngIf="user.userType === 'admin' || user.is_show_absent_students == '1'">
+            <ng-container *ngIf="i === 1">
+              <ion-row class="menu-item" (click)="openPage('absent-students')" *ngIf="user.userType === 'admin' || user.is_show_absent_students === '1'">
                 <ion-col size="2" class="icon-col"><ion-icon name="calendar-clear-outline"></ion-icon></ion-col>
                 <ion-col size="10" class="text-col">{{'sidemenu.absent_students' | translate}}</ion-col>
               </ion-row>
@@ -59,12 +59,12 @@
 
           <div class="menu-section-title">إدارة وإعدادات</div>
 
-          <ion-row class="menu-item" *ngIf="activeLink.teacher_link == '1' && user.userType === 'admin'" (click)="shareRegistrationLink()">
+          <ion-row class="menu-item" *ngIf="activeLink.teacher_link === '1' && user.userType === 'admin'" (click)="shareRegistrationLink()">
             <ion-col size="2" class="icon-col"><ion-icon name="share-social-outline"></ion-icon></ion-col>
             <ion-col size="10" class="text-col">{{'sidemenu.register_link' | translate}}</ion-col>
           </ion-row>
 
-          <ion-row class="menu-item" *ngIf="activeLink.parent_link == '1' && user.userType === 'admin' && isSchoolAdmin" (click)="shareParentRegistrationLink()">
+          <ion-row class="menu-item" *ngIf="activeLink.parent_link === '1' && user.userType === 'admin' && isSchoolAdmin" (click)="shareParentRegistrationLink()">
             <ion-col size="2" class="icon-col"><ion-icon name="share-outline"></ion-icon></ion-col>
             <ion-col size="10" class="text-col">{{'sidemenu.register_parent' | translate}}</ion-col>
           </ion-row>
@@ -79,7 +79,7 @@
             <ion-col size="10" class="text-col">{{'sidemenu.devices' | translate}}</ion-col>
           </ion-row>
 
-          <ion-row class="menu-item" *ngIf="isSchoolAdmin && user.name && (user.userType !== 'parent' && user.userType !=='student') && user.user_no != '9864'" (click)="openPage('available-plan')">
+          <ion-row class="menu-item" *ngIf="isSchoolAdmin && user.name && (user.userType !== 'parent' && user.userType !=='student') && user.user_no !== '9864'" (click)="openPage('available-plan')">
             <ion-col size="2" class="icon-col"><ion-icon name="card-outline"></ion-icon></ion-col>
             <ion-col size="10" class="text-col">{{'sidemenu.Plans' | translate}}</ion-col>
           </ion-row>

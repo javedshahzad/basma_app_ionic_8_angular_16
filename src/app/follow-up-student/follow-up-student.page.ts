@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
@@ -16,7 +16,7 @@ import { NgIf, NgFor } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
-export class FollowUpStudentPage implements OnInit {
+export class FollowUpStudentPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -56,7 +56,6 @@ export class FollowUpStudentPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 استدعاء آمن ومتسلسل يضمن جلب بيانات المستخدم أولاً
   async ionViewWillEnter() {

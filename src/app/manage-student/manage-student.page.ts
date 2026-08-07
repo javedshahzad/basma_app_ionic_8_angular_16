@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -19,7 +19,7 @@ import { NgIf, NgFor } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, NgIf, NgFor, TranslatePipe]
 })
-export class ManageStudentPage implements OnInit {
+export class ManageStudentPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -61,7 +61,6 @@ export class ManageStudentPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 
   // 🟢 جلب بيانات المستخدم وبدء العملية بطريقة آمنة تماماً
   async ionViewWillEnter() {

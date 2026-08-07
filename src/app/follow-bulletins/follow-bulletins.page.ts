@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   NgZone,
   DestroyRef,
   inject,
@@ -30,7 +29,7 @@ import { NgIf, NgFor } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
-export class FollowBulletinsPage implements OnInit {
+export class FollowBulletinsPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -105,7 +104,6 @@ export class FollowBulletinsPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 
   // 🟢 استبدال localStorage وجعل الدالة آمنة
   async ionViewWillEnter() {

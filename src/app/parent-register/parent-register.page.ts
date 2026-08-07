@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -24,7 +24,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
 })
-export class ParentRegisterPage implements OnInit {
+export class ParentRegisterPage {
   parent: any = {};
   user_no: any;
   school_id: any;
@@ -52,7 +52,6 @@ export class ParentRegisterPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 
   _keyPress(event: any) {
     var charCode = event.which ? event.which : event.keyCode;

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavigationExtras, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -24,7 +24,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
 })
-export class RegisterTeacherPage implements OnInit {
+export class RegisterTeacherPage {
   teacher: any = {};
   user_no: any;
   school_id: any;
@@ -52,7 +52,6 @@ export class RegisterTeacherPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 
   // 🟢 3. جعل الدالة async للتعامل مع الذاكرة بشكل آمن
   async ionViewWillEnter() {

@@ -28,7 +28,7 @@
       
       <!-- رسائل الطرف الآخر -->
       <div class="flex flex-col items-start w-full" *ngIf="message.receiver === 'false'"
-           [ngClass]="{'mt-6': i > 0 && messages[i-1].receiver != message.receiver}">
+           [ngClass]="{'mt-6': i > 0 && messages[i-1].receiver !== message.receiver}">
         <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm self-end">
           
           <div *ngIf="message.message && message.message !== ''" class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
@@ -45,7 +45,7 @@
 
       <!-- رسائلي أنا -->
       <div class="flex flex-col items-start w-full" *ngIf="message.receiver === 'true'"
-           [ngClass]="{'mt-6': i > 0 && messages[i-1].receiver != message.receiver}">
+           [ngClass]="{'mt-6': i > 0 && messages[i-1].receiver !== message.receiver}">
         <div class="bg-white text-slate-700 p-3 rounded-2xl rounded-tl-sm border border-slate-100 max-w-[85%] shadow-sm self-start">
           
           <div class="text-[10px] font-bold text-slate-400 mb-1" *ngIf="message.sender_name && message.sender_name !== ''">
@@ -72,7 +72,7 @@
 </ion-content>
 
 <!-- حقل الإدخال -->
-<ion-footer *ngIf="chat && chat.ticket_status == '0'" class="bg-white border-t border-slate-100 p-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
+<ion-footer *ngIf="chat && chat.ticket_status === '0'" class="bg-white border-t border-slate-100 p-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
   
   <div class="px-2 pb-2 relative w-fit" *ngIf="image !== ''">
     <img loading="lazy" [src]="image" class="h-20 rounded-xl border border-slate-200 object-cover shadow-sm" />

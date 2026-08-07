@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, NavParams, AlertController, Platform, PopoverController, ActionSheetController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -37,7 +37,7 @@ import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtua
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgClass, ɵɵDir, NgIf, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf, NgFor, DecimalPipe, DatePipe, TranslatePipe]
 })
-export class StudentsPage implements OnInit {
+export class StudentsPage {
   readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
   showProfileModal: boolean = false;
@@ -155,7 +155,6 @@ export class StudentsPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   trackByStudent(index: number, student: any): any {
     return student?.sid ?? index;

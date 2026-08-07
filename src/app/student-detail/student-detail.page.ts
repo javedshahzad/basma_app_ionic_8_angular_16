@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { NavController, NavParams, AlertController, PopoverController, Platform, ModalController, ActionSheetController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
@@ -44,7 +44,7 @@ const env = environment;
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, FormsModule, DecimalPipe, DatePipe, TranslatePipe]
 })
-export class StudentDetailPage implements OnInit {
+export class StudentDetailPage {
   readonly UserType = UserType;
   trackByIndex(index: number): number {
     return index;
@@ -1231,7 +1231,6 @@ export class StudentDetailPage implements OnInit {
     await alert.present();
   }
 
-  ngOnInit() {}
 
   async presentPrintOption(event: any) {
     // if(this.AvailablePlan?.plan?.slug == 'free' || this.AvailablePlan?.isExpire == true){

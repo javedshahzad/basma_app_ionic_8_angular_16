@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavController, Platform, IonicModule } from '@ionic/angular';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
@@ -10,7 +10,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgxExtendedPdfViewerModule]
 })
-export class PdfviewerPage implements OnInit {
+export class PdfviewerPage {
   // 🟢 القيمة الافتراضية إذا لم يتم تمرير رابط
   pdfUrl: string = 'https://basmapp.com/appmanual.pdf';
   pageTitle: string = 'دليل الاستخدام';
@@ -32,5 +32,4 @@ export class PdfviewerPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 }

@@ -1,6 +1,5 @@
 ﻿import {
   Component,
-  OnInit,
   NgZone,
   DestroyRef,
   inject,
@@ -36,7 +35,7 @@ const env = environment;
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, NgIf, NgFor, TranslatePipe]
 })
-export class SendmessagePage implements OnInit {
+export class SendmessagePage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -110,7 +109,6 @@ export class SendmessagePage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 3. جعل الدالة async لاستخدام StorageService بدلاً من localStorage
   async ionViewWillEnter() {

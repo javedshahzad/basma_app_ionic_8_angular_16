@@ -1,6 +1,5 @@
 ﻿import {
   Component,
-  OnInit,
   NgZone,
   DestroyRef,
   inject,
@@ -30,7 +29,7 @@ import { DateFormatPipe } from '../pipes/date-format/date-format.pipe';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, NgClass, DateFormatPipe, TranslatePipe]
 })
-export class ParentconnectPage implements OnInit {
+export class ParentconnectPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -83,7 +82,6 @@ export class ParentconnectPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 جلب البيانات عند دخول الصفحة بشكل آمن وسريع
   async ionViewWillEnter() {

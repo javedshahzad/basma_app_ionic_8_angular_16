@@ -1,6 +1,5 @@
 ﻿import {
   Component,
-  OnInit,
   NgZone,
   DestroyRef,
   inject,
@@ -26,7 +25,7 @@ import { NgIf, NgFor } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
-export class PrivateMessagePage implements OnInit {
+export class PrivateMessagePage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -63,7 +62,6 @@ export class PrivateMessagePage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 جعل الدالة async للتعامل الآمن مع الذاكرة
   async ionViewWillEnter() {

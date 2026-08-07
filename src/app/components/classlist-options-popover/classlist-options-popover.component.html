@@ -1,7 +1,7 @@
 <div class="bg-white flex flex-col p-2 w-full overflow-hidden" dir="rtl">
 
   <button class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none" 
-          (click)="popoverAction('search')" *ngIf="userType == UserType.Admin || userType == UserType.Moderator">
+          (click)="popoverAction('search')" *ngIf="userType === UserType.Admin || userType === UserType.Moderator">
     <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
       <ion-icon name="search-outline" class="text-lg"></ion-icon>
     </div>
@@ -9,7 +9,7 @@
   </button>
 
   <button class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none" 
-          (click)="popoverAction('create')" *ngIf="userType == UserType.Admin">
+          (click)="popoverAction('create')" *ngIf="userType === UserType.Admin">
     <div class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
       <ion-icon name="add-outline" class="text-xl"></ion-icon>
     </div>
@@ -17,7 +17,7 @@
   </button>
   
   <button class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none" 
-          (click)="popoverAction('edit')" *ngIf="userType == UserType.Admin && !editMode">
+          (click)="popoverAction('edit')" *ngIf="userType === UserType.Admin && !editMode">
     <div class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
       <ion-icon name="pencil-sharp" class="text-lg"></ion-icon>
     </div>

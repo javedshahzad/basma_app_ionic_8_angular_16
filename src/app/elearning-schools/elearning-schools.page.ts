@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, FormsModule, NgClass, TranslatePipe]
 })
-export class ElearningSchoolsPage implements OnInit {
+export class ElearningSchoolsPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -62,7 +62,6 @@ export class ElearningSchoolsPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   async ionViewWillEnter() {
     this.show_loading = true;

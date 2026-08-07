@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -19,7 +19,7 @@ import { NgIf } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
 })
-export class ConnectNewMessagePage implements OnInit {
+export class ConnectNewMessagePage {
   userDetails: any = {};
   message: any = {
     title: '',
@@ -161,5 +161,4 @@ export class ConnectNewMessagePage implements OnInit {
     this.ticketImage = '';
   }
 
-  ngOnInit() {}
 }

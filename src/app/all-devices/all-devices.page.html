@@ -26,7 +26,7 @@
       </button>
     </div>
 
-    <ng-container *ngIf="All_available_devices.length == 0">
+    <ng-container *ngIf="All_available_devices.length === 0">
       <div style="text-align: center; padding: 3rem 0; color: var(--lineone-text-muted); font-weight: bold;">
         <p>{{'device.no_device'|translate}}</p>
       </div>
@@ -37,14 +37,14 @@
         
         <div class="card-header-area">
           <div class="device-icon-wrapper">
-            <ion-icon [name]="device.os_type == '1' ? 'logo-android' : (device.os_type == '2' ? 'logo-apple' : 'hardware-chip-outline')" class="device-main-icon"></ion-icon>
+            <ion-icon [name]="device.os_type === '1' ? 'logo-android' : (device.os_type === '2' ? 'logo-apple' : 'hardware-chip-outline')" class="device-main-icon"></ion-icon>
           </div>
           
           <div class="device-info-text">
             <h3 class="device-name-text">
-              <span *ngIf="device.os_type == '1'">Android Device</span>
-              <span *ngIf="device.os_type == '2'">iOS Device</span>
-              <span *ngIf="device.os_type != '1' && device.os_type != '2'">Device #{{i+1}}</span>
+              <span *ngIf="device.os_type === '1'">Android Device</span>
+              <span *ngIf="device.os_type === '2'">iOS Device</span>
+              <span *ngIf="device.os_type !== '1' && device.os_type !== '2'">Device #{{i+1}}</span>
             </h3>
             <p class="device-type-text">{{'device.device_id' | translate}}: {{device.device_id}}</p>
           </div>
@@ -54,14 +54,14 @@
           <div class="detail-item-row" style="display: flex; justify-content: space-between; width: 100%;">
             <span class="detail-label-text">الحالة:</span>
             
-            <span *ngIf="device.device_id == deviceSr.uuid" class="status-badge online">
+            <span *ngIf="device.device_id === deviceSr.uuid" class="status-badge online">
               <span class="status-dot"></span>
               {{'device.current_device' | translate}}
             </span>
             
-            <span *ngIf="device.device_id != deviceSr.uuid" class="status-badge" [ngClass]="device.is_logged_out == '1' ? 'offline' : 'online'">
+            <span *ngIf="device.device_id !== deviceSr.uuid" class="status-badge" [ngClass]="device.is_logged_out === '1' ? 'offline' : 'online'">
               <span class="status-dot"></span>
-              {{device.is_logged_out == '1' ? ('device.logout' | translate) : ('device.active' | translate)}}
+              {{device.is_logged_out === '1' ? ('device.logout' | translate) : ('device.active' | translate)}}
             </span>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,10 +11,9 @@ import { FormsModule } from '@angular/forms';
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PrintOptionsPopoverComponent implements OnInit {
+export class PrintOptionsPopoverComponent {
   constructor(private popoverController: PopoverController) {}
 
-  ngOnInit() {}
 
   // دالة إغلاق النافذة مع إرسال القيمة المختارة
   close(type: string) {

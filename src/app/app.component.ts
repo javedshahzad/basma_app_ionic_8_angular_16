@@ -1,6 +1,6 @@
 ﻿import { Device } from '@capacitor/device';
 import { UserType } from './constants/user-type';
-import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Platform, MenuController, NavController, IonicModule } from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -36,7 +36,7 @@ declare var cordova: any;
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   private destroyRef = inject(DestroyRef);
 
   trackByIndex(index: number): number {
@@ -539,9 +539,6 @@ export class AppComponent implements OnInit {
     await Browser.open({ url: 'https://basmapp.com/BasmaCP' });
   }
 
-  async ngOnInit() {
-    // reserved for future use
-  }
 
   // FIX: this was the root cause of the "first click doesn't work" bug.
   // translate.use() is asynchronous — it fetches/parses the language JSON

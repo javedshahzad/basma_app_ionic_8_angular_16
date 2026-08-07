@@ -1,6 +1,5 @@
 ﻿import {
   Component,
-  OnInit,
   ViewChild,
   ElementRef,
   NgZone,
@@ -30,7 +29,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, SafePipe, TranslatePipe]
 })
-export class PlayvideoPage implements OnInit {
+export class PlayvideoPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -70,7 +69,6 @@ export class PlayvideoPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 إعادة قفل الشاشة للوضع العمودي عند الخروج من الصفحة
   ionViewWillLeave() {

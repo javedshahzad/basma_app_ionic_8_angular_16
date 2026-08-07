@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   NgZone,
   ChangeDetectorRef,
   ChangeDetectionStrategy,
@@ -32,7 +31,7 @@ import { NgIf } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, NgIf]
 })
-export class PostNewsPage implements OnInit {
+export class PostNewsPage {
   private destroyRef = inject(DestroyRef);
 
   news = {
@@ -156,7 +155,6 @@ export class PostNewsPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   async ionViewWillEnter() {
     let userLoggedIn = await this.storageSr.get('userloggedin');

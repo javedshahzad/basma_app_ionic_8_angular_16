@@ -1,7 +1,7 @@
 ﻿<ion-header class="ion-no-border lineone-header" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button slot="start" *ngIf="userDetails.details.is_school_admin == 1" (click)="openVoucherModal()" fill="clear" class="lineone-icon-btn">
+      <ion-button slot="start" *ngIf="userDetails.details.is_school_admin === 1" (click)="openVoucherModal()" fill="clear" class="lineone-icon-btn">
       <ion-icon name="add-circle-outline"></ion-icon>
     </ion-button>
     </ion-buttons>
@@ -59,9 +59,9 @@
         
         <div class="lineone-card plan-card animate__animated animate__fadeInUp" 
              *ngFor="let Singleitem of plans; let i=index; trackBy: trackByIndex" 
-             [ngClass]="{'is-current-plan': Singleitem.slug == availablePlan.plan.slug}">
+             [ngClass]="{'is-current-plan': Singleitem.slug === availablePlan.plan.slug}">
 
-          <div class="current-plan-badge" *ngIf="Singleitem.slug == availablePlan.plan.slug">
+          <div class="current-plan-badge" *ngIf="Singleitem.slug === availablePlan.plan.slug">
             <ion-icon name="star"></ion-icon>
             {{'plan.currentPlan' | translate}}
           </div>
@@ -87,50 +87,50 @@
             </div>
 
             <div class="feature-item">
-              <ion-icon [name]="Singleitem.news_post_per_day != '0' ? 'checkmark-circle' : 'close-circle'" 
-                        [ngClass]="Singleitem.news_post_per_day != '0' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <ion-icon [name]="Singleitem.news_post_per_day !== '0' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.news_post_per_day !== '0' ? 'icon-success' : 'icon-danger'"></ion-icon>
               <div class="feature-text">
-                <span *ngIf="Singleitem.news_post_per_day != '0'">{{Singleitem.news_post_per_day | translate}} {{'plan.news_post_per_day' | translate}}</span>
-                <span *ngIf="Singleitem.news_post_per_day == '0'" class="text-muted">{{'plan.news_post_per_day' | translate}}</span>
+                <span *ngIf="Singleitem.news_post_per_day !== '0'">{{Singleitem.news_post_per_day | translate}} {{'plan.news_post_per_day' | translate}}</span>
+                <span *ngIf="Singleitem.news_post_per_day === '0'" class="text-muted">{{'plan.news_post_per_day' | translate}}</span>
               </div>
             </div>
 
             <div class="feature-item">
-              <ion-icon [name]="Singleitem.e_learning_material == '1' ? 'checkmark-circle' : 'close-circle'" 
-                        [ngClass]="Singleitem.e_learning_material == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
-              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.e_learning_material == '0'}">
+              <ion-icon [name]="Singleitem.e_learning_material === '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.e_learning_material === '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.e_learning_material === '0'}">
                 {{'plan.e_learning_material' | translate}}
               </div>
             </div>
 
             <div class="feature-item">
-              <ion-icon [name]="Singleitem.student_report_pdf == '1' ? 'checkmark-circle' : 'close-circle'" 
-                        [ngClass]="Singleitem.student_report_pdf == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
-              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.student_report_pdf == '0'}">
+              <ion-icon [name]="Singleitem.student_report_pdf === '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.student_report_pdf === '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.student_report_pdf === '0'}">
                 {{'plan.student_report_pdf' | translate}}
               </div>
             </div>
 
             <div class="feature-item">
-              <ion-icon [name]="Singleitem.student_report_excel == '1' ? 'checkmark-circle' : 'close-circle'" 
-                        [ngClass]="Singleitem.student_report_excel == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
-              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.student_report_excel == '0'}">
+              <ion-icon [name]="Singleitem.student_report_excel === '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.student_report_excel === '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.student_report_excel === '0'}">
                 {{'plan.student_report_excel' | translate}}
               </div>
             </div>
 
             <div class="feature-item">
-              <ion-icon [name]="Singleitem.follow_up_teacher_report_pdf == '1' ? 'checkmark-circle' : 'close-circle'" 
-                        [ngClass]="Singleitem.follow_up_teacher_report_pdf == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
-              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.follow_up_teacher_report_pdf == '0'}">
+              <ion-icon [name]="Singleitem.follow_up_teacher_report_pdf === '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.follow_up_teacher_report_pdf === '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.follow_up_teacher_report_pdf === '0'}">
                 {{'plan.follow_up_teacher_pdf' | translate}}
               </div>
             </div>
 
             <div class="feature-item">
-              <ion-icon [name]="Singleitem.follow_up_teacher_report_excel == '1' ? 'checkmark-circle' : 'close-circle'" 
-                        [ngClass]="Singleitem.follow_up_teacher_report_excel == '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
-              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.follow_up_teacher_report_excel == '0'}">
+              <ion-icon [name]="Singleitem.follow_up_teacher_report_excel === '1' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.follow_up_teacher_report_excel === '1' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <div class="feature-text" [ngClass]="{'text-muted': Singleitem.follow_up_teacher_report_excel === '0'}">
                 {{'plan.follow_up_teacher_excel' | translate}}
               </div>
             </div>
@@ -151,7 +151,7 @@
               </div>
             </div>
 
-          </div> <div class="active-plan-details" *ngIf="Singleitem.slug == availablePlan.plan.slug && availablePlan.plan.slug !== 'free'">
+          </div> <div class="active-plan-details" *ngIf="Singleitem.slug === availablePlan.plan.slug && availablePlan.plan.slug !== 'free'">
             <div class="detail-row">
               <span class="label">{{'plan.duration' | translate}}</span>
               <span class="value">{{availablePlan?.billingPeriod}} {{availablePlan.billingPeriodUnit}}</span>
@@ -163,12 +163,12 @@
           </div>
           
           <div class="plan-card-footer" *ngIf="Singleitem.slug !== 'free'">
-            <button class="lineone-btn btn-primary" *ngIf="Singleitem.slug != availablePlan.plan.slug" (click)="subscribe(Singleitem,i)">
+            <button class="lineone-btn btn-primary" *ngIf="Singleitem.slug !== availablePlan.plan.slug" (click)="subscribe(Singleitem,i)">
               <ion-icon name="flash-outline" slot="start"></ion-icon>
               {{'plan.subscribe' | translate}}
             </button>
             
-            <button class="lineone-btn btn-disabled" disabled *ngIf="Singleitem.slug == availablePlan.plan.slug">
+            <button class="lineone-btn btn-disabled" disabled *ngIf="Singleitem.slug === availablePlan.plan.slug">
               <ion-icon name="checkmark-done-outline" slot="start"></ion-icon>
               {{'plan.currentPlan' | translate}}
             </button>

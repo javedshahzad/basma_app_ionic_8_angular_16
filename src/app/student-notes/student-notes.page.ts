@@ -1,6 +1,5 @@
 ﻿import {
   Component,
-  OnInit,
   NgZone,
   DestroyRef,
   inject,
@@ -27,7 +26,7 @@ import { NgIf, NgFor } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
-export class StudentNotesPage implements OnInit {
+export class StudentNotesPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -78,7 +77,6 @@ export class StudentNotesPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 دوال عرض الصور
   showPhoto(url: string) {

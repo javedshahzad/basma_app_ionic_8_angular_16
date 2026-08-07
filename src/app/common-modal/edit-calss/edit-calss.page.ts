@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+﻿import { Component, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
@@ -19,7 +19,7 @@ import { NgIf, NgFor } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
-export class EditCalssPage implements OnInit {
+export class EditCalssPage {
   private destroyRef = inject(DestroyRef);
 
   trackByIndex(index: number): number {
@@ -68,7 +68,6 @@ export class EditCalssPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
   closeModal() {
     this.modalController.dismiss({
       dismissed: true

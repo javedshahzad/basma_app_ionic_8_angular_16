@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ModalController, NavController, Platform, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -24,7 +24,7 @@ import { FormsModule } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, FormsModule, TranslatePipe]
 })
-export class LoginPage implements OnInit {
+export class LoginPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -52,7 +52,6 @@ export class LoginPage implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {}
 
   // 🟢 3. دورة الحياة المتزامنة لتجهيز المعرفات والبيانات
   async ionViewWillEnter() {

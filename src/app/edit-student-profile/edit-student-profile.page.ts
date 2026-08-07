@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+﻿import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController, AlertController, NavController, Platform, MenuController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DatabaseService } from '../service/database/database.service';
@@ -21,7 +21,7 @@ import { FormsModule } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
-export class EditStudentProfilePage implements OnInit {
+export class EditStudentProfilePage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -72,7 +72,6 @@ export class EditStudentProfilePage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 
   // 🟢 4. دورة حياة الصفحة الآمنة والمتسلسلة (تمنع الاستباق)
   async ionViewWillEnter() {

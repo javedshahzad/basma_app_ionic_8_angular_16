@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, NgClass, FormsModule, TranslatePipe]
 })
-export class FollowupAddFieldsPage implements OnInit {
+export class FollowupAddFieldsPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -56,7 +56,6 @@ export class FollowupAddFieldsPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 
   async ionViewWillEnter() {
     this.show_loading = true;

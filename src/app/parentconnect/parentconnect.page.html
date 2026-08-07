@@ -1,13 +1,13 @@
 ﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="mr-2">
-      <button *ngIf="userType == UserType.Student" 
+      <button *ngIf="userType === UserType.Student" 
               class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center active:scale-95 transition-all" 
               (click)="createChatMessage()">
         <ion-icon name="add-outline" class="text-xl"></ion-icon>
       </button>
 
-      <ion-menu-toggle *ngIf="userType == UserType.Parent" auto-hide="false">
+      <ion-menu-toggle *ngIf="userType === UserType.Parent" auto-hide="false">
         <button class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-700 shadow-sm flex items-center justify-center">
           <ion-icon name="menu-outline" class="text-xl"></ion-icon>
         </button>
@@ -15,14 +15,14 @@
     </ion-buttons>
 
     <ion-title class="ion-text-center fw-bold text-dark">
-      <span *ngIf="userType == UserType.Student">{{'parentconnect.pagetitlestudent' | translate}}</span>
-      <span *ngIf="userType != UserType.Student">{{'parentconnect.pagetitle' | translate}}</span>
+      <span *ngIf="userType === UserType.Student">{{'parentconnect.pagetitlestudent' | translate}}</span>
+      <span *ngIf="userType !== UserType.Student">{{'parentconnect.pagetitle' | translate}}</span>
     </ion-title>
 
     <ion-buttons slot="end" class="ml-2">
-      <ion-back-button *ngIf="userType != UserType.Parent" [defaultHref]="backHref" class="text-slate-600"></ion-back-button>
+      <ion-back-button *ngIf="userType !== UserType.Parent" [defaultHref]="backHref" class="text-slate-600"></ion-back-button>
 
-      <button *ngIf="userType == UserType.Parent" 
+      <button *ngIf="userType === UserType.Parent" 
               class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center active:scale-95 transition-all" 
               (click)="createChatMessage()">
         <ion-icon name="add-outline" class="text-xl"></ion-icon>
@@ -45,7 +45,7 @@
             <img loading="lazy" [src]="chatuser.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
                  class="w-14 h-14 rounded-2xl object-cover border border-slate-200 shadow-sm bg-slate-50">
             <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white" 
-                  [ngClass]="chatuser.ticket_status == '0' ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+                  [ngClass]="chatuser.ticket_status === '0' ? 'bg-emerald-500' : 'bg-rose-500'"></span>
           </div>
           
           <div class="flex-1 overflow-hidden pt-1">
@@ -63,25 +63,25 @@
           </div>
 
           <div class="shrink-0 flex flex-col items-center gap-2 ml-1" (click)="$event.stopPropagation()">
-            <ng-container *ngIf="userType == UserType.Admin">
-              <button *ngIf="chatuser.ticket_status == '0'" 
+            <ng-container *ngIf="userType === UserType.Admin">
+              <button *ngIf="chatuser.ticket_status === '0'" 
                       class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 hover:bg-emerald-100 transition-colors active:scale-95 shadow-sm" 
                       (click)="closeTicket(chatuser)">
                 <ion-icon name="lock-open-outline" class="text-xl"></ion-icon>
               </button>
-              <button *ngIf="chatuser.ticket_status != '0'" 
+              <button *ngIf="chatuser.ticket_status !== '0'" 
                       class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 hover:bg-rose-100 transition-colors active:scale-95 shadow-sm" 
                       (click)="reopenTicket(chatuser)">
                 <ion-icon name="lock-closed-outline" class="text-xl"></ion-icon>
               </button>
             </ng-container>
 
-            <ng-container *ngIf="userType == UserType.Parent">
-              <div *ngIf="chatuser.ticket_status == '0'" 
+            <ng-container *ngIf="userType === UserType.Parent">
+              <div *ngIf="chatuser.ticket_status === '0'" 
                    class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-sm">
                 <ion-icon name="lock-open-outline" class="text-xl"></ion-icon>
               </div>
-              <div *ngIf="chatuser.ticket_status != '0'" 
+              <div *ngIf="chatuser.ticket_status !== '0'" 
                    class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 shadow-sm">
                 <ion-icon name="lock-closed-outline" class="text-xl"></ion-icon>
               </div>
@@ -91,7 +91,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col items-center justify-center py-20 animate-fade-in-up" *ngIf="chats?.length == 0">
+    <div class="flex flex-col items-center justify-center py-20 animate-fade-in-up" *ngIf="chats?.length === 0">
       <div class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center text-slate-400 mb-5 shadow-sm">
         <ion-icon name="chatbubbles-outline" class="text-5xl"></ion-icon>
       </div>

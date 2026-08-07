@@ -1,6 +1,5 @@
 ﻿import {
   Component,
-  OnInit,
   NgZone,
   DestroyRef,
   inject,
@@ -31,7 +30,7 @@ import { NgIf } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, IonicSelectableComponent, NgIf, TranslatePipe]
 })
-export class EditTeacherProfilePage implements OnInit {
+export class EditTeacherProfilePage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -91,7 +90,6 @@ export class EditTeacherProfilePage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   async ionViewWillEnter() {
     const userData = await this.storageSr.get('userloggedin');

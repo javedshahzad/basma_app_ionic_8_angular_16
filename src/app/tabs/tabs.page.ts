@@ -1,4 +1,4 @@
-import { Component, OnInit, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatabaseService } from '../service/database/database.service';
 import { AuthService } from '../service/auth/auth.service';
@@ -16,7 +16,7 @@ import { NgIf } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf]
 })
-export class TabsPage implements OnInit {
+export class TabsPage {
   private destroyRef = inject(DestroyRef);
   loggedin: boolean = false;
   activePage: any;
@@ -118,5 +118,4 @@ export class TabsPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 }

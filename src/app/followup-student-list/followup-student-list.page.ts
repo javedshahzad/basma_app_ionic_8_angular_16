@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   NgZone,
   ChangeDetectorRef,
   ChangeDetectionStrategy,
@@ -42,7 +41,7 @@ import { FormsModule } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgClass, NgFor, FormsModule, DatePipe, TranslatePipe]
 })
-export class FollowupStudentListPage implements OnInit {
+export class FollowupStudentListPage {
   readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
 
@@ -140,7 +139,6 @@ export class FollowupStudentListPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   trackByStudent(index: number, student: any): any {
     return student?.sid ?? index;

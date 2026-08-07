@@ -88,7 +88,7 @@
           </div>
           
           <!-- 🟢 زر (+) المطور بجانب الطالب لفتح القائمة السفلية (تطبيق الملاحظة رقم 2) -->
-          <button *ngIf="userType != UserType.Parent && canAddStudentNote" 
+          <button *ngIf="userType !== UserType.Parent && canAddStudentNote" 
                   class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors flex items-center justify-center flex-shrink-0" 
                   (click)="presentStudentActionSheet($event, student)">
             <ion-icon name="add" class="text-xl"></ion-icon>
@@ -131,7 +131,7 @@
     </div>
 
     <!-- الشاشة الفارغة -->
-    <div class="text-center py-20" *ngIf="attendanceResponse.students?.length == 0 && !show_loading">
+    <div class="text-center py-20" *ngIf="attendanceResponse.students?.length === 0 && !show_loading">
       <div class="w-20 h-20 bg-slate-100 border border-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-300 shadow-sm">
         <ion-icon name="folder-open-outline" class="text-4xl"></ion-icon>
       </div>
@@ -143,7 +143,7 @@
 </ion-content>
 
 <!-- زر الحفظ -->
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="!isHoliday && userType != UserType.Viewer && attendanceResponse.students?.length > 0">
+<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="!isHoliday && userType !== UserType.Viewer && attendanceResponse.students?.length > 0">
   <div class="p-5 max-w-3xl mx-auto">
     <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2"
             (click)="submitMarks()">

@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -18,7 +18,7 @@ import { NgClass, NgIf, NgFor, DatePipe } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgClass, NgIf, NgFor, DatePipe, TranslatePipe]
 })
-export class WarningReportPage implements OnInit {
+export class WarningReportPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -48,7 +48,6 @@ export class WarningReportPage implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {}
 
   // 🟢 3. التخلص من localStorage واستخدام async/await
   async ionViewWillEnter() {

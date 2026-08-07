@@ -41,7 +41,7 @@
       <div class="relative">
         <img loading="lazy" [src]="displayPic" class="w-28 h-28 rounded-3xl object-cover border-4 border-white shadow-md bg-slate-100" onerror="this.onerror=null;this.src='assets/imgs/user-icon.PNG';">
         
-        <button *ngIf="userType != UserType.Student"
+        <button *ngIf="userType !== UserType.Student"
                 class="absolute -bottom-2 -left-2 w-10 h-10 bg-indigo-600 text-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center hover:bg-indigo-700 transition-colors active:scale-95" 
                 (click)="takePicture()">
           <ion-icon name="camera-outline" class="text-xl"></ion-icon>
@@ -118,7 +118,7 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6" *ngIf="is_school_admin && userType==UserType.Admin">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6" *ngIf="is_school_admin && userType===UserType.Admin">
       <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-5 flex items-center gap-2">
         <ion-icon name="settings-outline" class="text-lg"></ion-icon> إعدادات المدرسة
       </h4>

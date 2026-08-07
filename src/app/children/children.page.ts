@@ -1,6 +1,5 @@
 ﻿import {
   Component,
-  OnInit,
   NgZone,
   DestroyRef,
   inject,
@@ -26,7 +25,7 @@ import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, NgStyle, NgClass, TranslatePipe]
 })
-export class ChildrenPage implements OnInit {
+export class ChildrenPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -208,7 +207,6 @@ export class ChildrenPage implements OnInit {
     this.router.navigate(['student-detail'], navigationExtras);
   }
 
-  ngOnInit() {}
 
   /**
    * 🟢 دالة جديدة: تجهيز بيانات الطالب وفتح نافذة ملخص الأداء

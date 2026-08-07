@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, Platform, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -27,7 +27,7 @@ import { FormsModule } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
-export class SettingsPage implements OnInit {
+export class SettingsPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -442,7 +442,6 @@ export class SettingsPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 استبدال moment بـ dayjs بشكل مباشر
   calculateRemainingTime() {

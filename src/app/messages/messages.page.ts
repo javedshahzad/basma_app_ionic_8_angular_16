@@ -1,4 +1,4 @@
-import { Component, OnInit, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -21,7 +21,7 @@ import { NgIf, NgFor } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, TranslatePipe]
 })
-export class MessagesPage implements OnInit {
+export class MessagesPage {
   readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
 
@@ -71,7 +71,6 @@ export class MessagesPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   trackByNotification(index: number, notification: any): any {
     return notification?.ID ?? index;

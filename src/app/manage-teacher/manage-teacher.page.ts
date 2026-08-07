@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -19,7 +19,7 @@ import { FormsModule } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
 })
-export class ManageTeacherPage implements OnInit {
+export class ManageTeacherPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -66,7 +66,6 @@ export class ManageTeacherPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 
   // 🟢 استخدام async/await للتعامل مع الذاكرة وجلب المعلمين بأمان
   async ionViewWillEnter() {

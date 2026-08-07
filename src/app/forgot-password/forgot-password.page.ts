@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, IonContent, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgClass, FormsModule, TranslatePipe]
 })
-export class ForgotPasswordPage implements OnInit {
+export class ForgotPasswordPage {
   // 🟢 استدعاء المحتوى للتحكم في التمرير (Scrolling) بطريقة Angular الآمنة
   @ViewChild(IonContent, { static: false }) content: IonContent;
 
@@ -64,7 +64,6 @@ export class ForgotPasswordPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 
   // 🟢 التمرير الآمن لأسفل الصفحة بدلاً من استخدام document.getElementById
   scrollToBottom() {

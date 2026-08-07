@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -19,7 +19,7 @@ import { NgIf, NgFor, NgClass } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, NgClass]
 })
-export class StudentTitlesPage implements OnInit {
+export class StudentTitlesPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -113,7 +113,6 @@ export class StudentTitlesPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 3. جعل الدالة async للتخلص من localStorage
   async ionViewWillEnter() {

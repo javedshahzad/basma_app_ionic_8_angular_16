@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
@@ -18,7 +18,7 @@ import { NgIf, NgFor, NgClass } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, NgClass, TranslatePipe]
 })
-export class ElearningSchoolVideoPage implements OnInit {
+export class ElearningSchoolVideoPage {
   private destroyRef = inject(DestroyRef);
 
   trackByIndex(index: number): number {
@@ -83,7 +83,6 @@ export class ElearningSchoolVideoPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   getElerningMaterials(c_dode) {
     this.show_loading = true;

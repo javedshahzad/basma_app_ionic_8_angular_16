@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   NgZone,
   ViewChild,
   OnDestroy,
@@ -30,7 +29,7 @@ import { LinkyPipe } from '../pipes/linky.pipe';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, NgClass, FormsModule, LinkyPipe, TranslatePipe]
 })
-export class ConnectChatPage implements OnInit, OnDestroy {
+export class ConnectChatPage implements OnDestroy {
   @ViewChild('contentArea') private contentArea: IonContent; // 🟢 تعريف صحيح للمحتوى
 
   userDetails: any = { details: {} };
@@ -71,7 +70,6 @@ export class ConnectChatPage implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {}
 
   // 🟢 4. دورة الحياة المتزامنة الآمنة
   async ionViewWillEnter() {

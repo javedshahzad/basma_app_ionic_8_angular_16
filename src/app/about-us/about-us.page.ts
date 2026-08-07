@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Browser } from '@capacitor/browser';
 import { IonicModule } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -10,7 +10,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, TranslatePipe]
 })
-export class AboutUsPage implements OnInit {
+export class AboutUsPage {
   constructor() {}
 
   /**
@@ -26,5 +26,4 @@ export class AboutUsPage implements OnInit {
     //browser.show();
   }
 
-  ngOnInit() {}
 }

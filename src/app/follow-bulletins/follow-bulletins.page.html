@@ -113,7 +113,7 @@
     <button *ngIf="!inputUser" 
             class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2 disabled:opacity-50" 
             (click)="openUser()" 
-            [disabled]="selectedDocument.length == 0 || tital === ''">
+            [disabled]="selectedDocument.length === 0 || tital === ''">
       {{'bulletin.select_user' | translate}}
       <ion-icon name="arrow-back-outline" class="text-xl"></ion-icon>
     </button>
@@ -121,7 +121,7 @@
     <button *ngIf="inputUser" 
             class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-emerald-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2 disabled:opacity-50" 
             (click)="submit()" 
-            [disabled]="selectedUsers.length == 0">
+            [disabled]="selectedUsers.length === 0">
       <ion-icon name="paper-plane-outline" class="text-xl transform -rotate-45"></ion-icon>
       {{'bulletin.share' | translate}}
     </button>

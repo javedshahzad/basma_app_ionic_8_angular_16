@@ -15,7 +15,7 @@
     
     <ion-buttons slot="end" class="mr-2">
       
-      <button *ngIf="userType == UserType.Teacher"
+      <button *ngIf="userType === UserType.Teacher"
               [disabled]="editMode || !canReorder === true"
               [ngClass]="(editMode || !canReorder === true) ? 'opacity-40 cursor-not-allowed bg-slate-50' : 'hover:bg-slate-100 bg-white'"
               class="w-10 h-10 rounded-full border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center focus:outline-none" 
@@ -23,7 +23,7 @@
         <ion-icon name="swap-vertical-outline" class="text-xl"></ion-icon>
       </button>
 
-      <button *ngIf="userType != UserType.Teacher"
+      <button *ngIf="userType !== UserType.Teacher"
               [disabled]="editMode || !canReorder === true"
               [ngClass]="(editMode || !canReorder === true) ? 'opacity-40 cursor-not-allowed bg-slate-50' : 'hover:bg-slate-100 bg-white'"
               class="w-10 h-10 rounded-full border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center focus:outline-none" 
@@ -81,7 +81,7 @@
 
     <div *ngIf="!isLoading">
       
-      <div class="segment-wrapper" *ngIf="userType == UserType.Admin || userType == UserType.Moderator || userType == UserType.Viewer">
+      <div class="segment-wrapper" *ngIf="userType === UserType.Admin || userType === UserType.Moderator || userType === UserType.Viewer">
         <ion-segment [(ngModel)]="category" (ionChange)="segmentChanged($event)" mode="ios" class="lineone-segment" [disabled]="editMode || !canReorder">
           <ion-segment-button value="list">
             <ion-label>{{'classlist.pagetitle' | translate}}</ion-label>

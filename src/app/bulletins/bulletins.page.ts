@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
@@ -21,7 +21,7 @@ import { DateFormatPipe } from '../pipes/date-format/date-format.pipe';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, NgClass, DateFormatPipe, TranslatePipe]
 })
-export class BulletinsPage implements OnInit {
+export class BulletinsPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -54,7 +54,6 @@ export class BulletinsPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   async ionViewWillEnter() {
     this.isLoading = true;

@@ -5,27 +5,27 @@
     <div *ngFor="let oldUser of loggedinUser; let i=index; trackBy: trackByIndex" 
          (click)="loginOldUser(oldUser)"
          class="flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all active:scale-[0.98]"
-         [ngClass]="(oldUser.email_id == currentUser || oldUser.email_id == currentUserEmail || oldUser.user_no == user_no) ? 'border-2 border-indigo-500 bg-indigo-50 shadow-sm shadow-indigo-100' : 'border border-slate-100 bg-white hover:bg-slate-50'">
+         [ngClass]="(oldUser.email_id === currentUser || oldUser.email_id === currentUserEmail || oldUser.user_no === user_no) ? 'border-2 border-indigo-500 bg-indigo-50 shadow-sm shadow-indigo-100' : 'border border-slate-100 bg-white hover:bg-slate-50'">
       
       <div class="flex items-center gap-3">
         <img loading="lazy" [src]="oldUser.image" onerror="this.onerror=null;this.src='./assets/imgs/default_avatar.png';" 
              class="w-12 h-12 rounded-full object-cover flex-shrink-0"
-             [ngClass]="(oldUser.email_id == currentUser || oldUser.email_id == currentUserEmail || oldUser.user_no == user_no) ? 'border-2 border-white shadow-sm' : 'border border-slate-200'">
+             [ngClass]="(oldUser.email_id === currentUser || oldUser.email_id === currentUserEmail || oldUser.user_no === user_no) ? 'border-2 border-white shadow-sm' : 'border border-slate-200'">
         
         <div>
           <h4 class="font-bold text-[13px] sm:text-sm flex items-center gap-1.5"
-              [ngClass]="(oldUser.email_id == currentUser || oldUser.email_id == currentUserEmail || oldUser.user_no == user_no) ? 'text-indigo-950' : 'text-slate-800'">
+              [ngClass]="(oldUser.email_id === currentUser || oldUser.email_id === currentUserEmail || oldUser.user_no === user_no) ? 'text-indigo-950' : 'text-slate-800'">
             {{oldUser.name}}
-            <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-500 text-white font-bold" *ngIf="oldUser.email_id == currentUser || oldUser.email_id == currentUserEmail || oldUser.user_no == user_no">الحالي</span>
+            <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-500 text-white font-bold" *ngIf="oldUser.email_id === currentUser || oldUser.email_id === currentUserEmail || oldUser.user_no === user_no">الحالي</span>
           </h4>
           <p class="text-[11px] sm:text-xs font-medium mt-0.5 leading-tight"
-             [ngClass]="(oldUser.email_id == currentUser || oldUser.email_id == currentUserEmail || oldUser.user_no == user_no) ? 'text-indigo-600' : 'text-slate-500'">
+             [ngClass]="(oldUser.email_id === currentUser || oldUser.email_id === currentUserEmail || oldUser.user_no === user_no) ? 'text-indigo-600' : 'text-slate-500'">
             {{oldUser.email_id}}
           </p>
         </div>
       </div>
 
-      <div *ngIf="oldUser.email_id == currentUser || oldUser.email_id == currentUserEmail || oldUser.user_no == user_no" 
+      <div *ngIf="oldUser.email_id === currentUser || oldUser.email_id === currentUserEmail || oldUser.user_no === user_no" 
            class="w-6 h-6 rounded-full bg-indigo-500 text-white flex items-center justify-center shadow-md border-2 border-white flex-shrink-0">
         <ion-icon name="checkmark" class="text-sm"></ion-icon>
       </div>

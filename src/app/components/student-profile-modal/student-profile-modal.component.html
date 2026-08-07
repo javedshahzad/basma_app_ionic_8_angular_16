@@ -6,7 +6,7 @@
   
   <div class="h-28 relative bg-cover bg-center bg-indigo-500" [ngStyle]="{'background-image': 'url('+student?.pic+')'}">
     <div class="absolute inset-0 bg-black/50"></div>
-    <button class="absolute top-4 right-4 z-20 text-white bg-black/30 p-2 rounded-full backdrop-blur-md hover:bg-black/50 transition-colors" (click)="triggerCamera($event)" *ngIf="userType != UserType.Teacher && userType != UserType.Viewer">
+    <button class="absolute top-4 right-4 z-20 text-white bg-black/30 p-2 rounded-full backdrop-blur-md hover:bg-black/50 transition-colors" (click)="triggerCamera($event)" *ngIf="userType !== UserType.Teacher && userType !== UserType.Viewer">
       <ion-icon name="camera" class="text-xl"></ion-icon>
     </button>
   </div>
@@ -44,10 +44,10 @@
       </div>
 
     </div>
-    <p class="text-indigo-600 text-sm font-semibold mt-4 bg-indigo-50 py-2 rounded-xl border border-indigo-100" *ngIf="userType != UserType.Teacher">{{'list-student.total_absents' | translate}} : {{student?.total_absent || 0}}</p>
+    <p class="text-indigo-600 text-sm font-semibold mt-4 bg-indigo-50 py-2 rounded-xl border border-indigo-100" *ngIf="userType !== UserType.Teacher">{{'list-student.total_absents' | translate}} : {{student?.total_absent || 0}}</p>
   </div>
   
-  <div class="bg-slate-50 border-t border-slate-100 p-4" *ngIf="userType != UserType.Teacher">
+  <div class="bg-slate-50 border-t border-slate-100 p-4" *ngIf="userType !== UserType.Teacher">
     <div class="grid grid-cols-4 divide-x divide-x-reverse divide-slate-200 text-center">
       <div>
         <p class="text-xl font-bold text-rose-500">{{student?.unacceptable_absent_days || 0}}</p>

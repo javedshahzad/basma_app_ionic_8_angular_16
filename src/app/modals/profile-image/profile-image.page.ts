@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { PinchZoomModule } from '@mtnair/ngx-pinch-zoom';
 
@@ -9,14 +9,13 @@ import { PinchZoomModule } from '@mtnair/ngx-pinch-zoom';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, PinchZoomModule]
 })
-export class ProfileImagePage implements OnInit {
+export class ProfileImagePage {
   @Input() pic: string = ''; // تحديد القيمة الافتراضية
 
   constructor(
     private modalCtrl: ModalController // جعلها private واستخدام الاسم المتعارف عليه
   ) {}
 
-  ngOnInit() {}
 
   // 🟢 دالة مخصصة لإغلاق النافذة بطريقة نظيفة
   closeModal() {

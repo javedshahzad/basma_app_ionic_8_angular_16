@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController, ActionSheetController, MenuController, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -56,7 +56,7 @@ export enum TeacherTypeEnum {
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgClass, NgIf, FormsModule, NgFor, SupervisorViewComponent, TeacherViewComponent, DatePipe, TranslatePipe]
 })
-export class ListStudentPage implements OnInit {
+export class ListStudentPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -204,7 +204,6 @@ export class ListStudentPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   async ionViewWillEnter() {
     await this.onInitPage();

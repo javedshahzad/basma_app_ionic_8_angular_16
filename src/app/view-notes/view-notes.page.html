@@ -70,13 +70,13 @@
               <ion-icon name="calendar-outline" class="text-slate-400"></ion-icon>
               {{note.send_to !== 'exam' ? note.datetime : note.examNoteDate}}
             </span>
-            <span *ngIf="userType==UserType.Admin || userType==UserType.Teacher || note.profile?.user_no==userDetails?.details?.user_no" class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2.5 py-1 rounded-md text-[10px] font-bold flex items-center gap-1.5">
+            <span *ngIf="userType===UserType.Admin || userType===UserType.Teacher || note.profile?.user_no===userDetails?.details?.user_no" class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2.5 py-1 rounded-md text-[10px] font-bold flex items-center gap-1.5">
               <ion-icon name="send-outline" class="text-indigo-400"></ion-icon>
               {{'student_notes.sendTO' | translate}}: {{note.send_to==='exam' ? 'اختبار' : note.send_to}}
             </span>
           </div>
 
-          <div class="w-full sm:w-auto mt-2 sm:mt-0" *ngIf="userType==UserType.Admin || (note.profile && note.profile.user_no==userDetails?.details?.user_no)">
+          <div class="w-full sm:w-auto mt-2 sm:mt-0" *ngIf="userType===UserType.Admin || (note.profile && note.profile.user_no===userDetails?.details?.user_no)">
             <button (click)="deleteNoteAlert(note, i)" class="w-full sm:w-auto bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-bold px-6 py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-rose-100 active:scale-95">
               <ion-icon name="trash-outline" class="text-lg"></ion-icon>
               حذف الملاحظة
@@ -87,7 +87,7 @@
       </div>
     </ng-container>
 
-    <div class="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white shadow-sm mt-4" *ngIf="!data || data.length == 0">
+    <div class="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white shadow-sm mt-4" *ngIf="!data || data.length === 0">
       <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
         <ion-icon name="document-text-outline" class="text-3xl text-slate-300"></ion-icon>
       </div>

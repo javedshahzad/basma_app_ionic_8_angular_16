@@ -1,6 +1,5 @@
 ﻿import {
   Component,
-  OnInit,
   NgZone,
   DestroyRef,
   inject,
@@ -30,7 +29,7 @@ import { NgIf, NgClass, NgFor } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, NgIf, NgClass, NgFor, TranslatePipe]
 })
-export class EditUserProfilePage implements OnInit {
+export class EditUserProfilePage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -111,7 +110,6 @@ export class EditUserProfilePage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   async ionViewWillEnter() {
     // 🟢 قراءة بيانات المشرف أو المدير الحالي بأمان

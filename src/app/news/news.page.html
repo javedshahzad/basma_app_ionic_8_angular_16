@@ -14,7 +14,7 @@
 
     <ion-buttons slot="end" class="ml-2 w-10">
       <ion-button color="dark" class="custom-menu-btn"
-                  *ngIf="userDetails.details && userDetails?.details.is_school_admin && userDetails.details.user_type != UserType.Parent"
+                  *ngIf="userDetails.details && userDetails?.details.is_school_admin && userDetails.details.user_type !== UserType.Parent"
                   (click)="addNews()">
         <ion-icon name="add-outline"></ion-icon>
       </ion-button>
@@ -127,7 +127,7 @@
 
       </div>
 
-      <div class="flex flex-col items-center justify-center py-20" *ngIf="allNews?.length == 0">
+      <div class="flex flex-col items-center justify-center py-20" *ngIf="allNews?.length === 0">
         <div class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center text-slate-400 mb-5 shadow-sm">
           <ion-icon name="newspaper-outline" class="text-5xl"></ion-icon>
         </div>

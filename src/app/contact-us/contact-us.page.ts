@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { DataService } from '../service/data/data.service';
 import { Platform, IonicModule } from '@ionic/angular';
@@ -13,7 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
 })
-export class ContactUsPage implements OnInit {
+export class ContactUsPage {
   user: any = {};
 
   /**
@@ -47,5 +47,4 @@ export class ContactUsPage implements OnInit {
     }
   }
 
-  ngOnInit() {}
 }

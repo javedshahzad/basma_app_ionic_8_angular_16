@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
@@ -22,7 +22,7 @@ import { NotesApiService } from '../service/notes-api/notes-api.service';
   imports: [CommonModule, FormsModule, IonicModule, TranslateModule, IonicSelectableComponent, PipesModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AddNotesPage implements OnInit {
+export class AddNotesPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -259,5 +259,4 @@ export class AddNotesPage implements OnInit {
     this.uploadPdfToServer(blob, this.dataProvider.generateRandomFileName('jpg'));
   }
 
-  ngOnInit() {}
 }

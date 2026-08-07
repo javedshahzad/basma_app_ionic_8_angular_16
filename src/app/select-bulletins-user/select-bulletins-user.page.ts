@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -19,7 +19,7 @@ import { NgIf, NgFor } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, FormsModule, NgIf, NgFor, TranslatePipe]
 })
-export class SelectBulletinsUserPage implements OnInit {
+export class SelectBulletinsUserPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -69,7 +69,6 @@ export class SelectBulletinsUserPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 استخدام async/await لجلب البيانات بأمان
   async ionViewWillEnter() {

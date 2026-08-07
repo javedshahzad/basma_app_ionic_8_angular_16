@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
@@ -16,7 +16,7 @@ import { NgIf, NgFor, NgClass } from '@angular/common';
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [IonicModule, NgIf, NgFor, NgClass, TranslatePipe]
 })
-export class AddClassPage implements OnInit {
+export class AddClassPage {
   trackByIndex(index: number): number {
     return index;
   }
@@ -43,7 +43,6 @@ export class AddClassPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
 
   // 🟢 جلب البيانات بأمان باستخدام async/await بدلاً من ngOnInit
   async ionViewWillEnter() {
