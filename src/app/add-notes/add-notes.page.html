@@ -24,22 +24,22 @@
           
           <div class="grid grid-cols-2 gap-3">
             
-            <div (click)="notes.sendTo = 'class'" class="p-3 rounded-xl border-2 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5" [ngClass]="notes.sendTo == 'class' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
+            <div (click)="notes.sendTo = 'class'" class="p-3 rounded-xl border-2 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5" [ngClass]="notes.sendTo === 'class' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
               <ion-icon name="people" class="text-xl"></ion-icon>
               <span class="text-xs font-bold text-center">{{'create_notes.class' | translate}}</span>
             </div>
             
-            <div (click)="notes.sendTo = 'self'" class="p-3 rounded-xl border-2 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5" [ngClass]="notes.sendTo == 'self' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
+            <div (click)="notes.sendTo = 'self'" class="p-3 rounded-xl border-2 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5" [ngClass]="notes.sendTo === 'self' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
               <ion-icon name="person" class="text-xl"></ion-icon>
               <span class="text-xs font-bold text-center">{{'create_notes.self' | translate}}</span>
             </div>
 
-            <div (click)="notes.sendTo = 'exam'" class="p-3 rounded-xl border-2 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5" [ngClass]="notes.sendTo == 'exam' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
+            <div (click)="notes.sendTo = 'exam'" class="p-3 rounded-xl border-2 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5" [ngClass]="notes.sendTo === 'exam' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
               <ion-icon name="document-text" class="text-xl"></ion-icon>
               <span class="text-xs font-bold text-center">{{'create_notes.exam_note' | translate}}</span>
             </div>
 
-            <div (click)="notes.sendTo = 'oneuser'" class="p-3 rounded-xl border-2 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5" [ngClass]="notes.sendTo == 'oneuser' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
+            <div (click)="notes.sendTo = 'oneuser'" class="p-3 rounded-xl border-2 cursor-pointer transition-all flex flex-col items-center justify-center gap-1.5" [ngClass]="notes.sendTo === 'oneuser' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-sm' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
               <ion-icon name="man" class="text-xl"></ion-icon>
               <span class="text-xs font-bold text-center">{{'create_notes.single_student' | translate}}</span>
             </div>
@@ -49,7 +49,7 @@
 
         <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 mb-6 space-y-4">
           
-          <div *ngIf="notes.sendTo == 'exam'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div *ngIf="notes.sendTo === 'exam'" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             
             <div>
               <label class="block text-xs font-bold text-slate-600 mb-2">{{'create_notes.date' | translate}}</label>
@@ -100,7 +100,7 @@
 
           </div>
 
-          <div *ngIf="notes.sendTo == 'oneuser'">
+          <div *ngIf="notes.sendTo === 'oneuser'">
             <label class="block text-xs font-bold text-slate-600 mb-2">اختر الطالب</label>
             <div class="bg-slate-50 border border-slate-200 rounded-xl px-2 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all overflow-hidden cursor-pointer shadow-sm">
               <ion-item lines="none" class="bg-transparent ion-no-padding" style="--background: transparent; --padding-start: 0; --inner-padding-end: 0;">
@@ -197,11 +197,11 @@
         </div>
 
         <div class="flex flex-wrap gap-3 mb-4">
-          <div *ngIf="ticketImage != ''" class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-3 py-2 rounded-xl shadow-sm">
+          <div *ngIf="ticketImage !== ''" class="flex items-center gap-2 bg-indigo-50 border border-indigo-100 px-3 py-2 rounded-xl shadow-sm">
             <ion-icon name="image" class="text-indigo-500 text-xl"></ion-icon>
             <span class="text-xs font-bold text-indigo-700">صورة مرفقة</span>
           </div>
-          <div *ngIf="notes.pdf != ''" class="flex items-center gap-2 bg-rose-50 border border-rose-100 px-3 py-2 rounded-xl shadow-sm">
+          <div *ngIf="notes.pdf !== ''" class="flex items-center gap-2 bg-rose-50 border border-rose-100 px-3 py-2 rounded-xl shadow-sm">
             <ion-icon name="document-text" class="text-rose-500 text-xl"></ion-icon>
             <span class="text-xs font-bold text-rose-700">ملف مرفق</span>
           </div>

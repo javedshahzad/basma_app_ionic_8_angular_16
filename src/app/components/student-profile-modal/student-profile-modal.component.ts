@@ -15,7 +15,7 @@ import { UserType } from '../../constants/user-type';
   imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StudentProfileModalComponent implements OnInit {
+export class StudentProfileModalComponent implements OnInit, OnDestroy {
   readonly UserType = UserType;
 
   // استقبال البيانات من الصفحة الأم

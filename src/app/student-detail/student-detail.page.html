@@ -570,8 +570,8 @@
         </div>
         
         <div class="flex bg-slate-100 p-1 rounded-xl">
-          <button class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all" [ngClass]="inventoryTab == 'titles' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'" (click)="inventoryTab = 'titles'">🧪 دمج الألقاب</button>
-          <button class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all" [ngClass]="inventoryTab == 'badges' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'" (click)="inventoryTab = 'badges'">🥷 الإنجازات السرية</button>
+          <button class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all" [ngClass]="inventoryTab === 'titles' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'" (click)="inventoryTab = 'titles'">🧪 دمج الألقاب</button>
+          <button class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all" [ngClass]="inventoryTab === 'badges' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'" (click)="inventoryTab = 'badges'">🥷 الإنجازات السرية</button>
         </div>
       </div>
     </ion-header>

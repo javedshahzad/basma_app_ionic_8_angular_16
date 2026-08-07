@@ -136,22 +136,22 @@
             </div>
 
             <div class="feature-item">
-              <ion-icon [name]="Singleitem.slug == 'premium' ? 'checkmark-circle' : 'close-circle'" 
-                        [ngClass]="Singleitem.slug == 'premium' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <ion-icon [name]="Singleitem.slug === 'premium' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.slug === 'premium' ? 'icon-success' : 'icon-danger'"></ion-icon>
               <div class="feature-text" [ngClass]="{'text-muted': Singleitem.slug !== 'premium'}">
                 {{'plan.call_of_student_report' | translate}}
               </div>
             </div>
 
             <div class="feature-item">
-              <ion-icon [name]="Singleitem.slug == 'premium' ? 'checkmark-circle' : 'close-circle'" 
-                        [ngClass]="Singleitem.slug == 'premium' ? 'icon-success' : 'icon-danger'"></ion-icon>
+              <ion-icon [name]="Singleitem.slug === 'premium' ? 'checkmark-circle' : 'close-circle'" 
+                        [ngClass]="Singleitem.slug === 'premium' ? 'icon-success' : 'icon-danger'"></ion-icon>
               <div class="feature-text" [ngClass]="{'text-muted': Singleitem.slug !== 'premium'}">
                 {{'plan.student_pledges' | translate}}
               </div>
             </div>
 
-          </div> <div class="active-plan-details" *ngIf="Singleitem.slug == availablePlan.plan.slug && availablePlan.plan.slug != 'free'">
+          </div> <div class="active-plan-details" *ngIf="Singleitem.slug == availablePlan.plan.slug && availablePlan.plan.slug !== 'free'">
             <div class="detail-row">
               <span class="label">{{'plan.duration' | translate}}</span>
               <span class="value">{{availablePlan?.billingPeriod}} {{availablePlan.billingPeriodUnit}}</span>

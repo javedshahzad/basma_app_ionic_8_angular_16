@@ -31,7 +31,7 @@
           <h4 class="font-bold text-sm text-slate-800 m-0 flex items-center gap-1.5">
             <span class="text-slate-400 text-xs">{{sno+1}}.</span> {{student.name}}
           </h4>
-          <p class="text-[11px] font-bold text-slate-500 mt-1 mb-0" *ngIf="student.studentBehaviour != ''">{{student.studentBehaviour}}</p>
+          <p class="text-[11px] font-bold text-slate-500 mt-1 mb-0" *ngIf="student.studentBehaviour !== ''">{{student.studentBehaviour}}</p>
         </div>
 
         <ion-icon name="chevron-back-outline" class="text-slate-300 text-lg shrink-0"></ion-icon>

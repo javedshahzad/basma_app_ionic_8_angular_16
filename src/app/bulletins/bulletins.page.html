@@ -71,7 +71,7 @@
         <div class="p-4" *ngIf="bullet.documents">
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             
-            <div *ngIf="bullet.documents.pdf != ''" 
+            <div *ngIf="bullet.documents.pdf !== ''" 
                  class="aspect-[4/3] bg-rose-50 rounded-xl border border-rose-100 flex flex-col items-center justify-center cursor-pointer hover:bg-rose-100 transition-colors"
                  (click)="openPdfs(bullet.documents.pdf)">
               <ion-icon name="document-text" class="text-4xl text-rose-500 mb-2"></ion-icon>
@@ -80,14 +80,14 @@
 
             <ng-container *ngFor="let doc of bullet.documents.files; trackBy: trackByIndex">
               
-              <div *ngIf="!doc.is_img && doc.extension == 'pdf'" 
+              <div *ngIf="!doc.is_img && doc.extension === 'pdf'" 
                    class="aspect-[4/3] bg-rose-50 rounded-xl border border-rose-100 flex flex-col items-center justify-center cursor-pointer hover:bg-rose-100 transition-colors"
                    (click)="openPdf(doc.url_original)">
                 <ion-icon name="document-text" class="text-4xl text-rose-500 mb-2"></ion-icon>
                 <span class="text-[10px] font-bold text-rose-700">PDF File</span>
               </div>
 
-              <div *ngIf="!doc.is_img && doc.extension != 'pdf'" 
+              <div *ngIf="!doc.is_img && doc.extension !== 'pdf'" 
                    class="aspect-[4/3] bg-blue-50 rounded-xl border border-blue-100 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-100 transition-colors"
                    (click)="opendoc(doc.url)">
                 <ion-icon name="document-attach" class="text-4xl text-blue-500 mb-2"></ion-icon>

@@ -43,11 +43,11 @@
         </div>
       </div>
 
-      <button *ngIf="ticketImage == ''" type="button" class="w-full bg-indigo-50/50 hover:bg-indigo-50 text-indigo-600 font-bold py-4 rounded-2xl border-2 border-indigo-200 border-dashed transition-all flex items-center justify-center gap-2 active:scale-[0.98]" (click)="takePicture()">
+      <button *ngIf="ticketImage === ''" type="button" class="w-full bg-indigo-50/50 hover:bg-indigo-50 text-indigo-600 font-bold py-4 rounded-2xl border-2 border-indigo-200 border-dashed transition-all flex items-center justify-center gap-2 active:scale-[0.98]" (click)="takePicture()">
         <ion-icon name="image-outline" class="text-xl"></ion-icon> إرفاق صورة (اختياري)
       </button>
 
-      <div class="relative rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-white p-1 animate__animated animate__fadeIn" *ngIf="ticketImage != ''">
+      <div class="relative rounded-2xl overflow-hidden shadow-sm border border-slate-200 bg-white p-1 animate__animated animate__fadeIn" *ngIf="ticketImage !== ''">
         <img loading="lazy" [src]="ticketImage" class="w-full h-40 object-cover rounded-xl">
         
         <button type="button" class="absolute top-3 right-3 w-9 h-9 bg-slate-900/50 backdrop-blur-md text-white rounded-xl flex items-center justify-center hover:bg-rose-500 transition-colors shadow-sm" (click)="removeImage()">

@@ -27,13 +27,13 @@
     <div *ngFor="let message of messages; let i = index; trackBy: trackByMessage">
       
       <!-- رسائل الطرف الآخر -->
-      <div class="flex flex-col items-start w-full" *ngIf="message.receiver == 'false'"
+      <div class="flex flex-col items-start w-full" *ngIf="message.receiver === 'false'"
            [ngClass]="{'mt-6': i > 0 && messages[i-1].receiver != message.receiver}">
         <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm self-end">
           
-          <div *ngIf="message.message && message.message != ''" class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
+          <div *ngIf="message.message && message.message !== ''" class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
           
-          <div *ngIf="message.attachment_url && message.attachment_url != ''" class="mt-2 relative">
+          <div *ngIf="message.attachment_url && message.attachment_url !== ''" class="mt-2 relative">
             <img loading="lazy" class="rounded-xl w-48 h-auto object-cover border border-indigo-400/30" [src]="message.attachment_url" (click)="showPhoto(message.attachment_url)" />
           </div>
           
@@ -44,17 +44,17 @@
       </div>
 
       <!-- رسائلي أنا -->
-      <div class="flex flex-col items-start w-full" *ngIf="message.receiver == 'true'"
+      <div class="flex flex-col items-start w-full" *ngIf="message.receiver === 'true'"
            [ngClass]="{'mt-6': i > 0 && messages[i-1].receiver != message.receiver}">
         <div class="bg-white text-slate-700 p-3 rounded-2xl rounded-tl-sm border border-slate-100 max-w-[85%] shadow-sm self-start">
           
-          <div class="text-[10px] font-bold text-slate-400 mb-1" *ngIf="message.sender_name && message.sender_name != ''">
+          <div class="text-[10px] font-bold text-slate-400 mb-1" *ngIf="message.sender_name && message.sender_name !== ''">
             {{message.sender_name}}
           </div>
           
-          <div *ngIf="message.message && message.message != ''" class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
+          <div *ngIf="message.message && message.message !== ''" class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
           
-          <div *ngIf="message.attachment_url && message.attachment_url != ''" class="mt-2 relative">
+          <div *ngIf="message.attachment_url && message.attachment_url !== ''" class="mt-2 relative">
             <img loading="lazy" class="rounded-xl w-48 h-auto object-cover border border-slate-200" [src]="message.attachment_url" (click)="showPhoto(message.attachment_url)" />
             <button class="absolute bottom-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-slate-700 shadow-sm backdrop-blur-sm" (click)="downloadImage(message.attachment_url)">
               <ion-icon name="download-outline" class="text-lg"></ion-icon>
@@ -74,7 +74,7 @@
 <!-- حقل الإدخال -->
 <ion-footer *ngIf="chat && chat.ticket_status == '0'" class="bg-white border-t border-slate-100 p-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
   
-  <div class="px-2 pb-2 relative w-fit" *ngIf="image != ''">
+  <div class="px-2 pb-2 relative w-fit" *ngIf="image !== ''">
     <img loading="lazy" [src]="image" class="h-20 rounded-xl border border-slate-200 object-cover shadow-sm" />
     <button class="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-md" (click)="image = ''; attachment = ''">
       <ion-icon name="close-outline"></ion-icon>
@@ -96,8 +96,8 @@
     </div>
 
     <button class="w-11 h-11 mb-[2px] rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-sm hover:bg-indigo-700 active:scale-95 transition-all shrink-0" 
-            [disabled]="(!message || message.trim() == '') && image == ''"
-            [ngClass]="{'opacity-50 cursor-not-allowed': (!message || message.trim() == '') && image == ''}"
+            [disabled]="(!message || message.trim() === '') && image === ''"
+            [ngClass]="{'opacity-50 cursor-not-allowed': (!message || message.trim() === '') && image === ''}"
             (click)="sendMessage()">
       <ion-icon name="send" class="text-xl -ml-1"></ion-icon>
     </button>

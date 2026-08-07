@@ -241,7 +241,7 @@
 
   <button (click)="onClickSend()" 
           class="w-full text-white font-bold text-base py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 flex justify-center items-center gap-2 mb-4"
-          [ngClass]="(!noteMessage || noteMessage?.trim() == '' || noteMessage?.length > 45) ? 'bg-slate-300 shadow-none pointer-events-none' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'">
+          [ngClass]="(!noteMessage || noteMessage?.trim() === '' || noteMessage?.length > 45) ? 'bg-slate-300 shadow-none pointer-events-none' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'">
     <ion-icon name="save-outline" class="text-xl"></ion-icon>
     {{'contact.submit' | translate}}
   </button>

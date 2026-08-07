@@ -33,11 +33,11 @@
 				  	<ion-row class="row">
 				  		<ion-col size="6" class="col">
 				  			{{'edit_class.regular' | translate}}
-				  			<ion-checkbox [checked]="list.is_assigned==1 && list.assigned_as=='regular'" (click)="markTeacher(list,'reg',$event,i)" color="primary" id="reg{{i}}"></ion-checkbox>
+				  			<ion-checkbox [checked]="list.is_assigned==1 && list.assigned_as==='regular'" (click)="markTeacher(list,'reg',$event,i)" color="primary" id="reg{{i}}"></ion-checkbox>
 				  		</ion-col>
 				  		<ion-col size="6" class="col">
 				  			{{'edit_class.split' | translate}}
-							<ion-checkbox [checked]="list.is_assigned==1 && list.assigned_as=='split'" color="secondary" (click)="markTeacher(list,'spl',$event,i)" id="spl{{i}}"></ion-checkbox>
+							<ion-checkbox [checked]="list.is_assigned==1 && list.assigned_as==='split'" color="secondary" (click)="markTeacher(list,'spl',$event,i)" id="spl{{i}}"></ion-checkbox>
 				  		</ion-col>
 				  	</ion-row>
 				</ion-item>

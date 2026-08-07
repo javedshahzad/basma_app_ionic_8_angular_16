@@ -101,12 +101,12 @@
                  [ngClass]="{
                    'bg-emerald-500 border-emerald-600 text-white': student.sheet['cem-1'] == true,
                    'bg-rose-500 border-rose-600 text-white': student.suspend_leave == true || student.medical_leave == true,
-                   'bg-white border-slate-200 text-slate-400 hover:bg-slate-50': student.sheet['cem-1'] == 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave),
+                   'bg-white border-slate-200 text-slate-400 hover:bg-slate-50': student.sheet['cem-1'] === 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave),
                    'opacity-50': userType == UserType.Admin && !editMode
                  }">
               <ion-icon name="checkmark-circle" *ngIf="student.sheet['cem-1'] == true" class="text-2xl"></ion-icon>
               <ion-icon name="close-circle" *ngIf="student.suspend_leave || student.medical_leave" class="text-2xl"></ion-icon>
-              <ion-icon name="add-circle-outline" *ngIf="student.sheet['cem-1'] == 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave)" class="text-2xl opacity-40"></ion-icon>
+              <ion-icon name="add-circle-outline" *ngIf="student.sheet['cem-1'] === 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave)" class="text-2xl opacity-40"></ion-icon>
 
               <!-- طبقة حماية تمنع النقر وتوحي بالتعطيل إذا لم يتم تفعيل وضع التعديل -->
               <div *ngIf="userType == UserType.Admin && !editMode" class="absolute inset-0 bg-white/20 backdrop-blur-[1px]"></div>

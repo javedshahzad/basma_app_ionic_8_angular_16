@@ -34,7 +34,7 @@
           <div *ngFor="let doc of selectedDocument; let i=index; trackBy: trackByIndex" class="relative group">
             <div class="aspect-square bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden relative cursor-pointer" (click)="openImgPreview(doc.currentImgSrc)">
               
-              <img loading="lazy" src="assets/imgs/pdf.png" *ngIf="doc.extention=='pdf'" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
+              <img loading="lazy" src="assets/imgs/pdf.png" *ngIf="doc.extention==='pdf'" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
               <img loading="lazy" src="assets/imgs/doc.png" *ngIf="['docx','doc','txt'].includes(doc.extention)" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
               <img loading="lazy" [src]="doc.currentImgSrc" *ngIf="['png','jpg','jpeg'].includes(doc.extention)" class="w-full h-full object-cover">
               <img loading="lazy" src="assets/imgs/pdssf.png" *ngIf="!['png','jpg','jpeg','docx','doc','txt','pdf'].includes(doc.extention)" class="w-12 h-12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 object-contain">
@@ -113,7 +113,7 @@
     <button *ngIf="!inputUser" 
             class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2 disabled:opacity-50" 
             (click)="openUser()" 
-            [disabled]="selectedDocument.length == 0 || tital == ''">
+            [disabled]="selectedDocument.length == 0 || tital === ''">
       {{'bulletin.select_user' | translate}}
       <ion-icon name="arrow-back-outline" class="text-xl"></ion-icon>
     </button>

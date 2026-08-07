@@ -72,7 +72,7 @@
             </span>
             <span *ngIf="userType==UserType.Admin || userType==UserType.Teacher || note.profile?.user_no==userDetails?.details?.user_no" class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2.5 py-1 rounded-md text-[10px] font-bold flex items-center gap-1.5">
               <ion-icon name="send-outline" class="text-indigo-400"></ion-icon>
-              {{'student_notes.sendTO' | translate}}: {{note.send_to=='exam' ? 'اختبار' : note.send_to}}
+              {{'student_notes.sendTO' | translate}}: {{note.send_to==='exam' ? 'اختبار' : note.send_to}}
             </span>
           </div>
 

@@ -117,9 +117,9 @@
 
           <div class="bg-slate-50 px-4 py-3 flex items-center justify-start border-t border-slate-100">
             <button class="flex items-center gap-2 px-4 py-2 rounded-xl transition-colors font-bold text-xs"
-                    [ngClass]="news.already_like == 'true' ? 'bg-indigo-100 text-indigo-600 border border-indigo-200' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100'"
+                    [ngClass]="news.already_like === 'true' ? 'bg-indigo-100 text-indigo-600 border border-indigo-200' : 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100'"
                     (click)="changeLike(news)">
-              <ion-icon [name]="news.already_like == 'true' ? 'thumbs-up' : 'thumbs-up-outline'" class="text-lg"></ion-icon>
+              <ion-icon [name]="news.already_like === 'true' ? 'thumbs-up' : 'thumbs-up-outline'" class="text-lg"></ion-icon>
               <span>{{news.total_likes}} إعجاب</span>
             </button>
           </div>

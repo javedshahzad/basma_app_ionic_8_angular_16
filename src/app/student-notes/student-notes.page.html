@@ -40,8 +40,8 @@
               <h3 class="text-sm font-bold text-slate-800 m-0">{{note?.created_by?.first_name}}</h3>
               <div class="flex items-center gap-1.5 mt-1 text-slate-400 text-[11px] font-medium">
                 <ion-icon name="time-outline"></ion-icon>
-                <span *ngIf="note.send_to!='exam' && note.datetime" dir="ltr">{{note.datetime}}</span>
-                <span *ngIf="note.send_to=='exam' && note.examNoteDate" dir="ltr">{{note.examNoteDate}}</span>
+                <span *ngIf="note.send_to!=='exam' && note.datetime" dir="ltr">{{note.datetime}}</span>
+                <span *ngIf="note.send_to==='exam' && note.examNoteDate" dir="ltr">{{note.examNoteDate}}</span>
               </div>
             </div>
           </div>

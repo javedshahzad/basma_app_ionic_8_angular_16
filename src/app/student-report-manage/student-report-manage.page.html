@@ -43,16 +43,16 @@
               <ion-select-option class="ion-text-center" value="medical" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.medical_report' | translate}}</ion-select-option>
               <ion-select-option class="ion-text-center" value="suspend" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.suspension_report' | translate}}</ion-select-option>
               <ion-select-option class="ion-text-center" value="exit" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.exit_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="callofstudents" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.call_off_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="studentspledges" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug !== 'premium'" value="callofstudents" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.call_off_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug !== 'premium'" value="studentspledges" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
             </ion-select>
 
             <ion-select mode="md" interface="popover" [(ngModel)]="formData.reportType" placeholder="{{'manage_report.report_type' |translate}}" (ionChange)="$any($event.target).offsetWidth > 0 ? changeReportType($event) : null" class="w-full text-sm font-bold text-slate-800 py-3 hidden md:block">
               <ion-select-option class="ion-text-center" value="medical" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.medical_report' | translate}}</ion-select-option>
               <ion-select-option class="ion-text-center" value="suspend" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.suspension_report' | translate}}</ion-select-option>
               <ion-select-option class="ion-text-center" value="exit" *ngIf="userDetails?.details?.user_type=='6' || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.exit_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="callofstudents" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.call_off_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug != 'premium'" value="studentspledges" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug !== 'premium'" value="callofstudents" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.call_off_report' | translate}}</ion-select-option>
+              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug !== 'premium'" value="studentspledges" *ngIf="userDetails?.details?.user_type==UserType.Moderator || userDetails?.details?.user_type==UserType.Viewer || userDetails?.details?.user_type==UserType.Admin">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
             </ion-select>
 
           </div>
@@ -60,7 +60,7 @@
 
         <div *ngIf="formData.reportType" class="space-y-4 animate-fade-in-up">
           
-          <ng-container *ngIf="formData.reportType !='exit' && formData.reportType !='callofstudents' && formData.reportType != 'studentspledges'">
+          <ng-container *ngIf="formData.reportType !=='exit' && formData.reportType !=='callofstudents' && formData.reportType !== 'studentspledges'">
             
             <div>
               <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.select_date' | translate}}</label>
@@ -99,7 +99,7 @@
             </div>
           </ng-container>
 
-          <ng-container *ngIf="formData.reportType =='exit' && !isExitToday">
+          <ng-container *ngIf="formData.reportType ==='exit' && !isExitToday">
             <div>
               <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.note'|translate}}</label>
               <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm">
@@ -108,7 +108,7 @@
             </div>
           </ng-container>
 
-          <ng-container *ngIf="formData.reportType =='suspend'">
+          <ng-container *ngIf="formData.reportType ==='suspend'">
             <div>
               <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.note'|translate}}</label>
               <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm">
@@ -117,7 +117,7 @@
             </div>
           </ng-container>
 
-          <ng-container *ngIf="formData.reportType == 'callofstudents'">
+          <ng-container *ngIf="formData.reportType === 'callofstudents'">
             
             <div>
               <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.select_date' | translate}}</label>
@@ -185,7 +185,7 @@
             </div>
           </ng-container>
 
-          <ng-container *ngIf="formData.reportType == 'studentspledges'">
+          <ng-container *ngIf="formData.reportType === 'studentspledges'">
             <div>
               <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.select_degree' |translate}}</label>
               <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
@@ -295,10 +295,10 @@
 
       <ng-container *ngIf="
         !formData.reportType || 
-        ((formData.reportType == 'medical' || formData.reportType == 'suspend') && (!formData.selectedDate || !formData.selectedDays)) ||
-        (formData.reportType == 'exit' && !isExitToday && (!formData.note || formData.note == '')) ||
-        (formData.reportType == 'callofstudents' && (!formData.selectedDate || !formData.time || !formData.reason || formData.reason == '')) ||
-        (formData.reportType == 'studentspledges' && (!formData.degree || !pledgesViolation || !pledgesAction)); 
+        ((formData.reportType === 'medical' || formData.reportType === 'suspend') && (!formData.selectedDate || !formData.selectedDays)) ||
+        (formData.reportType === 'exit' && !isExitToday && (!formData.note || formData.note === '')) ||
+        (formData.reportType === 'callofstudents' && (!formData.selectedDate || !formData.time || !formData.reason || formData.reason === '')) ||
+        (formData.reportType === 'studentspledges' && (!formData.degree || !pledgesViolation || !pledgesAction)); 
         else validForm
       ">
         <button disabled class="w-full mt-6 py-3.5 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
