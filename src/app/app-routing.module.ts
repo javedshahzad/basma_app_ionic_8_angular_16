@@ -37,38 +37,6 @@ const routes: Routes = [
     loadComponent: () => import('./news/news.page').then(m => m.NewsPage)
   },
   {
-    path: 'tabs/news',
-    loadComponent: () => import('./news/news.page').then(m => m.NewsPage)
-  },
-  {
-    path: 'tabs',
-    loadChildren: () => import('./tabs/tabs.module').then( m => m.TabsPageModule)
-  },
-  {
-    path: 'classlist',
-    loadComponent: () => import('./classlist/classlist.page').then(m => m.ClasslistPage)
-  },
-  {
-    path: 'tabs/classlist',
-    loadComponent: () => import('./classlist/classlist.page').then(m => m.ClasslistPage)
-  },
-  {
-    path: 'delaylist',
-    loadComponent: () => import('./delaylist/delaylist.page').then(m => m.DelaylistPage)
-  },
-  {
-    path: 'tabs/delaylist',
-    loadComponent: () => import('./delaylist/delaylist.page').then(m => m.DelaylistPage)
-  },
-  {
-    path: 'messages',
-    loadComponent: () => import('./messages/messages.page').then(m => m.MessagesPage)
-  },
-  {
-    path: 'tabs/messages',
-    loadComponent: () => import('./messages/messages.page').then(m => m.MessagesPage)
-  },
-  {
     path: 'list-student',
     loadComponent: () => import('./list-student/list-student.page').then(m => m.ListStudentPage)
   },
@@ -86,11 +54,7 @@ const routes: Routes = [
   },
   {
     path: 'parentconnect',
-    loadComponent: () => import('./parentconnect/parentconnect.page').then(m => m.ParentconnectPage)
-  },
-  {
-    path: 'tabs/parentconnect',
-    loadComponent: () => import('./parentconnect/parentconnect.page').then(m => m.ParentconnectPage)
+    loadComponent: () => import('./parentconnect/parentconnect.page').then(m => m.ParentconnectPage), canActivate: [AuthGuard]
   },
   {
     path: 'connect-new-message',
@@ -102,11 +66,7 @@ const routes: Routes = [
   },
   {
     path: 'elearning-schools',
-    loadComponent: () => import('./elearning-schools/elearning-schools.page').then(m => m.ElearningSchoolsPage)
-  },
-  {
-    path: 'tabs/elearning-schools',
-    loadComponent: () => import('./elearning-schools/elearning-schools.page').then(m => m.ElearningSchoolsPage)
+    loadComponent: () => import('./elearning-schools/elearning-schools.page').then(m => m.ElearningSchoolsPage), canActivate: [AuthGuard]
   },
   {
     path: 'elearning-school-video',
@@ -123,18 +83,6 @@ const routes: Routes = [
   {
     path: 'children',
     loadComponent: () => import('./children/children.page').then(m => m.ChildrenPage), canActivate: [AuthGuard]
-  },
-  {
-    path: 'tabs/children',
-    loadComponent: () => import('./children/children.page').then(m => m.ChildrenPage), canActivate: [AuthGuard]
-  },
-  {
-    path: 'private-message',
-    loadComponent: () => import('./private-message/private-message.page').then(m => m.PrivateMessagePage)
-  },
-  {
-    path: 'tabs/private-message',
-    loadComponent: () => import('./private-message/private-message.page').then(m => m.PrivateMessagePage)
   },
   {
     path: 'students',
@@ -167,14 +115,6 @@ const routes: Routes = [
   {
     path: 'search-student',
     loadComponent: () => import('./search-student/search-student.page').then(m => m.SearchStudentPage)
-  },
-  {
-    path: 'student-notes',
-    loadComponent: () => import('./student-notes/student-notes.page').then(m => m.StudentNotesPage)
-  },
-  {
-    path: 'tabs/student-notes',
-    loadComponent: () => import('./student-notes/student-notes.page').then(m => m.StudentNotesPage)
   },
   {
     path: 'add-notes',

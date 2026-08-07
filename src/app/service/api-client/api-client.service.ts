@@ -73,7 +73,14 @@ export class ApiClient {
             // Only real transport/HTTP failures are Sentry-worthy here — the
             // empty-body "Unable to find any record" reject above is a normal
             // no-data outcome, not a bug, and must not be captured.
-            Sentry.captureException(error, { extra: { slug } });
+            // HttpErrorResponse doesn't extend Error, so passing it directly
+            // makes Sentry fall back to a generic "Object captured as
+            // exception with keys: ..." title with no message or stack.
+            // Wrap it in a real Error so issues are readable and group by
+            // endpoint/status; the original response is kept in `extra`.
+            const status = error?.status ?? 'unknown';
+            const statusText = error?.statusText || error?.message || 'Unknown Error';
+            Sentry.captureException(new Error(`HTTP ${status} (${statusText}) on ${slug}`), { extra: { slug, httpError: error } });
             reject(error);
           })
         } else {
