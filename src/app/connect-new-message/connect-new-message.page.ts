@@ -11,6 +11,7 @@ import { ParentConnectApiService } from '../service/parent-connect-api/parent-co
 import { StorageService } from '../service/storage.service';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { LoggedInUser } from '../model/logged-in-user.model';
 
 @Component({
     selector: 'app-connect-new-message',
@@ -20,14 +21,14 @@ import { NgIf } from '@angular/common';
     imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
 })
 export class ConnectNewMessagePage {
-  userDetails: any = {};
-  message: any = {
+  userDetails: LoggedInUser = {};
+  message: Record<string, string> = {
     title: '',
     message: '',
     ticketImage: ''
   };
   ticketImage: string = '';
-  lang: any = {};
+  lang: Record<string, string> = {};
 
   constructor(
     public navCtrl: NavController,

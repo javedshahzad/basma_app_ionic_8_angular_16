@@ -36,14 +36,7 @@ export class RegistrationApiService {
         } else {
             reject(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
@@ -62,14 +55,7 @@ export class RegistrationApiService {
         } else {
             reject(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
@@ -77,10 +63,10 @@ export class RegistrationApiService {
    * @param {Object} data - contains user_no, school_id, Teacher Id, teacher name, teacher password
    * @returns Success or error msg
    */
-  registerNewTeacher(data: any): Promise<any> {
+  registerNewTeacher(data: Record<string, unknown>): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'registerNewTeacher')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'registerNewTeacher')
+        .then((response) => {
           if (response) {
             if (response.success) {
               resolve(response.msg);
@@ -89,21 +75,14 @@ export class RegistrationApiService {
             }
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
-  registerNewParent(data: any): Promise<any> {
+  registerNewParent(data: Record<string, unknown>): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'registerNewParent')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'registerNewParent')
+        .then((response) => {
           if (response) {
             if (response.success) {
               resolve(response.msg);
@@ -112,14 +91,7 @@ export class RegistrationApiService {
             }
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -127,10 +99,10 @@ export class RegistrationApiService {
    * @param {Object} data - contains user_no, school_id, name, student_id
    * @returns Success or Error msg
    */
-  registerStudent(data: any): Promise<any> {
+  registerStudent(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: unknown }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'registerStudent')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ session?: boolean; success?: boolean; msg?: string }>(data, 'registerStudent')
+        .then((response) => {
           if (response) {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
@@ -145,26 +117,17 @@ export class RegistrationApiService {
               .then(classes => {
                 resolve({ session: true, data: classes });
               })
-              .catch(error => {
-                reject(error);
-              });
+              .catch((error) => this.apiClient.handleApiError(error, reject));
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
   /** update teacher list of a perticular class of a school .
    * @returns updation status
    */
-  updateTeacher(data): Promise<any> {
+  updateTeacher(data: { class_id: string | number; school_id: string | number; user_no: string | number; lang_code?: string; teachersList: unknown }): Promise<{ session: boolean; message?: string; data?: string }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
       data.lang_code = environment.lang_code;
@@ -175,16 +138,20 @@ export class RegistrationApiService {
       body = body.append('school_id', data.school_id);
       body = body.append('user_no', data.user_no);
       body = body.append('lang_code', data.lang_code);
-      Object.keys(data.teachersList).map(key => {
+      // `teachersList` is really an array of {teacher_no, ...} records,
+      // iterated here via Object.keys() (works fine on arrays at runtime);
+      // typed as unknown and cast here rather than in the public signature.
+      const teachersList = data.teachersList as Record<string, Record<string, string | number>>;
+      Object.keys(teachersList).map(key => {
         console.log('key', key);
-        Object.keys(data.teachersList[key]).map(sid => {
+        Object.keys(teachersList[key]).map(sid => {
           console.log('ap', sid);
-          body = body.append('teachersList' + '[' + key + ']' + '[' + sid + ']', data.teachersList[key][sid]);
+          body = body.append('teachersList' + '[' + key + ']' + '[' + sid + ']', teachersList[key][sid]);
         });
       });
 
-      this.http.post(environment.serverURL + 'updateTeachers', body, { headers: header }).subscribe(
-        (response: any) => {
+      this.http.post<{ response?: boolean; msg?: string }>(environment.serverURL + 'updateTeachers', body, { headers: header }).subscribe(
+        (response) => {
           if (response) {
             console.log('tescherList', response);
             if (response.response == false) {

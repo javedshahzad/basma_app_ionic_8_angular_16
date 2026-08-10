@@ -5,6 +5,15 @@ import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
 import { StudentDataService } from '../student-data/student-data.service';
 import { ApiResponse } from '../../model/api-response.model';
+import { Student } from '../../model/student.model';
+import { UserDetails } from '../../model/logged-in-user.model';
+
+export interface School {
+  id?: string | number;
+  pic?: string;
+  school_name?: string;
+  detail?: string;
+}
 
 /**
  * School roster lookups (students/users), split out of DataService.
@@ -24,10 +33,10 @@ export class SchoolDirectoryApiService {
     private studentService: StudentDataService
   ) { }
 
-  getSchoolStudents(data: Record<string, unknown>): Promise<ApiResponse<any[]>> {
+  getSchoolStudents(data: Record<string, unknown>): Promise<ApiResponse<Student[]>> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest<ApiResponse<any[]>>(data, 'get_school_stu').then((response) => {
+      this.apiClient.postRequest<ApiResponse<Student[]>>(data, 'get_school_stu').then((response) => {
         if (response) {
           if (!response.response) {
             resolve({ session: false, message: response.msg });
@@ -39,23 +48,16 @@ export class SchoolDirectoryApiService {
         } else {
           reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
   /** get all student of a school
   */
-  getSchoolUsers(data: Record<string, unknown>): Promise<ApiResponse<any[]>> {
+  getSchoolUsers(data: Record<string, unknown>): Promise<ApiResponse<UserDetails[]>> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest<ApiResponse<any[]>>(data, 'get_school_users').then((response) => {
+      this.apiClient.postRequest<ApiResponse<UserDetails[]>>(data, 'get_school_users').then((response) => {
           if (response) {
             resolve({ session: true, data: response.response});
         } else {
@@ -69,10 +71,10 @@ export class SchoolDirectoryApiService {
     })
   }
 
-  getAllSchoolUsers(data: Record<string, unknown>): Promise<ApiResponse<any[]>> {
+  getAllSchoolUsers(data: Record<string, unknown>): Promise<ApiResponse<UserDetails[]>> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest<ApiResponse<any[]>>(data, 'get_school_users_all').then((response) => {
+      this.apiClient.postRequest<ApiResponse<UserDetails[]>>(data, 'get_school_users_all').then((response) => {
           if (response) {
             resolve({ session: true, data: response.response});
         } else {
@@ -86,27 +88,25 @@ export class SchoolDirectoryApiService {
     })
   }
 
-  getCountStudents(data): Promise<any> {
+  getCountStudents(data: Record<string, unknown>): Promise<{ session: boolean; data?: number; success: boolean; msg?: string }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getCountStudents')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ data?: number; msg?: string }>(data, 'getCountStudents')
+        .then((response) => {
           if (response) {
             resolve({ session: true, data: response.data, success: true, msg: response.msg });
           } else {
-            reject(response.msg);
+            reject(undefined);
           }
         })
-        .catch(error => {
-          console.log(error);
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
   /** Get school list from API.
    * @returns Array of school list or error
    */
-  getSchool(country_code): Promise<any> {
+  getSchool(country_code: string): Promise<School[]> {
     return new Promise((resolve, reject) => {
       this.apiClient.getNetworkInformation().then(isNetworkAvailable => {
         if (isNetworkAvailable) {
@@ -116,8 +116,8 @@ export class SchoolDirectoryApiService {
             environment.serverURL +
             'getSchoolsHavingMaterials/' +
             (country_code && typeof country_code !== 'undefined' ? '?country_code=' + country_code : '');
-          this.http.post(url, country_code, { headers: header }).subscribe(
-            (response: any) => {
+          this.http.post<{ success?: boolean; schools?: School[] }>(url, country_code, { headers: header }).subscribe(
+            (response) => {
               if (response.success) {
                 resolve(response.schools);
               } else {
@@ -142,11 +142,11 @@ export class SchoolDirectoryApiService {
   /** Get teacher list of a perticular school  from API.
    * @returns Array of teacher list or error
    */
-  getTeachers(data): Promise<any> {
+  getTeachers(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: UserDetails[] }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getAllTeachers')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ response?: boolean; msg?: string; profile?: UserDetails[] }>(data, 'getAllTeachers')
+        .then((response) => {
           if (response) {
             console.log('tescherList', response);
             if (response.response == false) {
@@ -159,14 +159,7 @@ export class SchoolDirectoryApiService {
           } else {
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -174,12 +167,12 @@ export class SchoolDirectoryApiService {
    * @param {Object} data - user_no, session_id, cid, date, sid
    * @returns Student details or error
    */
-  getStudentDetails(data: any): Promise<any> {
+  getStudentDetails(data: Record<string, unknown>): Promise<{ session: boolean; data?: Student; message?: string }> {
     return new Promise((resolve, reject) => {
       this.apiClient.getNetworkInformation().then(isNetworkAvailable => {
         if (isNetworkAvailable) {
-          this.apiClient.postRequest(data, 'viewStudent/' + data.sid)
-            .then((response: any) => {
+          this.apiClient.postRequest<{ session?: boolean; success?: boolean; msg?: string; details?: Student }>(data, 'viewStudent/' + data.sid)
+            .then((response) => {
               if (response) {
                 if (!response.session) {
                   reject(response.msg);
@@ -192,14 +185,7 @@ export class SchoolDirectoryApiService {
                 reject(this.dataService.lang.networkNotWorking);
               }
             })
-            .catch(error => {
-              console.log(error);
-              if (error.message != undefined && error.message != '' && error.message != null) {
-                reject(error.message);
-              } else {
-                reject(this.dataService.lang.usnexpectedError);
-              }
-            });
+            .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
         }
       });
     });
@@ -207,14 +193,14 @@ export class SchoolDirectoryApiService {
 
   /** get today's dashboard/seminar stats for a school
    */
-  todayDashboard(data: any): Promise<any> {
+  todayDashboard(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: unknown }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
       this.apiClient.getNetworkInformation().then(isNetworkAvailable => {
         if (isNetworkAvailable) {
           this.apiClient
-            .postRequest(data, 'todayDashboard/' + data.school_id)
-            .then((response: any) => {
+            .postRequest<{ response?: unknown; msg?: string }>(data, 'todayDashboard/' + data.school_id)
+            .then((response) => {
               if (response) {
                 if (!response.response) {
                   resolve({ session: false, message: response.msg });
@@ -225,17 +211,10 @@ export class SchoolDirectoryApiService {
                   reject(response.msg);
                 }
               } else {
-                reject(response.msg);
+                reject(undefined);
               }
             })
-            .catch(error => {
-              console.log(error);
-              if (error.message != undefined && error.message != '' && error.message != null) {
-                reject(error.message);
-              } else {
-                reject(this.dataService.lang.usnexpectedError);
-              }
-            });
+            .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
         } else {
           this.studentService.getOfflineStatical(data.user_no).then(res => {
             resolve({ session: true, data: res });

@@ -10,8 +10,8 @@ import {
   ChangeDetectorRef
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Platform, AlertController, IonicModule } from '@ionic/angular';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Platform, AlertController, InfiniteScrollCustomEvent, IonicModule } from '@ionic/angular';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DataService } from '../service/data/data.service';
 import { Browser } from '@capacitor/browser';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -22,10 +22,18 @@ import { GeoServiceProvider } from '../service/geo-service/geo-service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { NewsApiService } from '../service/news-api/news-api.service';
+import { NewsApiService, News } from '../service/news-api/news-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LoggedInUser } from '../model/logged-in-user.model';
+
+interface Country {
+  code: string;
+  name: string;
+  ar_name?: string;
+  flag?: string;
+}
 
 @Component({
     selector: 'app-news',
@@ -42,24 +50,24 @@ export class NewsPage implements OnInit {
   @ViewChild('videoPlayer') mVideoPlayer: ElementRef;
   private destroyRef = inject(DestroyRef);
 
-  allNews: any = [];
-  originalNews: any = [];
-  userDetails: any = {};
+  allNews: News[] = [];
+  originalNews: News[] = [];
+  userDetails: LoggedInUser = {};
   noDataFound: string = '';
-  lang: any = {};
-  location_lang: any = {};
-  country_code: any;
-  country: any;
-  countries: any[] = [];
+  lang: Record<string, string> = {};
+  location_lang: Record<string, string> = {};
+  country_code: string;
+  country: Country | null;
+  countries: Country[] = [];
   selected_country = { code: '', name: 'Worldwide' };
   show_loading: boolean = false;
-  message: any = {};
+  message: Record<string, unknown> = {};
 
   showDeleteModal: boolean = false;
-  newsToDelete: any = null;
+  newsToDelete: News | null = null;
   newsToDeleteIndex: number = -1;
 
-  filteredCountries: any[] = [];
+  filteredCountries: Country[] = [];
   isCountryModalOpen: boolean = false;
   countrySearchQuery: string = '';
 
@@ -108,7 +116,8 @@ export class NewsPage implements OnInit {
 
     // رادار التحديث المباشر للأخبار
     if (this.dataProvider.newsUpdated) {
-      this.dataProvider.newsUpdated.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updatedNews: any) => {
+      this.dataProvider.newsUpdated.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updatedNewsRaw) => {
+        const updatedNews = updatedNewsRaw as { id?: string | number; news_id?: string | number; title?: string; news_description?: string };
         if (this.allNews && this.allNews.length > 0) {
           let index = this.allNews.findIndex(news => news.id === updatedNews.id || news.id === updatedNews.news_id);
 
@@ -188,7 +197,7 @@ export class NewsPage implements OnInit {
     this.router.navigate(['post-news']);
   }
 
-  urlify(text) {
+  urlify(text: string): string | SafeHtml {
     if (!text) return text;
 
     // 🔒 تعقيم النص بالكامل أولاً حتى لا يتحول أي HTML/سكريبت داخل الخبر
@@ -211,7 +220,7 @@ export class NewsPage implements OnInit {
       .replace(/'/g, '&#39;');
   }
 
-  getNews(start: number, newsPerPage: number, countryCode: any, loading: boolean = true): Promise<any> {
+  getNews(start: number, newsPerPage: number, countryCode: string, loading: boolean = true): Promise<boolean> {
     return new Promise(resolve => {
       this.newsApi
         .getNewsJoin(start, newsPerPage, this.userDetails.details, countryCode)
@@ -220,10 +229,10 @@ export class NewsPage implements OnInit {
           this.show_loading = false;
           this.allNews = [];
 
-          if (totalNews && totalNews.length > 0) {
+          if (Array.isArray(totalNews) && totalNews.length > 0) {
             this.originalNews = JSON.parse(JSON.stringify(totalNews));
             this.originalNews.forEach(news => {
-              news.content = this.urlify(news.content);
+              news.content = this.urlify(news.content as string);
               let date = news.ago.split(' ');
               if (date.length > 20) {
                 news.ago = date[2] + ' ' + date[1] + ' ' + date[0];
@@ -258,7 +267,7 @@ export class NewsPage implements OnInit {
     });
   }
 
-  doInfinite(infiniteScroll: any) {
+  doInfinite(infiniteScroll: InfiniteScrollCustomEvent) {
     setTimeout(() => {
       if (this.originalNews && this.originalNews.length > 0) {
         this.allNews = this.allNews.concat(this.originalNews.splice(0, 20));
@@ -276,10 +285,11 @@ export class NewsPage implements OnInit {
   }
 
   // 🟢 إصلاح دالة فتح الروابط من داخل النص
-  async openUrl(event: any) {
-    if (event.target && (event.target.tagName === 'A' || event.target.tagName === 'a')) {
+  async openUrl(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (target && (target.tagName === 'A' || target.tagName === 'a')) {
       event.preventDefault();
-      let url = event.target.getAttribute('href');
+      let url = target.getAttribute('href');
 
       if (url) {
         try {
@@ -295,19 +305,22 @@ export class NewsPage implements OnInit {
   }
 
   // 🟢 دالة التحقق من الصلاحيات (تم تدريعها لتصبح أكثر دقة)
-  check_access(news) {
+  check_access(news: News) {
     if (!this.userDetails || !this.userDetails.details || !news) return false;
 
     let currentUser = this.userDetails.details;
 
-    let isSuperAdmin = currentUser.user_type == UserType.Admin || currentUser.is_school_admin == '1';
+    // '1' widened to the numeric 1 used everywhere else in the app for this
+    // comparison — runtime-identical either way (JS coerces both), this
+    // just matches is_school_admin's real type (number | boolean).
+    let isSuperAdmin = currentUser.user_type == UserType.Admin || currentUser.is_school_admin == 1;
     let isSameSchool = news.school_id == currentUser.school_id || news.user_id == currentUser.user_no;
     let isCreator = news.user_no == currentUser.user_no || news.created_by == currentUser.user_no;
 
     return (isSuperAdmin && isSameSchool) || isCreator;
   }
 
-  async changeLike(news: any) {
+  async changeLike(news: News) {
     let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       if (news.already_like == 'true' || news.already_like == true) {
@@ -320,7 +333,7 @@ export class NewsPage implements OnInit {
           .then(response => {
             if (response.session) {
               news.already_like = 'false';
-              news.total_likes = parseInt(news.total_likes) - 1;
+              news.total_likes = parseInt(String(news.total_likes)) - 1;
             }
             this.cdr.markForCheck();
           });
@@ -334,7 +347,7 @@ export class NewsPage implements OnInit {
           .then(response => {
             if (response.session) {
               news.already_like = 'true';
-              news.total_likes = parseInt(news.total_likes) + 1;
+              news.total_likes = parseInt(String(news.total_likes)) + 1;
             }
             this.cdr.markForCheck();
           });
@@ -344,7 +357,7 @@ export class NewsPage implements OnInit {
     }
   }
 
-  editNews(news) {
+  editNews(news: News) {
     this.router.navigate(['post-news'], {
       state: {
         news: news
@@ -352,7 +365,7 @@ export class NewsPage implements OnInit {
     });
   }
 
-  openDeleteModal(news: any, index: number) {
+  openDeleteModal(news: News, index: number) {
     this.newsToDelete = news;
     this.newsToDeleteIndex = index;
     this.showDeleteModal = true;
@@ -411,7 +424,7 @@ export class NewsPage implements OnInit {
     }
   }
 
-  selectCountry(selected: any) {
+  selectCountry(selected: Country) {
     this.isCountryModalOpen = false;
     if (this.country?.code === selected.code) return;
 

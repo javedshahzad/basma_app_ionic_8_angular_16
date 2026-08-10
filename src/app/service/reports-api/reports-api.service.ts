@@ -4,6 +4,55 @@ import { environment } from '../../../environments/environment';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
 
+export interface ExitDayRecord {
+  id?: string | number;
+  date?: string;
+  time?: string;
+}
+
+export interface LeaveRecord {
+  id?: string | number;
+  start_date?: string;
+  end_date?: string;
+  amount_days?: string | number;
+}
+
+export interface StudentReportsSummary {
+  suspend?: LeaveRecord[];
+  exitdays?: ExitDayRecord[];
+  medical?: LeaveRecord[];
+  exittoday?: unknown[];
+}
+
+export interface DegreeViolation {
+  id?: string | number;
+  description?: string;
+  desc_number?: string | number;
+}
+
+export interface DegreeAction {
+  id?: string | number;
+  description?: string;
+  action_number?: string | number;
+}
+
+export interface Degree {
+  id?: string | number;
+  name?: string;
+}
+
+export interface PledgesReport {
+  id?: string | number;
+  date?: string;
+  degree_name?: string;
+  violation_desc_number?: string | number;
+  violation_description?: string;
+  violation_desc?: string;
+  action_desc_number?: string | number;
+  action_description?: string;
+  action_desc?: string;
+}
+
 /**
  * Student behaviour/degree/pledge report HTTP calls, split out of
  * DataService. Depends on DataService for `lang` (error-message
@@ -20,241 +69,208 @@ export class ReportsApiService {
     private dataService: DataService
   ) { }
 
-  getStudentReports(data): Promise<any> {
+  getStudentReports(data: Record<string, unknown>): Promise<{ session: boolean; data?: StudentReportsSummary }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getStudentReports').then((response: any) => {
+      this.apiClient.postRequest<{ response?: StudentReportsSummary }>(data, 'getStudentReports').then((response) => {
         if (response) {
             resolve({ session: true, data: response.response});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  GetAllDegrees(data): Promise<any> {
+  GetAllDegrees(data: Record<string, unknown>): Promise<{ session: boolean; data?: Degree[]; success: boolean }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getAllDegress').then((response: any) => {
+      this.apiClient.postRequest<{ data?: Degree[] }>(data, 'getAllDegress').then((response) => {
         if (response) {
             resolve({ session: true, data: response.data,success:true});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  GetAllDegreeActions(data): Promise<any> {
+  GetAllDegreeActions(data: Record<string, unknown>): Promise<{ session: boolean; data?: DegreeAction[]; success: boolean }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getViolationActions').then((response: any) => {
+      this.apiClient.postRequest<{ data?: DegreeAction[] }>(data, 'getViolationActions').then((response) => {
         if (response) {
             resolve({ session: true, data: response.data,success:true});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  GetAllCallOfStudentReport(data): Promise<any> {
+  GetAllCallOfStudentReport(data: Record<string, unknown>): Promise<{ session: boolean; data?: unknown[]; success: boolean }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'GetCallOfStudentsRepoerts').then((response: any) => {
+      this.apiClient.postRequest<{ data?: unknown[] }>(data, 'GetCallOfStudentsRepoerts').then((response) => {
         if (response) {
             resolve({ session: true, data: response.data,success:true});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  GetStudentPledgesReport(data): Promise<any> {
+  GetStudentPledgesReport(data: Record<string, unknown>): Promise<{ session: boolean; data?: PledgesReport[]; success: boolean }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'GetStudentPledgesReport').then((response: any) => {
+      this.apiClient.postRequest<{ data?: PledgesReport[] }>(data, 'GetStudentPledgesReport').then((response) => {
         if (response) {
             resolve({ session: true, data: response.data,success:true});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  generateStudentPledgesReportPDF(data): Promise<any> {
+  generateStudentPledgesReportPDF(data: Record<string, unknown>): Promise<{ session: boolean; data?: unknown; success?: boolean }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'generateStudentPledgesReportPDF').then((response: any) => {
+      this.apiClient.postRequest<{ data?: unknown; success?: boolean }>(data, 'generateStudentPledgesReportPDF').then((response) => {
         if (response) {
             resolve({ session: true, data: response.data,success:response.success});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  generateCallOfStudentPDF(data): Promise<any> {
+  generateCallOfStudentPDF(data: Record<string, unknown>): Promise<{ session: boolean; data?: unknown; success?: boolean }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'generateCallOfStudentPDF').then((response: any) => {
+      this.apiClient.postRequest<{ data?: unknown; success?: boolean }>(data, 'generateCallOfStudentPDF').then((response) => {
         if (response) {
             resolve({ session: true, data: response.data,success:response.success});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  GetAllDegreeViolations(data): Promise<any> {
+  GetAllDegreeViolations(data: Record<string, unknown>): Promise<{ session: boolean; data?: DegreeViolation[]; success: boolean }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getDegreeViolations').then((response: any) => {
+      this.apiClient.postRequest<{ data?: DegreeViolation[] }>(data, 'getDegreeViolations').then((response) => {
         if (response) {
             resolve({ session: true, data: response.data,success:true});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  submitStudentReports(data): Promise<any> {
+  submitStudentReports(data: Record<string, unknown>): Promise<{ session: boolean; data?: { success?: boolean; msg?: string } }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'submitStudentReports').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'submitStudentReports').then((res) => {
+        const response = res as { success?: boolean; msg?: string };
         if (response.success) {
             resolve({ session: true, data: response});
         } else {
             reject(response.msg)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  removeStudentReportByType(data): Promise<any> {
+  removeStudentReportByType(data: Record<string, unknown>): Promise<{ session: boolean; data?: { success?: boolean; msg?: string } }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'removeStudentReportByType').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'removeStudentReportByType').then((res) => {
+        const response = res as { success?: boolean; msg?: string };
         if (response.success) {
             resolve({ session: true, data: response});
         } else {
             reject(response.msg)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  deleteCallOfParentReport(data): Promise<any> {
+  deleteCallOfParentReport(data: Record<string, unknown>): Promise<{ success?: boolean; msg?: string }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteCallOfParentReport').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'deleteCallOfParentReport').then((res) => {
+        const response = res as { success?: boolean; msg?: string };
         if (response.success) {
           resolve({ success: response.success, msg: response.msg});
         } else {
             reject(response.msg)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  deletePledgesReport(data): Promise<any> {
+  deletePledgesReport(data: Record<string, unknown>): Promise<{ success?: boolean; msg?: string }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deletePledgesReport').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'deletePledgesReport').then((res) => {
+        const response = res as { success?: boolean; msg?: string };
         if (response.success) {
             resolve({ success: response.success, msg: response.msg});
         } else {
             reject(response.msg)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  printAllReports(data): Promise<any> {
+  printAllReports(data: Record<string, unknown>): Promise<{ session: boolean; data?: unknown }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'printAllReports').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; response?: unknown; msg?: string }>(data, 'printAllReports').then((res) => {
+        const response = res as { success?: boolean; response?: unknown; msg?: string };
         if (response.success) {
             resolve({ session: true, data: response.response});
         } else {
             reject(response.msg)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  getMarksReport(data: any): Promise<any> {
+  getMarksReport(data: Record<string, unknown>): Promise<{ session: boolean; data?: unknown }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'getMarksReport/' + data.course_id).then((response: any) => {
+      this.apiClient.postRequest<{ response?: unknown; msg?: string }>(data, 'getMarksReport/' + data.course_id).then((res) => {
+           const response = res as { response?: unknown; msg?: string };
            if (response.response) {
             resolve({ session: true, data: response.response });
           } else {
             reject(response.msg)
           }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  getStudentReport(data: any): Promise<any> {
+  getStudentReport(data: Record<string, unknown>): Promise<{ session: boolean; data?: unknown }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'student_report_new_excel').then((response: any) => {
+      this.apiClient.postRequest<{ response?: unknown; msg?: string }>(data, 'student_report_new_excel').then((res) => {
+           const response = res as { response?: unknown; msg?: string };
            if (response.response) {
             resolve({ session: true, data: response.response });
           } else {
             reject(response.msg)
           }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  getAllWarning(data: any): Promise<any> {
+  getAllWarning(data: Record<string, unknown>): Promise<unknown[]> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'getWarningReport')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ response?: unknown[]; msg?: string }>(data, 'getWarningReport')
+        .then((response) => {
           if (response) {
             if (response.response) {
               resolve(response.response);
@@ -265,21 +281,14 @@ export class ReportsApiService {
             reject(this.dataService.lang.networkNotWorking);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
-  printWarning(data: any): Promise<any> {
+  printWarning(data: Record<string, unknown>): Promise<{ url?: string }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'getWarningReportPdf')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ response?: { url?: string }; msg?: string }>(data, 'getWarningReportPdf')
+        .then((response) => {
           if (response) {
             if (response.response) {
               resolve(response.response);
@@ -290,23 +299,16 @@ export class ReportsApiService {
             reject(this.dataService.lang.networkNotWorking);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
-  openStudentReport(url): Promise<any> {
+  openStudentReport(url: string): Promise<{ url?: string; data?: unknown }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
       let header = new HttpHeaders();
       header.append('Content-Type', 'application/json');
-      this.http.get(url, { headers: header }).subscribe(
+      this.http.get<{ url?: string; data?: unknown }>(url, { headers: header }).subscribe(
         res => {
           resolve(res);
         },
@@ -317,7 +319,7 @@ export class ReportsApiService {
     });
   }
 
-  getShareLink(data): Promise<any> {
+  getShareLink(data: unknown): Promise<{ short_url?: string }> {
     return new Promise((resolve, reject) => {
       this.apiClient.getNetworkInformation().then(isNetworkAvailable => {
         if (isNetworkAvailable) {
@@ -325,8 +327,8 @@ export class ReportsApiService {
           header.append('Content-Type', 'application/json');
 
           let url = environment.serverURL + 'getAppShareLink?' + 'lang=en';
-          this.http.get(url, { headers: header }).subscribe(
-            (response: any) => {
+          this.http.get<{ short_url?: string }>(url, { headers: header }).subscribe(
+            (response) => {
               if (response) {
                 resolve(response);
               } else {

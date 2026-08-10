@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { Browser } from '@capacitor/browser';
 import { IonicModule } from '@ionic/angular';
+import { Browser } from '@capacitor/browser';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({

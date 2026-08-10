@@ -2,6 +2,14 @@ import { Injectable } from '@angular/core';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
 import { DatabaseService } from '../database/database.service';
+import { ApiResponse } from '../../model/api-response.model';
+
+export interface AppNotification {
+  ID?: string | number;
+  date?: string;
+  notification?: string;
+  notification_image?: string;
+}
 
 /**
  * Private-message/notification HTTP calls, split out of DataService.
@@ -23,10 +31,10 @@ export class NotificationsApiService {
    * @param {Object} data- user_no, school_id, session_id
    * @returns list of notifications or error
    */
-  getNotifications(data: any): Promise<any> {
+  getNotifications(data: Record<string, unknown>): Promise<ApiResponse<AppNotification[]>> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'getNotifications/' + data.school_id)
-        .then((response: any) => {
+      this.apiClient.postRequest<{ session?: boolean; success?: boolean; msg?: string; list?: AppNotification[] }>(data, 'getNotifications/' + data.school_id)
+        .then((response) => {
           if (response) {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
@@ -42,14 +50,7 @@ export class NotificationsApiService {
             });
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -57,10 +58,10 @@ export class NotificationsApiService {
    * delete user notification
    * @param data user_no, nid, session_id
    */
-  deleteNotification(data: any): Promise<any> {
+  deleteNotification(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteNotifications')
-        .then((response: any) => {
+      this.apiClient.postRequest<ApiResponse>(data, 'deleteNotifications')
+        .then((response) => {
           if (response) {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
@@ -73,14 +74,7 @@ export class NotificationsApiService {
             reject(this.dataService.lang.networkNotWorking);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 }

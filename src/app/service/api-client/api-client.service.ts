@@ -46,6 +46,27 @@ export class ApiClient {
     return body;
   }
 
+  /**
+   * Shared `.catch()` handler for the domain services' hand-rolled
+   * `new Promise((resolve, reject) => {...})` API wrappers: logs the error,
+   * then rejects with the server-provided message if there is one, else
+   * `fallbackMessage` (typically `dataService.lang.usnexpectedError`), else
+   * the raw error itself. Centralizing this also rules out the
+   * missing-reject "hanging promise" bug class by construction — every
+   * caller of this helper always settles the promise.
+   */
+  handleApiError(error: unknown, reject: (reason?: unknown) => void, fallbackMessage?: unknown): void {
+    console.log(error);
+    const message = (error as { message?: string })?.message;
+    if (message != undefined && message != '' && message != null) {
+      reject(message);
+    } else if (fallbackMessage !== undefined) {
+      reject(fallbackMessage);
+    } else {
+      reject(error);
+    }
+  }
+
   /** Post request function.
    * @param {Object} data - contains the properties to post to API
    * @param {String} slug - contains the API method to call

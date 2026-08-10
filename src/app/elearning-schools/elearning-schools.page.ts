@@ -4,7 +4,7 @@ import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
-import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { SchoolDirectoryApiService, School } from '../service/school-directory-api/school-directory-api.service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
@@ -24,7 +24,7 @@ export class ElearningSchoolsPage {
   }
   public language: EventEmitter<any> = new EventEmitter();
 
-  schools: any = [];
+  schools: School[] = [];
   noDataFound: string = '';
   lang: any = {};
   location_lang: any = {};
@@ -154,7 +154,7 @@ export class ElearningSchoolsPage {
     this.getSchool(null);
   }
 
-  openschool(school: any) {
+  openschool(school: School) {
     const navigation: NavigationExtras = {
       state: { schoolInfo: school, country_code: this.country_code }
     };

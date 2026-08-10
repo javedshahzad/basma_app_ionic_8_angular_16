@@ -8,8 +8,11 @@ import { GeoServiceProvider } from '../service/geo-service/geo-service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { ElearningApiService } from '../service/elearning-api/elearning-api.service';
+import { ElearningApiService, ElearningCategory } from '../service/elearning-api/elearning-api.service';
+import { School } from '../service/school-directory-api/school-directory-api.service';
 import { NgIf, NgFor, NgClass } from '@angular/common';
+
+type ElearningCategoryWithUiState = ElearningCategory & { isOpen: boolean };
 
 @Component({
     selector: 'app-elearning-school-video',
@@ -24,11 +27,11 @@ export class ElearningSchoolVideoPage {
   trackByIndex(index: number): number {
     return index;
   }
-  categories: any = [];
-  school: any = {};
-  country_code: any;
-  location_lang: any;
-  country: any;
+  categories: ElearningCategoryWithUiState[] = [];
+  school: School = {};
+  country_code: string;
+  location_lang: Record<string, string>;
+  country: unknown;
   selected_country = {
     code: '',
     name: 'Worldwide'
@@ -84,14 +87,14 @@ export class ElearningSchoolVideoPage {
   }
 
 
-  getElerningMaterials(c_dode) {
+  getElerningMaterials(c_dode: string) {
     this.show_loading = true;
     this.elearningApi
       .getElearningMaterials(this.school.id, c_dode)
       .then(materialList => {
         this.show_loading = false;
         // 🟢 إضافة متغير 'isOpen' للتحكم بفتح وإغلاق القوائم بطريقة Angular صحيحة بدلاً من DOM
-        this.categories = materialList.map((cat: any) => {
+        this.categories = materialList.map((cat) => {
           return { ...cat, isOpen: false };
         });
         this.cdr.markForCheck();
@@ -108,7 +111,7 @@ export class ElearningSchoolVideoPage {
     this.categories[index].isOpen = !this.categories[index].isOpen;
   }
 
-  portChange(event) {
+  portChange(event: { value: { code?: string } }) {
     if (event.value.code) {
       this.getElerningMaterials(event.value.code);
     } else {
@@ -143,7 +146,7 @@ export class ElearningSchoolVideoPage {
     await alert.present();
   }
 
-  playvideo(materialId: any) {
+  playvideo(materialId: string | number) {
     const navigation: NavigationExtras = {
       state: { materialId: materialId }
     };

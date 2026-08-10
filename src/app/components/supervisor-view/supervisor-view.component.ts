@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
 import { UserType } from '../../constants/user-type';
 import { NgIf, NgFor, NgClass, DecimalPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 
 @Component({
@@ -22,11 +22,11 @@ export class SupervisorViewComponent {
   @Input() editMode: boolean = false;
   @Input() canEdit: boolean = false;
 
-  @Output() onChangeAttendanceStatusAll = new EventEmitter<number>();
-  @Output() onStudentClick = new EventEmitter<string>();
-  @Output() onImageClick = new EventEmitter<any>();
-  @Output() onNoteClick = new EventEmitter<{ event: any; student: any }>();
-  @Output() onChangeAttendanceStatus = new EventEmitter<{ student: any; sem: number; index: number }>();
+  @Output() changeAttendanceStatusAll = new EventEmitter<number>();
+  @Output() studentClick = new EventEmitter<string>();
+  @Output() imageClick = new EventEmitter<any>();
+  @Output() noteClick = new EventEmitter<{ event: any; student: any }>();
+  @Output() changeAttendanceStatus = new EventEmitter<{ student: any; sem: number; index: number }>();
 
   constructor(public gamification: GamificationEngineService) {}
 

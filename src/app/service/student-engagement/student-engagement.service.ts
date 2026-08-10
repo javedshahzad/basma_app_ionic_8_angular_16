@@ -4,6 +4,7 @@ import { GamificationApiService } from '../gamification-api/gamification-api.ser
 import { UserManagementApiService } from '../user-management-api/user-management-api.service';
 import { ImageProcessingService } from '../image-processing/image-processing.service';
 import { StudentUiService } from '../student-ui/student-ui.service';
+import { ApiResponse } from '../../model/api-response.model';
 
 export interface AvatarUploadResult {
   success: boolean;
@@ -43,7 +44,7 @@ export class StudentEngagementService {
    * still drives openAvatarModal itself, since only it knows which local
    * student object/array to optimistically patch before upload.
    */
-  async captureAvatarImage(event: any, lang: any): Promise<{ action: 'camera' | 'gallery' | 'avatar' | null; base64?: string }> {
+  async captureAvatarImage(event: Event, lang: Record<string, string>): Promise<{ action: 'camera' | 'gallery' | 'avatar' | null; base64?: string }> {
     const action = await this.studentUi.presentImageOptions(event, lang) as 'camera' | 'gallery' | 'avatar' | null;
     if (action === 'camera' || action === 'gallery') {
       const base64 = await this.imageService.takePicture(action);
@@ -61,7 +62,7 @@ export class StudentEngagementService {
    * left to reject/throw so callers can keep telling the two cases apart
    * (e.g. only flushing local storage on a real API-level failure).
    */
-  async uploadAvatar(base64Data: string, opts: { user_no: any; session_id: any; sid: any }): Promise<AvatarUploadResult> {
+  async uploadAvatar(base64Data: string, opts: { user_no: string | number; session_id: string; sid: string | number }): Promise<AvatarUploadResult> {
     if (!base64Data) {
       return { success: false };
     }
@@ -77,7 +78,7 @@ export class StudentEngagementService {
       sid: opts.sid
     };
 
-    const response: any = await this.userManagementApi.updateUserImage(data);
+    const response = await this.userManagementApi.updateUserImage(data);
     if (response && response.session) {
       return { success: true, url: response.url + '?t=' + new Date().getTime() };
     }
@@ -85,27 +86,27 @@ export class StudentEngagementService {
   }
 
   /** Submits a new student note (plain text or star review — payload shape is caller-defined). */
-  addNote(payload: any): Promise<any> {
+  addNote(payload: Record<string, unknown>): Promise<string | number> {
     return this.notesApi.addStudentNote(payload);
   }
 
   /** Edits an existing student note. */
-  editNote(payload: any): Promise<any> {
+  editNote(payload: Record<string, unknown>): Promise<string | number> {
     return this.notesApi.EditStudentNote(payload);
   }
 
   /** Awards (or deducts) skill points for a student. */
-  awardSkillPoints(body: any): Promise<any> {
+  awardSkillPoints(body: { sid?: string | number; userId?: string | number; points?: string | number }): Promise<ApiResponse> {
     return this.gamificationApi.addStudentPoints(body);
   }
 
   /** Crafts (unlocks) a skill title for a student. */
-  craftSkillTitle(body: any): Promise<any> {
+  craftSkillTitle(body: Record<string, unknown>): Promise<ApiResponse | false> {
     return this.gamificationApi.craftSkillTitle(body);
   }
 
   /** Equips/toggles the active title displayed for a student. */
-  equipTitle(body: any): Promise<any> {
+  equipTitle(body: Record<string, unknown>): Promise<ApiResponse | false> {
     return this.gamificationApi.equipTitle(body);
   }
 }

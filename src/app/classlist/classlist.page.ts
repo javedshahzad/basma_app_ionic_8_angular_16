@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, ModalController, ItemReorderEventDetail, Platform, ActionSheetController, PopoverController, IonicModule } from '@ionic/angular';
+import { NavController, AlertController, ModalController, ItemReorderEventDetail, ItemReorderCustomEvent, Platform, ActionSheetController, PopoverController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
@@ -25,6 +25,16 @@ import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgClass, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Course } from '../service/courses-api/courses-api.service';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { RawActionResponse } from '../service/user-management-api/user-management-api.service';
+
+interface DashboardSeminar {
+  name?: string;
+  present?: string | number;
+  absent?: string | number;
+  total_per_sent?: string | number;
+}
 
 @Component({
     selector: 'app-classlist',
@@ -39,14 +49,14 @@ export class ClasslistPage implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   @ViewChild(IonReorderGroup) reorderGroup: IonReorderGroup;
-  classes: any = [];
+  classes: Course[] = [];
   noDataFound: string = '';
-  userType: any;
+  userType: string;
   editMode: boolean = false;
-  lang: any = {};
-  lang1: any = {};
-  userDetails: any = {};
-  category: any;
+  lang: Record<string, string> = {};
+  lang1: Record<string, string> = {};
+  userDetails: LoggedInUser = {};
+  category: string;
   classBackgroundColor = [
     '#ff7043',
     '#2962ff',
@@ -59,18 +69,18 @@ export class ClasslistPage implements OnInit {
     '#d81b60',
     '#6a1b9a'
   ];
-  dashBoard: any;
-  popOver: any;
+  dashBoard: DashboardSeminar[];
+  popOver: HTMLIonPopoverElement | null = null;
   canPresentPopover = false;
-  reorderList: Array<any> = [];
+  reorderList: { cid: string | number; index: number }[] = [];
   canReorder: boolean = true;
   showIcon: boolean = false;
-  is_school_admin: any;
-  deactivate_date: any;
+  is_school_admin: number | boolean;
+  deactivate_date: string;
 
   isPopoverOpen: boolean = false;
-  popoverEvent: any;
-  editingClass: any = {};
+  popoverEvent: unknown;
+  editingClass: Course = {};
 
   constructor(
     public navCtrl: NavController,
@@ -122,7 +132,7 @@ export class ClasslistPage implements OnInit {
     this.canReorder = !this.canReorder;
   }
 
-  doReorder(event: any) {
+  doReorder(event: ItemReorderCustomEvent) {
     this.prepareArray(event.detail.from, event.detail.to);
     const itemMove = this.classes.splice(event.detail.from, 1)[0];
     this.classes.splice(event.detail.to, 0, itemMove);
@@ -252,8 +262,8 @@ export class ClasslistPage implements OnInit {
     };
     this.dataProvider
       .run(() => this.dataProvider.revertDeletedSchoolSettings(data))
-      .then((response: any) => {
-        this.dataProvider.errorALertMessage(response.msg);
+      .then((response) => {
+        this.dataProvider.errorALertMessage(response.message);
         this.deactivate_date = '';
         this.dataProvider.deactivate_date = '';
         this.cdr.markForCheck();
@@ -334,7 +344,7 @@ export class ClasslistPage implements OnInit {
       .todayDashboard(data)
       .then(response => {
         if (response && response.session) {
-          this.dashBoard = response.data.seminar;
+          this.dashBoard = (response.data as { seminar?: DashboardSeminar[] })?.seminar;
         }
         this.cdr.markForCheck();
       })
@@ -343,7 +353,7 @@ export class ClasslistPage implements OnInit {
       });
   }
 
-  async openClassStudents(course: any) {
+  async openClassStudents(course: Course) {
     if (this.editMode) {
       this.editingClass = JSON.parse(JSON.stringify(course));
 
@@ -439,7 +449,7 @@ export class ClasslistPage implements OnInit {
     this.dataProvider
       .run(() => this.coursesApi.deleteClass(data))
       .then(res => {
-        if (res && (res.session || res.response)) {
+        if (res && res.session) {
           this.dataProvider.showToast(res.data || 'تم حذف الصف بنجاح');
           this.getCourse(false);
         } else {
@@ -483,7 +493,7 @@ export class ClasslistPage implements OnInit {
     }
   }
 
-  async openMenu(event: any) {
+  async openMenu(event: Event) {
     this.translate.get('action_icons').subscribe(res => {
       this.lang1 = res;
       this.cdr.markForCheck();
@@ -584,7 +594,7 @@ export class ClasslistPage implements OnInit {
       user_no: this.userDetails.details.user_no
     };
     try {
-      const response: any = await this.userManagementApi.deleteSchoolPermanentlyRequest(data);
+      const response = await this.userManagementApi.deleteSchoolPermanentlyRequest(data);
       // 🟢 الخدمة الأصلية كانت تتجاهل الاستجابة بالكامل عندما response.response غير صحيحة
       if (!response.response) {
         return;
@@ -615,8 +625,9 @@ export class ClasslistPage implements OnInit {
         }
       }
       if (!responseData.success) {
-        this.deactivate_date = responseData.response.deactivate_date;
-        this.dataProvider.deactivate_date = responseData.response.deactivate_date;
+        const deactivateInfo = responseData.response as { deactivate_date?: string };
+        this.deactivate_date = deactivateInfo.deactivate_date;
+        this.dataProvider.deactivate_date = deactivateInfo.deactivate_date;
         this.cdr.markForCheck();
       }
     } catch (error) {
@@ -625,7 +636,7 @@ export class ClasslistPage implements OnInit {
   }
 
   // 🟢 استبدال moment بـ dayjs (بطريقة آمنة وصحيحة)
-  trackByCourse(index: number, course: any): any {
+  trackByCourse(index: number, course: Course): string | number {
     return course?.cid ?? index;
   }
 

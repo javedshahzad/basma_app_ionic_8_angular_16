@@ -17,7 +17,7 @@ import { Share } from '@capacitor/share';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { ElearningApiService } from '../service/elearning-api/elearning-api.service';
+import { ElearningApiService, ElearningMaterial } from '../service/elearning-api/elearning-api.service';
 import { NgIf, NgFor } from '@angular/common';
 import { SafePipe } from '../pipes/safe/safe.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -35,9 +35,9 @@ export class PlayvideoPage {
   }
   @ViewChild('videoPlayer', { static: false }) mVideoPlayer: ElementRef;
 
-  material: any = {};
+  material: ElearningMaterial = {};
   flag: boolean = false;
-  materialId: any;
+  materialId: string | number;
   private destroyRef = inject(DestroyRef);
 
   constructor(
@@ -78,7 +78,7 @@ export class PlayvideoPage {
   }
 
   // 🟢 تحميل الفيديو بشكل آمن ومنفصل
-  async loadVideo(id: any) {
+  async loadVideo(id: string | number) {
     try {
       const materialDetail = await this.dataProvider.run(() => this.elearningApi.getMaterialDetails(id));
       this.flag = true;
@@ -96,7 +96,7 @@ export class PlayvideoPage {
   }
 
   // 🟢 تشغيل مقطع ذو صلة
-  playRelatedVideo(id: any) {
+  playRelatedVideo(id: string | number) {
     this.flag = false; // لإخفاء المشغل القديم مؤقتاً
     this.materialId = id;
     this.storageSr.set('currentMaterialId', this.materialId);
@@ -121,7 +121,7 @@ export class PlayvideoPage {
   }
 
   // 🟢 مشاركة الفيديو
-  share(video: any) {
+  share(video: ElearningMaterial) {
     let content = video.material_description || video.material_title;
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
       let videoUrl =

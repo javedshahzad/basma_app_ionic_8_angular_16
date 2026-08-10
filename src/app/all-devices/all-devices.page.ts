@@ -8,6 +8,8 @@ import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { Device as UserDevice } from '../service/device-api/device-api.service';
 
 @Component({
     selector: 'app-all-devices',
@@ -20,15 +22,15 @@ export class AllDevicesPage implements OnInit {
   trackByIndex(index: number): number {
     return index;
   }
-  userDetails: any;
-  All_available_devices = [];
+  userDetails: LoggedInUser;
+  All_available_devices: UserDevice[] = [];
   deviceSr: { uuid: string } = { uuid: '' };
 
   // ==========================================
   // المتغيرات للتحكم في النوافذ المنبثقة (Modals)
   // ==========================================
   showDeleteModal: boolean = false;
-  deviceToDelete: any = null;
+  deviceToDelete: UserDevice | null = null;
   showLogoutAllModal: boolean = false;
 
   constructor(
@@ -78,7 +80,7 @@ export class AllDevicesPage implements OnInit {
   // ==========================================
   // 1️⃣ دوال نافذة حذف جهاز واحد
   // ==========================================
-  deletedDevice(device) {
+  deletedDevice(device: UserDevice) {
     this.deviceToDelete = device;
     this.showDeleteModal = true; // إظهار النافذة
   }
@@ -96,7 +98,7 @@ export class AllDevicesPage implements OnInit {
   }
 
   // عملية الحذف الفعلية
-  executeDeleteDevice(device) {
+  executeDeleteDevice(device: UserDevice) {
     let data = {
       user_no: this.userDetails.details.user_no,
       device_id: device.device_id

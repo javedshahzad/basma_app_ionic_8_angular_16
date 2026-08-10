@@ -14,6 +14,23 @@ import { IonicSelectableComponent } from 'ionic-selectable';
 import dayjs from 'dayjs';
 import { StorageService } from '../service/storage.service';
 import { NotesApiService } from '../service/notes-api/notes-api.service';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { Student } from '../model/student.model';
+
+interface NoteFormData {
+  sendTo: string;
+  description: string;
+  studentIds: (string | number)[];
+  ticketImage: string;
+  pdf: string | File;
+  user_no: string | number;
+  school_id: string | number;
+  classId: string | number;
+  type: string;
+  examNoteDate: string;
+  semno: string | number;
+  seminir_no?: string | number;
+}
 
 @Component({
   selector: 'app-add-notes',
@@ -27,7 +44,7 @@ export class AddNotesPage {
     return index;
   }
   private destroyRef = inject(DestroyRef);
-  notes: any = {
+  notes: NoteFormData = {
     sendTo: '',
     description: '',
     studentIds: [],
@@ -41,20 +58,20 @@ export class AddNotesPage {
     semno: ''
   };
 
-  lang: any = {};
-  userDetails: any = {};
+  lang: Record<string, string> = {};
+  userDetails: LoggedInUser = {};
   ticketImage: string = ''; // سنخزن هنا الـ Base64 الصافي
-  class_id: any;
-  students: any;
-  mediaType: any;
-  state: any;
-  data: any;
-  selectedStudent: any;
-  formdata: any = new FormData();
-  uploadStaus: any;
-  studentsId: any = [];
+  class_id: string | number;
+  students: Student[];
+  mediaType: string;
+  state: unknown;
+  data: unknown;
+  selectedStudent: Student[];
+  formdata: FormData = new FormData();
+  uploadStaus: number | false;
+  studentsId: (string | number)[] = [];
   status = '';
-  seminir_no: any = '';
+  seminir_no: string | number = '';
 
   constructor(
     public navCtrl: NavController,
@@ -83,7 +100,11 @@ export class AddNotesPage {
     });
 
     this.dataProvider.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
-      this.uploadStaus = res;
+      // events also carries non-numeric payloads (see DataService.events);
+      // this page only cares about upload-progress percentages.
+      if (typeof res === 'number') {
+        this.uploadStaus = res;
+      }
       this.cdr.markForCheck();
     });
 
@@ -115,7 +136,7 @@ export class AddNotesPage {
       this.notes.user_no = this.userDetails.details.user_no;
       this.notes.school_id = this.userDetails.details.school_id;
 
-      let media: any;
+      let media: string | File;
       if (this.notes.ticketImage && this.notes.ticketImage != '') {
         media = this.notes.ticketImage;
       } else {
@@ -188,9 +209,10 @@ export class AddNotesPage {
     });
   }
 
-  onSelectFiles(ev: any) {
-    let files: any = ev && ev.target && ev.target.files ? ev.target.files : <any>{};
-    if (files.length === 0) return;
+  onSelectFiles(ev: Event) {
+    const target = ev?.target as HTMLInputElement | undefined;
+    const files = target?.files;
+    if (!files || files.length === 0) return;
 
     let ext = files[0].name.split('.').reverse()[0];
     if (ext == 'pdf' || ext == 'PDF') {
@@ -204,7 +226,7 @@ export class AddNotesPage {
   }
 
   // 🟢 رفع الملفات عبر FormData بشكل آمن وتوحيد الطريقة للـ PDF والصور
-  uploadPdfToServer(imgBlob?: any, fileName?: any) {
+  uploadPdfToServer(imgBlob?: Blob, fileName?: string) {
     this.formdata = new FormData(); // تصفير الـ FormData لتجنب تكرار البيانات
     this.formdata.append('sendTo', this.notes.sendTo);
     this.formdata.append('description', this.notes.description);
@@ -214,12 +236,12 @@ export class AddNotesPage {
       this.formdata.append('ticketImage', this.notes.ticketImage);
     }
 
-    this.formdata.append('user_no', this.userDetails.details.user_no);
-    this.formdata.append('classId', this.class_id);
-    this.formdata.append('school_id', this.userDetails.details.school_id);
+    this.formdata.append('user_no', String(this.userDetails.details.user_no));
+    this.formdata.append('classId', String(this.class_id));
+    this.formdata.append('school_id', String(this.userDetails.details.school_id));
     this.formdata.append('type', this.mediaType);
     this.formdata.append('examNoteDate', this.notes.examNoteDate);
-    this.formdata.append('seminir_no', this.notes.seminir_no);
+    this.formdata.append('seminir_no', String(this.notes.seminir_no));
 
     if (imgBlob) {
       this.formdata.append('file', imgBlob, fileName);
@@ -246,7 +268,7 @@ export class AddNotesPage {
     );
   }
 
-  startUpload(imgBase64) {
+  startUpload(imgBase64: string) {
     if (imgBase64 && imgBase64 !== '') {
       this.readFile(imgBase64);
     } else {
@@ -254,7 +276,7 @@ export class AddNotesPage {
     }
   }
 
-  readFile(fileBase64: any) {
+  readFile(fileBase64: string) {
     const blob = this.dataProvider.dataURItoBlob('data:image/jpeg;base64,' + fileBase64);
     this.uploadPdfToServer(blob, this.dataProvider.generateRandomFileName('jpg'));
   }

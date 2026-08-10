@@ -343,12 +343,7 @@ export class RequestedParentPage implements OnInit {
                 this.dataProvider
                   .run(() => this.registrationApi.registerNewParent(data))
                   .then(res => {
-                    if (res.session) {
-                      this.dataProvider.showToast(res.message);
-                    } else {
-                      this.dataProvider.showToast(res.message);
-                      return false;
-                    }
+                    this.dataProvider.showToast(res);
                   })
                   .catch(err => {
                     this.dataProvider.errorALertMessage(err);

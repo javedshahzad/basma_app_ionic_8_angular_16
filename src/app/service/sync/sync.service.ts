@@ -14,7 +14,7 @@ import { AttendanceApiService } from '../attendance-api/attendance-api.service';
   providedIn: 'root'
 })
 export class SyncService {
-  private syncInterval: any = null;
+  private syncInterval: ReturnType<typeof setInterval> | null = null;
   private isSyncing = false;
 
   constructor(
@@ -38,10 +38,24 @@ export class SyncService {
     // Run immediately
     await this.performOfflineSync();
 
-    // Run every 20 seconds
-    this.syncInterval = setInterval(async () => {
-      await this.performOfflineSync();
-    }, 20000);
+    // Only keep polling if something is still queued (e.g. the immediate
+    // attempt above failed) — otherwise this would poll every 20s for the
+    // rest of the app session even with nothing left to sync.
+    if (await this.hasPendingSync()) {
+      this.syncInterval = setInterval(async () => {
+        await this.performOfflineSync();
+        if (this.syncInterval && !(await this.hasPendingSync())) {
+          clearInterval(this.syncInterval);
+          this.syncInterval = null;
+        }
+      }, 20000);
+    }
+  }
+
+  private async hasPendingSync(): Promise<boolean> {
+    const attendances = await this.storageSr.get('attendance') || [];
+    const delayAttendances = await this.storageSr.get('delayattendance') || [];
+    return attendances.length > 0 || delayAttendances.length > 0;
   }
 
   private async getNetworkInformation(): Promise<boolean> {

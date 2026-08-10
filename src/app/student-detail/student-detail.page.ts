@@ -1,4 +1,4 @@
-import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController, PopoverController, Platform, ModalController, ActionSheetController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
@@ -34,83 +34,103 @@ import { StudentEngagementService } from '../service/student-engagement/student-
 import { UserType } from '../constants/user-type';
 import { NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, DecimalPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Student } from '../model/student.model';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { UserPlan } from '../service/plan-api/plan-api.service';
+import { StudentNote, StudentNotesResponse } from '../service/notes-api/notes-api.service';
+import { StudentProfileDashboard, StudentInventory, SkillData } from '../service/gamification-api/gamification-api.service';
+import { StudentInventoryModalComponent } from '../components/student-inventory-modal/student-inventory-modal.component';
 
 const env = environment;
+
+interface DeletePayload {
+  type: 'note' | 'absence';
+  id: string | number;
+  index: number;
+  notesArray?: AbsenceNote[];
+}
+
+interface AbsenceNote {
+  ID?: string | number;
+  note?: string;
+  created_by?: string | number;
+}
 
 @Component({
     selector: 'app-student-detail',
     templateUrl: './student-detail.page.html',
     styleUrls: ['./student-detail.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, FormsModule, DecimalPipe, DatePipe, TranslatePipe]
+    imports: [IonicModule, NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, FormsModule, DecimalPipe, DatePipe, TranslatePipe, StudentInventoryModalComponent]
 })
 export class StudentDetailPage {
   readonly UserType = UserType;
   trackByIndex(index: number): number {
     return index;
   }
-  trackByAbsentDate(index: number, details: any): any {
+  trackByAbsentDate(index: number, details: { date?: string }): string | number {
     return details?.date ?? index;
   }
-  trackByAbsenceNoteId(index: number, note: any): any {
+  trackByAbsenceNoteId(index: number, note: { ID?: string | number }): string | number {
     return note?.ID ?? index;
   }
-  trackByNoteId(index: number, note: any): any {
+  trackByNoteId(index: number, note: StudentNote): string | number {
     return note?.id ?? index;
   }
-  trackByTitleCode(index: number, title: any): any {
-    return title?.code ?? index;
-  }
-  trackByBadgeCode(index: number, badge: any): any {
-    return badge?.code ?? index;
-  }
-  absenceDetail: any = [];
-  notes: any = [];
+  absenceDetail: unknown[] = [];
+  notes: StudentNotesResponse = {};
   category: string;
-  studentDetails: any = {};
-  userType: any;
-  lang: any = {};
-  userDetails: any = {};
+  studentDetails: Student = {};
+  // Typed string | number (not just string) even though the backend only
+  // ever sends a string: the template compares this against numeric
+  // literals (userType === 1 etc, pre-existing — a real bug where the
+  // comparison always evaluates false, hiding a button for every role).
+  // Narrowing to string alone would flag that comparison as a type error;
+  // widening here preserves the exact (broken) existing behavior without
+  // this lint pass silently deciding to fix or hide a UI-visibility bug.
+  userType: string | number;
+  lang: Record<string, string> = {};
+  userDetails: LoggedInUser = {};
   noteMessage: string = '';
   canAddStudentNote: boolean = true;
   noNotesFound: string = '';
   noAbsenceFound: string = '';
-  selections: any = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
-  aggStars: any = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
-  ratingStars: any;
+  selections: string[] = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+  aggStars: string[] = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+  ratingStars: number;
   showNoteModal: boolean = false;
   halfStar: boolean = false;
   halfStarPosition: number;
-  studentBehaviour: any = {
+  studentBehaviour: { icon?: string; text?: string } = {
     icon: '',
     text: ''
   };
-  totalDelay: any;
-  navData: any = {};
-  planLang: any;
-  app_rate: any;
-  student_detailse: any;
-  student_points: any[] = [];
-  id: any;
+  totalDelay: number;
+  navData: Record<string, unknown> = {};
+  planLang: Record<string, string>;
+  app_rate: Record<string, string>;
+  student_detailse: Record<string, string>;
+  student_points: number[] = [];
+  id: string | number;
   callOfStudentsReport = [];
   AllStudentPledgesReports = [];
-  AvailablePlan: any;
-  editNoteData: any;
+  AvailablePlan: UserPlan;
+  editNoteData: StudentNote;
 
   showAbsenceNoteModal: boolean = false;
   absenceNoteText: string = '';
-  currentAbsenceDate: any = null;
-  currentAbsenceNotesArray: any = null;
+  currentAbsenceDate: string = null;
+  currentAbsenceNotesArray: StudentNote[] = null;
 
   showDeleteConfirmModal: boolean = false;
-  deletePayload: any = null;
+  deletePayload: DeletePayload = null;
 
   showImageViewer: boolean = false;
   viewImageUrl: string = '';
 
   isLoadingSkills: boolean = false;
   studentTotalPoints: number = 0;
-  studentSkillData: any = null;
+  studentSkillData: SkillData = null;
   studentTitle: string = '';
   skillMaxTarget: number = 100;
 
@@ -118,8 +138,6 @@ export class StudentDetailPage {
   isReportsLoaded: boolean = false;
   isNotesLoaded: boolean = false;
 
-  processedTitles: any[] = [];
-  processedBadges: any[] = [];
   badgesProgress: number = 0;
 
   showWarningPopup: boolean = false;
@@ -162,7 +180,7 @@ export class StudentDetailPage {
       this.navData = navigation.extras.state;
       this.storage.set('currentStudent', this.navData);
       localStorage.setItem('currentStudent', JSON.stringify(this.navData));
-      this.totalDelay = this.navData.total_delay;
+      this.totalDelay = this.navData.total_delay as number;
     }
 
     this.translate.get('alertmessages').subscribe(val => {
@@ -216,7 +234,7 @@ export class StudentDetailPage {
     };
 
     try {
-      const res: any = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
+      const res = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
 
       this.zone.run(() => {
         if (res && res.success) {
@@ -238,10 +256,10 @@ export class StudentDetailPage {
           }, 300);
         }
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       this.zone.run(() => {
         setTimeout(() => {
-          let errorDetails = typeof err === 'string' ? err : err?.message || JSON.stringify(err);
+          let errorDetails = typeof err === 'string' ? err : (err as { message?: string })?.message || JSON.stringify(err);
           let msg = `خطأ: ${errorDetails}`;
 
           this.warningType = this.isFrozen || msg.includes('مجم') || msg.includes('تجميد') ? 'frozen' : 'warning';
@@ -257,7 +275,7 @@ export class StudentDetailPage {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  fetchStudentSkills(sid: any) {
+  fetchStudentSkills(sid: string | number) {
     this.isLoadingSkills = true;
     this.studentTotalPoints = 0;
     this.studentSkillData = null;
@@ -267,7 +285,8 @@ export class StudentDetailPage {
 
     this.gamificationApi
       .getStudentSkillTree(body)
-      .then((res: any) => {
+      .then((raw) => {
+        const res = raw as { success?: boolean; total_points?: number; skills?: SkillData } | undefined;
         this.isLoadingSkills = false;
         if (res && res.success) {
           this.studentTotalPoints = res.total_points || 0;
@@ -289,7 +308,7 @@ export class StudentDetailPage {
       });
   }
 
-  generateStudentTitle(skills: any, total: number) {
+  generateStudentTitle(skills: Record<string, unknown>, total: number) {
     if (!skills || total === 0) return '🌱 بطل في البداية';
 
     let highestSkill = 'general';
@@ -384,7 +403,7 @@ export class StudentDetailPage {
     this.cdr.markForCheck();
 
     if (this.navData?.student_id) {
-      this.fetchStudentSkills(this.navData.student_id);
+      this.fetchStudentSkills(this.navData.student_id as string | number);
     }
   }
 
@@ -411,7 +430,7 @@ export class StudentDetailPage {
           this.studentBehaviour.text = this.lang.no_behaviour;
         }
         if (response.notes.length > 0) {
-          this.notes.notes.forEach((note: any) => {
+          this.notes.notes.forEach((note: StudentNote) => {
             if (note.user_id == this.userDetails.details.user_no && this.userDetails.details.pic) {
               note.teacher_pic = this.userDetails.details.pic;
             }
@@ -431,16 +450,16 @@ export class StudentDetailPage {
                 this.canAddStudentNote = false;
               }
             }
-            if (note.rating > 0) {
+            if (Number(note.rating) > 0) {
               note.selections = ['#fff', '#fff', '#fff', '#fff', '#fff'];
-              for (let i = 0; i < parseInt(note.rating); i++) {
+              for (let i = 0; i < parseInt(String(note.rating)); i++) {
                 note.selections[i] = '#04855f';
               }
             }
           });
           let realNo = 0;
           if (this.notes.agg_ranking % 1 == 0) {
-            realNo = parseInt(this.notes.agg_ranking);
+            realNo = parseInt(String(this.notes.agg_ranking));
           } else {
             realNo = Math.floor(this.notes.agg_ranking);
             this.halfStarPosition = realNo;
@@ -476,19 +495,19 @@ export class StudentDetailPage {
             sid: this.navData?.student_id || this.navData?.sid
           };
 
-          const response: any = await this.schoolDirectoryApi.getStudentDetails(data);
+          const response = await this.schoolDirectoryApi.getStudentDetails(data);
 
           if (response && response.session && response.data) {
             this.studentService.checkStudent(response.data);
             this.studentDetails = response.data;
 
             if (this.studentDetails && !this.studentDetails.agg_ranking) {
-              this.studentDetails.agg_ranking = this.navData?.agg_ranking || 0;
+              this.studentDetails.agg_ranking = (this.navData?.agg_ranking as number) || 0;
             }
 
             this.studentDetails.student_points =
               this.navData?.student_points !== undefined
-                ? this.navData.student_points
+                ? (this.navData.student_points as number)
                 : response.data.student_points || 0;
 
             let dashboardData = {
@@ -496,7 +515,7 @@ export class StudentDetailPage {
               userId: String(this.userDetails.details.user_no)
             };
 
-            const dashRes: any = await this.gamificationApi.getStudentProfileDashboard(dashboardData);
+            const dashRes: StudentProfileDashboard | false = await this.gamificationApi.getStudentProfileDashboard(dashboardData);
 
             if (dashRes && dashRes.success) {
               let rawTitle = dashRes.inventory?.active_title;
@@ -515,7 +534,6 @@ export class StudentDetailPage {
               this.studentSkillData = dashRes.skill_tree?.skills || null;
 
               if (this.gamification) {
-                this.processedBadges = this.gamification.processBadges(dashRes.inventory?.unlocked_badges || []);
                 this.studentTitle = this.getStudentTitle(this.studentDetails);
               }
             }
@@ -552,7 +570,7 @@ export class StudentDetailPage {
           this.notes = response;
 
           if (response.notes.length > 0) {
-            this.notes.notes.forEach((note: any) => {
+            this.notes.notes.forEach((note: StudentNote) => {
               if (note.user_id == this.userDetails.details.user_no && this.userDetails.details.pic) {
                 note.teacher_pic = this.userDetails.details.pic;
               }
@@ -576,9 +594,9 @@ export class StudentDetailPage {
                 }
               }
 
-              if (note.rating > 0) {
+              if (Number(note.rating) > 0) {
                 note.selections = ['#fff', '#fff', '#fff', '#fff', '#fff'];
-                for (let i = 0; i < parseInt(note.rating); i++) {
+                for (let i = 0; i < parseInt(String(note.rating)); i++) {
                   note.selections[i] = '#04855f';
                 }
               }
@@ -586,7 +604,7 @@ export class StudentDetailPage {
 
             let realNo = 0;
             if (this.notes.agg_ranking % 1 == 0) {
-              realNo = parseInt(this.notes.agg_ranking);
+              realNo = parseInt(String(this.notes.agg_ranking));
             } else {
               realNo = Math.floor(this.notes.agg_ranking);
               this.halfStarPosition = realNo;
@@ -602,11 +620,9 @@ export class StudentDetailPage {
           this.cdr.markForCheck();
           resolve();
         })
-        .catch((error: any) => {
+        .catch((error: { error?: { msg?: string; message?: string }; message?: string } | string) => {
           let safeErrorMsg =
-            error?.error?.msg ||
-            error?.error?.message ||
-            error?.message ||
+            (typeof error !== 'string' && (error?.error?.msg || error?.error?.message || error?.message)) ||
             (typeof error === 'string' ? error : 'حدث خطأ غير متوقع أثناء جلب الملاحظات');
           this.dataProvider.errorALertMessage(safeErrorMsg);
           resolve();
@@ -614,8 +630,8 @@ export class StudentDetailPage {
     });
   }
 
-  async addAbsentNote(notes: any, date: any) {
-    let note = notes.filter((note: any) => {
+  async addAbsentNote(notes: AbsenceNote[], date: string) {
+    let note = notes.filter((note: AbsenceNote) => {
       return note.created_by == this.userDetails.details.user_no;
     });
 
@@ -644,7 +660,7 @@ export class StudentDetailPage {
     }
   }
 
-  saveNote(noteData: any, notes: any, date: any) {
+  saveNote(noteData: { note: string }, notes: AbsenceNote[], date: string) {
     let data = {
       sid: this.studentDetails.sid,
       cid: this.navData.course_id,
@@ -675,12 +691,12 @@ export class StudentDetailPage {
       });
   }
 
-  deleteUserNote(note_id: any, index: number) {
+  deleteUserNote(note_id: string | number, index: number) {
     this.deletePayload = { type: 'note', id: note_id, index: index };
     this.showDeleteConfirmModal = true;
   }
 
-  deleteAbsenceNote(notes: any, note_id: any, index: number) {
+  deleteAbsenceNote(notes: AbsenceNote[], note_id: string | number, index: number) {
     this.deletePayload = { type: 'absence', id: note_id, index: index, notesArray: notes };
     this.showDeleteConfirmModal = true;
   }
@@ -839,7 +855,7 @@ export class StudentDetailPage {
     }
   }
 
-  async editDeleteNotes(event: any, note_id: any, index: number, note: any) {
+  async editDeleteNotes(event: Event, note_id: string | number, index: number, note: StudentNote) {
     this.editNoteData = note;
 
     if (this.platform.width() >= 768 && event) {
@@ -903,7 +919,7 @@ export class StudentDetailPage {
     }
   }
 
-  udateNotes(data, note_id: any) {
+  udateNotes(data: { data?: number; noteMessage?: string }, note_id: string | number) {
     let updates = {
       sid: this.navData.student_id,
       note_id: note_id,
@@ -938,7 +954,7 @@ export class StudentDetailPage {
     }
   }
 
-  async takePicture(event?: any) {
+  async takePicture(event?: Event) {
     if ((await Network.getStatus()).connected) {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popover.create({
@@ -1012,7 +1028,7 @@ export class StudentDetailPage {
       componentProps: { student: this.studentDetails }
     });
 
-    modal.onDidDismiss().then((data: any) => {
+    modal.onDidDismiss().then((data: { data?: { image_url?: string } }) => {
       if (data && data.data && data.data.image_url) {
         this.dataProvider.showLoading();
         this.imageService
@@ -1040,7 +1056,7 @@ export class StudentDetailPage {
         this.studentEngagement.uploadAvatar(base64Data, {
           user_no: this.userDetails.details.user_no,
           session_id: this.userDetails.session_id,
-          sid: this.navData.student_id
+          sid: this.navData.student_id as string | number
         })
       );
 
@@ -1052,8 +1068,8 @@ export class StudentDetailPage {
         this.dataProvider.errorALertMessage(result.message);
       }
       this.cdr.markForCheck();
-    } catch (error: any) {
-      this.dataProvider.errorALertMessage(error?.message || 'حدث خطأ في الاتصال');
+    } catch (error: unknown) {
+      this.dataProvider.errorALertMessage((error as { message?: string })?.message || 'حدث خطأ في الاتصال');
     }
   }
 
@@ -1069,7 +1085,7 @@ export class StudentDetailPage {
     }
   }
 
-  async presentNoteActionSheet(event: any, mode: any, note: any, note_id: any) {
+  async presentNoteActionSheet(event: Event, mode: string, note: StudentNote | '', note_id: string | number | '') {
     if (this.platform.width() >= 768 && event) {
       const popover = await this.popover.create({
         component: StudentOptionsPopoverComponent,
@@ -1232,7 +1248,7 @@ export class StudentDetailPage {
   }
 
 
-  async presentPrintOption(event: any) {
+  async presentPrintOption(event: Event) {
     // if(this.AvailablePlan?.plan?.slug == 'free' || this.AvailablePlan?.isExpire == true){
     //   this.presentAlertPlanConfirm();
     //   return;
@@ -1315,19 +1331,19 @@ export class StudentDetailPage {
 
           this.reportsApi
             .openStudentReport(url)
-            .then(async (res: any) => {
+            .then(async (res) => {
               this.dataProvider.hideLoading();
 
               if (res && res.data) {
-                let htmlContent = res.data;
+                let htmlContent = String(res.data);
 
                 if (this.platform.is('cordova') || this.platform.is('capacitor')) {
                   let options: PrintOptions = { orientation: 'portrait' };
                   this.printer.print(htmlContent.replace(/(\r\n|\n|\r)/gm, ''), options).then(
-                    (onSuccess: any) => {
+                    () => {
                       console.log('تم فتح نافذة الطباعة بنجاح');
                     },
-                    (e: any) => {
+                    (e) => {
                       console.log('تعذرت الطباعة، سيتم الفتح في المتصفح', e);
                       this.openHtmlInBrowser(htmlContent);
                     }
@@ -1345,10 +1361,10 @@ export class StudentDetailPage {
             });
         } else {
           this.reportsApi.getStudentReport(studentData).then(
-            async (res: any) => {
+            async (res) => {
               this.dataProvider.hideLoading();
               if (res && res.data) {
-                let splitUrl = res.data.split('/');
+                let splitUrl = String(res.data).split('/');
                 let filename = splitUrl[splitUrl.length - 1];
                 let url = `${environment.docUrl}uploads/stufollowup/${filename}`;
                 await Browser.open({ url: url });
@@ -1459,7 +1475,7 @@ export class StudentDetailPage {
     return formatter.format(date);
   }
 
-  async openUserDetails(ev: any, student: any) {
+  async openUserDetails(ev: Event, student: Student) {
     const modal = await this.modalController.create({
       component: StudentDetailsComponent,
       componentProps: {
@@ -1558,8 +1574,8 @@ export class StudentDetailPage {
             let data = res.data;
             let options: PrintOptions = { orientation: 'portrait' };
             this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then(
-              (onSuccess: any) => {},
-              (e: any) => {
+              () => {},
+              (e) => {
                 this.dataProvider.showToast(this.lang.report_error);
               }
             );
@@ -1583,8 +1599,8 @@ export class StudentDetailPage {
             let data = res.data;
             let options: PrintOptions = { orientation: 'portrait' };
             this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then(
-              (onSuccess: any) => {},
-              (e: any) => {
+              () => {},
+              (e) => {
                 this.dataProvider.showToast(this.lang.report_error);
               }
             );
@@ -1597,15 +1613,15 @@ export class StudentDetailPage {
   }
 
   showInventoryModal: boolean = false;
-  inventoryTab: string = 'titles';
-
-  studentWallet: any = {};
-  unlockedTitles: string[] = [];
-  unlockedBadges: string[] = [];
   activeCraftedTitle: string = null;
 
+  @ViewChild(StudentInventoryModalComponent) inventoryModal: StudentInventoryModalComponent;
+
+  // Loads inventory data before opening (not reactively on isOpen) so the
+  // modal never flashes an empty state — matches the pre-extraction
+  // behavior, where fetchInventory() was always awaited first too.
   async openInventoryModal() {
-    await this.fetchInventory();
+    await this.inventoryModal.fetchInventory();
     this.showInventoryModal = true;
     this.cdr.markForCheck();
   }
@@ -1614,113 +1630,20 @@ export class StudentDetailPage {
     this.showInventoryModal = false;
   }
 
-  fetchInventory(): Promise<void> {
-    return new Promise(resolve => {
-      let sid = this.studentDetails?.sid || this.navData?.student_id;
-
-      let body = {
-        sid: String(sid),
-        userId: String(this.userDetails.details.user_no)
-      };
-
-      this.gamificationApi
-        .getStudentInventory(body)
-        .then((res: any) => {
-          if (res && res.success) {
-            this.studentWallet = res.wallet;
-            this.unlockedTitles = res.unlocked_titles || [];
-            this.unlockedBadges = res.unlocked_badges || [];
-
-            let rawActive = res.active_title;
-            if (rawActive !== undefined && rawActive !== null && rawActive !== 'null' && rawActive !== '') {
-              this.activeCraftedTitle =
-                typeof rawActive === 'object'
-                  ? rawActive.title_ar || rawActive.title_name || rawActive.title
-                  : rawActive;
-            }
-
-            if (this.studentDetails) {
-              this.studentDetails.active_crafted_title = this.activeCraftedTitle;
-            }
-
-            let skills = this.studentSkillData || this.studentDetails || {};
-            let points = this.studentTotalPoints || this.studentDetails?.student_points || 0;
-
-            if (this.gamification) {
-              this.studentTitle = this.gamification.getFinalStudentTitle(this.activeCraftedTitle, skills, points);
-              this.processedTitles = this.gamification.processTitles(this.unlockedTitles);
-              this.processedBadges = this.gamification.processBadges(this.unlockedBadges);
-            }
-          }
-
-          this.cdr.markForCheck();
-          resolve();
-        })
-        .catch(err => {
-          resolve();
-        });
-    });
-  }
-
-  canCraft(cost: any): boolean {
-    if (!this.studentWallet) return false;
-    for (let skill in cost) {
-      let spendableAmount = Number(this.studentWallet['spendable_' + skill]) || 0;
-      if (spendableAmount < cost[skill]) return false;
+  onInventoryActiveTitleChange(title: string | null) {
+    this.activeCraftedTitle = title;
+    if (this.studentDetails) {
+      this.studentDetails.active_crafted_title = title;
     }
-    return true;
   }
 
-  async craftTitle(title: any) {
-    if (!this.canCraft(title.cost)) {
-      this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.');
-      return;
-    }
-
-    let sid = this.studentDetails?.sid || this.navData?.student_id;
-
-    let body = {
-      sid: String(sid),
-      title_code: title.code,
-      cost: JSON.stringify(title.cost),
-      userId: String(this.userDetails.details.user_no)
-    };
-
-    try {
-      let res: any = await this.dataProvider.run(() => this.studentEngagement.craftSkillTitle(body));
-      if (res.success) {
-        this.dataProvider.showToast(res.msg);
-        await this.fetchInventory();
-        this.fetchStudentSkills(sid);
-      } else {
-        this.dataProvider.errorALertMessage(res.msg);
-      }
-    } catch (e) {}
+  onInventoryStudentTitleChange(title: string) {
+    this.studentTitle = title;
+    this.cdr.markForCheck();
   }
 
-  async toggleTitle(titleCode: string | null) {
-    let sid = this.studentDetails?.sid || this.navData?.student_id;
-
-    let body = {
-      sid: String(sid),
-      title_code: titleCode ? String(titleCode) : '',
-      userId: String(this.userDetails.details.user_no)
-    };
-
-    try {
-      let res: any = await this.dataProvider.run(() => this.studentEngagement.equipTitle(body));
-      if (res.success) {
-        this.activeCraftedTitle = titleCode;
-        this.dataProvider.showToast(res.msg);
-
-        this.studentTitle = this.gamification.getFinalStudentTitle(
-          titleCode,
-          this.studentSkillData,
-          this.studentTotalPoints
-        );
-        this.cdr.markForCheck();
-      }
-    } catch (e) {}
+  onInventorySkillsRefreshNeeded() {
+    this.fetchStudentSkills(this.selectedStudentId);
   }
 
   async switchCategory(selectedCategory: string) {
@@ -1737,9 +1660,9 @@ export class StudentDetailPage {
 
       try {
         await this.dataProvider.run(async () => {
-          const followUpRes: any = await this.followupFieldsApi.getFollowUpStudentList(followUpData);
+          const followUpRes = await this.followupFieldsApi.getFollowUpStudentList(followUpData);
           if (followUpRes && followUpRes.data && followUpRes.data.students) {
-            let matched = followUpRes.data.students.find((s: any) => s.sid === this.navData.student_id);
+            let matched = followUpRes.data.students.find((s) => s.sid === this.navData.student_id);
             if (matched) {
               this.zone.run(() => {
                 this.studentDetails.unacceptable_absent_days =
@@ -1790,6 +1713,10 @@ export class StudentDetailPage {
     }
   }
 
+  get selectedStudentId(): string | number {
+    return (this.studentDetails?.sid || this.navData?.student_id) as string | number;
+  }
+
   get isFrozen(): boolean {
     if (!this.studentDetails || !this.studentDetails.frozen_until) return false;
     const today = new Date().toISOString().split('T')[0];
@@ -1814,7 +1741,7 @@ export class StudentDetailPage {
     return this.gamification.getFinalStudentTitle(activeTitle, skillsData, totalPoints);
   }
 
-  getStudentTitle(student: any): string {
+  getStudentTitle(student: Student): string {
     if (!student) return '🌱 بطل في البداية';
 
     const activeCode =

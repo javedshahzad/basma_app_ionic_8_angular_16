@@ -52,6 +52,13 @@ export class EditUserProfilePage {
   selectedClasses: any[] = [];
   filteredClasses: any[] = [];
   searchTerm: string = '';
+  // Memoized mirror of user.class's ids for O(1) isClassSelected() lookups
+  // in the *ngFor row template. user.class gets reassigned wholesale in
+  // several places (page load, reset) so this is invalidated by reference
+  // rather than synced at every assignment site; toggleSelectedClass()
+  // additionally updates it directly since it mutates the array in place.
+  private classIdSet = new Set<string | number>();
+  private classIdSetSourceRef: unknown = null;
 
   showDeleteModal: boolean = false;
   show_delete_user_spinner: boolean = false;
@@ -289,15 +296,26 @@ export class EditUserProfilePage {
     this.isClassModalOpen = true;
   }
 
+  private syncClassIdSet() {
+    this.classIdSetSourceRef = this.user.class;
+    this.classIdSet = new Set((this.user.class || []).map((c: any) => c.cid ?? c.id));
+  }
+
   isClassSelected(cls: any): boolean {
     if (!this.user.class || !Array.isArray(this.user.class)) return false;
+    if (this.user.class !== this.classIdSetSourceRef) {
+      this.syncClassIdSet();
+    }
     let targetId = cls.cid || cls.id;
-    return this.user.class.some((c: any) => c.cid === targetId || c.id === targetId);
+    return this.classIdSet.has(targetId);
   }
 
   toggleSelectedClass(cls: any) {
     if (!this.user.class || !Array.isArray(this.user.class)) {
       this.user.class = [];
+    }
+    if (this.user.class !== this.classIdSetSourceRef) {
+      this.syncClassIdSet();
     }
 
     let targetId = cls.cid || cls.id;
@@ -305,8 +323,10 @@ export class EditUserProfilePage {
 
     if (index > -1) {
       this.user.class.splice(index, 1);
+      this.classIdSet.delete(targetId);
     } else {
       this.user.class.push(cls);
+      this.classIdSet.add(targetId);
     }
   }
 

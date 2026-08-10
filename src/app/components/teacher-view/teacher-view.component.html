@@ -26,13 +26,13 @@
       تسجيل حضور صف {{ courseInfo?.name }} - الحصة ({{ currentActivePeriod }})
     </p>
     <div *ngIf="!lockedPeriods.includes(currentActivePeriod)" class="flex justify-between items-center gap-2" dir="rtl">
-  <button class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 flex justify-center items-center gap-1" (click)="onSetAllStatus.emit('1')">
+  <button class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 flex justify-center items-center gap-1" (click)="setAllStatus.emit('1')">
     <ion-icon name="checkmark-circle"></ion-icon> الكل حاضر
   </button>
-  <button class="flex-1 bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 flex justify-center items-center gap-1" (click)="onSetAllStatus.emit('0')">
+  <button class="flex-1 bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 flex justify-center items-center gap-1" (click)="setAllStatus.emit('0')">
     <ion-icon name="close-circle"></ion-icon> الكل غائب
   </button>
-  <button class="w-10 h-10 shrink-0 bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl flex items-center justify-center shadow-sm transition-all active:scale-95" (click)="onSetAllStatus.emit('-1')">
+  <button class="w-10 h-10 shrink-0 bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl flex items-center justify-center shadow-sm transition-all active:scale-95" (click)="setAllStatus.emit('-1')">
     <ion-icon name="refresh"></ion-icon>
   </button>
 </div>
@@ -50,9 +50,9 @@
   <cdk-virtual-scroll-viewport itemSize="184" class="flex-1 min-h-0">
     <div class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-slate-100 flex flex-col transition-all hover:shadow-md" *cdkVirtualFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent">
       <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-4 w-full cursor-pointer" (click)="onStudentClick.emit(student.sid)">
+        <div class="flex items-center gap-4 w-full cursor-pointer" (click)="studentClick.emit(student.sid)">
           
-          <div class="relative" (click)="$event.stopPropagation(); onImageClick.emit(student)">
+          <div class="relative" (click)="$event.stopPropagation(); imageClick.emit(student)">
             <img [src]="student.pic ? student.pic : 'assets/imgs/user-avatar.png'" loading="lazy" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 shadow-sm">
             <div class="absolute bottom-0 right-0 bg-rose-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white" *ngIf="student.student_data?.medical_condition">M</div>
             <!-- <img loading="lazy" class="absolute -top-1 -left-1 w-5 h-5" [src]="student.computedIcon" *ngIf="student.agg_ranking > 0" /> -->
@@ -83,7 +83,7 @@
           </div>
         </div>
         
-        <button class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center hover:bg-indigo-100 transition-colors flex-shrink-0" (click)="onNoteClick.emit({event: $event, student: student})">
+        <button class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center hover:bg-indigo-100 transition-colors flex-shrink-0" (click)="noteClick.emit({event: $event, student: student})">
           <ion-icon name="add" class="text-xl"></ion-icon>
         </button>
       </div>
@@ -119,10 +119,10 @@
                <ion-icon name="time" class="text-lg"></ion-icon> مسجل تأخير
            </div>
            <div *ngSwitchCase="'open'" class="flex gap-2 w-full">
-              <button class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all" [ngClass]="(student.sheet && student.sheet['cem-' + currentActivePeriod] === '1') ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200 scale-[1.02]' : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'" (click)="onSetStudentStatus.emit({student: student, status: '1'})">
+              <button class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all" [ngClass]="(student.sheet && student.sheet['cem-' + currentActivePeriod] === '1') ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200 scale-[1.02]' : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'" (click)="setStudentStatus.emit({student: student, status: '1'})">
                 <ion-icon [name]="(student.sheet && student.sheet['cem-' + currentActivePeriod] === '1') ? 'checkmark-circle' : 'checkmark-circle-outline'" class="text-xl"></ion-icon> حاضر
               </button>
-              <button class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all" [ngClass]="(student.sheet && student.sheet['cem-' + currentActivePeriod] === '0') ? 'bg-rose-500 text-white shadow-lg shadow-rose-200 scale-[1.02]' : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'" (click)="onSetStudentStatus.emit({student: student, status: '0'})">
+              <button class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all" [ngClass]="(student.sheet && student.sheet['cem-' + currentActivePeriod] === '0') ? 'bg-rose-500 text-white shadow-lg shadow-rose-200 scale-[1.02]' : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'" (click)="setStudentStatus.emit({student: student, status: '0'})">
                 <ion-icon [name]="(student.sheet && student.sheet['cem-' + currentActivePeriod] === '0') ? 'close-circle' : 'close-circle-outline'" class="text-xl"></ion-icon> غائب
               </button>
            </div>

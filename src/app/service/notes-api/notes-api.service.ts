@@ -5,6 +5,41 @@ import { environment } from '../../../environments/environment';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
 
+export interface StudentNote {
+  id?: string | number;
+  note?: string;
+  date?: string;
+  rating?: number | string;
+  new_ratting?: string;
+  user_id?: string | number;
+  pic?: string;
+  teacher_pic?: string;
+  first_name?: string;
+  last_name?: string;
+  // Client-computed (student-detail.page.ts):
+  display_pic?: string;
+  selections?: string[];
+}
+
+export interface StudentNotesResponse {
+  status?: boolean;
+  msg?: string;
+  notes?: StudentNote[];
+  agg_ranking?: number;
+  total_notes?: number;
+  total_rating?: Record<string, number>;
+}
+
+export interface ClassNote {
+  send_to?: string;
+  datetime?: string;
+  examNoteDate?: string;
+  description?: string;
+  image_file?: string;
+  file_link?: string;
+  pdf?: string;
+}
+
 /**
  * Student/class notes HTTP calls, split out of DataService. Depends on
  * DataService for `lang` (error-message fallbacks) and, for
@@ -23,9 +58,9 @@ export class NotesApiService {
     private dataService: DataService
   ) { }
 
-  getStudentNotes(data: any): Promise<any> {
+  getStudentNotes(data: Record<string, unknown>): Promise<StudentNotesResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'getStudentNote/' + data.sid).then((response: any) => {
+      this.apiClient.postRequest<StudentNotesResponse>(data, 'getStudentNote/' + data.sid).then((response) => {
         if (response) {
           if (response.status) {
             resolve(response);
@@ -35,20 +70,13 @@ export class NotesApiService {
         } else {
           reject(this.dataService.lang.networkNotWorking);
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  getClassNotes(data: any): Promise<any> {
+  getClassNotes(data: Record<string, unknown>): Promise<ClassNote[]> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'studentClassNotes').then((response: any) => {
+      this.apiClient.postRequest<{ response?: ClassNote[]; msg?: string }>(data, 'studentClassNotes').then((response) => {
         if (response) {
           if (response.response) {
             resolve(response.response);
@@ -58,20 +86,13 @@ export class NotesApiService {
         } else {
           reject(this.dataService.lang.networkNotWorking);
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  getAllClassNotes(data: any): Promise<any> {
+  getAllClassNotes(data: Record<string, unknown>): Promise<ClassNote[]> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'all_classNotes').then((response: any) => {
+      this.apiClient.postRequest<{ response?: ClassNote[]; msg?: string }>(data, 'all_classNotes').then((response) => {
         if (response) {
           if (response.response) {
             resolve(response.response);
@@ -81,20 +102,13 @@ export class NotesApiService {
         } else {
           reject(this.dataService.lang.networkNotWorking);
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  addStudentNote(data: any): Promise<any> {
+  addStudentNote(data: Record<string, unknown>): Promise<string | number> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'addStudentNote').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; note_id?: string | number; msg?: string }>(data, 'addStudentNote').then((response) => {
         if (response) {
           if (response.success) {
             resolve(response.note_id);
@@ -104,14 +118,7 @@ export class NotesApiService {
         } else {
           reject(this.dataService.lang.networkNotWorking);
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
@@ -119,9 +126,9 @@ export class NotesApiService {
    * Submit Student note
    * @param data sid, note, user_id
    */
-  EditStudentNote(data: any): Promise<any> {
+  EditStudentNote(data: Record<string, unknown>): Promise<string | number> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'editStudentNote').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; note_id?: string | number; msg?: string }>(data, 'editStudentNote').then((response) => {
         if (response) {
           if (response.success) {
             resolve(response.note_id);
@@ -131,20 +138,13 @@ export class NotesApiService {
         } else {
           reject(this.dataService.lang.networkNotWorking);
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  deleteStudentNote(data: any, note_id: any): Promise<any> {
+  deleteStudentNote(data: Record<string, unknown>, note_id: string | number): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteStudentNote/' + note_id).then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'deleteStudentNote/' + note_id).then((response) => {
         if (response) {
           if (response.success) {
             resolve(true);
@@ -154,49 +154,39 @@ export class NotesApiService {
         } else {
           reject(this.dataService.lang.networkNotWorking);
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
   //==========added on 28/12/21 for print class notes as pdf=========
-  printAllClassNotes(data): Promise<any> {
+  printAllClassNotes(data: Record<string, unknown> & { is_multi?: boolean }): Promise<{ session: boolean; data?: string }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, data.is_multi ? 'printMultipleClassNotes' : 'printClassNotes')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; response?: string; msg?: string }>(data, data.is_multi ? 'printMultipleClassNotes' : 'printClassNotes')
+        .then((res) => {
+          const response = res as { success?: boolean; response?: string; msg?: string };
           if (response.success) {
             resolve({ session: true, data: response.response });
           } else {
             reject(response.msg);
           }
         })
-        .catch(error => {
-          console.log(error);
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
-  editAbsentNotes(data): Promise<any> {
+  editAbsentNotes(data: Record<string, unknown>): Promise<{ session: boolean; data?: { msg?: string }; message?: string }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'editAbsentNotes')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ msg?: string; mg?: string }>(data, 'editAbsentNotes')
+        .then((response) => {
           if (response) {
             resolve({ session: true, data: response, message: response.mg });
           } else {
-            reject(response.msg);
+            reject(undefined);
           }
         })
-        .catch(error => {
-          console.log(error);
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -220,15 +210,15 @@ export class NotesApiService {
    * Absence save note
    * @param data sid, cid, date, note, user_no, session_id
    */
-  saveAbsenceNote(data: any): Promise<any> {
+  saveAbsenceNote(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; note_id?: string | number }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'saveNote')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ session?: boolean; success?: boolean; msg?: string; note_id?: string | number }>(data, 'saveNote')
+        .then((response) => {
           if (response) {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
             } else if (response.success) {
-              resolve({ session: true, message: response.msg, res: response });
+              resolve({ session: true, message: response.msg, note_id: response.note_id });
             } else {
               reject(response.msg);
             }
@@ -236,14 +226,7 @@ export class NotesApiService {
             reject(this.dataService.lang.networkNotWorking);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -252,10 +235,10 @@ export class NotesApiService {
    * @param data user_no, session_id
    * @param note_id Note id which will be deleted
    */
-  deleteAbsenceNote(data: any, note_id: any): Promise<any> {
+  deleteAbsenceNote(data: Record<string, unknown>, note_id: string | number): Promise<{ session: boolean; message?: string }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteNote/' + note_id)
-        .then((response: any) => {
+      this.apiClient.postRequest<{ session?: boolean; success?: boolean; msg?: string }>(data, 'deleteNote/' + note_id)
+        .then((response) => {
           if (response) {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
@@ -268,14 +251,7 @@ export class NotesApiService {
             reject(this.dataService.lang.networkNotWorking);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 }

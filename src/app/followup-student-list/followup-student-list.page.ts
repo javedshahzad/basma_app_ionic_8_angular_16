@@ -29,10 +29,21 @@ import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
-import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
+import { FollowupFieldsApiService, FollowupStudentListResponse, FollowupStudentRecord, FollowupMarkEntry, FollowupField } from '../service/followup-fields-api/followup-fields-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { Course } from '../service/courses-api/courses-api.service';
+import { UserPlan } from '../service/plan-api/plan-api.service';
+
+interface MarkSheetEntry {
+  sid?: string | number;
+  cid?: string | number;
+  marks?: string | number;
+  marks_id?: string | number;
+  field_id?: string | number;
+}
 
 @Component({
     selector: 'app-followup-student-list',
@@ -45,35 +56,35 @@ export class FollowupStudentListPage {
   readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
 
-  courseInfo: any;
-  dateSelected: any;
-  attendanceResponse: any = {};
+  courseInfo: Course;
+  dateSelected: Date;
+  attendanceResponse: FollowupStudentListResponse = {};
   show_loading: boolean = false;
-  userDetails: any = {};
-  userType: any;
-  navData: any;
+  userDetails: LoggedInUser = {};
+  userType: string;
+  navData: Record<string, unknown>;
   noDataFound: string = '';
   isHoliday: boolean = false;
   holidayString: string = '';
   canAddStudentNote: boolean = true;
-  lang: any = {};
-  planLang: any = {};
-  student_detailse: any = {};
+  lang: Record<string, string> = {};
+  planLang: Record<string, string> = {};
+  student_detailse: Record<string, string> = {};
 
   // المتغيرات الخاصة بالدرجات
-  markSheet: any = [];
-  student_points: any[] = [];
-  AvailablePlan: any;
+  markSheet: MarkSheetEntry[] = [];
+  student_points: number[] = [];
+  AvailablePlan: UserPlan;
 
   // المتغيرات الخاصة بالصور وتكبيرها والملاحظات
-  studentData: any = {};
+  studentData: FollowupStudentRecord = {};
   viewImageUrl: string = '';
   showImageViewer: boolean = false;
   showCalenderModal: boolean = false;
   showNoteModal: boolean = false;
   noteMessage: string = '';
   ratingStars: number = 1;
-  selections: any = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+  selections: string[] = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
 
   // النوافذ المنبثقة (التأكيد والتحذير)
   showWarningPopup: boolean = false;
@@ -140,7 +151,7 @@ export class FollowupStudentListPage {
   }
 
 
-  trackByStudent(index: number, student: any): any {
+  trackByStudent(index: number, student: FollowupStudentRecord): string | number {
     return student?.sid ?? index;
   }
 
@@ -225,8 +236,8 @@ export class FollowupStudentListPage {
           this.attendanceResponse = res.data;
 
           if (this.attendanceResponse.students) {
-            this.attendanceResponse.students.forEach((student: any) => {
-              student.sheet.forEach((sheet: any) => {
+            this.attendanceResponse.students.forEach((student: FollowupStudentRecord) => {
+              student.sheet.forEach((sheet: FollowupMarkEntry) => {
                 this.markSheet.push({
                   sid: student.sid,
                   cid: student.cid,
@@ -256,7 +267,7 @@ export class FollowupStudentListPage {
       });
   }
 
-  isStudentFrozen(student: any): boolean {
+  isStudentFrozen(student: FollowupStudentRecord): boolean {
     if (!student || !student.frozen_until) return false;
     const today = new Date().toISOString().split('T')[0];
     return student.frozen_until >= today;
@@ -270,7 +281,7 @@ export class FollowupStudentListPage {
     this.showCalenderModal = false;
   }
 
-  onDaySelect(event: any) {
+  onDaySelect(event: CustomEvent) {
     if (!event.detail.value) return;
 
     let selectedDate = new Date(event.detail.value);
@@ -355,10 +366,10 @@ export class FollowupStudentListPage {
         };
 
         this.reportsApi.getMarksReport(studentData).then(
-          async (res: any) => {
+          async (res) => {
             this.dataProvider.hideLoading();
             if (res && res.data) {
-              let fileUrl = res.data;
+              let fileUrl = String(res.data);
               if (fileUrl.includes('uploads/stufollowup/')) {
                 let splitUrl = fileUrl.split('/');
                 let filename = splitUrl[splitUrl.length - 1];
@@ -440,13 +451,13 @@ export class FollowupStudentListPage {
       .catch(error => {});
   }
 
-  changeMarks(event: any, student: any, field: any) {
+  changeMarks(event: CustomEvent, student: FollowupStudentRecord, field: FollowupField) {
     if (this.isHoliday) {
       this.dataProvider.showToast(this.lang.holiday);
       return;
     }
 
-    let max = parseFloat(field.field_max_marks);
+    let max = parseFloat(String(field.field_max_marks));
     let val = event.detail.value;
 
     if (val === '' || val === null || val === undefined) {
@@ -457,13 +468,13 @@ export class FollowupStudentListPage {
     if (parseFloat(val) > max) {
       this.dataProvider.showToast((this.lang.could_not_be_greater || 'الحد الأقصى هو ') + max);
       field.marks = max;
-      event.target.value = max;
+      (event.target as HTMLInputElement).value = String(max);
     } else {
       field.marks = val;
     }
 
     let isPresent = false;
-    let obj: any = {
+    let obj: MarkSheetEntry = {
       sid: student.sid,
       cid: student.cid,
       marks_id: field.marks_id,
@@ -494,9 +505,9 @@ export class FollowupStudentListPage {
   submitMarks() {
     let isAllComplete = true;
 
-    this.attendanceResponse.students.forEach((student: any) => {
-      student.sheet.forEach((sheet: any) => {
-        if (sheet.marks && parseFloat(sheet.marks) > parseFloat(sheet.field_max_marks)) {
+    this.attendanceResponse.students.forEach((student: FollowupStudentRecord) => {
+      student.sheet.forEach((sheet: FollowupMarkEntry) => {
+        if (sheet.marks && parseFloat(String(sheet.marks)) > parseFloat(String(sheet.field_max_marks))) {
           isAllComplete = false;
         }
       });
@@ -507,7 +518,7 @@ export class FollowupStudentListPage {
         user_no: this.userDetails.details.user_no,
         school_id: this.userDetails.details.school_id,
         session_id: this.userDetails.session_id,
-        course_id: this.navData?.cid || this.navData?.course_id,
+        course_id: (this.navData?.cid || this.navData?.course_id) as string | number,
         date: this.dataProvider.getFormatedDate(this.dateSelected)
       };
 
@@ -534,7 +545,7 @@ export class FollowupStudentListPage {
   }
 
   // ================= 🟢 دوال زر الإجراءات (+) بجانب الطالب =================
-  async presentStudentActionSheet(event: any, student: any) {
+  async presentStudentActionSheet(event: Event, student: FollowupStudentRecord) {
     if (this.platform.width() >= 768 && event) {
       const popover = await this.popoverController.create({
         component: StudentOptionsPopoverComponent,
@@ -586,7 +597,7 @@ export class FollowupStudentListPage {
     }
   }
 
-  async openNoteModal(student: any, mode: any) {
+  async openNoteModal(student: FollowupStudentRecord, mode: 'note' | 'review') {
     this.studentData = student;
     if (mode === 'note') {
       this.showNoteModal = true;
@@ -691,14 +702,14 @@ export class FollowupStudentListPage {
     }
   }
 
-  async openSkillTreeModal(student: any) {
+  async openSkillTreeModal(student: FollowupStudentRecord) {
     const result = await this.studentUi.openSkillTree(student);
     if (result && result.skillType && result.points) {
       this.awardSkillPoints(student, result.skillType, result.points);
     }
   }
 
-  async awardSkillPoints(student: any, skillType: string, point: number) {
+  async awardSkillPoints(student: FollowupStudentRecord, skillType: string, point: number) {
     let body = {
       sid: String(student.sid),
       userId: String(this.userDetails.details.user_no),
@@ -707,7 +718,7 @@ export class FollowupStudentListPage {
     };
 
     try {
-      const res: any = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
+      const res = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
       this.zone.run(() => {
         if (res && res.success) {
           this.dataProvider.showToast(`تمت إضافة ${point} نقطة بنجاح!`);
@@ -720,10 +731,10 @@ export class FollowupStudentListPage {
         }
         this.cdr.markForCheck();
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       this.zone.run(() => {
         this.warningType = 'warning';
-        this.warningMessage = `خطأ: ${typeof err === 'string' ? err : err?.message}`;
+        this.warningMessage = `خطأ: ${typeof err === 'string' ? err : (err as { message?: string })?.message}`;
         this.showWarningPopup = true;
         this.cdr.markForCheck();
       });
@@ -735,7 +746,7 @@ export class FollowupStudentListPage {
   }
 
   // ================= دوال الصور (اعتماداً على الخدمة المركزية) =================
-  async openUserImageModal(student: any) {
+  async openUserImageModal(student: FollowupStudentRecord) {
     // 🟢 السطر السحري لربط بيانات المودال بالمتغير الذي تستخدمه الكاميرا
     this.studentData = student;
 
@@ -743,7 +754,7 @@ export class FollowupStudentListPage {
       this.studentData, // 🟢 تم تمرير المتغير المربوط
       this.userType,
       false,
-      (event: any) => {
+      (event: Event) => {
         this.takePicture(this.studentData, event);
       },
       (url: string) => {
@@ -752,7 +763,7 @@ export class FollowupStudentListPage {
     );
   }
 
-  async takePicture(student: any, event?: any) {
+  async takePicture(student: FollowupStudentRecord, event?: Event) {
     this.studentData = student;
     this.cdr.markForCheck();
     const result = await this.studentEngagement.captureAvatarImage(event, this.lang);
@@ -777,7 +788,7 @@ export class FollowupStudentListPage {
 
         // تحديث المصفوفة الحية التي تتصل بالشاشة
         if (this.attendanceResponse && this.attendanceResponse.students) {
-          const index = this.attendanceResponse.students.findIndex((s: any) => s.sid === this.studentData.sid);
+          const index = this.attendanceResponse.students.findIndex((s: FollowupStudentRecord) => s.sid === this.studentData.sid);
           if (index > -1) {
             this.attendanceResponse.students[index].pic = cleanUrl;
             // إجبار التحديث بعدم كسر المرجع أو بتغييره بطريقة صحيحة
@@ -821,7 +832,7 @@ export class FollowupStudentListPage {
           this.studentData.pic = newPicUrl;
 
           if (this.attendanceResponse && this.attendanceResponse.students) {
-            const index = this.attendanceResponse.students.findIndex((s: any) => s.sid === this.studentData.sid);
+            const index = this.attendanceResponse.students.findIndex((s: FollowupStudentRecord) => s.sid === this.studentData.sid);
             if (index > -1) {
               this.attendanceResponse.students[index].pic = newPicUrl;
             }

@@ -1,12 +1,5 @@
 ﻿import { Component, OnInit, Input, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import {
-  ModalController,
-  PopoverController,
-  IonicModule,
-  NavController,
-  AlertController,
-  Platform
-} from '@ionic/angular';
+import { ModalController, PopoverController, NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DatabaseService } from '../../service/database/database.service';
 import { Device } from '@capacitor/device';

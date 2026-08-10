@@ -30,14 +30,7 @@ export class HolidaysApiService {
         } else {
           resolve(false);
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 }

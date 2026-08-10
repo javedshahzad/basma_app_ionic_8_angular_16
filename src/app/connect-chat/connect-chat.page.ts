@@ -6,7 +6,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef
 } from '@angular/core';
-import { NavController, AlertController, IonContent, Platform, IonicModule } from '@ionic/angular';
+import { NavController, AlertController, Platform, IonContent, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -17,10 +17,11 @@ import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor
 
 // 🟢 1. استيراد خدمة التخزين الآمنة
 import { StorageService } from '../service/storage.service';
-import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
+import { ParentConnectApiService, ParentConnectChat, ChatMessage } from '../service/parent-connect-api/parent-connect-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { LinkyPipe } from '../pipes/linky.pipe';
+import { LoggedInUser } from '../model/logged-in-user.model';
 
 @Component({
     selector: 'app-connect-chat',
@@ -32,16 +33,24 @@ import { LinkyPipe } from '../pipes/linky.pipe';
 export class ConnectChatPage implements OnDestroy {
   @ViewChild('contentArea') private contentArea: IonContent; // 🟢 تعريف صحيح للمحتوى
 
-  userDetails: any = { details: {} };
-  chat: any = {};
+  userDetails: LoggedInUser = { details: {} };
+  chat: ParentConnectChat = {};
   message: string = '';
-  messages: any = [];
+  messages: ChatMessage[] = [];
+  // Windowed rendering: `messages` stays the full authoritative history (used
+  // for last-id tracking and de-dup checks below), but the template only
+  // renders `visibleMessages` — the most recent `visibleMessageCount` — so a
+  // long-running conversation doesn't grow the DOM unbounded. "Load older"
+  // widens the window; kept as a real field (not a template method call) so
+  // it's a stable reference across change-detection cycles.
+  visibleMessages: ChatMessage[] = [];
+  visibleMessageCount: number = 50;
   lastMessageId: number = 0;
-  chatInterval: any;
+  chatInterval: ReturnType<typeof setInterval>;
   attachment: string = '';
-  lang: any = {};
+  lang: Record<string, string> = {};
   image: string = '';
-  navData: any;
+  navData: ParentConnectChat;
 
   constructor(
     public navCtrl: NavController,
@@ -74,6 +83,7 @@ export class ConnectChatPage implements OnDestroy {
   // 🟢 4. دورة الحياة المتزامنة الآمنة
   async ionViewWillEnter() {
     this.messages = []; // تصفير الرسائل لتجنب التكرار
+    this.visibleMessageCount = 50;
 
     // استعادة بيانات المحادثة في حال عمل Refresh
     if (!this.navData) {
@@ -101,6 +111,7 @@ export class ConnectChatPage implements OnDestroy {
           attachment_url: this.chat.message_image,
           id: 0
         });
+        this.syncVisibleMessages();
 
         this.getInitialChat();
 
@@ -130,8 +141,19 @@ export class ConnectChatPage implements OnDestroy {
     }
   }
 
-  trackByMessage(index: number, message: any): any {
+  trackByMessage(index: number, message: ChatMessage): string | number {
     return message?.id ?? index;
+  }
+
+  private syncVisibleMessages() {
+    this.visibleMessages =
+      this.messages.length > this.visibleMessageCount ? this.messages.slice(-this.visibleMessageCount) : this.messages;
+  }
+
+  loadOlderMessages() {
+    this.visibleMessageCount += 50;
+    this.syncVisibleMessages();
+    this.cdr.markForCheck();
   }
 
   showPhoto(url: string) {
@@ -150,14 +172,15 @@ export class ConnectChatPage implements OnDestroy {
 
     this.dataProvider
       .run(() => this.parentConnectApi.getParentConnectChatMessages(data))
-      .then((response: any) => {
+      .then((response) => {
         if (response.session) {
           let length = response.chat.length;
           if (length > 0) {
-            response.chat.forEach((message: any) => {
+            response.chat.forEach((message) => {
               this.messages.push(message);
             });
-            this.lastMessageId = response.chat[length - 1].id;
+            this.syncVisibleMessages();
+            this.lastMessageId = response.chat[length - 1].id as number;
             this.scrollToBottom();
           }
           this.cdr.markForCheck();
@@ -181,22 +204,23 @@ export class ConnectChatPage implements OnDestroy {
 
     this.parentConnectApi
       .getParentConnectChatMessages(data)
-      .then((response: any) => {
+      .then((response) => {
         if (response.session) {
           let length = response.chat.length;
           if (length > 0) {
             let msgLength = this.messages.length;
-            response.chat.forEach((message: any) => {
+            response.chat.forEach((message) => {
               if (msgLength > 0 && message.id < this.messages[msgLength - 1].id) {
                 this.messages.push(message);
               } else {
-                let msg = this.messages.filter((oldMsg: any) => oldMsg.id == message.id);
+                let msg = this.messages.filter((oldMsg) => oldMsg.id == message.id);
                 if (msg.length == 0) {
                   this.messages.push(message);
                 }
               }
             });
-            this.lastMessageId = response.chat[length - 1].id;
+            this.syncVisibleMessages();
+            this.lastMessageId = response.chat[length - 1].id as number;
             this.scrollToBottom();
           }
           this.cdr.markForCheck();
@@ -232,7 +256,7 @@ export class ConnectChatPage implements OnDestroy {
       } else {
         this.image = '';
 
-        let data = {};
+        let data: Record<string, unknown> = {};
         if (
           this.userDetails.details.user_type == UserType.Parent ||
           this.userDetails.details.user_type == UserType.Student
@@ -266,11 +290,15 @@ export class ConnectChatPage implements OnDestroy {
         }
 
         this.dataProvider
-          .run(() => this.parentConnectApi.sendParentConnectChatMsg(data))
-          .then((response: any) => {
+          .run(() =>
+            this.parentConnectApi.sendParentConnectChatMsg(
+              data as { session_id: string; user_no: string | number; user_type: string; chat_msg: Record<string, string | number> }
+            )
+          )
+          .then((response) => {
             if (response.session) {
               this.dataProvider.showToast(response.message);
-              if (this.lastMessageId < response.msg_id) {
+              if (this.lastMessageId < Number(response.msg_id)) {
                 if (response.attachment_url) {
                   this.messages.push({
                     receiver: 'false',
@@ -285,6 +313,7 @@ export class ConnectChatPage implements OnDestroy {
                     id: response.msg_id
                   });
                 }
+                this.syncVisibleMessages();
                 this.scrollToBottom();
               }
               this.message = '';

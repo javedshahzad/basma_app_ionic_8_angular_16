@@ -24,19 +24,26 @@
 
 <ion-content #contentArea class="bg-slate-50" mode="md" [scrollEvents]="true">
   <div class="p-4 space-y-4 pb-4">
-    <div *ngFor="let message of messages; let i = index; trackBy: trackByMessage">
-      
+    <!-- عرض جزئي: نظهر آخر visibleMessageCount رسالة فقط لتفادي نمو الصفحة بلا حدود في محادثة طويلة -->
+    <div class="flex justify-center" *ngIf="messages.length > visibleMessages.length">
+      <button class="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-full px-4 py-1.5 active:scale-95" (click)="loadOlderMessages()">
+        تحميل الرسائل الأقدم ↑
+      </button>
+    </div>
+
+    <div *ngFor="let message of visibleMessages; let i = index; trackBy: trackByMessage">
+
       <!-- رسائل الطرف الآخر -->
       <div class="flex flex-col items-start w-full" *ngIf="message.receiver === 'false'"
-           [ngClass]="{'mt-6': i > 0 && messages[i-1].receiver !== message.receiver}">
+           [ngClass]="{'mt-6': i > 0 && visibleMessages[i-1].receiver !== message.receiver}">
         <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm self-end">
-          
+
           <div *ngIf="message.message && message.message !== ''" class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
-          
+
           <div *ngIf="message.attachment_url && message.attachment_url !== ''" class="mt-2 relative">
             <img loading="lazy" class="rounded-xl w-48 h-auto object-cover border border-indigo-400/30" [src]="message.attachment_url" (click)="showPhoto(message.attachment_url)" />
           </div>
-          
+
           <div class="text-[9px] text-indigo-200 text-left mt-1 font-medium" dir="ltr">
             {{message.message_time}}
           </div>
@@ -45,7 +52,7 @@
 
       <!-- رسائلي أنا -->
       <div class="flex flex-col items-start w-full" *ngIf="message.receiver === 'true'"
-           [ngClass]="{'mt-6': i > 0 && messages[i-1].receiver !== message.receiver}">
+           [ngClass]="{'mt-6': i > 0 && visibleMessages[i-1].receiver !== message.receiver}">
         <div class="bg-white text-slate-700 p-3 rounded-2xl rounded-tl-sm border border-slate-100 max-w-[85%] shadow-sm self-start">
           
           <div class="text-[10px] font-bold text-slate-400 mb-1" *ngIf="message.sender_name && message.sender_name !== ''">

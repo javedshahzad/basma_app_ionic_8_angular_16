@@ -10,9 +10,25 @@ import { DataService } from './../service/data/data.service';
 import { StorageService } from '../service/storage.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
-import { CoursesApiService } from '../service/courses-api/courses-api.service';
+import { CoursesApiService, Course } from '../service/courses-api/courses-api.service';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { Student } from '../model/student.model';
+
+type EditableCourse = Course & { course_id?: string | number; id?: string | number };
+
+interface EditStudentNavData {
+  course_id?: string | number;
+  course_name?: string;
+  dateSelected?: string;
+  student?: {
+    sid?: string | number;
+    cid?: string | number;
+    class_id?: string | number;
+    class_name?: string;
+  };
+}
 
 @Component({
     selector: 'app-edit-student-profile',
@@ -25,17 +41,17 @@ export class EditStudentProfilePage {
   trackByIndex(index: number): number {
     return index;
   }
-  student: any = {};
-  classes: any[] = [];
-  loggedinUser: any;
-  userDetails: any = { details: {} }; // 🟢 تهيئة آمنة لحماية الـ HTML
-  currentUser: any;
-  studentName: any = '';
-  studentSemester: any = '';
-  navData: any;
-  student_id: any = '';
-  lang: any;
-  currentUserEmail: any;
+  student: Student = {};
+  classes: EditableCourse[] = [];
+  loggedinUser: LoggedInUser;
+  userDetails: LoggedInUser = { details: {} }; // 🟢 تهيئة آمنة لحماية الـ HTML
+  currentUser: LoggedInUser;
+  studentName: string = '';
+  studentSemester: string = '';
+  navData: EditStudentNavData;
+  student_id: string | number = '';
+  lang: Record<string, string>;
+  currentUserEmail: string;
   showDeleteModal: boolean = false;
 
   isDataReady: boolean = false; // 🟢 متغير جديد للتحكم بظهور القائمة
@@ -117,11 +133,12 @@ export class EditStudentProfilePage {
 
       this.coursesApi
         .getCourses(data)
-        .then((response: any) => {
+        .then((response) => {
           if (response && response.session) {
-            this.classes = response.data.map(c => {
+            this.classes = (response.data || []).map((c) => {
+              const course = c as EditableCourse;
               // نضمن أن جميع المعرفات مخزنة كنصوص للمطابقة السهلة
-              return { ...c, cid: String(c.cid || c.course_id || c.id) };
+              return { ...course, cid: String(course.cid || course.course_id || course.id) };
             });
           }
           resolve(true);
@@ -142,9 +159,9 @@ export class EditStudentProfilePage {
 
       this.schoolDirectoryApi
         .getStudentDetails(data)
-        .then((response: any) => {
+        .then((response) => {
           if (response && response.session) {
-            this.student = response.data;
+            this.student = response.data || {};
             this.studentName = this.student.name;
             this.student_id = this.student.student_id;
 
@@ -213,7 +230,7 @@ export class EditStudentProfilePage {
     };
 
     try {
-      const res: any = await this.dataProvider.run(() => this.userManagementApi.updateStudentProfile(updateData));
+      const res = await this.dataProvider.run(() => this.userManagementApi.updateStudentProfile(updateData));
       if (!res.response) {
         this.dataProvider.errorALertMessage(res.msg);
       } else {
@@ -225,8 +242,8 @@ export class EditStudentProfilePage {
           this.router.navigate(['manage-student'], navigation);
         });
       }
-    } catch (error: any) {
-      this.dataProvider.errorALertMessage(error?.message || this.lang.usnexpectedError);
+    } catch (error: unknown) {
+      this.dataProvider.errorALertMessage((error as { message?: string })?.message || this.lang.usnexpectedError);
     }
   }
 
@@ -249,7 +266,7 @@ export class EditStudentProfilePage {
     };
 
     try {
-      const res: any = await this.dataProvider.run(() => this.userManagementApi.deleteStudent(deleteData));
+      const res = await this.dataProvider.run(() => this.userManagementApi.deleteStudent(deleteData));
       this.dataProvider.showToast(res.msg);
       const navigation: NavigationExtras = {
         state: { isUpdated: true }
@@ -257,8 +274,8 @@ export class EditStudentProfilePage {
       this.zone.run(() => {
         this.router.navigate(['manage-student'], navigation);
       });
-    } catch (error: any) {
-      this.dataProvider.errorALertMessage(error?.message || this.lang.usnexpectedError);
+    } catch (error: unknown) {
+      this.dataProvider.errorALertMessage((error as { message?: string })?.message || this.lang.usnexpectedError);
     }
   }
 
@@ -272,16 +289,16 @@ export class EditStudentProfilePage {
     };
 
     try {
-      const res: any = await this.dataProvider.run(() => this.userManagementApi.deleteStudentClass(deleteData));
+      const res = await this.dataProvider.run(() => this.userManagementApi.deleteStudentClass(deleteData));
       this.dataProvider.showToast(res.msg);
       this.router.navigate(['manage-student']);
-    } catch (error: any) {
-      this.dataProvider.errorALertMessage(error?.message || this.lang.usnexpectedError);
+    } catch (error: unknown) {
+      this.dataProvider.errorALertMessage((error as { message?: string })?.message || this.lang.usnexpectedError);
     }
   }
 
   // 🟢 دالة ذكية لمقارنة القيم بغض النظر عما إذا كانت نصاً أم رقماً
-  compareClasses(o1: any, o2: any) {
+  compareClasses(o1: unknown, o2: unknown) {
     if (o1 == null || o2 == null) return o1 === o2;
     return String(o1) === String(o2);
   }

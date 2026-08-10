@@ -4,9 +4,10 @@ import { NavController, AlertController, PopoverController, ModalController, Act
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatePipe, NgIf, NgFor, NgClass } from '@angular/common';
-import { AbsentApplicationApiService } from '../service/absent-application-api/absent-application-api.service';
+import { AbsentApplicationApiService, AbsentApplication } from '../service/absent-application-api/absent-application-api.service';
 import { StorageService } from '../service/storage.service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { LoggedInUser } from '../model/logged-in-user.model';
 
 @Component({
     selector: 'app-all-application-list',
@@ -19,9 +20,9 @@ export class AllApplicationListPage implements OnInit {
   trackByIndex(index: number): number {
     return index;
   }
-  userDetails: any;
-  AllAvailableApplications = [];
-  SelectedDate: any;
+  userDetails: LoggedInUser;
+  AllAvailableApplications: AbsentApplication[] = [];
+  SelectedDate: string;
   showCalenderModal: boolean = false;
 
   calendarDate: string = '';
@@ -73,7 +74,7 @@ export class AllApplicationListPage implements OnInit {
     }
   }
 
-  submitApplication(application, status) {
+  submitApplication(application: AbsentApplication, status: string) {
     let data = {
       school_id: this.userDetails.details.school_id,
       application_status: status, // 0 for pending, 1 for accept,2 for reject
@@ -107,7 +108,7 @@ export class AllApplicationListPage implements OnInit {
     // 🌟 تم حذف الكود القديم للبحث عن أسماء الأسهم هنا
   }
 
-  onDaySelect(event: any) {
+  onDaySelect(event: CustomEvent) {
     if (event && event.detail && event.detail.value) {
       let selectedIsoDate = event.detail.value;
 
@@ -121,7 +122,7 @@ export class AllApplicationListPage implements OnInit {
     }
   }
 
-  ViewApplication(data) {
+  ViewApplication(data: AbsentApplication) {
     const navigation: NavigationExtras = {
       state: { AppData: data }
     };

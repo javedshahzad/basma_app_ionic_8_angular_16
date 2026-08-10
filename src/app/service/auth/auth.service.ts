@@ -77,9 +77,10 @@ export class AuthService {
       resObj = await firstValueFrom(
         this.http.post(environment.serverURL + "login", body, { headers: header })
       );
-    } catch (error: any) {
-      if (error && error.message) {
-        throw error.message;
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      if (err && err.message) {
+        throw err.message;
       }
       throw "حدث خطأ غير متوقع يرجى معاودة المحاولة في وقت لاحق.";
     }
@@ -175,9 +176,10 @@ export class AuthService {
       resObj = await firstValueFrom(
         this.http.post(environment.serverURL + "schoolRegister", body, { headers })
       );
-    } catch (error: any) {
-      if (error && error.message) {
-        throw error.message;
+    } catch (error: unknown) {
+      const err = error as { message?: string };
+      if (err && err.message) {
+        throw err.message;
       }
       throw "حدث خطأ غير متوقع يرجى معاودة المحاولة في وقت لاحق.";
     }

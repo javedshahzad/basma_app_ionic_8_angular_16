@@ -1,12 +1,12 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { ParentManagementApiService } from '../service/parent-management-api/parent-management-api.service';
 import { StorageService } from '../service/storage.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
-import { IonicModule } from '@ionic/angular';
 import { NgClass, NgIf, NgFor } from '@angular/common';
 
 @Component({
@@ -34,6 +34,10 @@ export class AddParentPage implements OnInit {
   studentSearchQuery: string = '';
   filteredStudents: any[] = [];
   isFetchingStudents: boolean = false;
+  // Mirrors selected_student's ids for O(1) isStudentSelected() lookups in
+  // the *ngFor row template instead of scanning the selection array per row
+  // per change-detection cycle; kept in sync at every mutation site below.
+  selectedStudentIds = new Set<string | number>();
 
   constructor(
     public formBuilder: FormBuilder,
@@ -119,8 +123,7 @@ export class AddParentPage implements OnInit {
   }
 
   isStudentSelected(student: any): boolean {
-    let currentSelection = this.f['selected_student'].value || [];
-    return currentSelection.some((s: any) => s.sid === student.sid);
+    return this.selectedStudentIds.has(student.sid);
   }
 
   toggleStudent(student: any) {
@@ -129,8 +132,10 @@ export class AddParentPage implements OnInit {
 
     if (index > -1) {
       currentSelection.splice(index, 1);
+      this.selectedStudentIds.delete(student.sid);
     } else {
       currentSelection.push(student);
+      this.selectedStudentIds.add(student.sid);
     }
 
     // تحديث قيمة الـ FormGroup
@@ -153,6 +158,7 @@ export class AddParentPage implements OnInit {
 
     if (index > -1) {
       currentSelection.splice(index, 1); // حذفه من المصفوفة
+      this.selectedStudentIds.delete(student.sid);
 
       // تحديث قيمة الـ Form وعكس التغيير على الواجهة
       this.parentForm.patchValue({ selected_student: currentSelection });

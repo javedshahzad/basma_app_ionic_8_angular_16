@@ -3,6 +3,59 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
+import { Course } from '../courses-api/courses-api.service';
+
+export interface FollowupField {
+  id?: string | number;
+  marks_id?: string | number;
+  field_id?: string | number;
+  field_name?: string;
+  field_max_marks?: string | number;
+  marks_on_present?: string | number;
+  marks?: string | number;
+  absent_marks?: string | number | boolean;
+}
+
+export interface TeacherClassAssignment {
+  courses?: Course;
+  is_selected?: boolean;
+}
+
+// Distinct from Student.sheet (the attendance dictionary): in this
+// follow-up-marks context, a student's `sheet` is an ARRAY of per-field
+// mark entries, not a 'cem-N'-keyed dictionary — a different endpoint,
+// a different shape, confirmed by its consumer (followup-student-list.page.ts).
+export interface FollowupMarkEntry {
+  marks?: string | number;
+  marks_id?: string | number;
+  field_id?: string | number;
+  field_max_marks?: string | number;
+  field_name?: string;
+}
+
+export interface FollowupStudentRecord {
+  sid?: string | number;
+  cid?: string | number;
+  name?: string;
+  pic?: string;
+  sheet?: FollowupMarkEntry[];
+  unacceptable_absent_days?: number;
+  suspend_days?: number;
+  medical_days?: number;
+  student_points?: number;
+  frozen_until?: string;
+  current_streak?: number;
+  // Client-computed (followup-student-list.page.ts), not sent by the backend:
+  isFrozen?: boolean;
+}
+
+export interface FollowupStudentListResponse {
+  session?: boolean;
+  success?: boolean;
+  msg?: string;
+  students?: FollowupStudentRecord[];
+  submittedMsg?: string;
+}
 
 /**
  * Follow-up field configuration + teacher/class assignment HTTP calls,
@@ -20,10 +73,10 @@ export class FollowupFieldsApiService {
     private dataService: DataService
   ) { }
 
-  getFollowupFields(data: any): Promise<any> {
+  getFollowupFields(data: Record<string, unknown>): Promise<{ session: boolean; data?: FollowupField[] }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getFollowupFields').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; result?: FollowupField[]; msg?: string }>(data, 'getFollowupFields').then((response) => {
         if (response) {
            if (response.success) {
             resolve({ session: true, data: response.result});
@@ -31,14 +84,7 @@ export class FollowupFieldsApiService {
             reject(response.msg)
           }
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
@@ -46,10 +92,10 @@ export class FollowupFieldsApiService {
    * @param {Object} data - contains user_no, school_id, session_id
    * @returns list of courses or error
   */
-  deleteFollowupFields(data: any): Promise<any> {
+  deleteFollowupFields(data: Record<string, unknown>): Promise<{ session: boolean; data?: FollowupField[] }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'deleteFollowupFields').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; result?: FollowupField[]; msg?: string }>(data, 'deleteFollowupFields').then((response) => {
         if (response) {
            if (response.success) {
             resolve({ session: true, data: response.result});
@@ -57,14 +103,7 @@ export class FollowupFieldsApiService {
             reject(response.msg)
           }
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
@@ -72,21 +111,25 @@ export class FollowupFieldsApiService {
    * @param {Object} data - contains user_no, school_id, session_id
    * @returns list of courses or error
   */
-  setTeachersClass(data: any): Promise<any> {
+  setTeachersClass(data: Record<string, unknown> & { school_id: string | number; updates: unknown }): Promise<{ session: boolean; message?: string; data?: string } | string> {
     return new Promise((resolve, reject) => {
       let header = new HttpHeaders();
           header.append('Content-Type', 'application/json');
            let body = new HttpParams();
            data.lang_code = environment.lang_code;
            Object.keys(data).forEach(function (key) {
-              body = body.append(key, data[key]);
+              body = body.append(key, data[key] as string | number | boolean);
           });
-           Object.keys(data.updates).map((key) => {
-            Object.keys(data.updates[key]).map((sid) => {
-              body=body.append('courcesData'+'['+ key+']'+'['+sid+']' , data.updates[key][sid]);
+           // `updates` is really an array of {cid, status} records, iterated
+           // here via Object.keys() (works fine on arrays at runtime); typed
+           // as unknown and cast here rather than in the public signature.
+           const updates = data.updates as Record<string, Record<string, string | number | boolean>>;
+           Object.keys(updates).map((key) => {
+            Object.keys(updates[key]).map((sid) => {
+              body=body.append('courcesData'+'['+ key+']'+'['+sid+']' , updates[key][sid]);
             })
           })
-      this.http.post( environment.serverURL + 'setTeachersClass/'+ data.school_id,body, { headers: header }).subscribe((response: any) => {
+      this.http.post<{ response?: boolean; msg?: string }>( environment.serverURL + 'setTeachersClass/'+ data.school_id,body, { headers: header }).subscribe((response) => {
         if (response) {
          console.log('tescherList',response);
           if (response.response==false) {
@@ -98,14 +141,7 @@ export class FollowupFieldsApiService {
           }
         } else {
         }
-      },(error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      });
+      }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     })
   }
 
@@ -113,21 +149,25 @@ export class FollowupFieldsApiService {
    * @param {Object} data - contains user_no, school_id, session_id
    * @returns list of courses or error
   */
-  saveFollowupFields(data: any): Promise<any> {
+  saveFollowupFields(data: Record<string, unknown> & { field: unknown }): Promise<{ session: boolean; message?: string; data?: FollowupField[] } | string> {
     return new Promise((resolve, reject) => {
       let header = new HttpHeaders();
           header.append('Content-Type', 'application/json');
            let body = new HttpParams();
            data.lang_code = environment.lang_code;
            Object.keys(data).forEach(function (key) {
-             if(key != 'field') body = body.append(key, data[key]);
+             if(key != 'field') body = body.append(key, data[key] as string | number | boolean);
           });
-           Object.keys(data.field).map((key) => {
-            Object.keys(data.field[key]).map((sid) => {
-              body=body.append('field'+'['+ key+']'+'['+sid+']' , data.field[key][sid]);
+           // `field` is really an array of FollowupField records, iterated
+           // here via Object.keys() (works fine on arrays at runtime); typed
+           // as unknown and cast here rather than in the public signature.
+           const field = data.field as Record<string, Record<string, string | number | boolean>>;
+           Object.keys(field).map((key) => {
+            Object.keys(field[key]).map((sid) => {
+              body=body.append('field'+'['+ key+']'+'['+sid+']' , field[key][sid]);
             })
           })
-      this.http.post( environment.serverURL + 'saveFollowupFields',body, { headers: header }).subscribe((response: any) => {
+      this.http.post<{ success?: boolean; msg?: string; result?: FollowupField[] }>( environment.serverURL + 'saveFollowupFields',body, { headers: header }).subscribe((response) => {
         if (response) {
          console.log('tescherList',response);
           if (response.success==false) {
@@ -139,14 +179,7 @@ export class FollowupFieldsApiService {
           }
         } else {
         }
-      },(error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      });
+      }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     })
   }
 
@@ -154,11 +187,11 @@ export class FollowupFieldsApiService {
    * @param {Object} data - contains user_no, school_id, session_id
    * @returns list of courses or error
    */
-  getTeachersClass(data: any): Promise<any> {
+  getTeachersClass(data: Record<string, unknown>): Promise<{ session: boolean; data?: TeacherClassAssignment[] }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getTeachersClass/' + data.school_id)
-        .then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; courses?: TeacherClassAssignment[]; msg?: string }>(data, 'getTeachersClass/' + data.school_id)
+        .then((response) => {
           if (response) {
             if (response.success) {
               resolve({ session: true, data: response.courses });
@@ -167,14 +200,7 @@ export class FollowupFieldsApiService {
             }
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -182,11 +208,11 @@ export class FollowupFieldsApiService {
    * @param {Object} data - contains user_no, school_id, session_id
    * @returns list of courses or error
    */
-  getSelectedCourses(data: any): Promise<any> {
+  getSelectedCourses(data: Record<string, unknown>): Promise<{ session: boolean; data?: Course[] }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getSelectedCourses/' + data.school_id)
-        .then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; selectedCourses?: Course[]; msg?: string }>(data, 'getSelectedCourses/' + data.school_id)
+        .then((response) => {
           if (response) {
             if (response.success) {
               resolve({ session: true, data: response.selectedCourses });
@@ -195,14 +221,7 @@ export class FollowupFieldsApiService {
             }
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -210,10 +229,11 @@ export class FollowupFieldsApiService {
    * @param {Object} data - date, user_no, session_id, course_id, school_id
    * @returns list of students or error
    */
-  getFollowUpStudentList(data: any): Promise<any> {
+  getFollowUpStudentList(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: FollowupStudentListResponse }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'getFollowUpStudentList/' + data.course_id)
-        .then((response: any) => {
+      this.apiClient.postRequest<FollowupStudentListResponse>(data, 'getFollowUpStudentList/' + data.course_id)
+        .then((res) => {
+          const response = res as FollowupStudentListResponse;
           if (!response.session) {
             resolve({ session: false, message: response.msg });
           } else if (response.success) {
@@ -222,14 +242,7 @@ export class FollowupFieldsApiService {
             reject(response.msg);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -237,10 +250,11 @@ export class FollowupFieldsApiService {
    * @param {Object} data - date, user_no, session_id, course_id, school_id
    * @returns list of students or error
    */
-  deleteFollowUpStudentList(data: any): Promise<any> {
+  deleteFollowUpStudentList(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: FollowupStudentListResponse }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteFollowUpStudentList/' + data.course_id)
-        .then((response: any) => {
+      this.apiClient.postRequest<FollowupStudentListResponse>(data, 'deleteFollowUpStudentList/' + data.course_id)
+        .then((res) => {
+          const response = res as FollowupStudentListResponse;
           if (!response.session) {
             resolve({ session: false, message: response.msg });
           } else if (response.success) {
@@ -249,14 +263,7 @@ export class FollowupFieldsApiService {
             reject(response.msg);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 }

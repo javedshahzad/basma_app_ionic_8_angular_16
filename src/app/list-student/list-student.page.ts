@@ -16,7 +16,7 @@ import { GamificationEngineService } from '../service/gamification-engine/gamifi
 
 // 🟢 استيراد خدمة التخزين الموحدة
 import { StorageService } from '../service/storage.service';
-import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
+import { AttendanceApiService, AttendanceSubmitPayload } from '../service/attendance-api/attendance-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
@@ -27,6 +27,11 @@ import { NgClass, NgIf, NgFor, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SupervisorViewComponent } from '../components/supervisor-view/supervisor-view.component';
 import { TeacherViewComponent } from '../components/teacher-view/teacher-view.component';
+import { Student } from '../model/student.model';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { AttendanceResponse } from '../model/attendance-response.model';
+import { UserPlan } from '../service/plan-api/plan-api.service';
+import { Course } from '../service/courses-api/courses-api.service';
 
 export enum UserRole {
   Admin = '1',
@@ -49,6 +54,14 @@ export enum TeacherTypeEnum {
   Split = 'split'
 }
 
+interface TeacherEditPowersResponse {
+  teacher_type?: TeacherTypeEnum;
+  editPermission?: boolean;
+  isSubmitted?: boolean;
+  allotedtime?: number;
+  time_diffrence?: number;
+}
+
 @Component({
     selector: 'app-list-student',
     templateUrl: './list-student.page.html',
@@ -66,44 +79,44 @@ export class ListStudentPage {
   dateSelected: Date;
   noDataFound: string = '';
   totalSem: number = 7;
-  student: any = {};
+  student: Student = {};
   canEdit: boolean = false;
   userRole: UserRole;
-  attendanceResponse: any = {};
-  userDetails: any = {};
+  attendanceResponse: AttendanceResponse = {};
+  userDetails: LoggedInUser = {};
   timeLeft: number;
   attMarkBegin: boolean = false;
   selectedSem: number = -1;
-  lang: any = {};
-  students: any = [];
-  attendanceSheet: any = {};
-  removeSheet: any = {};
+  lang: Record<string, string> = {};
+  students: Student[] = [];
+  attendanceSheet: Record<string, Record<string, string>> = {};
+  removeSheet: Record<string, { sid: string | number; sem: number }> = {};
   attMarked: boolean = false;
   editMode: boolean = false;
-  currentEvents: any = [];
+  currentEvents: unknown[] = [];
   holidayString: string = '';
-  lastSemAtt: any;
+  lastSemAtt: number;
   isHoliday: boolean = false;
-  courseInfo: any = {};
-  navData: any;
+  courseInfo: Course = {};
+  navData: Record<string, unknown>;
   showAll = true;
-  totalSemArray: any[] = [];
+  totalSemArray: unknown[] = [];
   classAll = ['', '', '', '', '', '', '', ''];
   options = {
     canBackwardsSelected: true,
     from: 1,
     to: 0,
     disableWeeks: [],
-    daysConfig: <any>[]
+    daysConfig: <unknown[]>[]
   };
   canAddStudent: boolean = false;
   canAddStudentNote: boolean = true;
-  planLang: any;
+  planLang: Record<string, string>;
   show_loading: boolean = false;
-  student_detailse: any;
-  student_points: any[] = [];
-  interval: any;
-  AvailablePlan: any;
+  student_detailse: Record<string, string>;
+  student_points: number[] = [];
+  interval: ReturnType<typeof setInterval>;
+  AvailablePlan: UserPlan;
 
   totalRemaining: number = 0;
   totalPresent: number = 0;
@@ -114,7 +127,7 @@ export class ListStudentPage {
   lockedPeriods: number[] = [];
   teacherType: TeacherTypeEnum = TeacherTypeEnum.Regular;
 
-  addStudentLang: any = {};
+  addStudentLang: Record<string, string> = {};
   newStudentName: string = '';
   newStudentId: string = '';
 
@@ -346,7 +359,7 @@ export class ListStudentPage {
           this.removeSheet = {};
           this.attMarked = false;
           this.editMode = false;
-          this.lastSemAtt = parseInt(res.data.last_cem);
+          this.lastSemAtt = parseInt(String(res.data.last_cem));
 
           // 🟢 تخزين آمن لـ totalsems
           if (res.data.totalsems) {
@@ -361,7 +374,7 @@ export class ListStudentPage {
             this.calculateAttendanceStats();
 
             if (this.attendanceResponse?.students) {
-              this.attendanceResponse.students.forEach((student: any) => {
+              this.attendanceResponse.students.forEach((student: Student) => {
                 student.computedTitle = this.getStudentTitle(student);
                 student.isFrozen = this.isStudentFrozen(student);
               });
@@ -432,7 +445,7 @@ export class ListStudentPage {
     return false;
   }
 
-  getStudentPeriodLockStatus(student: any, period: number): string {
+  getStudentPeriodLockStatus(student: Student, period: number): string {
     let enteredBy = student.sheet['entered_by-' + period];
     let val = student.sheet['cem-' + period];
     let currentStatus = String(val).trim();
@@ -487,7 +500,7 @@ export class ListStudentPage {
 
   updateCurrentLockStatuses() {
     if (!this.attendanceResponse?.students || !this.currentActivePeriod) return;
-    this.attendanceResponse.students.forEach((student: any) => {
+    this.attendanceResponse.students.forEach((student: Student) => {
       student.currentLockStatus = this.getStudentPeriodLockStatus(student, this.currentActivePeriod);
     });
   }
@@ -531,8 +544,11 @@ export class ListStudentPage {
   checkTeacherEditPowers(): Promise<void> {
     return new Promise(resolve => {
       this.dataProvider
-        .postRequest({}, 'ManroxTeacherAllowedForEditChk/' + this.userDetails.details.user_no)
-        .then(response => {
+        .postRequest<TeacherEditPowersResponse>({}, 'ManroxTeacherAllowedForEditChk/' + this.userDetails.details.user_no)
+        .then(res => {
+          // postRequest resolves `false` on an empty/no-record response;
+          // treated as "no data" here exactly like `undefined` would be.
+          const response = res as TeacherEditPowersResponse | undefined;
           this.teacherType = response?.teacher_type;
 
           this.clearTimerSafely(); // 🟢 استخدام الدالة الآمنة
@@ -607,14 +623,14 @@ export class ListStudentPage {
     }
   }
 
-  async openUserImageModal(student: any) {
+  async openUserImageModal(student: Student) {
     if (!this.attMarkBegin) {
       this.student = student;
       await this.studentUi.openStudentProfileModal(
         student,
         this.userType,
         this.editMode,
-        (event: any) => {
+        (event: Event) => {
           this.takePicture(event);
         },
         (url: string) => {
@@ -627,7 +643,7 @@ export class ListStudentPage {
     }
   }
 
-  updateStudentLiveStats(student: any) {
+  updateStudentLiveStats(student: Student) {
     let requestData = {
       date: this.dataProvider.getFormatedDate(this.dateSelected),
       user_no: this.userDetails.details.user_no,
@@ -638,9 +654,9 @@ export class ListStudentPage {
 
     this.followupFieldsApi
       .getFollowUpStudentList(requestData)
-      .then((followUpRes: any) => {
+      .then((followUpRes) => {
         if (followUpRes?.data?.students) {
-          let matched = followUpRes.data.students.find((s: any) => s.sid === student.sid);
+          let matched = followUpRes.data.students.find((s) => s.sid === student.sid);
           if (matched) {
             this.zone.run(() => {
               student.student_points = matched.student_points || 0;
@@ -676,7 +692,7 @@ export class ListStudentPage {
     this.showCalenderModal = false;
   }
 
-  onDaySelect(event: any) {
+  onDaySelect(event: CustomEvent) {
     if (!event.detail.value) return;
 
     let selectedDate = new Date(event.detail.value);
@@ -704,16 +720,12 @@ export class ListStudentPage {
     this.getStudents();
   }
 
-  getSemArray() {
-    return new Array(this.totalSem);
-  }
-
   enableEditingMode() {
     this.editMode = true;
     this.dataProvider.showToast(this.lang.edit_mode_enabled);
   }
 
-  async presentAdminActions(event: any) {
+  async presentAdminActions(event: Event) {
     const showAdd = this.userType == UserRole.Admin || this.canAddStudent;
     const action = await this.studentUi.presentAdminActions(event, showAdd);
 
@@ -933,7 +945,7 @@ export class ListStudentPage {
     this.cdr.detectChanges();
   }
 
-  setTeacherAttendance(student: any, status: string) {
+  setTeacherAttendance(student: Student, status: string) {
     if (this.lockedPeriods.includes(this.currentActivePeriod)) return;
 
     let enteredBy = student.sheet['entered_by-' + this.currentActivePeriod];
@@ -979,7 +991,7 @@ export class ListStudentPage {
       this.attMarkBegin = true;
     }
 
-    this.attendanceResponse.students.forEach((student: any) => {
+    this.attendanceResponse.students.forEach((student: Student) => {
       let enteredBy = student.sheet['entered_by-' + this.currentActivePeriod];
       let val = student.sheet[semKey];
       let currentStatus = String(val).trim();
@@ -1008,7 +1020,7 @@ export class ListStudentPage {
     return this.attendanceManager.hasMadeChanges(this.attendanceSheet, this.removeSheet);
   }
 
-  changeAttendanceStatus(student: any, sem: number, ind: number) {
+  changeAttendanceStatus(student: Student, sem: number, ind: number) {
     if (this.isViewer) return;
     if (this.isHoliday) {
       this.dataProvider.showToast(this.lang.holiday);
@@ -1072,7 +1084,7 @@ export class ListStudentPage {
     this.calculateAttendanceStats(sem);
   }
 
-  changeStatusAllStudents(student: any, sem: number, status: string) {
+  changeStatusAllStudents(student: Student, sem: number, status: string) {
     if (this.isHoliday) return;
 
     // 🟢 السحر هنا: استثناء الطالب المتأخر من التغيير الجماعي
@@ -1168,7 +1180,7 @@ export class ListStudentPage {
       }
     }
 
-    this.attendanceResponse.students.forEach((student: any) => {
+    this.attendanceResponse.students.forEach((student: Student) => {
       this.changeStatusAllStudents(student, sem, status);
     });
   }
@@ -1182,7 +1194,7 @@ export class ListStudentPage {
     );
   }
 
-  async takePicture(event?: any) {
+  async takePicture(event?: Event) {
     const result = await this.studentEngagement.captureAvatarImage(event, this.lang);
     if (result.base64) {
       this.zone.run(() => this.ChangeStudentProfileAvatar(result.base64));
@@ -1204,7 +1216,7 @@ export class ListStudentPage {
         this.student.pic = selectedAvatarUrl;
 
         if (this.attendanceResponse && this.attendanceResponse.students) {
-          const index = this.attendanceResponse.students.findIndex((s: any) => s.sid === this.student.sid);
+          const index = this.attendanceResponse.students.findIndex((s: Student) => s.sid === this.student.sid);
           if (index > -1) {
             this.attendanceResponse.students[index].pic = selectedAvatarUrl;
             // إجبار المصفوفة على التحديث
@@ -1253,7 +1265,7 @@ export class ListStudentPage {
 
           // 2. تحديث المصفوفة الحية (التي تتصل بالشاشة والمودال)
           if (this.attendanceResponse && this.attendanceResponse.students) {
-            const liveIdx = this.attendanceResponse.students.findIndex((s: any) => s.sid === this.student.sid);
+            const liveIdx = this.attendanceResponse.students.findIndex((s: Student) => s.sid === this.student.sid);
             if (liveIdx > -1) {
               this.attendanceResponse.students[liveIdx].pic = newPicUrl;
               this.attendanceResponse.students[liveIdx] = { ...this.attendanceResponse.students[liveIdx] };
@@ -1262,7 +1274,7 @@ export class ListStudentPage {
 
           // 3. تحديث المصفوفة الاحتياطية لتجنب أي أخطاء مستقبلية
           if (this.students && this.students.length > 0) {
-            const backupIdx = this.students.findIndex((s: any) => s.sid === this.student.sid);
+            const backupIdx = this.students.findIndex((s: Student) => s.sid === this.student.sid);
             if (backupIdx > -1) {
               this.students[backupIdx].pic = newPicUrl;
             }
@@ -1276,8 +1288,8 @@ export class ListStudentPage {
         this.authProvider.flushLocalStorage();
         this.dataProvider.errorALertMessage(result.message);
       }
-    } catch (error: any) {
-      this.dataProvider.errorALertMessage(error?.message || 'حدث خطأ في الاتصال بالخادم.');
+    } catch (error: unknown) {
+      this.dataProvider.errorALertMessage((error as { message?: string })?.message || 'حدث خطأ في الاتصال بالخادم.');
     }
   }
 
@@ -1312,11 +1324,11 @@ export class ListStudentPage {
 
   async executeSaveAttendance() {
     this.dataProvider.showLoading();
-    let data: any = {
+    let data: AttendanceSubmitPayload = {
       sheet: this.attendanceSheet,
       user_no: this.userDetails.details.user_no,
       session_id: this.userDetails.session_id,
-      cid: this.navData?.cid,
+      cid: this.navData?.cid as string | number,
       date: this.dataProvider.getFormatedDate(this.dateSelected),
       removal_sheet: this.removeSheet,
       school_id: this.userDetails.details.school_id,
@@ -1340,7 +1352,7 @@ export class ListStudentPage {
     }
   }
 
-  sendAttendanceToServer(data: any) {
+  sendAttendanceToServer(data: AttendanceSubmitPayload) {
     this.attendanceApi
       .markAttendance(data)
       .then(response => {
@@ -1434,7 +1446,7 @@ export class ListStudentPage {
     }
   }
 
-  async presentNoteActionSheet(event: any, student: any) {
+  async presentNoteActionSheet(event: Event, student: Student) {
     const action = await this.studentUi.presentStudentOptions(event, student, this.student_detailse);
     this.zone.run(() => {
       if (action === 'review') this.openNoteModal(student, 'review');
@@ -1443,14 +1455,14 @@ export class ListStudentPage {
     });
   }
 
-  async openSkillTreeModal(student: any) {
+  async openSkillTreeModal(student: Student) {
     const result = await this.studentUi.openSkillTree(student);
     if (result && result.skillType && result.points) {
       this.awardSkillPoints(student, result.skillType, result.points);
     }
   }
 
-  async awardSkillPoints(student: any, skillType: string, point: number) {
+  async awardSkillPoints(student: Student, skillType: string, point: number) {
     let body = {
       sid: String(student.sid),
       userId: String(this.userDetails.details.user_no),
@@ -1459,7 +1471,7 @@ export class ListStudentPage {
     };
 
     try {
-      const res: any = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
+      const res = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
       this.zone.run(() => {
         if (res && res.success) {
           this.dataProvider.showToast(`تمت إضافة ${point} نقطة بنجاح!`);
@@ -1469,15 +1481,15 @@ export class ListStudentPage {
         }
         this.cdr.markForCheck();
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       this.zone.run(() => {
-        this.showModernWarning(`خطأ: ${typeof err === 'string' ? err : err?.message}`);
+        this.showModernWarning(`خطأ: ${typeof err === 'string' ? err : (err as { message?: string })?.message}`);
         this.cdr.markForCheck();
       });
     }
   }
 
-  async openNoteModal(student: any, mode: 'note' | 'review') {
+  async openNoteModal(student: Student, mode: 'note' | 'review') {
     const result = await this.studentUi.openNoteOrReviewModal(student, mode);
     if (result.mode === 'note' && result.data?.noteMessage) {
       this.submitTextNote(student, result.data.noteMessage);
@@ -1487,7 +1499,7 @@ export class ListStudentPage {
   }
 
   // 🟢 7. إصلاح دالتي إرسال الملاحظات (إضافة date و course_id الناقصة)
-  submitTextNote(student: any, message: string) {
+  submitTextNote(student: Student, message: string) {
     let data = {
       sid: student.sid,
       note: message,
@@ -1508,7 +1520,7 @@ export class ListStudentPage {
       });
   }
 
-  submitReviewNote(student: any, stars: number, message: string) {
+  submitReviewNote(student: Student, stars: number, message: string) {
     let data = {
       sid: student.sid,
       note: message,
@@ -1589,13 +1601,13 @@ export class ListStudentPage {
     this.showWarningPopup = false;
   }
 
-  isStudentFrozen(student: any): boolean {
+  isStudentFrozen(student: Student): boolean {
     if (!student || !student.frozen_until) return false;
     const today = new Date().toISOString().split('T')[0];
     return student.frozen_until >= today;
   }
 
-  getStudentTitle(student: any): string {
+  getStudentTitle(student: Student): string {
     if (!student) return '';
     const skillsData = {
       cognitive: Number(student?.cognitive || 0),

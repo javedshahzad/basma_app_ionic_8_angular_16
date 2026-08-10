@@ -5,6 +5,35 @@ import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
 import { DatabaseService } from '../database/database.service';
 
+export interface Course {
+  cid?: string | number;
+  name?: string;
+  desc?: string;
+  code?: string;
+  semno?: string | number;
+  backgroundColor?: string;
+}
+
+export interface ActiveLink {
+  link?: string;
+  parent_link_active?: string;
+}
+
+export interface SeminarClassGroup {
+  classess?: { class_name?: string; present?: string | number; absent?: string | number }[];
+  group_total_pre?: string | number;
+  group_total_abs?: string | number;
+  group_total_stu?: string | number;
+}
+
+export interface SeminarClassList {
+  records?: SeminarClassGroup[];
+  all_present_total?: string | number;
+  all_absent_total?: string | number;
+  all_student_total?: string | number;
+  total_per_sent?: string | number;
+}
+
 /**
  * Course/class management HTTP calls, split out of DataService. Depends
  * on DataService for `lang` (error-message fallbacks) and on
@@ -26,11 +55,11 @@ export class CoursesApiService {
    * @param {Object} data - contains user_no, school_id, session_id
    * @returns list of courses or error
    */
-  getCourses(data: any): Promise<any> {
+  getCourses(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: Course[]; linkData?: ActiveLink }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getCourses/' + data.school_id)
-        .then((response: any) => {
+      this.apiClient.postRequest<{ session?: boolean; msg?: string; success?: boolean; courses?: Course[]; activeLink?: ActiveLink }>(data, 'getCourses/' + data.school_id)
+        .then((response) => {
           if (response) {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
@@ -46,30 +75,21 @@ export class CoursesApiService {
               .then(classes => {
                 resolve({ session: true, data: classes });
               })
-              .catch(error => {
-                reject(error);
-              });
+              .catch((error) => this.apiClient.handleApiError(error, reject));
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
   /** delete a class from a school.
    * @returns status of deletion
    */
-  deleteClass(data): Promise<any> {
+  deleteClass(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: string }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'deleteClass')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ response?: boolean; msg?: string }>(data, 'deleteClass')
+        .then((response) => {
           if (response) {
             console.log('tescherList', response);
             if (response.response == false) {
@@ -82,24 +102,17 @@ export class CoursesApiService {
           } else {
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
   /** get all seminars and their total present absent total student
   */
-  getSeminarClassList(data: any): Promise<any> {
+  getSeminarClassList(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: SeminarClassList }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getSeminarClassList/' + data.school_id)
-        .then((response: any) => {
+      this.apiClient.postRequest<{ response?: SeminarClassList; msg?: string }>(data, 'getSeminarClassList/' + data.school_id)
+        .then((response) => {
           if (response) {
             if (!response.response) {
               resolve({ session: false, message: response.msg });
@@ -109,23 +122,16 @@ export class CoursesApiService {
               reject(response.msg);
             }
           } else {
-            reject(response.msg);
+            reject(undefined);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
   /** reorder all classes
   */
-  reorderClasses(data: any): Promise<any> {
+  reorderClasses(data: { school_id: string | number; user_no: string | number; lang_code?: string; list: unknown }): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // console.log(data);
 
@@ -136,14 +142,19 @@ export class CoursesApiService {
       body = body.append('school_id', data.school_id);
       body = body.append('user_no', data.user_no);
       body = body.append('lang_code', data.lang_code);
-      Object.keys(data.list).map(key => {
-        Object.keys(data.list[key]).map(sid => {
-          body = body.append('list[' + key + '][' + sid + ']', data.list[key][sid]);
+      // `list` is really an array of per-class {cid, sem, ...} records, but
+      // is iterated here via Object.keys() (works fine on arrays at runtime
+      // too — Object.keys returns numeric-string indices); typed as unknown
+      // and cast here so the array/record structural mismatch doesn't leak
+      // into the public signature.
+      const list = data.list as Record<string, Record<string, string | number>>;
+      Object.keys(list).map(key => {
+        Object.keys(list[key]).map(sid => {
+          body = body.append('list[' + key + '][' + sid + ']', list[key][sid]);
         });
       });
-      this.http.post(environment.serverURL + 'reorderClasses', body, { headers: header }).subscribe(
-        (res: any) => {
-          let response = res;
+      this.http.post<{ success?: boolean }>(environment.serverURL + 'reorderClasses', body, { headers: header }).subscribe(
+        (response) => {
           if (response.success == true) {
             resolve(true);
           } else {
@@ -162,10 +173,10 @@ export class CoursesApiService {
    * @param {Object} data - contains user_no, school_id, code, name, desc, semno
    * @returns Success or error msg
    */
-  createNewCourse(data: any): Promise<any> {
+  createNewCourse(data: Record<string, unknown>): Promise<{ session: boolean; message?: string }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'createCourse')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ session?: boolean; success?: boolean; msg?: string }>(data, 'createCourse')
+        .then((response) => {
           if (response) {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
@@ -176,14 +187,7 @@ export class CoursesApiService {
             }
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -191,7 +195,7 @@ export class CoursesApiService {
    * Update course description
    * @param data user_no, session_id, cid, course object
    */
-  updateCourseDesc(data: any): Promise<any> {
+  updateCourseDesc(data: { cid: string | number; session_id: string; user_no: string | number; lang_code?: string; course: { name?: string; desc?: string } }): Promise<{ session: boolean; message?: string; data?: Course[] }> {
     return new Promise((resolve, reject) => {
       this.apiClient.getNetworkInformation().then(isNetworkAvailable => {
         if (isNetworkAvailable) {
@@ -205,15 +209,14 @@ export class CoursesApiService {
           body = body.append('lang_code', data.lang_code);
           body = body.append('course[name]', data.course.name);
           body = body.append('course[desc]', data.course.desc);
-          this.http.post(environment.serverURL + '/manageCourse', body, { headers }).subscribe(
-            res => {
-              let response = res;
-              if (!response['session']) {
-                resolve({ session: false, message: response['msg'] });
-              } else if (response['success']) {
-                resolve({ session: true, data: response['courses'] });
+          this.http.post<{ session?: boolean; success?: boolean; msg?: string; courses?: Course[] }>(environment.serverURL + '/manageCourse', body, { headers }).subscribe(
+            (response) => {
+              if (!response.session) {
+                resolve({ session: false, message: response.msg });
+              } else if (response.success) {
+                resolve({ session: true, data: response.courses });
               } else {
-                reject(response['msg']);
+                reject(response.msg);
               }
             },
             error => {

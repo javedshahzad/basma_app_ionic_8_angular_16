@@ -5,6 +5,34 @@ import { DataService } from '../data/data.service';
 import { ApiResponse } from '../../model/api-response.model';
 import { environment } from '../../../environments/environment';
 
+export interface StudentInventory {
+  success?: boolean;
+  wallet?: Record<string, string | number>;
+  unlocked_titles?: string[];
+  unlocked_badges?: string[];
+  active_title?: string | { title_ar?: string; title_name?: string; title?: string };
+}
+
+export interface SkillData {
+  cognitive?: number;
+  social?: number;
+  discipline?: number;
+  emotional?: number;
+  practical?: number;
+}
+
+export interface StudentProfileDashboard {
+  success?: boolean;
+  inventory?: {
+    active_title?: string | { code?: string; title_name?: string };
+    unlocked_badges?: string[];
+  };
+  skill_tree?: {
+    skill_tree_total?: number;
+    skills?: SkillData;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,7 +44,7 @@ export class GamificationApiService {
     private dataService: DataService
   ) { }
 
-  getStudentInventory(data: Record<string, unknown>): Promise<ApiResponse | false> {
+  getStudentInventory(data: Record<string, unknown>): Promise<StudentInventory | false> {
     return this.apiClient.postRequest(data, 'getStudentInventory');
   }
 
@@ -28,15 +56,15 @@ export class GamificationApiService {
     return this.apiClient.postRequest(data, 'craftSkillTitle');
   }
 
-  getStudentProfileDashboard(data: Record<string, unknown>): Promise<ApiResponse | false> {
+  getStudentProfileDashboard(data: Record<string, unknown>): Promise<StudentProfileDashboard | false> {
     return this.apiClient.postRequest(data, 'getStudentProfileDashboard');
   }
 
-  getPointsValue(): Promise<any> {
-    return new Promise((resolve, reject) => {
+  getPointsValue(): Promise<{ points?: number[] }> {
+    return new Promise((resolve) => {
       let header = new HttpHeaders();
       header.append('Content-Type', 'application/json');
-      this.http.get(environment.serverURL + 'getPointsValue', { headers: header }).subscribe(
+      this.http.get<{ points?: number[] }>(environment.serverURL + 'getPointsValue', { headers: header }).subscribe(
         res => {
           resolve(res);
         },
@@ -47,11 +75,11 @@ export class GamificationApiService {
     });
   }
 
-  addStudentPoints(data: any): Promise<any> {
+  addStudentPoints(data: { sid?: string | number; userId?: string | number; points?: string | number }): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       this.apiClient
-        .postRequest(data, 'addStudentPoints')
-        .then((response: any) => {
+        .postRequest<ApiResponse>(data, 'addStudentPoints')
+        .then((response) => {
           if (response) {
             if (response.success) {
               resolve(response);
@@ -62,30 +90,23 @@ export class GamificationApiService {
             reject(this.dataService.lang.networkNotWorking);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
   // 🔴 دالة جلب بيانات شجرة المهارات للطالب (تم حل مشكلة CORS)
-  getStudentSkillTree(data: any) {
+  getStudentSkillTree(data: { sid?: string | number }): Promise<unknown> {
     return new Promise((resolve, reject) => {
       // 1. تحويل البيانات إلى FormData لتتطابق مع سياسة السيرفر وتتجاوز الـ CORS
       let formData = new FormData();
-      formData.append('sid', data.sid);
+      formData.append('sid', String(data.sid));
 
       // 2. تجهيز الرابط (تأكد أن تستخدم environment.serverURL أو this.serverURL حسب ما يعمل لديك)
       let url = environment.serverURL + 'getStudentSkillTree';
 
       // 3. إرسال الـ formData بدلاً من كائن الـ data العادي
       this.http.post(url, formData).subscribe(
-        (res: any) => {
+        (res) => {
           resolve(res);
         },
         err => {

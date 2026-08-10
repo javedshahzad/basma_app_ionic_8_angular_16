@@ -1,4 +1,5 @@
 import { Component, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DatabaseService } from '../service/database/database.service';
 import { AuthService } from '../service/auth/auth.service';
@@ -6,7 +7,6 @@ import { DataService } from '../service/data/data.service';
 import { Router } from '@angular/router';
 // 🟢 1. استيراد خدمة التخزين الجديدة
 import { StorageService } from '../service/storage.service';
-import { IonicModule } from '@ionic/angular';
 import { NgIf } from '@angular/common';
 
 @Component({

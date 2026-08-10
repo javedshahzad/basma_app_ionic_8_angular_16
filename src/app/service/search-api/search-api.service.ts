@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApiClient } from '../api-client/api-client.service';
 import { ApiResponse } from '../../model/api-response.model';
+import { Student } from '../../model/student.model';
+import { UserDetails } from '../../model/logged-in-user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,18 +11,16 @@ export class SearchApiService {
 
   constructor(private apiClient: ApiClient) { }
 
-  searchUser(data: Record<string, unknown>): Promise<ApiResponse<any[]>> {
+  searchUser(data: Record<string, unknown>): Promise<ApiResponse<UserDetails[]>> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest<any[]>(data, 'search_user').then((response) => {
+      this.apiClient.postRequest<UserDetails[]>(data, 'search_user').then((response) => {
         if (response) {
             resolve({ session: true, data: response});
         } else {
             reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject))
     })
   }
 
@@ -33,27 +33,23 @@ export class SearchApiService {
         } else {
             reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject))
     })
   }
 
   /** Search all student of School from API.
    * @returns Array of users list or error
   */
-  serachStudent(data: Record<string, unknown>): Promise<ApiResponse<ApiResponse<any[]>>> {
+  serachStudent(data: Record<string, unknown>): Promise<ApiResponse<ApiResponse<Student[]>>> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest<ApiResponse<any[]>>(data, 'search_student').then((response) => {
+      this.apiClient.postRequest<ApiResponse<Student[]>>(data, 'search_student').then((response) => {
         if (response) {
             resolve({ session: true, data: response});
         } else {
             reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject))
     })
   }
 
@@ -66,27 +62,23 @@ export class SearchApiService {
         } else {
             reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject))
     })
   }
 
   /** Search all parent of School from API.
    * @returns Array of users list or error
   */
-  serachParent(data: Record<string, unknown>): Promise<ApiResponse<any[]>> {
+  serachParent(data: Record<string, unknown>): Promise<ApiResponse<unknown[]>> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest<ApiResponse<any[]>>(data, 'serachParent').then((response) => {
+      this.apiClient.postRequest<ApiResponse<unknown[]>>(data, 'serachParent').then((response) => {
         if (response) {
             resolve({ session: true, data: response.response});
         } else {
             reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject))
     })
   }
 }

@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
 import { NgIf, NgClass, NgSwitch, NgSwitchCase, NgTemplateOutlet, DecimalPipe } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 
 @Component({
@@ -23,12 +23,12 @@ export class TeacherViewComponent {
   @Input() hasSubmitted: boolean = false;
   @Input() totalSemArray: any[] = [];
 
-  @Output() onPeriodSelect = new EventEmitter<number>();
-  @Output() onSetAllStatus = new EventEmitter<string>();
-  @Output() onStudentClick = new EventEmitter<string>();
-  @Output() onImageClick = new EventEmitter<any>();
-  @Output() onNoteClick = new EventEmitter<{ event: any; student: any }>();
-  @Output() onSetStudentStatus = new EventEmitter<{ student: any; status: string }>();
+  @Output() periodSelect = new EventEmitter<number>();
+  @Output() setAllStatus = new EventEmitter<string>();
+  @Output() studentClick = new EventEmitter<string>();
+  @Output() imageClick = new EventEmitter<any>();
+  @Output() noteClick = new EventEmitter<{ event: any; student: any }>();
+  @Output() setStudentStatus = new EventEmitter<{ student: any; status: string }>();
 
   constructor(public gamification: GamificationEngineService) {}
 

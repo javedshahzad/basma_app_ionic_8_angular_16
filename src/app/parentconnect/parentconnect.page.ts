@@ -17,10 +17,11 @@ import { ConnectNewMessagePage } from '../connect-new-message/connect-new-messag
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
+import { ParentConnectApiService, ParentConnectChat } from '../service/parent-connect-api/parent-connect-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { DateFormatPipe } from '../pipes/date-format/date-format.pipe';
+import { LoggedInUser } from '../model/logged-in-user.model';
 
 @Component({
     selector: 'app-parentconnect',
@@ -34,11 +35,11 @@ export class ParentconnectPage {
     return index;
   }
   readonly UserType = UserType;
-  lang: any = {};
-  chats: any = [];
+  lang: Record<string, string> = {};
+  chats: ParentConnectChat[] = [];
   noDataFound: string = '';
-  userType: any;
-  userDetails: any = {};
+  userType: string;
+  userDetails: LoggedInUser = {};
 
   imageUrl: string = '';
   imageModal: boolean = false;
@@ -143,7 +144,7 @@ export class ParentconnectPage {
 
     this.parentConnectApi
       .getConnectChatList(data)
-      .then((response: any) => {
+      .then((response) => {
         if (showLoader) {
           this.dataProvider.hideLoading();
         }
@@ -206,7 +207,7 @@ export class ParentconnectPage {
     });
   }
 
-  async openChat(chat: any) {
+  async openChat(chat: ParentConnectChat) {
     let isOffline = false;
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
       isOffline = !(await Network.getStatus()).connected;
@@ -226,7 +227,7 @@ export class ParentconnectPage {
     }
   }
 
-  async closeTicket(chat: any) {
+  async closeTicket(chat: ParentConnectChat) {
     const alert = await this.alertCtrl.create({
       header: this.lang.alert || 'تنبيه',
       message: this.lang.want_to_close || 'هل أنت متأكد من إغلاق التذكرة؟',
@@ -244,7 +245,7 @@ export class ParentconnectPage {
             };
             this.dataProvider
               .run(() => this.parentConnectApi.closeParentConnectChat(data))
-              .then((response: any) => {
+              .then((response) => {
                 if (response.session) {
                   chat.ticket_status = '1';
                   this.dataProvider.showToast(response.message);
@@ -264,7 +265,7 @@ export class ParentconnectPage {
     await alert.present();
   }
 
-  async reopenTicket(chat: any) {
+  async reopenTicket(chat: ParentConnectChat) {
     const alert = await this.alertCtrl.create({
       header: this.lang.alert || 'تنبيه',
       message: this.lang.want_to_reopen || 'هل تود إعادة فتح التذكرة؟',
@@ -282,7 +283,7 @@ export class ParentconnectPage {
             };
             this.dataProvider
               .run(() => this.parentConnectApi.reopenParentConnectChat(data))
-              .then((response: any) => {
+              .then((response) => {
                 if (response.session) {
                   chat.ticket_status = '0';
                   this.dataProvider.showToast(response.message);

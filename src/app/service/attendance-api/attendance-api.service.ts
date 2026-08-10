@@ -5,6 +5,26 @@ import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
 import { DatabaseService } from '../database/database.service';
 import { StorageService } from '../storage.service';
+import { AttendanceResponse } from '../../model/attendance-response.model';
+
+export interface AttendanceSubmitPayload {
+  cid: string | number;
+  date: string;
+  session_id: string;
+  user_no: string | number;
+  lang_code?: string;
+  user_type?: string;
+  username?: string;
+  school_id: string | number;
+  sheet?: Record<string, Record<string, string>>;
+  removal_sheet?: Record<string, { sid: string | number; sem: string | number }>;
+}
+
+export interface AttendanceSubmitResult {
+  session: boolean;
+  message: string;
+  success: boolean;
+}
 
 /**
  * Owns the attendance-marking HTTP calls (online submit + the offline/delay
@@ -29,7 +49,7 @@ export class AttendanceApiService {
    * Attendance mark post function
    * @param data user_no, session_id, cid, date, school_id, sheet
    */
-  markAttendance(data: any): Promise<any> {
+  markAttendance(data: AttendanceSubmitPayload): Promise<AttendanceSubmitResult> {
     console.log("Data going to server:", data);
     return new Promise((resolve, reject) => {
       this.apiClient.getNetworkInformation().then((isNetworkAvailable) => {
@@ -68,7 +88,7 @@ export class AttendanceApiService {
           this.http.post(environment.serverURL + 'saveAttendance/' + data.school_id, body, {
             headers: header,
             responseType: 'text' // 1. نطلب الرد كنص لتجنب انهيار Angular إذا أرجع الـ PHP أخطاء
-          }).subscribe((res: any) => {
+          }).subscribe((res) => {
             try {
               // 2. محاولة تنظيف الرد من أي رسائل خطأ (Warnings) يطبعها الـ PHP واستخراج الـ JSON
               let validJsonStr = res;
@@ -118,7 +138,7 @@ export class AttendanceApiService {
    * @param data user_no, session_id, cid, date, school_id, sheet
    * @param submittedByUser submitted by which user 1 - admin, 2- moderator
    */
-  markDelayAttendance(data: any, submittedByUser: number): Promise<any> {
+  markDelayAttendance(data: AttendanceSubmitPayload, submittedByUser: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.apiClient.getNetworkInformation().then((isNetworkAvailable) => {
         if (isNetworkAvailable) {
@@ -137,21 +157,13 @@ export class AttendanceApiService {
               body=body.append('sheet[' + key + '][' + sid + ']', data.sheet[key][sid]);
             })
           })
-          this.http.post(environment.serverURL + 'ManroxTesting2/' + data.school_id + '/' + submittedByUser, body, { headers: header }).subscribe((res:any) => {
-            let response = res;
+          this.http.post<{ success?: boolean; msg?: string }>(environment.serverURL + 'ManroxTesting2/' + data.school_id + '/' + submittedByUser, body, { headers: header }).subscribe((response) => {
             if (response.success == true) {
               resolve(true);
             } else {
               reject(response.msg)
             }
-          }, (error) => {
-            console.log(error);
-            if (error.message != undefined && error.message != '' && error.message != null) {
-              reject(error.message)
-            } else {
-              reject(this.dataService.lang.usnexpectedError)
-            }
-          })
+          }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
         } else {
           reject(this.dataService.lang.networkNotWorking);
         }
@@ -164,7 +176,7 @@ export class AttendanceApiService {
    * @param data user_no, session_id, cid, date, school_id, sheet
    * @param submittedByUser submitted by which user 1 - admin, 2- moderator
    */
-  markOfflineDelayAttendance(data: any, submittedByUser: number): Promise<any> {
+  markOfflineDelayAttendance(data: AttendanceSubmitPayload, submittedByUser: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.apiClient.getNetworkInformation().then((isNetworkAvailable) => {
         if (isNetworkAvailable) {
@@ -182,8 +194,7 @@ export class AttendanceApiService {
               body= body.append('sheet[' + key + '][' + sid + ']', data.sheet[key][sid]);
             })
           })
-          this.http.post(environment.serverURL + 'saveOfflineDelayAttendance/' + data.school_id + '/' + submittedByUser, body, { headers: header }).subscribe((res:any) => {
-            let response = res;
+          this.http.post<{ success?: boolean }>(environment.serverURL + 'saveOfflineDelayAttendance/' + data.school_id + '/' + submittedByUser, body, { headers: header }).subscribe((response) => {
             if (response.success == true) {
               resolve(true);
             } else {
@@ -205,10 +216,11 @@ export class AttendanceApiService {
    * @param {Object} data - date, user_no, session_id, course_id, school_id
    * @returns list of students or error
    */
-  getClassStudentList(data: any): Promise<any> {
+  getClassStudentList(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: AttendanceResponse }> {
     return new Promise(async (resolve, reject) => {
-      this.apiClient.postRequest(data, 'getStudents/' + data.course_id)
-        .then(async (response: any) => {
+      this.apiClient.postRequest<AttendanceResponse>(data, 'getStudents/' + data.course_id)
+        .then(async (res) => {
+          const response = res as AttendanceResponse;
           if (response) {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
@@ -220,18 +232,17 @@ export class AttendanceApiService {
             }
           } else {
             let attendance = await this.storageSr.get('classlocalatt');
+            const courseId = data.course_id as string;
             if (attendance) {
-              if (attendance[data.course_id]) {
-                resolve({ session: true, data: attendance[data.course_id] });
+              if (attendance[courseId]) {
+                resolve({ session: true, data: attendance[courseId] });
               } else {
                 this.dbProvider
                   .getStudentList(data.course_id)
                   .then(students => {
                     resolve({ session: true, data: { students: students, last_cem: 0, semteacher: [] } });
                   })
-                  .catch(error => {
-                    reject(error);
-                  });
+                  .catch((error) => this.apiClient.handleApiError(error, reject));
               }
             } else {
               this.dbProvider
@@ -239,20 +250,11 @@ export class AttendanceApiService {
                 .then(students => {
                   resolve({ session: true, data: { students: students, last_cem: 0, semteacher: [] } });
                 })
-                .catch(error => {
-                  reject(error);
-                });
+                .catch((error) => this.apiClient.handleApiError(error, reject));
             }
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -260,10 +262,11 @@ export class AttendanceApiService {
    * @param {Object} data - date, user_no, session_id, course_id, school_id
    * @returns list of students or error
    */
-  getDelayClassStudentList(data: any): Promise<any> {
+  getDelayClassStudentList(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; success?: boolean; data?: AttendanceResponse }> {
     return new Promise(async (resolve, reject) => {
-      this.apiClient.postRequest(data, 'getStudents_delay/' + data.course_id)
-        .then(async (response: any) => {
+      this.apiClient.postRequest<AttendanceResponse>(data, 'getStudents_delay/' + data.course_id)
+        .then(async (res) => {
+          const response = res as AttendanceResponse;
           if (response) {
             if (!response.session) {
               resolve({ session: response.session, message: response.msg, success: response.success, data: response });
@@ -275,9 +278,10 @@ export class AttendanceApiService {
             }
           } else {
             let attendance = await this.storageSr.get('delayclasslocalatt');
+            const courseId = data.course_id as string;
             if (attendance) {
-              if (attendance[data.course_id]) {
-                resolve({ session: true, data: attendance[data.course_id] });
+              if (attendance[courseId]) {
+                resolve({ session: true, data: attendance[courseId] });
               } else {
                 this.dbProvider
                   .getStudentList(data.course_id)
@@ -294,9 +298,7 @@ export class AttendanceApiService {
                       });
                     }
                   })
-                  .catch(error => {
-                    reject(error);
-                  });
+                  .catch((error) => this.apiClient.handleApiError(error, reject));
               }
             } else {
               this.dbProvider
@@ -314,20 +316,11 @@ export class AttendanceApiService {
                     });
                   }
                 })
-                .catch(error => {
-                  reject(error);
-                });
+                .catch((error) => this.apiClient.handleApiError(error, reject));
             }
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 }

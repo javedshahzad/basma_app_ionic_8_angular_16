@@ -100,15 +100,15 @@
         [attendanceResponse]="attendanceResponse"
         [showAll]="showAll"
         [userType]="userType"
-        [totalSemArray]="getSemArray()"
+        [totalSemArray]="totalSemArray"
         [classAll]="classAll"
         [editMode]="editMode"
         [canEdit]="canEdit"
-        (onChangeAttendanceStatusAll)="changeAttendanceStatusAll($event)"
-        (onStudentClick)="openStudentDetail($event)"
-        (onImageClick)="openUserImageModal($event)"
-        (onNoteClick)="presentNoteActionSheet($event.event, $event.student)"
-        (onChangeAttendanceStatus)="changeAttendanceStatus($event.student, $event.sem, $event.index)">
+        (changeAttendanceStatusAll)="changeAttendanceStatusAll($event)"
+        (studentClick)="openStudentDetail($event)"
+        (imageClick)="openUserImageModal($event)"
+        (noteClick)="presentNoteActionSheet($event.event, $event.student)"
+        (changeAttendanceStatus)="changeAttendanceStatus($event.student, $event.sem, $event.index)">
       </app-supervisor-view>
 
       <app-teacher-view
@@ -123,13 +123,13 @@
         [formattedTimeLeft]="formattedTimeLeft"
         [isToday]="checkCurrentDate(dateSelected)"
         [hasSubmitted]="hasSubmittedTodayInThisClass()"
-        [totalSemArray]="getSemArray()"
-        (onPeriodSelect)="selectPeriod($event)"
-        (onSetAllStatus)="setAllStudentsStatusForTeacher($event)"
-        (onStudentClick)="openStudentDetail($event)"
-        (onImageClick)="openUserImageModal($event)"
-        (onNoteClick)="presentNoteActionSheet($event.event, $event.student)"
-        (onSetStudentStatus)="setTeacherAttendance($event.student, $event.status)">
+        [totalSemArray]="totalSemArray"
+        (periodSelect)="selectPeriod($event)"
+        (setAllStatus)="setAllStudentsStatusForTeacher($event)"
+        (studentClick)="openStudentDetail($event)"
+        (imageClick)="openUserImageModal($event)"
+        (noteClick)="presentNoteActionSheet($event.event, $event.student)"
+        (setStudentStatus)="setTeacherAttendance($event.student, $event.status)">
       </app-teacher-view>
 
     </ng-container>

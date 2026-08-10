@@ -22,13 +22,16 @@ import { StudentProfileModalComponent } from '../components/student-profile-moda
 import { StorageService } from '../service/storage.service';
 import { StudentUiService } from '../service/student-ui/student-ui.service';
 import { ImageProcessingService } from '../service/image-processing/image-processing.service';
-import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
+import { AttendanceApiService, AttendanceSubmitPayload } from '../service/attendance-api/attendance-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
 import { UserType } from '../constants/user-type';
 import { NgClass, NgIf, NgFor, DecimalPipe, DatePipe } from '@angular/common';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
+import { Student } from '../model/student.model';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { Course } from '../service/courses-api/courses-api.service';
 
 @Component({
     selector: 'app-students',
@@ -41,36 +44,36 @@ export class StudentsPage {
   readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
   showProfileModal: boolean = false;
-  students: any = [];
-  dateSelected: any;
-  student: any = {};
-  userDetails: any = {};
+  students: Student[] = [];
+  dateSelected: Date;
+  student: Student = {};
+  userDetails: LoggedInUser = {};
   showCalenderModal: boolean = false;
-  attendanceSheet: any = {};
-  userType: any;
+  attendanceSheet: Record<string, string> = {};
+  userType: string | number;
   attMarkBegin: boolean = false;
   attNotMarked: boolean = true;
-  lang: any = {};
+  lang: Record<string, string> = {};
   delayRule: number = 5;
   editMode: boolean = false;
   holidayString: string = '';
-  currentEvents: any = [];
+  currentEvents: unknown[] = [];
   isHoliday: boolean = false;
   noDataFound: string = '';
   studentBehaviour: string = '';
-  courseInfo: any = {};
-  navData: any;
+  courseInfo: Course = {};
+  navData: Record<string, unknown>;
   show_loading: boolean = false;
 
   // متغيرات الملاحظات
   canAddStudentNote: boolean = true;
   noteMessage: string = '';
-  studentData: any;
+  studentData: Student;
   ratingStars: number = 1;
-  selections: any = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
+  selections: string[] = ['#04855f', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
   showNoteModal: boolean = false;
-  student_detailse: any = {};
-  student_points: any[] = [];
+  student_detailse: Record<string, string> = {};
+  student_points: number[] = [];
   showImageViewer: boolean = false;
   viewImageUrl: string = '';
 
@@ -156,7 +159,7 @@ export class StudentsPage {
   }
 
 
-  trackByStudent(index: number, student: any): any {
+  trackByStudent(index: number, student: Student): string | number {
     return student?.sid ?? index;
   }
 
@@ -170,9 +173,9 @@ export class StudentsPage {
   }
 
   checkIfHoliday() {
-    let day: any = this.dateSelected.getDate();
+    let day: string | number = this.dateSelected.getDate();
     day = day < 10 ? '0' + day : day;
-    let month: any = this.dateSelected.getMonth() + 1;
+    let month: string | number = this.dateSelected.getMonth() + 1;
     month = month < 10 ? '0' + month : month;
     let strint_date = this.dateSelected.getFullYear() + '-' + month + '-' + day;
     this.isHoliday = this.holidayString.indexOf(strint_date) > -1;
@@ -211,7 +214,7 @@ export class StudentsPage {
       this.show_loading = false;
       if (res.success) {
         let responseData = res.data;
-        this.delayRule = parseInt(responseData.delay_rule);
+        this.delayRule = parseInt(String(responseData.delay_rule));
         this.students = responseData.students;
         this.attMarkBegin = false;
         this.attendanceSheet = {};
@@ -223,7 +226,7 @@ export class StudentsPage {
         if (this.checkDateSelected(new Date())) {
           let currentDelayClassLocalAtt = (await this.storageSr.get('delayclasslocalatt')) || {};
           responseData.date = this.dataProvider.getFormatedDate(this.dateSelected);
-          currentDelayClassLocalAtt[course.cid] = responseData;
+          currentDelayClassLocalAtt[course.cid as string] = responseData;
           await this.storageSr.set('delayclasslocalatt', currentDelayClassLocalAtt);
         }
       } else {
@@ -255,7 +258,7 @@ export class StudentsPage {
   }
 
   // 🟢 تعديل دالة النقر على الغياب لتدعم الرسائل الذكية
-  changeAttendanceStatus(student: any) {
+  changeAttendanceStatus(student: Student) {
     if (this.isHoliday) {
       this.dataProvider.showToast(this.lang.holiday || 'لا يمكن التعديل في يوم عطلة');
       return;
@@ -280,7 +283,7 @@ export class StudentsPage {
     }
   }
 
-  openStudentDetail(student_id: string, student: any) {
+  openStudentDetail(student_id: string | number, student: Student) {
     if (!this.attMarkBegin) {
       const navigation: NavigationExtras = {
         state: {
@@ -298,7 +301,7 @@ export class StudentsPage {
     }
   }
 
-  async openUserImageModal(student: any) {
+  async openUserImageModal(student: Student) {
     if (!this.attMarkBegin) {
       // 🟢🟢 السطر السحري المفقود الذي يحل المشكلة جذرياً 🟢🟢
       this.student = student;
@@ -318,7 +321,7 @@ export class StudentsPage {
           student: this.student, // 🟢 تم التمرير من المتغير المربوط بالواجهة
           userType: this.userType,
           editMode: this.editMode,
-          onPhotoClick: (event: any) => {
+          onPhotoClick: (event: Event) => {
             this.takePicture(event);
           },
           onFullscreenClick: (url: string) => {
@@ -360,7 +363,7 @@ export class StudentsPage {
     this.showCalenderModal = false;
   }
 
-  onDaySelect(event: any) {
+  onDaySelect(event: CustomEvent) {
     if (!event.detail.value) return;
     let selectedDate = new Date(event.detail.value);
     let currentDate = new Date();
@@ -382,7 +385,7 @@ export class StudentsPage {
     this.getStudents();
   }
 
-  toggleAttendance(student: any) {
+  toggleAttendance(student: Student) {
     this.attMarkBegin = true;
     this.attNotMarked = false;
 
@@ -407,12 +410,12 @@ export class StudentsPage {
   async submitAttendance() {
     if (this.attMarkBegin) {
       this.dataProvider.showLoading();
-      let data: any = {};
+      let data: AttendanceSubmitPayload = {} as AttendanceSubmitPayload;
       data.sheet = {};
       data.sheet['cem-1'] = {};
       data.user_no = this.userDetails.details.user_no;
       data.session_id = this.userDetails.session_id;
-      data.cid = this.navData.cid;
+      data.cid = this.navData.cid as string | number;
       data.date = this.dataProvider.getFormatedDate(this.dateSelected);
       data.school_id = this.userDetails.details.school_id;
 
@@ -479,7 +482,7 @@ export class StudentsPage {
   }
 
   // ================= دوال قائمة الإجراءات والنقاط =================
-  async presentNoteActionSheet(event: any, student: any) {
+  async presentNoteActionSheet(event: Event, student: Student) {
     if (this.platform.width() >= 768 && event) {
       const popover = await this.popoverController.create({
         component: StudentOptionsPopoverComponent,
@@ -546,7 +549,7 @@ export class StudentsPage {
     }
   }
 
-  async presentPointsActionSheet(event: any, student: any) {
+  async presentPointsActionSheet(event: Event, student: Student) {
     if (this.platform.width() >= 768 && event) {
       const popover = await this.popoverController.create({
         component: StudentPointsPopoverComponent,
@@ -575,7 +578,7 @@ export class StudentsPage {
     }
   }
 
-  createButtons(student: any) {
+  createButtons(student: Student) {
     let buttons = [];
     for (var index in this.student_points) {
       let pointValue = this.student_points[index];
@@ -601,7 +604,7 @@ export class StudentsPage {
     return buttons;
   }
 
-  addStudentPoints(point: any, student: any) {
+  addStudentPoints(point: string | number, student: Student) {
     let body = {
       sid: student.sid,
       userId: this.userDetails.details.user_no,
@@ -614,7 +617,7 @@ export class StudentsPage {
     });
   }
 
-  async openNoteModal(student: any, mode: any) {
+  async openNoteModal(student: Student, mode: 'note' | 'review') {
     if (mode === 'note') {
       this.studentData = student;
       this.showNoteModal = true;
@@ -721,7 +724,7 @@ export class StudentsPage {
   }
 
   // ================= دوال الكاميرا وتغيير الصورة =================
-  async takePicture(event?: any) {
+  async takePicture(event?: Event) {
     if ((await Network.getStatus()).connected) {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popoverController.create({
@@ -820,7 +823,7 @@ export class StudentsPage {
         this.student.pic = cleanUrl;
 
         if (this.students && this.students.length > 0) {
-          const idx = this.students.findIndex((s: any) => s.sid === this.student.sid);
+          const idx = this.students.findIndex((s: Student) => s.sid === this.student.sid);
           if (idx > -1) {
             this.students[idx].pic = cleanUrl;
             // ❌ تم حذف سطر الاستنساخ {...} هنا أيضاً!
@@ -877,9 +880,9 @@ export class StudentsPage {
     img.src = url + '?t=' + new Date().getTime();
   }
 
-  async DownloadAndReadFilePath(url: any) {
+  async DownloadAndReadFilePath(url: string) {
     try {
-      const response: any = await this.fileUpload.DownloadAndGetUri(url);
+      const response = (await this.fileUpload.DownloadAndGetUri(url)) as { nativeURL: string };
       let nativeUrl = response.nativeURL;
       const contents = await Filesystem.readFile({
         path: nativeUrl
@@ -894,7 +897,7 @@ export class StudentsPage {
     }
   }
 
-  convertToBase64(file: any, url?) {
+  convertToBase64(file: Blob, url?: string) {
     try {
       const reader = getFileReader();
       reader.onloadend = () => {
@@ -934,7 +937,7 @@ export class StudentsPage {
           this.student.pic = newPicUrl;
 
           if (this.students && this.students.length > 0) {
-            const idx = this.students.findIndex((s: any) => s.sid === this.student.sid);
+            const idx = this.students.findIndex((s: Student) => s.sid === this.student.sid);
             if (idx > -1) {
               this.students[idx].pic = newPicUrl;
               // ❌ تم حذف سطر الاستنساخ {...} لكي يبقى المودال متصلاً بالبيانات!

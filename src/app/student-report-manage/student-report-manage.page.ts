@@ -13,11 +13,13 @@ import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { ReportsApiService } from '../service/reports-api/reports-api.service';
+import { ReportsApiService, StudentReportsSummary, DegreeViolation, DegreeAction, Degree, PledgesReport, LeaveRecord, ExitDayRecord } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { UserPlan } from '../service/plan-api/plan-api.service';
 
 const env = environment;
 
@@ -32,16 +34,16 @@ export class StudentReportManagePage implements OnInit {
   trackByIndex(index: number): number {
     return index;
   }
-  trackById(index: number, item: any): any {
+  trackById(index: number, item: { id?: string | number }): string | number {
     return item?.id ?? index;
   }
   readonly UserType = UserType;
-  navData: any = {};
-  lang: any;
-  reportType: any;
-  selectedDate: any;
+  navData: Record<string, unknown> = {};
+  lang: Record<string, string>;
+  reportType: string;
+  selectedDate: string;
 
-  formData: any = {
+  formData: { reportType: string; selectedDate: string; selectedDays: string; note: string; time: string; reason?: string | number; action?: string | number; degree?: string | number } = {
     reportType: '',
     selectedDate: new Date().toISOString(),
     selectedDays: '1',
@@ -49,45 +51,45 @@ export class StudentReportManagePage implements OnInit {
     time: new Date().toISOString()
   };
 
-  lang1: any;
+  lang1: Record<string, string>;
   // 🟢 الدرع الأول: تهيئة الكائن لكي لا يكون details غير معرف (undefined)
-  userDetails: any = { details: {} };
+  userDetails: LoggedInUser = { details: {} };
 
-  exitdays: any = [];
+  exitdays: ExitDayRecord[] = [];
   callOfStudentsReport = [];
   isExitToday: boolean = false;
-  medical: any = [];
-  suspend: any = [];
+  medical: LeaveRecord[] = [];
+  suspend: LeaveRecord[] = [];
 
   foundAnyReport = true;
   isDeleted: boolean = false;
-  AllDegrees = [];
-  AllDegreesViolations = [];
-  AllDegreeActions = [];
-  pledgesViolation: any;
-  pledgesAction: any;
-  AllStudentPledgesReports = [];
-  AvailablePlan: any;
-  holidayString: any;
+  AllDegrees: Degree[] = [];
+  AllDegreesViolations: DegreeViolation[] = [];
+  AllDegreeActions: DegreeAction[] = [];
+  pledgesViolation: DegreeViolation;
+  pledgesAction: DegreeAction;
+  AllStudentPledgesReports: PledgesReport[] = [];
+  AvailablePlan: UserPlan;
+  holidayString: string;
   options = {
     canBackwardsSelected: true,
     from: 1,
     to: 0,
     disableWeeks: [],
-    daysConfig: <any>[]
+    daysConfig: <unknown[]>[]
   };
-  currentEvents: any = [];
-  dateSelected: any;
+  currentEvents: unknown[] = [];
+  dateSelected: Date;
   isHoliday: boolean = false;
 
   isDeleteModalOpen: boolean = false;
-  reportToDeleteId: any = null;
+  reportToDeleteId: string | number = null;
   reportToDeleteType: string = '';
 
   isViolationModalOpen: boolean = false;
   isActionModalOpen: boolean = false;
-  filteredViolations: any[] = [];
-  filteredActions: any[] = [];
+  filteredViolations: DegreeViolation[] = [];
+  filteredActions: DegreeAction[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -327,23 +329,23 @@ export class StudentReportManagePage implements OnInit {
     });
   }
 
-  searchViolations(event: any) {
-    const query = event.target.value.toLowerCase();
+  searchViolations(event: Event) {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredViolations = this.AllDegreesViolations.filter(d => d.description.toLowerCase().indexOf(query) > -1);
   }
 
-  searchActions(event: any) {
-    const query = event.target.value.toLowerCase();
+  searchActions(event: Event) {
+    const query = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredActions = this.AllDegreeActions.filter(d => d.description.toLowerCase().indexOf(query) > -1);
   }
 
-  selectViolation(item: any) {
+  selectViolation(item: DegreeViolation) {
     this.pledgesViolation = item;
     this.formData.reason = item.id;
     this.isViolationModalOpen = false;
   }
 
-  selectAction(item: any) {
+  selectAction(item: DegreeAction) {
     this.pledgesAction = item;
     this.formData.action = item.id;
     this.isActionModalOpen = false;
@@ -416,7 +418,7 @@ export class StudentReportManagePage implements OnInit {
       });
   }
 
-  printReport(reportType: any) {
+  printReport(reportType: string) {
     let data = {
       student_id: this.navData.student_id,
       course_id: this.navData.course_id,
@@ -434,8 +436,8 @@ export class StudentReportManagePage implements OnInit {
           if (this.platform.is('cordova') || this.platform.is('capacitor')) {
             let options: PrintOptions = { orientation: 'portrait' };
             this.printer.print(printContent, options).then(
-              (onSuccess: any) => {},
-              (e: any) => {
+              () => {},
+              (e) => {
                 console.log('printer.print', e);
                 this.dataProvider.showToast(this.lang.report_error);
               }
@@ -479,8 +481,8 @@ export class StudentReportManagePage implements OnInit {
               if (this.platform.is('cordova') || this.platform.is('capacitor')) {
                 let options: PrintOptions = { orientation: 'portrait' };
                 this.printer.print(printContent, options).then(
-                  (onSuccess: any) => {},
-                  (e: any) => {
+                  () => {},
+                  (e) => {
                     console.log('printer.print', e);
                     this.dataProvider.showToast(this.lang.report_error);
                   }
@@ -523,8 +525,8 @@ export class StudentReportManagePage implements OnInit {
               if (this.platform.is('cordova') || this.platform.is('capacitor')) {
                 let options: PrintOptions = { orientation: 'portrait' };
                 this.printer.print(printContent, options).then(
-                  (onSuccess: any) => {},
-                  (e: any) => {
+                  () => {},
+                  (e) => {
                     console.log('printer.print', e);
                     this.dataProvider.showToast(this.lang.report_error);
                   }
@@ -551,7 +553,7 @@ export class StudentReportManagePage implements OnInit {
     }
   }
 
-  openDeleteConfirm(rid: any, type: string) {
+  openDeleteConfirm(rid: string | number, type: string) {
     this.reportToDeleteId = rid;
     this.reportToDeleteType = type;
     this.isDeleteModalOpen = true;
@@ -642,9 +644,9 @@ export class StudentReportManagePage implements OnInit {
               });
             });
           }
-          let day = this.dateSelected.getDate();
+          let day: string | number = this.dateSelected.getDate();
           day = day < 10 ? '0' + day : day;
-          let month = this.dateSelected.getMonth();
+          let month: string | number = this.dateSelected.getMonth();
           month = month + 1;
           month = month < 10 ? '0' + month : month;
 

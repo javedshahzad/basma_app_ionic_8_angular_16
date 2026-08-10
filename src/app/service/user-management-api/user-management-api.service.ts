@@ -4,6 +4,20 @@ import { environment } from '../../../environments/environment';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
 
+// Shared shape for the "no envelope, raw passthrough" methods below — every
+// confirmed caller reads only `.msg`/`.response`/`.success` off the raw
+// backend object, in varying combinations (defensive coding against an
+// inconsistent envelope, not a sign these are genuinely different shapes).
+export interface RawActionResponse {
+  // requestTodeleteSchoolAccount/deleteSchoolPermanentlyRequest use this as
+  // a plain boolean flag ("did the request go through") on failure, but as
+  // an object carrying the school's new deactivate_date on success —
+  // confirmed by real consumers of both (settings.page.ts, classlist.page.ts).
+  response?: boolean | { deactivate_date?: string };
+  success?: boolean;
+  msg?: string;
+}
+
 /**
  * User/student/teacher/parent CRUD + push-notification/school-deletion-request
  * calls, split out of DataService. Depends on DataService for `lang`
@@ -21,167 +35,138 @@ export class UserManagementApiService {
     private dataService: DataService
   ) { }
 
-  deleteStudentClass(data: any): Promise<any> {
+  deleteStudentClass(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteStudentClass').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'deleteStudentClass').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  deleteStudent(data: any): Promise<any> {
+  deleteStudent(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteStudent').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'deleteStudent').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  deleteTeacher(data: any): Promise<any> {
+  deleteTeacher(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteTeacher').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'deleteTeacher').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  deleteParent(data: any): Promise<any> {
+  deleteParent(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteParent').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'deleteParent').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
   /** Deletes a user (except parent, student, and teacher). */
-  deleteUser(data: any): Promise<any> {
+  deleteUser(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteUser').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'deleteUser').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  deleteNote(data: any): Promise<any> {
+  deleteNote(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteNotes').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'deleteNotes').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  updateStudentProfile(data: any): Promise<any> {
+  updateStudentProfile(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'updateStudentProfile').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'updateStudentProfile').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  updateStudentPhone(data: any): Promise<any> {
+  updateStudentPhone(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'updateStudentPhone').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'updateStudentPhone').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  SendPushNotification(data: any): Promise<any> {
+  SendPushNotification(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'SendPushNotification').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'SendPushNotification').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  requestTodeleteSchoolAccount(data: any): Promise<any> {
+  requestTodeleteSchoolAccount(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'RequestdeleteSchool').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'RequestdeleteSchool').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  deleteSchoolPermanentlyRequest(data: any): Promise<any> {
+  deleteSchoolPermanentlyRequest(data: Record<string, unknown>): Promise<RawActionResponse> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'deleteSchoolPermanentlyRequest').then((response: any) => {
+      this.apiClient.postRequest<RawActionResponse>(data, 'deleteSchoolPermanentlyRequest').then((response) => {
         if (response) {
           resolve(response);
         }
-      }).catch((error) => {
-        console.log(error);
-        reject(error);
-      });
+      }).catch((error) => this.apiClient.handleApiError(error, reject));
     });
   }
 
-  updateTeacherProfile(data: any): Promise<any> {
+  updateTeacherProfile(data: Record<string, unknown> & { class: unknown }): Promise<{ session: boolean; message?: string; data?: string } | string> {
     return new Promise((resolve, reject) => {
       let header = new HttpHeaders();
       header.append('Content-Type', 'application/json');
       data.lang_code = environment.lang_code;
       let body = new HttpParams();
       Object.keys(data).forEach(function (key) {
-        body = body.append(key, data[key]);
+        body = body.append(key, data[key] as string | number | boolean);
       });
       body['class'] = [];
-      Object.keys(data.class).map((key) => {
-        Object.keys(data.class[key]).map((sid) => {
-          body = body.append('classes' + '[' + key + ']' + '[' + sid + ']', data.class[key][sid]);
+      // `class` is really an array of {cid, ...} records, iterated here via
+      // Object.keys() (works fine on arrays at runtime); typed as unknown
+      // and cast here rather than in the public signature.
+      const classList = data.class as Record<string, Record<string, string | number>>;
+      Object.keys(classList).map((key) => {
+        Object.keys(classList[key]).map((sid) => {
+          body = body.append('classes' + '[' + key + ']' + '[' + sid + ']', classList[key][sid]);
         });
       });
 
-      this.httpClient.post(environment.serverURL + 'updateTeacherProfile', body, { headers: header }).subscribe((response: any) => {
+      this.httpClient.post<{ response?: boolean; msg?: string }>(environment.serverURL + 'updateTeacherProfile', body, { headers: header }).subscribe((response) => {
         if (response) {
           if (response.response == false) {
             resolve({ session: false, message: response.msg });
@@ -191,28 +176,21 @@ export class UserManagementApiService {
             resolve(response.msg);
           }
         }
-      }, (error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message);
-        } else {
-          reject(this.dataService.lang.usnexpectedError);
-        }
-      });
+      }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
-  updateUserProfile(data: any): Promise<any> {
+  updateUserProfile(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: string } | string> {
     return new Promise((resolve, reject) => {
       let header = new HttpHeaders();
       header.append('content-type', 'application/json');
       data.lang_code = environment.lang_code;
       let body = new HttpParams();
       Object.keys(data).forEach(function (key) {
-        body = body.append(key, data[key]);
+        body = body.append(key, data[key] as string | number | boolean);
       });
 
-      this.httpClient.post(environment.serverURL + 'updateNewUser', body, { headers: header }).subscribe((response: any) => {
+      this.httpClient.post<{ response?: boolean; msg?: string }>(environment.serverURL + 'updateNewUser', body, { headers: header }).subscribe((response) => {
         if (response) {
           if (response.response == false) {
             resolve({ session: false, message: response.msg });
@@ -222,14 +200,7 @@ export class UserManagementApiService {
             resolve(response.msg);
           }
         }
-      }, (error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message);
-        } else {
-          reject(this.dataService.lang.usnexpectedError);
-        }
-      });
+      }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
@@ -237,10 +208,10 @@ export class UserManagementApiService {
    * Update user image
    * @param data Base64 image data
    */
-  updateUserImage(data: any): Promise<any> {
+  updateUserImage(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; url?: string }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'updateStudentImage/' + data.sid)
-        .then((response: any) => {
+      this.apiClient.postRequest<{ session?: boolean; success?: boolean; msg?: string; imageUrl?: string }>(data, 'updateStudentImage/' + data.sid)
+        .then((response) => {
           if (response) {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
@@ -253,35 +224,22 @@ export class UserManagementApiService {
             reject(this.dataService.lang.networkNotWorking);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 
-  sendPushMessageToStudentParent(data: any): Promise<any> {
+  sendPushMessageToStudentParent(data: Record<string, unknown>): Promise<{ session: boolean; data?: unknown }> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'sendPushMessageToStudentParent')
-        .then((response: any) => {
+      this.apiClient.postRequest<{ response?: unknown; msg?: string }>(data, 'sendPushMessageToStudentParent')
+        .then((res) => {
+          const response = res as { response?: unknown; msg?: string };
           if (response.response) {
             resolve({ session: true, data: response.response });
           } else {
             reject(response.msg);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.dataService.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
   }
 }

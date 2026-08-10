@@ -2,6 +2,19 @@ import { Injectable } from '@angular/core';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
 
+export interface Parent {
+  user_no?: string | number;
+  profile?: string;
+  pic?: string;
+  name?: string;
+  first_name?: string;
+  username?: string;
+  datetime?: string;
+  access_mode?: string;
+  student_info?: { name?: string }[];
+  isChecked?: boolean;
+}
+
 /**
  * Requested-parent management HTTP calls, split out of DataService.
  * Depends on DataService for `lang` (error-message fallbacks).
@@ -16,10 +29,10 @@ export class ParentManagementApiService {
     private dataService: DataService
   ) { }
 
-  getRequestedParents(data): Promise<any> {
+  getRequestedParents(data: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: Parent[] }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getNewParents').then((response: any) => {
+      this.apiClient.postRequest<{ response?: boolean; msg?: string; parents?: Parent[] }>(data, 'getNewParents').then((response) => {
         if (response) {
          console.log('tescherList',response);
           if (response.response==false) {
@@ -37,34 +50,20 @@ export class ParentManagementApiService {
           //   reject(error);
           // })
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  getAllParents(data): Promise<any> {
+  getAllParents(data: Record<string, unknown>): Promise<{ session: boolean; data?: Parent[] }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getAllParents').then((response: any) => {
+      this.apiClient.postRequest<{ response?: Parent[] }>(data, 'getAllParents').then((response) => {
         if (response) {
             resolve({ session: true, data: response.response});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
@@ -73,10 +72,10 @@ export class ParentManagementApiService {
    * @param parent id
    * @param school id
   */
-  acceptRequestedParents(data): Promise<any> {
+  acceptRequestedParents(data: Record<string, unknown>): Promise<{ session: boolean }> {
     return new Promise((resolve, reject) => {
          //console.log('requtedprrr=>>>',data);
-      this.apiClient.postRequest(data, 'acceptParentRequest').then((response: any) => {
+      this.apiClient.postRequest<{ response?: boolean }>(data, 'acceptParentRequest').then((response) => {
         if (response) {
           if (response.response==false) {
             resolve({ session: false });
@@ -84,23 +83,16 @@ export class ParentManagementApiService {
             resolve({ session: true });
           }
         } else {
-          reject(response.msg)
+          reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  changeParentStatus(data): Promise<any> {
+  changeParentStatus(data: Record<string, unknown>): Promise<{ session: boolean; msg?: string }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'changeParentStatus').then((response: any) => {
+      this.apiClient.postRequest<{ response?: boolean; msg?: string }>(data, 'changeParentStatus').then((response) => {
         if (response) {
           if (response.response==false) {
             resolve({ session: false,msg:response.msg });
@@ -108,16 +100,9 @@ export class ParentManagementApiService {
             resolve({ session: true,msg:response.msg });
           }
         } else {
-          reject(response.msg)
+          reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
@@ -126,10 +111,10 @@ export class ParentManagementApiService {
    * @param parent id
    * @param school id
   */
-  deleteRequestedParents(data): Promise<any> {
+  deleteRequestedParents(data: Record<string, unknown>): Promise<{ session: boolean }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'deleteParentRequest').then((response: any) => {
+      this.apiClient.postRequest<{ response?: boolean }>(data, 'deleteParentRequest').then((response) => {
         if (response) {
           if (response.response==false) {
             resolve({ session: false });
@@ -137,22 +122,15 @@ export class ParentManagementApiService {
             resolve({ session: true });
           }
         } else {
-          reject(response.msg)
+          reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  createNewParent(data: any): Promise<any> {
+  createNewParent(data: Record<string, unknown>): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.apiClient.postRequest(data, 'createNewParent').then((response: any) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'createNewParent').then((response) => {
         if (response) {
           if(response.success) {
             resolve(response.msg);
@@ -160,14 +138,7 @@ export class ParentManagementApiService {
             reject(response.msg)
           }
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 }

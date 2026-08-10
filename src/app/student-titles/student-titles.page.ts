@@ -5,12 +5,19 @@ import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
-import { GamificationEngineService } from '../service/gamification-engine/gamification-engine.service';
+import { GamificationEngineService, ProcessedTitle, ProcessedBadge } from '../service/gamification-engine/gamification-engine.service';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
+import { GamificationApiService, SkillData } from '../service/gamification-api/gamification-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { NgIf, NgFor, NgClass } from '@angular/common';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
+import { Student } from '../model/student.model';
+import { ApiResponse } from '../model/api-response.model';
+
+interface AlchemyTitle extends ProcessedTitle {
+  canCraftFlag?: boolean;
+}
 
 @Component({
     selector: 'app-student-titles',
@@ -23,15 +30,15 @@ export class StudentTitlesPage {
   trackByIndex(index: number): number {
     return index;
   }
-  lang: any;
-  userDetails: any;
-  userType: any;
-  navData: any = {}; // بيانات الهوية (الاسم، الصورة، الصف)
-  studentDetails: any = null;
+  lang: Record<string, string>;
+  userDetails: LoggedInUser;
+  userType: string;
+  navData: UserDetails = {}; // بيانات الهوية (الاسم، الصورة، الصف)
+  studentDetails: Student | null = null;
 
   inventoryTab: string = 'titles'; // 'titles' | 'badges'
 
-  studentWallet: any = {};
+  studentWallet: Record<string, string | number> = {};
   unlockedTitles: string[] = [];
   unlockedBadges: string[] = [];
   activeCraftedTitle: string = null;
@@ -39,11 +46,11 @@ export class StudentTitlesPage {
   isLoadingData: boolean = false;
   isLoadingSkills: boolean = false;
   studentTotalPoints: number = 0;
-  studentSkillData: any = null;
+  studentSkillData: SkillData | null = null;
   studentTitle: string = 'جاري التحليل...';
 
-  alchemyTitlesList: any[] = [];
-  secretBadgesList: any[] = [];
+  alchemyTitlesList: AlchemyTitle[] = [];
+  secretBadgesList: ProcessedBadge[] = [];
 
   skillsCardsConfig = [
     {
@@ -136,7 +143,7 @@ export class StudentTitlesPage {
     this.cdr.markForCheck();
   }
 
-  fetchStudentProfile(sid: any): Promise<void> {
+  fetchStudentProfile(sid: string | number): Promise<void> {
     return new Promise(resolve => {
       let data = {
         user_no: this.userDetails.details.user_no,
@@ -147,7 +154,7 @@ export class StudentTitlesPage {
       };
       this.schoolDirectoryApi
         .getStudentDetails(data)
-        .then((res: any) => {
+        .then((res) => {
           if (res && res.session && res.data) this.studentDetails = res.data;
           resolve();
         })
@@ -155,12 +162,13 @@ export class StudentTitlesPage {
     });
   }
 
-  fetchStudentSkills(sid: any): Promise<void> {
+  fetchStudentSkills(sid: string | number): Promise<void> {
     return new Promise(resolve => {
       let body = { sid: String(sid) };
       this.gamificationApi
         .getStudentSkillTree(body)
-        .then((res: any) => {
+        .then((raw) => {
+          const res = raw as { success?: boolean; total_points?: number; skills?: SkillData } | undefined;
           if (res && res.success) {
             this.studentTotalPoints = res.total_points || 0;
             this.studentSkillData = res.skills;
@@ -178,7 +186,7 @@ export class StudentTitlesPage {
     });
   }
 
-  async loadAllDataSequentially(sid: any) {
+  async loadAllDataSequentially(sid: string | number) {
     this.isLoadingData = true;
     this.cdr.markForCheck();
 
@@ -217,18 +225,26 @@ export class StudentTitlesPage {
     this.secretBadgesList.sort((a, b) => (b.isUnlocked ? 1 : 0) - (a.isUnlocked ? 1 : 0));
   }
 
-  fetchInventory(sid: any): Promise<void> {
+  fetchInventory(sid: string | number): Promise<void> {
     return new Promise(resolve => {
       let body = { sid: String(sid), userId: String(this.userDetails.details.user_no) };
       this.gamificationApi
         .getStudentInventory(body)
-        .then((res: any) => {
+        .then((res) => {
           if (res && res.success) {
-            let rawWallet = res.wallet || (res.data && res.data.wallet) || {};
+            let rawWallet = res.wallet || {};
             this.studentWallet = Array.isArray(rawWallet) ? rawWallet[0] || {} : rawWallet;
             this.unlockedTitles = res.unlocked_titles || [];
             this.unlockedBadges = res.unlocked_badges || [];
-            this.activeCraftedTitle = res.active_title || null;
+
+            // active_title is a string in most responses but an object in
+            // others (see the identical handling in student-detail.page.ts);
+            // narrow it the same way here rather than assigning it raw.
+            let rawActive = res.active_title;
+            if (rawActive !== undefined && rawActive !== null) {
+              this.activeCraftedTitle =
+                typeof rawActive === 'object' ? rawActive.title_ar || rawActive.title_name || rawActive.title : rawActive;
+            }
 
             this.alchemyTitlesList = this.gamification.processTitles(this.unlockedTitles);
             this.secretBadgesList = this.gamification.processBadges(this.unlockedBadges);
@@ -256,7 +272,7 @@ export class StudentTitlesPage {
     this.studentTitle = this.generateStudentTitle(this.studentSkillData, this.studentTotalPoints);
   }
 
-  generateStudentTitle(skills: any, total: number) {
+  generateStudentTitle(skills: SkillData | null | undefined, total: number) {
     if (!skills || total === 0) return '🌱 بطل في البداية';
 
     let highestSkill = 'general';
@@ -286,7 +302,7 @@ export class StudentTitlesPage {
     }
   }
 
-  canCraft(cost: any): boolean {
+  canCraft(cost: ProcessedTitle['cost']): boolean {
     if (!this.studentWallet || Object.keys(this.studentWallet).length === 0) return false;
 
     for (let skill in cost) {
@@ -296,7 +312,7 @@ export class StudentTitlesPage {
     return true;
   }
 
-  async craftTitle(title: any) {
+  async craftTitle(title: AlchemyTitle) {
     if (!this.canCraft(title.cost)) {
       this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.');
       return;
@@ -311,7 +327,7 @@ export class StudentTitlesPage {
     };
 
     try {
-      let res: any = await this.dataProvider.run(() => this.gamificationApi.craftSkillTitle(body));
+      const res = (await this.dataProvider.run(() => this.gamificationApi.craftSkillTitle(body))) as ApiResponse | undefined;
       if (res.success) {
         this.dataProvider.showToast(res.msg);
         await this.fetchInventory(sid);
@@ -337,7 +353,7 @@ export class StudentTitlesPage {
     };
 
     try {
-      let res: any = await this.dataProvider.run(() => this.gamificationApi.equipTitle(body));
+      const res = (await this.dataProvider.run(() => this.gamificationApi.equipTitle(body))) as ApiResponse | undefined;
       if (res.success) {
         this.activeCraftedTitle = titleCode;
         this.dataProvider.showToast(res.msg);

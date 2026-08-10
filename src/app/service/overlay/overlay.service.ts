@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PopoverController, AlertController, ToastController } from '@ionic/angular';
+import { PopoverController, AlertController, ToastController, AlertButton } from '@ionic/angular';
 import { LoaderComponent } from '../../components/loader/loader.component';
 
 @Injectable({
@@ -13,7 +13,7 @@ export class OverlayService {
     private toastCtrl: ToastController
   ) { }
 
-  async createLoader(backdropDismiss: boolean): Promise<any> {
+  async createLoader(backdropDismiss: boolean): Promise<HTMLIonPopoverElement> {
     const popover = await this.popoverController.create({
       component: LoaderComponent,
       backdropDismiss,
@@ -24,7 +24,7 @@ export class OverlayService {
     return popover;
   }
 
-  dismissLoader(popover: any): void {
+  dismissLoader(popover: HTMLIonPopoverElement | null): void {
     if (popover) {
       popover.dismiss().catch(() => {});
     }
@@ -36,7 +36,7 @@ export class OverlayService {
     return inputString.replace(urlRegex, '');
   }
 
-  async presentAlert(header: string, message: string, buttons: any[] = ['Ok'], mode?: 'ios' | 'md', backdropDismiss: boolean = true): Promise<void> {
+  async presentAlert(header: string, message: string, buttons: (AlertButton | string)[] = ['Ok'], mode?: 'ios' | 'md', backdropDismiss: boolean = true): Promise<void> {
     const alert = await this.alertController.create({
       header,
       message,

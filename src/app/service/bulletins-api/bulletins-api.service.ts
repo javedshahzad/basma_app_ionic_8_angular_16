@@ -4,6 +4,32 @@ import { map, tap, last } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
+import { ApiResponse } from '../../model/api-response.model';
+
+export interface BulletinDocumentFile {
+  is_img?: boolean;
+  extension?: string;
+  url?: string;
+  url_original?: string;
+}
+
+export interface BulletinDocuments {
+  pdf?: string;
+  files?: BulletinDocumentFile[];
+}
+
+export interface Bulletin {
+  id?: string | number;
+  is_closed?: string;
+  created_by?: string | number;
+  created_by_username?: string;
+  created_by_user_pic?: string;
+  created_at?: string;
+  bulletin_title?: string;
+  send_by?: string | number;
+  send_by_username?: string;
+  documents?: BulletinDocuments;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -16,22 +42,20 @@ export class BulletinsApiService {
     private dataService: DataService
   ) { }
 
-  getBulletins(data): Promise<any> {
+  getBulletins(data: Record<string, unknown>): Promise<ApiResponse<Bulletin[]>> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'getBulletins').then((response: any) => {
+      this.apiClient.postRequest<ApiResponse<Bulletin[]>>(data, 'getBulletins').then((response) => {
         if (response) {
             resolve({ session: true, data: response.response});
         } else {
-            reject(response.msg)
+            reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
-  shareBulletins(data): Promise<any> {
+  shareBulletins(data: Record<string, unknown> & { users: Record<string, string | number> }): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
        let header = new HttpHeaders();
           header.append('Content-Type', 'application/json');
@@ -44,15 +68,13 @@ export class BulletinsApiService {
           })
               // console.log(body);
 
-      this.http.post( environment.serverURL + 'shareBulletins',body, { headers: header }).subscribe((response: any) => {
+      this.http.post<{ response?: string; msg?: string }>(environment.serverURL + 'shareBulletins', body, { headers: header }).subscribe((response) => {
         if (response) {
-            resolve({ session: true, data: response.response,message:response.msg});
+            resolve({ session: true, data: response.response, message: response.msg });
         } else {
             reject(response.msg)
         }
-      },(error) => {
-        console.log(error);
-      });
+      }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     })
   }
 

@@ -19,6 +19,13 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LoggedInUser } from '../model/logged-in-user.model';
+import { SchoolRulesDetails } from '../service/data/data.service';
+
+interface SettingsCountry {
+  code?: string;
+  name?: string;
+}
 
 @Component({
     selector: 'app-settings',
@@ -50,29 +57,33 @@ export class SettingsPage {
     school_details: '',
     country: ''
   };
-  displayPic: any = '';
-  lang: any = {};
-  userDetails: any = {};
+  displayPic: string = '';
+  lang: Record<string, string> = {};
+  userDetails: LoggedInUser = {};
   passwordType: string = 'password';
   passwordIcon: string = 'eye-off';
   passwordTypecnf: string = 'password';
   passwordIconcnf: string = 'eye-off';
-  userType: any;
-  schoolDetail: any = {};
-  is_school_admin: any;
-  parent_link: any;
-  teacherLink: any;
-  countries: any = [];
-  selectedCountyCode: any;
-  countryDetails: any = {};
-  deactivate_date: any;
-  delete_translation_text: any = {};
+  userType: string;
+  schoolDetail: SchoolRulesDetails['school_details'] = {};
+  is_school_admin: number | boolean;
+  parent_link: boolean;
+  teacherLink: boolean;
+  countries: SettingsCountry[] = [];
+  selectedCountyCode: string;
+  countryDetails: { country_en_name: string; country_code: string; country_ar_name: string } = {
+    country_en_name: '',
+    country_code: '',
+    country_ar_name: ''
+  };
+  deactivate_date: string;
+  delete_translation_text: Record<string, string> = {};
   showDeleteAlert: boolean = false;
   DateLeftTodeleteAccount: string;
 
   show_save_spinner: boolean = false;
-  timerInterval: any;
-  remainingTime: any = { days: 0, hours: 0, minutes: 0 };
+  timerInterval: ReturnType<typeof setInterval>;
+  remainingTime: { days: number; hours: number; minutes: number } = { days: 0, hours: 0, minutes: 0 };
 
   constructor(
     public dataProvider: DataService,
@@ -110,7 +121,7 @@ export class SettingsPage {
       this.user.username = this.userDetails.details.username;
       this.user.email_id = this.userDetails.details.email_id;
       this.user.phone_no = this.userDetails.details.phone_no;
-      this.user.school_details = this.userDetails.details.school_details;
+      this.user.school_details = this.userDetails.details.school_details as string;
       this.user.country = this.userDetails.details.country_ar_name;
       this.selectedCountyCode = this.userDetails.details.country_code;
 
@@ -182,10 +193,10 @@ export class SettingsPage {
           } else {
             this.parent_link = false;
           }
-          this.user.delay_rule = this.schoolDetail.delay_rule;
-          this.user.warning_report = this.schoolDetail.report_condition;
-          this.user.warning_report_second = this.schoolDetail.second_report_condition;
-          this.user.warning_report_third = this.schoolDetail.third_report_condition;
+          this.user.delay_rule = String(this.schoolDetail.delay_rule ?? '');
+          this.user.warning_report = String(this.schoolDetail.report_condition ?? '');
+          this.user.warning_report_second = String(this.schoolDetail.second_report_condition ?? '');
+          this.user.warning_report_third = String(this.schoolDetail.third_report_condition ?? '');
           if (this.schoolDetail.deactivate_date) {
             this.deactivate_date = this.schoolDetail.deactivate_date;
             this.startCountdownTimer();
@@ -209,7 +220,7 @@ export class SettingsPage {
     } else {
       let uuid = await this.storageSr.get('uuid'); // 👈 قراءة UUID بأمان
 
-      let data: any = {
+      let data: Record<string, unknown> & { users: Record<string, string> } = {
         user_no: this.userDetails.details.user_no,
         session_id: this.userDetails.session_id,
         users: {
@@ -352,7 +363,7 @@ export class SettingsPage {
       user_no: this.userDetails.details.user_no
     };
     try {
-      const response: any = await this.dataProvider.run(() =>
+      const response = await this.dataProvider.run(() =>
         this.userManagementApi.requestTodeleteSchoolAccount(data)
       );
       if (!response.response) {
@@ -361,8 +372,9 @@ export class SettingsPage {
         var responseData = response;
         if (responseData.success) {
           this.dataProvider.errorALertMessage(response.msg);
-          this.deactivate_date = responseData.response.deactivate_date;
-          this.dataProvider.deactivate_date = responseData.response.deactivate_date;
+          const deactivateInfo = responseData.response as { deactivate_date?: string };
+          this.deactivate_date = deactivateInfo.deactivate_date;
+          this.dataProvider.deactivate_date = deactivateInfo.deactivate_date;
         }
       }
     } catch (error) {
@@ -379,7 +391,7 @@ export class SettingsPage {
     this.dataProvider
       .run(() => this.dataProvider.revertDeletedSchoolSettings(data))
       .then(response => {
-        this.dataProvider.errorALertMessage(response.msg);
+        this.dataProvider.errorALertMessage(response.message);
         this.deactivate_date = '';
         this.dataProvider.deactivate_date = '';
         this.cdr.markForCheck();

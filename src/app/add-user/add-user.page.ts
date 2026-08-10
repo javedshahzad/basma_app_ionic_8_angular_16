@@ -53,6 +53,10 @@ export class AddUserPage implements OnInit {
   classSearchQuery: string = '';
   selectedClasses: any[] = [];
   filteredClasses: any[] = [];
+  // Mirrors selectedClasses' ids for O(1) isClassSelected() lookups in the
+  // *ngFor row template instead of scanning the array per row per
+  // change-detection cycle; kept in sync in toggleSelectedClass() below.
+  selectedClassIds = new Set<string | number>();
 
   // 🟢 المتغير الذي سيحمل مسار العودة (افتراضياً قائمة المستخدمين)
   returnPath: string = 'users-list';
@@ -152,9 +156,8 @@ export class AddUserPage implements OnInit {
   }
 
   isClassSelected(cls: any): boolean {
-    if (!this.selectedClasses) return false;
     let targetId = cls.cid || cls.id;
-    return this.selectedClasses.some((c: any) => c.cid === targetId || c.id === targetId);
+    return this.selectedClassIds.has(targetId);
   }
 
   toggleSelectedClass(cls: any) {
@@ -163,8 +166,10 @@ export class AddUserPage implements OnInit {
 
     if (index > -1) {
       this.selectedClasses.splice(index, 1);
+      this.selectedClassIds.delete(targetId);
     } else {
       this.selectedClasses.push(cls);
+      this.selectedClassIds.add(targetId);
     }
   }
 

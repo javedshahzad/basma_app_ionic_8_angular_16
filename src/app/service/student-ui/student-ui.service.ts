@@ -111,7 +111,7 @@ export class StudentUiService {
   }
 
   // 6. 🟢 خيارات تغيير الصورة
-  async presentImageOptions(event: any, lang: any): Promise<string> {
+  async presentImageOptions(event: Event, lang: Record<string, string>): Promise<string> {
     return new Promise(async (resolve) => {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popoverCtrl.create({

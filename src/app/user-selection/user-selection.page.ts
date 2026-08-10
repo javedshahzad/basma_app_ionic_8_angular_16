@@ -34,6 +34,13 @@ export class UserSelectionPage implements OnInit {
   noUser = false;
   lang: any;
   show_loading: boolean = true;
+  // Memoized mirror of selectedUsers' ids for O(1) isUserSelected() lookups
+  // in the *ngFor row template instead of scanning the array per row per
+  // change-detection cycle. Invalidated by reference (selectedUsers is
+  // reassigned wholesale on init) and kept current directly in
+  // toggleUserSelection() since that mutates the array in place.
+  private selectedUserIdSet = new Set<string | number>();
+  private selectedUserIdSetSourceRef: unknown = null;
 
   // متغيرات البحث
   searchQuery: string = '';
@@ -145,21 +152,34 @@ export class UserSelectionPage implements OnInit {
     }, 300); // 300ms Debounce
   }
 
+  private syncSelectedUserIdSet() {
+    this.selectedUserIdSetSourceRef = this.selectedUsers;
+    this.selectedUserIdSet = new Set((this.selectedUsers || []).map((u: any) => u.user_no));
+  }
+
   // 🟢 تحديد أو إلغاء تحديد المستخدم
   toggleUserSelection(user: any) {
+    if (this.selectedUsers !== this.selectedUserIdSetSourceRef) {
+      this.syncSelectedUserIdSet();
+    }
     const index = this.selectedUsers.findIndex((u: any) => u.user_no === user.user_no);
 
     if (index > -1) {
       // المستخدم موجود بالفعل، نقوم بإزالته
       this.selectedUsers.splice(index, 1);
+      this.selectedUserIdSet.delete(user.user_no);
     } else {
       // المستخدم غير موجود، نقوم بإضافته
       this.selectedUsers.push(user);
+      this.selectedUserIdSet.add(user.user_no);
     }
   }
 
   // 🟢 التحقق مما إذا كان المستخدم محدد أم لا (يُستخدم في الـ HTML لتغيير الألوان)
   isUserSelected(user: any): boolean {
-    return this.selectedUsers.findIndex((u: any) => u.user_no === user.user_no) > -1;
+    if (this.selectedUsers !== this.selectedUserIdSetSourceRef) {
+      this.syncSelectedUserIdSet();
+    }
+    return this.selectedUserIdSet.has(user.user_no);
   }
 }

@@ -24,6 +24,107 @@ import { StorageService } from '../storage.service';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { OverlayService } from '../overlay/overlay.service';
 import { ApiClient } from '../api-client/api-client.service';
+import { ApiResponse } from '../../model/api-response.model';
+import { UserDetails } from '../../model/logged-in-user.model';
+import { Student } from '../../model/student.model';
+
+// Selection payload broadcast by select-message-user.page.ts (recipients
+// picker) — user_no can be a string or number depending on the source list,
+// the display names are always strings.
+export interface SelectedUsersPayload {
+  selectedUsers: (string | number)[];
+  selectedUsersShow: string[];
+}
+
+// getSchoolUsersList item shape — only the fields users-list.page.ts's
+// template actually reads; the rest of the real payload is unenumerated.
+export interface SchoolUser {
+  user_no?: string | number;
+  first_name?: string;
+  last_name?: string;
+  username?: string;
+  pic?: string;
+  [key: string]: unknown;
+}
+
+interface SchoolUsersHttpResponse {
+  session?: boolean;
+  msg?: string;
+  response?: SchoolUser[];
+}
+
+interface CheckUserPlanResponse {
+  response?: boolean;
+  msg?: string;
+}
+
+export interface SchoolRulesDetails {
+  school_details?: {
+    delay_rule?: string | number;
+    report_condition?: string | number;
+    second_report_condition?: string | number;
+    third_report_condition?: string | number;
+    deactivate_date?: string;
+  };
+  user_details?: {
+    teacher_register_link?: string;
+    parent_register_link?: string;
+  };
+}
+
+interface GetAllRulesHttpResponse {
+  details?: SchoolRulesDetails;
+  msg?: string;
+}
+
+interface SaveMarksHttpResponse {
+  session?: boolean;
+  success?: boolean;
+  msg?: string;
+}
+
+interface SaveMarksResult {
+  session: boolean;
+  message?: string;
+}
+
+interface SaveUserHttpResponse {
+  session?: boolean;
+  success?: boolean;
+  msg?: string;
+  picUrl?: string;
+}
+
+interface UpdateUserSettingsResult {
+  session: boolean;
+  message?: string;
+  pic?: string;
+}
+
+interface RevertSchoolHttpResponse {
+  session?: boolean;
+  success?: boolean;
+  msg?: string;
+  response?: { deactivate_date?: string };
+}
+
+interface RevertSchoolDeletionResult {
+  session: boolean;
+  message?: string;
+  deactive_date?: string;
+}
+
+interface GetChildrensHttpResponse {
+  success?: boolean;
+  child?: Student[];
+  can_view_absent?: boolean;
+  msg?: string;
+}
+
+interface GetChildrensResult {
+  data?: Student[];
+  permit?: boolean;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -31,21 +132,25 @@ import { ApiClient } from '../api-client/api-client.service';
 export class DataService {
   // نواقل بث عامة على مستوى التطبيق — Subject بدل EventEmitter لأنها ليست
   // ربط @Output لمكوّن، بل قنوات بث يشترك بها عدة مستهلكين مستقلين
-  public events: Subject<any>;
-  public language: Subject<any>;
-  public selectedUsers: Subject<any>;
+  // events carries either an upload-progress percentage (getStatusMessage)
+  // or a user record (triggerUserSwitch, currently unused by any caller).
+  public events: Subject<number | UserDetails | 'add'>;
+  public language: Subject<string>;
+  public selectedUsers: Subject<SelectedUsersPayload>;
 
   // قناة اتصال مخصصة لنقل الخبر المعدل أو الجديد
-  public newsUpdated = new Subject<any>();
+  public newsUpdated = new Subject<Record<string, unknown>>();
 
-  loader: any;
-  lang: any = {};
+  // Declared but never assigned/read anywhere in the app today — kept as an
+  // honest unknown rather than inventing a shape for a dead field.
+  loader: unknown;
+  lang: Record<string, string> = {};
   mediaDirectory: string = '';
-  popOver: any;
+  popOver: HTMLIonPopoverElement | null = null;
   img = '';
   unread = false;
   private_message = false;
-  deactivate_date: any = '';
+  deactivate_date: string = '';
   public uploadProgress: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   /**
@@ -92,7 +197,9 @@ export class DataService {
   }
 
   // دالة مساعدة لاستقبال طلب التبديل من واجهة Lineone الجديدة
-  async triggerUserSwitch(user: any) {
+  // No current callers anywhere in the app; param typed to match the
+  // 'userloggedin' storage contract (see UserDetails) this method writes to.
+  async triggerUserSwitch(user: 'add' | UserDetails) {
     if (user === 'add') {
       // التوجيه لصفحة تسجيل الدخول
     } else {
@@ -162,7 +269,9 @@ export class DataService {
    * @return rating in int
    * @param ev - event
    */
-  async presentRatingPopover(lang, note, callback: any) {
+  // No current callers anywhere in the app; callback typed loosely since
+  // RateAppComponent's dismiss payload isn't constrained by any real caller.
+  async presentRatingPopover(lang, note, callback: (result: unknown) => void) {
     // console.log('call');
     const { RateAppComponent } = await import('../../components/rate-app/rate-app.component');
     const popover = await this.popoverController.create({
@@ -218,7 +327,7 @@ export class DataService {
    * This is a user defined loader
    * @param ev - event
    */
-  async presentPopover(ev: any) {
+  async presentPopover(ev: unknown) {
     // 🔴 حماية إضافية: التأكد من إغلاق أي نافذة سابقة قبل فتح واحدة جديدة
     if (this.popOver) {
       this.closePopup();
@@ -292,10 +401,10 @@ export class DataService {
 
   /* get all the users except teacher studet and parent */
 
-  getAllUsers(users): Promise<any> {
+  getAllUsers(users: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: SchoolUser[] }> {
     return new Promise((resolve, reject) => {
-      this.postRequest(users, 'getSchoolUsersList')
-        .then((response: any) => {
+      this.postRequest<SchoolUsersHttpResponse>(users, 'getSchoolUsersList')
+        .then((response) => {
           if (response) {
             console.log('alluserslist', response);
             if (response.session == false) {
@@ -308,14 +417,7 @@ export class DataService {
           } else {
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.lang.usnexpectedError));
     });
   }
 
@@ -332,11 +434,11 @@ export class DataService {
         return `Done`;
     }
   }
-  openPdf(data): Promise<any> {
+  openPdf(data: Record<string, unknown>): Promise<CheckUserPlanResponse> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.postRequest(data, 'check_user_plan')
-        .then((response: any) => {
+      this.postRequest<CheckUserPlanResponse>(data, 'check_user_plan')
+        .then((response) => {
           if (response) {
             if (response.response) {
               resolve(response);
@@ -347,20 +449,13 @@ export class DataService {
             reject(response);
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.lang.usnexpectedError));
     });
   }
-  getAllRules(data: any): Promise<any> {
+  getAllRules(data: Record<string, unknown>): Promise<SchoolRulesDetails> {
     return new Promise((resolve, reject) => {
-      this.postRequest(data, 'getAllRules')
-        .then((response: any) => {
+      this.postRequest<GetAllRulesHttpResponse>(data, 'getAllRules')
+        .then((response) => {
           if (response) {
             if (response.details) {
               resolve(response.details);
@@ -388,7 +483,16 @@ export class DataService {
    * Attendance mark post function
    * @param data user_no, session_id, cid, date, school_id, sheet
    */
-  submitMarks(data: any, marksheet): Promise<any> {
+  submitMarks(
+    data: Record<string, unknown> & {
+      course_id: string | number;
+      date: string;
+      session_id: string;
+      user_no: string | number;
+      school_id: string | number;
+    },
+    marksheet: unknown
+  ): Promise<SaveMarksResult> {
     // console.log(data);
     return new Promise((resolve, reject) => {
       this.getNetworkInformation().then(isNetworkAvailable => {
@@ -401,19 +505,23 @@ export class DataService {
           body = body.append('date', data.date);
           body = body.append('session_id', data.session_id);
           body = body.append('user_no', data.user_no);
-          body = body.append('lang_code', data.lang_code);
+          body = body.append('lang_code', data.lang_code as string);
 
-          Object.keys(marksheet).map(key => {
-            Object.keys(marksheet[key]).map(sid => {
-              body = body.append('marksheet[' + key + '][' + sid + ']', marksheet[key][sid]);
+          // `marksheet` is really an array of per-student mark records,
+          // iterated here via Object.keys() (works fine on arrays at
+          // runtime); typed as unknown and cast here rather than in the
+          // public signature.
+          const marksheetData = marksheet as Record<string, Record<string, string | number>>;
+          Object.keys(marksheetData).map(key => {
+            Object.keys(marksheetData[key]).map(sid => {
+              body = body.append('marksheet[' + key + '][' + sid + ']', marksheetData[key][sid]);
             });
           });
 
           this.http
-            .post(environment.serverURL + 'saveStudentMarks/' + data.school_id, body, { headers: header })
+            .post<SaveMarksHttpResponse>(environment.serverURL + 'saveStudentMarks/' + data.school_id, body, { headers: header })
             .subscribe(
-              (res: any) => {
-                let response = res;
+              (response) => {
                 if (!response.session) {
                   resolve({ session: false, message: response.msg });
                 } else if (response.success) {
@@ -442,7 +550,7 @@ export class DataService {
    * Update user settings
    * @param data user_no, session_id, user object
    */
-  updateUserSettings(data: any): Promise<any> {
+  updateUserSettings(data: Record<string, unknown> & { users: Record<string, string> }): Promise<UpdateUserSettingsResult> {
     return new Promise((resolve, reject) => {
       this.getNetworkInformation().then(isNetworkAvailable => {
         if (isNetworkAvailable) {
@@ -455,9 +563,8 @@ export class DataService {
               body = body.append('user[' + key + ']', data.users[key]);
             }
           });
-          this.http.post(environment.serverURL + 'saveUser', body, { headers: header }).subscribe(
-            (res: any) => {
-              let response = res;
+          this.http.post<SaveUserHttpResponse>(environment.serverURL + 'saveUser', body, { headers: header }).subscribe(
+            (response) => {
               if (!response.session) {
                 resolve({ session: false, message: response.msg });
               } else if (response.success) {
@@ -482,7 +589,7 @@ export class DataService {
     });
   }
 
-  revertDeletedSchoolSettings(data: any): Promise<any> {
+  revertDeletedSchoolSettings(data: Record<string, unknown>): Promise<RevertSchoolDeletionResult> {
     return new Promise((resolve, reject) => {
       this.getNetworkInformation().then(isNetworkAvailable => {
         if (isNetworkAvailable) {
@@ -492,12 +599,11 @@ export class DataService {
           let body: HttpParams = this.makeObjectToUrlParams(data);
           Object.keys(data).map(key => {
             if (data[key] != '') {
-              body = body.append(key, data[key]);
+              body = body.append(key, data[key] as string | number | boolean);
             }
           });
-          this.http.post(environment.serverURL + 'revertDeleteSchool', body, { headers: header }).subscribe(
-            (res: any) => {
-              let response = res;
+          this.http.post<RevertSchoolHttpResponse>(environment.serverURL + 'revertDeleteSchool', body, { headers: header }).subscribe(
+            (response) => {
               if (!response.session) {
                 resolve({ session: false, message: response.msg, deactive_date: response.response.deactivate_date });
               } else if (response.success) {
@@ -539,10 +645,10 @@ export class DataService {
    * Offline Attendance mark post function
    * @param data user_no, session_id, cid, date, school_id, sheet
    */
-  getChildrens(data): Promise<any> {
+  getChildrens(data: Record<string, unknown>): Promise<GetChildrensResult> {
     return new Promise((resolve, reject) => {
-      this.postRequest(data, 'getChildrens')
-        .then((response: any) => {
+      this.postRequest<GetChildrensHttpResponse>(data, 'getChildrens')
+        .then((response) => {
           if (response) {
             if (response.success) {
               resolve({ data: response.child, permit: response.can_view_absent });
@@ -551,14 +657,7 @@ export class DataService {
             }
           }
         })
-        .catch(error => {
-          console.log(error);
-          if (error.message != undefined && error.message != '' && error.message != null) {
-            reject(error.message);
-          } else {
-            reject(this.lang.usnexpectedError);
-          }
-        });
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.lang.usnexpectedError));
     });
   }
 
@@ -567,8 +666,8 @@ export class DataService {
    * @param {String} slug - contains the API method to call
    * @returns Success or error
    */
-  postRequest(data: any, slug: string): Promise<any> {
-    return this.apiClient.postRequest(data, slug);
+  postRequest<T = ApiResponse>(data: Record<string, unknown>, slug: string): Promise<T | false> {
+    return this.apiClient.postRequest<T>(data, slug);
   }
 
   /** Function to convert object into param string
@@ -576,7 +675,7 @@ export class DataService {
    * @returns Param string
    */
 
-  makeObjectToUrlParams(data: any) {
+  makeObjectToUrlParams(data: Record<string, unknown>) {
     return this.apiClient.makeObjectToUrlParams(data);
   }
 
@@ -604,7 +703,7 @@ export class DataService {
    * Download image (Modern Capacitor Way)
    * @param url image url
    */
-  downloadImage(url: string): Promise<any> {
+  downloadImage(url: string): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
       try {
         let n = new Date().valueOf();
@@ -626,9 +725,9 @@ export class DataService {
     });
   }
   caclulateHours(start, end) {
-    var date1: any = new Date(end);
-    var date2: any = new Date(start);
-    var diffInSeconds = Math.abs(date1 - date2) / 1000;
+    var date1: Date = new Date(end);
+    var date2: Date = new Date(start);
+    var diffInSeconds = Math.abs(date1.getTime() - date2.getTime()) / 1000;
     var days = Math.floor(diffInSeconds / 60 / 60 / 24);
     var hours = Math.floor((diffInSeconds / 60 / 60) % 24);
     var minutes = Math.floor((diffInSeconds / 60) % 60);
@@ -636,13 +735,13 @@ export class DataService {
     var milliseconds = Math.round((diffInSeconds - Math.floor(diffInSeconds)) * 1000);
     return `${hours}:${minutes}:${seconds}`;
   }
-  addHoursToDate(date: any, hours: number): Date {
+  addHoursToDate(date: Date, hours: number): Date {
     return new Date(new Date(date).setHours(date.getHours() + hours));
   }
 }
 
 export function getFileReader(): FileReader {
   const fileReader = new FileReader();
-  const zoneOriginalInstance = (fileReader as any)['__zone_symbol__originalInstance'];
+  const zoneOriginalInstance = (fileReader as unknown as { __zone_symbol__originalInstance?: FileReader })['__zone_symbol__originalInstance'];
   return zoneOriginalInstance || fileReader;
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiClient } from '../api-client/api-client.service';
 import { DataService } from '../data/data.service';
+import { ApiResponse } from '../../model/api-response.model';
 
 /**
  * Forgot-password flow HTTP calls, split out of DataService. Depends on
@@ -16,10 +17,10 @@ export class PasswordResetApiService {
     private dataService: DataService
   ) { }
 
-  submitEmail(data: any): Promise<any> {
+  submitEmail(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'forgot_password').then((response: any) => {
+      this.apiClient.postRequest<ApiResponse>(data, 'forgot_password').then((response) => {
         if (response) {
           if (!response.response) {
             resolve({ session: false, message: response.msg });
@@ -29,25 +30,18 @@ export class PasswordResetApiService {
             reject(response.msg)
           }
         } else {
-          reject(response.msg)
+          reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
   /** Check OTP for sorgot password
   */
-  checkOtp(data: any): Promise<any> {
+  checkOtp(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'checkOtp').then((response: any) => {
+      this.apiClient.postRequest<ApiResponse>(data, 'checkOtp').then((response) => {
         if (response) {
           if (!response.response) {
             resolve({ session: false, message: response.msg });
@@ -57,25 +51,18 @@ export class PasswordResetApiService {
             reject(response.msg)
           }
         } else {
-          reject(response.msg)
+          reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 
   /** reset pass. for sorgot password
   */
-  resetPassword(data: any): Promise<any> {
+  resetPassword(data: Record<string, unknown>): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       // console.log(data);
-      this.apiClient.postRequest(data, 'reset_password').then((response: any) => {
+      this.apiClient.postRequest<ApiResponse>(data, 'reset_password').then((response) => {
         if (response) {
           if (!response.response) {
             resolve({ session: false, message: response.msg });
@@ -85,16 +72,9 @@ export class PasswordResetApiService {
             reject(response.msg)
           }
         } else {
-          reject(response.msg)
+          reject(undefined)
         }
-      }).catch((error) => {
-        console.log(error);
-        if (error.message != undefined && error.message != '' && error.message != null) {
-          reject(error.message)
-        } else {
-          reject(this.dataService.lang.usnexpectedError)
-        }
-      })
+      }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 }
