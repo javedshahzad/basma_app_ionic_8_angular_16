@@ -16,7 +16,6 @@ import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
 import { ClasslistOptionsPopoverComponent } from '../components/classlist-options-popover/classlist-options-popover.component';
-import { EditClassModalComponent } from '../components/edit-class-modal/edit-class-modal.component';
 import { StorageService } from '../service/storage.service';
 import { SyncService } from '../service/sync/sync.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
@@ -357,6 +356,7 @@ export class ClasslistPage implements OnInit {
     if (this.editMode) {
       this.editingClass = JSON.parse(JSON.stringify(course));
 
+      const { EditClassModalComponent } = await import('../components/edit-class-modal/edit-class-modal.component');
       const modal = await this.modalCtrl.create({
         component: EditClassModalComponent,
         componentProps: {

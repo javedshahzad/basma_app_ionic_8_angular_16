@@ -16,7 +16,6 @@ import { ImageOptionPopoverComponent } from '../components/image-option-popover/
 import { StudentPointsPopoverComponent } from '../components/student-points-popover/student-points-popover.component';
 import { StudentOptionsPopoverComponent } from '../components/student-options-popover/student-options-popover.component';
 import { AddReviewComponent } from '../add-review/add-review.component';
-import { StudentProfileModalComponent } from '../components/student-profile-modal/student-profile-modal.component';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
@@ -314,6 +313,7 @@ export class StudentsPage {
 
       student.studentBehaviour = behaviour;
 
+      const { StudentProfileModalComponent } = await import('../components/student-profile-modal/student-profile-modal.component');
       const modal = await this.modalController.create({
         component: StudentProfileModalComponent,
         cssClass: 'profile-modal-class',

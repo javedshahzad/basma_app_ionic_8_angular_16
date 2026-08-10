@@ -7,7 +7,9 @@ import { TranslateService } from '@ngx-translate/core';
 /**
  * GeoService manages users location and country
  */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class GeoServiceProvider {
   countries = {
     '': 'Worldwide',

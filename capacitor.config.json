@@ -6,7 +6,7 @@
 	"plugins": {
 	  "SplashScreen": {
 		"showSpinner": false,
-		"launchShowDuration":4000,
+		"launchShowDuration":3000,
 		"launchAutoHide": true,
 		"spinnerColor": "#f53d3d",
 		"splashFullScreen": true

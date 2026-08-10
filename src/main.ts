@@ -1,4 +1,4 @@
-import { enableProdMode, ErrorHandler, importProvidersFrom } from '@angular/core';
+import { APP_INITIALIZER, enableProdMode, ErrorHandler, importProvidersFrom } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import * as Sentry from '@sentry/capacitor';
@@ -8,11 +8,7 @@ import { createTranslateLoader } from './app/app.module';
 import { environment } from './environments/environment';
 import { DataService } from './app/service/data/data.service';
 import { AuthService } from './app/service/auth/auth.service';
-import { DocumentService } from './app/service/document/document.service';
-import { StudentDataService } from './app/service/student-data/student-data.service';
 import { DatabaseService } from './app/service/database/database.service';
-import { FileUploadService } from './app/service/file-upload/file-upload.service';
-import { GeoServiceProvider } from './app/service/geo-service/geo-service';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { Printer } from '@awesome-cordova-plugins/printer/ngx';
 import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
@@ -33,11 +29,17 @@ import { AppComponent } from './app/app.component';
 
 // تفعيل تتبع الأعطال فقط عند ضبط DSN (فارغ افتراضياً في environment.ts محلياً
 // حتى لا تُرسَل أخطاء التطوير)؛ راجع environment.prod.ts لإضافة DSN مشروع Sentry
+//
+// tracesSampleRate: عيّنة صغيرة (15%) من الجلسات الحقيقية لقياس أداء ميداني
+// حقيقي (RUM) عبر أجهزة وشبكات المستخدمين الفعليين، إلى جانب قياسات Lighthouse
+// المخبرية — راجع خطة العمل الاحترافية لحزمة التحميل الأساسية، المرحلة صفر.
 if (environment.sentryDsn) {
   Sentry.init(
     {
       dsn: environment.sentryDsn,
       environment: environment.production ? 'production' : 'development',
+      integrations: [SentryAngular.browserTracingIntegration()],
+      tracesSampleRate: 0.15,
     },
     SentryAngular.init
   );
@@ -71,11 +73,7 @@ bootstrapApplication(AppComponent, {
         })),
         DataService,
         AuthService,
-        DocumentService,
-        StudentDataService,
         DatabaseService,
-        FileUploadService,
-        GeoServiceProvider,
         PhotoViewer,
         Printer,
         AppRate,
@@ -86,7 +84,14 @@ bootstrapApplication(AppComponent, {
         },
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withInterceptorsFromDi()),
+        SentryAngular.TraceService,
+        {
+            provide: APP_INITIALIZER,
+            useFactory: () => () => {},
+            deps: [SentryAngular.TraceService],
+            multi: true
+        }
     ]
 })
   .catch(err => console.log(err));

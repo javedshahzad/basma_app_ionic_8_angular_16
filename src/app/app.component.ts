@@ -14,6 +14,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { ToastController } from '@ionic/angular';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { StorageService } from './service/storage.service';
@@ -254,6 +255,7 @@ export class AppComponent {
           }
           this.cdr.markForCheck();
           this.initializeDeeppLink();
+          this.hideSplashScreen();
         });
       });
 
@@ -301,6 +303,17 @@ export class AppComponent {
         }
       });
     });
+  }
+
+  // مرتبطة بجاهزية الإقلاع الفعلية بدل مؤقّت ثابت (launchShowDuration في
+  // capacitor.config.json كان يخفي الشاشة بعد ٤ ثوانٍ دوماً، بصرف النظر عن
+  // سرعة الجهاز الفعلية) — راجع خطة العمل الاحترافية لحزمة التحميل الأساسية،
+  // المرحلة الثالثة. تُستدعى فقط بعد أن يقرر initializeApp أي صفحة سيراها
+  // المستخدم فعلياً، وهي أقرب نقطة ممكنة لأول رسم ذي معنى للمستخدم.
+  private hideSplashScreen() {
+    if (this.platform.is('capacitor')) {
+      SplashScreen.hide().catch(() => {});
+    }
   }
 
   async requestNotificationPermission() {

@@ -8,7 +8,6 @@ import { Device } from '@capacitor/device';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { LoaderComponent } from '../components/loader/loader.component';
-import { SubscribePlanComponent } from '../components/subscribe-plan/subscribe-plan.component';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
@@ -222,7 +221,12 @@ export class LoginPage {
     }
   }
 
+  // استيراد ديناميكي بدل ثابت: النافذة لا تُفتح إلا عند انتهاء باقة مدرسة
+  // معيّنة، لا في كل عملية دخول — تحميلها ثابتاً في أعلى الملف كان يُقحمها
+  // ضمن حزمة شاشة الدخول نفسها لكل مستخدم. راجع خطة العمل الاحترافية لحزمة
+  // التحميل الأساسية، المرحلة الثانية.
   async presentModalSubscription() {
+    const { SubscribePlanComponent } = await import('../components/subscribe-plan/subscribe-plan.component');
     const modal = await this.modalController.create({
       component: SubscribePlanComponent,
       cssClass: 'subscription-modal'

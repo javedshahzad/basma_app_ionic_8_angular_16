@@ -1,15 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ModalController, PopoverController, ActionSheetController, AlertController, Platform } from '@ionic/angular';
 
-import { StudentProfileModalComponent } from '../../components/student-profile-modal/student-profile-modal.component';
-import { ImageOptionPopoverComponent } from '../../components/image-option-popover/image-option-popover.component';
-import { AvatarImagesComponent } from '../../components/avatar-images/avatar-images.component';
-import { StudentOptionsPopoverComponent } from '../../components/student-options-popover/student-options-popover.component';
-import { SkillTreeModalComponent } from '../../components/skill-tree-modal/skill-tree-modal.component';
-import { AddStudentModalComponent } from '../../components/add-student-modal/add-student-modal.component';
-import { AdminActionsPopoverComponent } from '../../components/admin-actions-popover/admin-actions-popover.component';
-import { AddNoteModalComponent } from '../../components/add-note-modal/add-note-modal.component';
-import { AddReviewComponent } from '../../add-review/add-review.component';
+// الاستيرادات أدناه ديناميكية عمداً (داخل كل دالة، لا في أعلى الملف): هذه
+// الخدمة تُستخدم من خمس صفحات مختلفة (قائمة المتابعة، قائمة الطلاب، تفاصيل
+// الطالب، الطلاب...)، وأي استيراد ثابت هنا يُقحَم في حزمة أول صفحة من هذه
+// الخمس تُحمَّل، حتى لو لم يفتح المستخدم تلك النافذة إطلاقاً في تلك الجلسة.
+// راجع خطة العمل الاحترافية لحزمة التحميل الأساسية، المرحلة الثانية.
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +22,7 @@ export class StudentUiService {
 
   // 1. إدارة نافذة شجرة المهارات
   async openSkillTree(student: any): Promise<any> {
+    const { SkillTreeModalComponent } = await import('../../components/skill-tree-modal/skill-tree-modal.component');
     const modal = await this.modalCtrl.create({
       component: SkillTreeModalComponent,
       cssClass: 'lineone-modal',
@@ -41,6 +38,7 @@ export class StudentUiService {
 
   // 2. إدارة نافذة تسجيل طالب جديد
   async openAddStudent(langData: any): Promise<any> {
+    const { AddStudentModalComponent } = await import('../../components/add-student-modal/add-student-modal.component');
     const modal = await this.modalCtrl.create({
       component: AddStudentModalComponent,
       cssClass: 'transparent-modal',
@@ -55,6 +53,7 @@ export class StudentUiService {
   async presentAdminActions(event: any, showAdd: boolean): Promise<string> {
     return new Promise(async (resolve) => {
       if (this.platform.width() >= 768) {
+        const { AdminActionsPopoverComponent } = await import('../../components/admin-actions-popover/admin-actions-popover.component');
         const popover = await this.popoverCtrl.create({
           component: AdminActionsPopoverComponent,
           event: event,
@@ -81,11 +80,13 @@ export class StudentUiService {
   // 4. إدارة الملاحظات والتقييم
   async openNoteOrReviewModal(student: any, mode: 'note' | 'review'): Promise<any> {
     if (mode === 'note') {
+      const { AddNoteModalComponent } = await import('../../components/add-note-modal/add-note-modal.component');
       const modal = await this.modalCtrl.create({ component: AddNoteModalComponent, cssClass: 'transparent-modal' });
       await modal.present();
       const { data } = await modal.onDidDismiss();
       return { mode: 'note', data };
     } else {
+      const { AddReviewComponent } = await import('../../add-review/add-review.component');
       const modal = await this.modalCtrl.create({ component: AddReviewComponent, cssClass: 'review-desktop-modal', componentProps: { student: student.student_data } });
       await modal.present();
       const { data } = await modal.onDidDismiss();
@@ -95,6 +96,7 @@ export class StudentUiService {
 
   // 5. 🟢 إدارة نافذة ملف الطالب (تم نقلها بالكامل لتنظيف الكنترولر)
   async openStudentProfileModal(student: any, userType: string, editMode: boolean, onPhotoClick: Function, onFullscreenClick: Function): Promise<any> {
+    const { StudentProfileModalComponent } = await import('../../components/student-profile-modal/student-profile-modal.component');
     const modal = await this.modalCtrl.create({
       component: StudentProfileModalComponent,
       cssClass: 'profile-modal-class',
@@ -114,6 +116,7 @@ export class StudentUiService {
   async presentImageOptions(event: Event, lang: Record<string, string>): Promise<string> {
     return new Promise(async (resolve) => {
       if (this.platform.width() >= 768 && event) {
+        const { ImageOptionPopoverComponent } = await import('../../components/image-option-popover/image-option-popover.component');
         const popover = await this.popoverCtrl.create({
           component: ImageOptionPopoverComponent, event: event, mode: 'ios', translucent: true
         });
@@ -138,6 +141,7 @@ export class StudentUiService {
 
   // 7. 🟢 نافذة اختيار الصورة الرمزية (Avatar)
   async openAvatarModal(student: any): Promise<any> {
+    const { AvatarImagesComponent } = await import('../../components/avatar-images/avatar-images.component');
     const modal = await this.modalCtrl.create({
       component: AvatarImagesComponent, cssClass: 'avatar-modal-class', componentProps: { student: student }
     });
@@ -150,6 +154,7 @@ export class StudentUiService {
   async presentStudentOptions(event: any, student: any, detailsLang: any): Promise<string> {
     return new Promise(async (resolve) => {
       if (this.platform.width() >= 768) {
+        const { StudentOptionsPopoverComponent } = await import('../../components/student-options-popover/student-options-popover.component');
         const popover = await this.popoverCtrl.create({
           component: StudentOptionsPopoverComponent, event: event, componentProps: { student: student }, mode: 'ios', translucent: true
         });
