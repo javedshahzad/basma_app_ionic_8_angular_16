@@ -46,7 +46,6 @@
     "@ionic/cli": "^7.2.0",
     "@ionic/storage": "^4.0.0",
     "@ionic/storage-angular": "^4.0.0",
-    "@mtnair/ngx-pinch-zoom": "^2.5.10",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "@sentry/angular": "10.60.0",

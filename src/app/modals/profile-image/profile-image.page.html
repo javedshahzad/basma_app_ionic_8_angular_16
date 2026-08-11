@@ -17,12 +17,10 @@
 
 <ion-content class="bg-black" mode="md">
   <!-- 🟢 التخلص من الستايل الداخلي واستخدام Tailwind -->
-  <div class="h-full w-full flex justify-center items-center bg-black/95 p-4">
-    <pinch-zoom [limit-zoom]="100" class="w-full">
-      <!-- 🟢 إضافة onerror كحماية إضافية للصور التالفة -->
-      <img loading="lazy" [src]="pic ? pic : 'assets/imgs/default_avatar.png'" 
-           onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
-           class="max-w-full max-h-[85vh] object-contain mx-auto rounded-2xl shadow-2xl" />
-    </pinch-zoom>
+  <div class="h-full w-full flex justify-center items-center bg-black/95 p-4 overflow-hidden">
+    <!-- 🟢 إضافة onerror كحماية إضافية للصور التالفة -->
+    <img appPinchZoom loading="lazy" [src]="pic ? pic : 'assets/imgs/default_avatar.png'"
+         onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';"
+         class="max-w-full max-h-[85vh] object-contain mx-auto rounded-2xl shadow-2xl" />
   </div>
 </ion-content>
