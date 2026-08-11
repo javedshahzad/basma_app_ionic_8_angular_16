@@ -1,31 +1,12 @@
-import { APP_INITIALIZER, enableProdMode, ErrorHandler, importProvidersFrom } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { enableProdMode } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
 
 import * as Sentry from '@sentry/capacitor';
 import * as SentryAngular from '@sentry/angular';
 
-import { createTranslateLoader } from './app/app.module';
 import { environment } from './environments/environment';
-import { DataService } from './app/service/data/data.service';
-import { AuthService } from './app/service/auth/auth.service';
-import { DatabaseService } from './app/service/database/database.service';
-import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { Printer } from '@awesome-cordova-plugins/printer/ngx';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, HttpClient } from '@angular/common/http';
-import { MyInterceptor } from './app/MyInterceptor';
-import { GlobalErrorHandler } from './app/global-error-handler';
-import { RouteReuseStrategy } from '@angular/router';
-import { IonicRouteStrategy, IonicModule } from '@ionic/angular';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { IonicStorageModule } from '@ionic/storage-angular';
-import { Drivers } from '@ionic/storage';
-import { AppRoutingModule } from './app/app-routing.module';
-import { PipesModule } from './app/pipes/pipes.module';
-import { FormsModule } from '@angular/forms';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app/app.component';
+import { appConfig } from './app/app.config';
 
 // تفعيل تتبع الأعطال فقط عند ضبط DSN (فارغ افتراضياً في environment.ts محلياً
 // حتى لا تُرسَل أخطاء التطوير)؛ راجع environment.prod.ts لإضافة DSN مشروع Sentry
@@ -59,39 +40,4 @@ if (environment.production) {
   console.debug = () => {};
 }
 
-bootstrapApplication(AppComponent, {
-    providers: [
-        importProvidersFrom(BrowserModule, IonicModule.forRoot({ mode: 'md' }), IonicStorageModule.forRoot({
-            name: '__basma_db',
-            driverOrder: [Drivers.IndexedDB, Drivers.LocalStorage]
-        }), AppRoutingModule, PipesModule, FormsModule, TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: createTranslateLoader,
-                deps: [HttpClient]
-            }
-        })),
-        DataService,
-        AuthService,
-        DatabaseService,
-        PhotoViewer,
-        Printer,
-        AppRate,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: MyInterceptor,
-            multi: true
-        },
-        { provide: ErrorHandler, useClass: GlobalErrorHandler },
-        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-        provideHttpClient(withInterceptorsFromDi()),
-        SentryAngular.TraceService,
-        {
-            provide: APP_INITIALIZER,
-            useFactory: () => () => {},
-            deps: [SentryAngular.TraceService],
-            multi: true
-        }
-    ]
-})
-  .catch(err => console.log(err));
+bootstrapApplication(AppComponent, appConfig).catch(err => console.log(err));
