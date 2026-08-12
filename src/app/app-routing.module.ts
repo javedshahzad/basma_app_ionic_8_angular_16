@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { NoPreloading, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guard/auth.guard';
+import { RoleGuard } from './guard/role.guard';
+import { UserType } from './constants/user-type';
 
 const routes: Routes = [
   {
@@ -102,7 +104,8 @@ const routes: Routes = [
   },
   {
     path: 'requested-parent',
-    loadComponent: () => import('./requested-parent/requested-parent.page').then(m => m.RequestedParentPage)
+    loadComponent: () => import('./requested-parent/requested-parent.page').then(m => m.RequestedParentPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin] }
   },
   {
     path: 'seminar-list',
@@ -126,7 +129,8 @@ const routes: Routes = [
   },
   {
     path: 'manage-teacher',
-    loadComponent: () => import('./manage-teacher/manage-teacher.page').then(m => m.ManageTeacherPage)
+    loadComponent: () => import('./manage-teacher/manage-teacher.page').then(m => m.ManageTeacherPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin] }
   },
   {
     path: 'edit-teacher-profile',
@@ -142,7 +146,8 @@ const routes: Routes = [
   },
   {
     path: 'manage-student',
-    loadComponent: () => import('./manage-student/manage-student.page').then(m => m.ManageStudentPage)
+    loadComponent: () => import('./manage-student/manage-student.page').then(m => m.ManageStudentPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin] }
   },
   {
     path: 'edit-student-profile',
@@ -219,7 +224,8 @@ const routes: Routes = [
   },
   {
     path: 'users-list',
-    loadComponent: () => import('./users-list/users-list.page').then(m => m.UsersListPage)
+    loadComponent: () => import('./users-list/users-list.page').then(m => m.UsersListPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin] }
   },
   {
     path: 'add-user',
@@ -227,11 +233,13 @@ const routes: Routes = [
   },
   {
     path: 'edit-user-profile',
-    loadComponent: () => import('./edit-user-profile/edit-user-profile.page').then(m => m.EditUserProfilePage)
+    loadComponent: () => import('./edit-user-profile/edit-user-profile.page').then(m => m.EditUserProfilePage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin] }
   },
   {
     path: 'tasks-calendar',
-    loadComponent: () => import('./tasks-calendar/tasks-calendar.page').then(m => m.TasksCalendarPage)
+    loadComponent: () => import('./tasks-calendar/tasks-calendar.page').then(m => m.TasksCalendarPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin] }
   },
   {
     path: 'profile-image',
