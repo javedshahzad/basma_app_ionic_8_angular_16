@@ -36,23 +36,23 @@ const routes: Routes = [
   },
   {
     path: 'news',
-    loadComponent: () => import('./news/news.page').then(m => m.NewsPage)
+    loadComponent: () => import('./news/news.page').then(m => m.NewsPage), canActivate: [AuthGuard]
   },
   {
     path: 'list-student',
-    loadComponent: () => import('./list-student/list-student.page').then(m => m.ListStudentPage)
+    loadComponent: () => import('./list-student/list-student.page').then(m => m.ListStudentPage), canActivate: [AuthGuard]
   },
   {
     path: 'student-detail',
-    loadComponent: () => import('./student-detail/student-detail.page').then(m => m.StudentDetailPage)
+    loadComponent: () => import('./student-detail/student-detail.page').then(m => m.StudentDetailPage), canActivate: [AuthGuard]
   },
   {
     path: 'create-class',
-    loadComponent: () => import('./create-class/create-class.page').then(m => m.CreateClassPage)
+    loadComponent: () => import('./create-class/create-class.page').then(m => m.CreateClassPage), canActivate: [AuthGuard]
   },
   {
     path: 'sendmessage',
-    loadComponent: () => import('./sendmessage/sendmessage.page').then(m => m.SendmessagePage)
+    loadComponent: () => import('./sendmessage/sendmessage.page').then(m => m.SendmessagePage), canActivate: [AuthGuard]
   },
   {
     path: 'parentconnect',
@@ -60,11 +60,11 @@ const routes: Routes = [
   },
   {
     path: 'connect-new-message',
-    loadComponent: () => import('./connect-new-message/connect-new-message.page').then(m => m.ConnectNewMessagePage)
+    loadComponent: () => import('./connect-new-message/connect-new-message.page').then(m => m.ConnectNewMessagePage), canActivate: [AuthGuard]
   },
   {
     path: 'connect-chat',
-    loadComponent: () => import('./connect-chat/connect-chat.page').then(m => m.ConnectChatPage)
+    loadComponent: () => import('./connect-chat/connect-chat.page').then(m => m.ConnectChatPage), canActivate: [AuthGuard]
   },
   {
     path: 'elearning-schools',
@@ -72,15 +72,15 @@ const routes: Routes = [
   },
   {
     path: 'elearning-school-video',
-    loadComponent: () => import('./elearning-school-video/elearning-school-video.page').then(m => m.ElearningSchoolVideoPage)
+    loadComponent: () => import('./elearning-school-video/elearning-school-video.page').then(m => m.ElearningSchoolVideoPage), canActivate: [AuthGuard]
   },
   {
     path: 'playvideo',
-    loadComponent: () => import('./playvideo/playvideo.page').then(m => m.PlayvideoPage)
+    loadComponent: () => import('./playvideo/playvideo.page').then(m => m.PlayvideoPage), canActivate: [AuthGuard]
   },
   {
     path: 'settings',
-    loadComponent: () => import('./settings/settings.page').then(m => m.SettingsPage)
+    loadComponent: () => import('./settings/settings.page').then(m => m.SettingsPage), canActivate: [AuthGuard]
   },
   {
     path: 'children',
@@ -88,11 +88,11 @@ const routes: Routes = [
   },
   {
     path: 'students',
-    loadComponent: () => import('./students/students.page').then(m => m.StudentsPage)
+    loadComponent: () => import('./students/students.page').then(m => m.StudentsPage), canActivate: [AuthGuard]
   },
   {
     path: 'post-news',
-    loadComponent: () => import('./post-news/post-news.page').then(m => m.PostNewsPage)
+    loadComponent: () => import('./post-news/post-news.page').then(m => m.PostNewsPage), canActivate: [AuthGuard]
   },
   {
     path: 'parent-register',
@@ -100,7 +100,7 @@ const routes: Routes = [
   },
   {
     path: 'edit-calss',
-    loadComponent: () => import('./common-modal/edit-calss/edit-calss.page').then(m => m.EditCalssPage)
+    loadComponent: () => import('./common-modal/edit-calss/edit-calss.page').then(m => m.EditCalssPage), canActivate: [AuthGuard]
   },
   {
     path: 'requested-parent',
@@ -109,7 +109,7 @@ const routes: Routes = [
   },
   {
     path: 'seminar-list',
-    loadComponent: () => import('./seminar-list/seminar-list.page').then(m => m.SeminarListPage)
+    loadComponent: () => import('./seminar-list/seminar-list.page').then(m => m.SeminarListPage), canActivate: [AuthGuard]
   },
   {
     path: 'forgot-password',
@@ -117,15 +117,15 @@ const routes: Routes = [
   },
   {
     path: 'search-student',
-    loadComponent: () => import('./search-student/search-student.page').then(m => m.SearchStudentPage)
+    loadComponent: () => import('./search-student/search-student.page').then(m => m.SearchStudentPage), canActivate: [AuthGuard]
   },
   {
     path: 'add-notes',
-    loadComponent: () => import('./add-notes/add-notes.page').then(m => m.AddNotesPage)
+    loadComponent: () => import('./add-notes/add-notes.page').then(m => m.AddNotesPage), canActivate: [AuthGuard]
   },
   {
     path: 'view-class-notes',
-    loadComponent: () => import('./common-modal/view-class-notes/view-class-notes.page').then(m => m.ViewClassNotesPage)
+    loadComponent: () => import('./common-modal/view-class-notes/view-class-notes.page').then(m => m.ViewClassNotesPage), canActivate: [AuthGuard]
   },
   {
     path: 'manage-teacher',
@@ -134,15 +134,15 @@ const routes: Routes = [
   },
   {
     path: 'edit-teacher-profile',
-    loadComponent: () => import('./edit-teacher-profile/edit-teacher-profile.page').then(m => m.EditTeacherProfilePage)
+    loadComponent: () => import('./edit-teacher-profile/edit-teacher-profile.page').then(m => m.EditTeacherProfilePage), canActivate: [AuthGuard]
   },
   {
     path: 'follow-bulletins',
-    loadComponent: () => import('./follow-bulletins/follow-bulletins.page').then(m => m.FollowBulletinsPage)
+    loadComponent: () => import('./follow-bulletins/follow-bulletins.page').then(m => m.FollowBulletinsPage), canActivate: [AuthGuard]
   },
   {
     path: 'bulletins',
-    loadComponent: () => import('./bulletins/bulletins.page').then(m => m.BulletinsPage)
+    loadComponent: () => import('./bulletins/bulletins.page').then(m => m.BulletinsPage), canActivate: [AuthGuard]
   },
   {
     path: 'manage-student',
@@ -151,76 +151,76 @@ const routes: Routes = [
   },
   {
     path: 'edit-student-profile',
-    loadComponent: () => import('./edit-student-profile/edit-student-profile.page').then(m => m.EditStudentProfilePage)
+    loadComponent: () => import('./edit-student-profile/edit-student-profile.page').then(m => m.EditStudentProfilePage), canActivate: [AuthGuard]
   },
   {
     path: 'available-plan',
-    loadComponent: () => import('./available-plan/available-plan.page').then(m => m.AvailablePlanPage)
+    loadComponent: () => import('./available-plan/available-plan.page').then(m => m.AvailablePlanPage), canActivate: [AuthGuard]
   },
   {
     path: 'select-bulletins-user',
-    loadComponent: () => import('./select-bulletins-user/select-bulletins-user.page').then(m => m.SelectBulletinsUserPage)
+    loadComponent: () => import('./select-bulletins-user/select-bulletins-user.page').then(m => m.SelectBulletinsUserPage), canActivate: [AuthGuard]
   },
   {
     path: 'share-bulletins',
-    loadComponent: () => import('./share-bulletins/share-bulletins.page').then(m => m.ShareBulletinsPage)
+    loadComponent: () => import('./share-bulletins/share-bulletins.page').then(m => m.ShareBulletinsPage), canActivate: [AuthGuard]
   },
   {
     path: 'view-notes',
-    loadComponent: () => import('./view-notes/view-notes.page').then(m => m.ViewNotesPage)
+    loadComponent: () => import('./view-notes/view-notes.page').then(m => m.ViewNotesPage), canActivate: [AuthGuard]
   },
   {
     path: 'view-bulletin',
-    loadComponent: () => import('./view-bulletin/view-bulletin.page').then(m => m.ViewBulletinPage)
+    loadComponent: () => import('./view-bulletin/view-bulletin.page').then(m => m.ViewBulletinPage), canActivate: [AuthGuard]
   },
   {
     path: 'select-message-user',
-    loadComponent: () => import('./common-modal/select-message-user/select-message-user.page').then(m => m.SelectMessageUserPage)
+    loadComponent: () => import('./common-modal/select-message-user/select-message-user.page').then(m => m.SelectMessageUserPage), canActivate: [AuthGuard]
   },
   {
     path: 'warning-report',
-    loadComponent: () => import('./warning-report/warning-report.page').then(m => m.WarningReportPage)
+    loadComponent: () => import('./warning-report/warning-report.page').then(m => m.WarningReportPage), canActivate: [AuthGuard]
   },
   {
     path: 'follow-up-student',
-    loadComponent: () => import('./follow-up-student/follow-up-student.page').then(m => m.FollowUpStudentPage)
+    loadComponent: () => import('./follow-up-student/follow-up-student.page').then(m => m.FollowUpStudentPage), canActivate: [AuthGuard]
   },
   {
     path: 'add-class',
-    loadComponent: () => import('./add-class/add-class.page').then(m => m.AddClassPage)
+    loadComponent: () => import('./add-class/add-class.page').then(m => m.AddClassPage), canActivate: [AuthGuard]
   },
   {
     path: 'followup-student-list',
-    loadComponent: () => import('./followup-student-list/followup-student-list.page').then(m => m.FollowupStudentListPage)
+    loadComponent: () => import('./followup-student-list/followup-student-list.page').then(m => m.FollowupStudentListPage), canActivate: [AuthGuard]
   },
   {
     path: 'student-report-classes',
-    loadComponent: () => import('./student-report-classes/student-report-classes.page').then(m => m.StudentReportClassesPage)
+    loadComponent: () => import('./student-report-classes/student-report-classes.page').then(m => m.StudentReportClassesPage), canActivate: [AuthGuard]
   },
   {
     path: 'student-report-list',
-    loadComponent: () => import('./student-report-list/student-report-list.page').then(m => m.StudentReportListPage)
+    loadComponent: () => import('./student-report-list/student-report-list.page').then(m => m.StudentReportListPage), canActivate: [AuthGuard]
   },
   {
     path: 'student-report-manage',
-    loadComponent: () => import('./student-report-manage/student-report-manage.page').then(m => m.StudentReportManagePage)
+    loadComponent: () => import('./student-report-manage/student-report-manage.page').then(m => m.StudentReportManagePage), canActivate: [AuthGuard]
   },
   {
     path: 'followup-add-fields',
-    loadComponent: () => import('./followup-add-fields/followup-add-fields.page').then(m => m.FollowupAddFieldsPage)
+    loadComponent: () => import('./followup-add-fields/followup-add-fields.page').then(m => m.FollowupAddFieldsPage), canActivate: [AuthGuard]
   },
   {
     path: 'add-teacher',
-    loadComponent: () => import('./add-teacher/add-teacher.page').then(m => m.AddTeacherPage)
+    loadComponent: () => import('./add-teacher/add-teacher.page').then(m => m.AddTeacherPage), canActivate: [AuthGuard]
   },
   {
     path: 'add-parent',
-    loadComponent: () => import('./add-parent/add-parent.page').then(m => m.AddParentPage)
+    loadComponent: () => import('./add-parent/add-parent.page').then(m => m.AddParentPage), canActivate: [AuthGuard]
   },
  
   {
     path: 'note-calendar',
-    loadComponent: () => import('./note-calendar/note-calendar.page').then(m => m.NoteCalendarPage)
+    loadComponent: () => import('./note-calendar/note-calendar.page').then(m => m.NoteCalendarPage), canActivate: [AuthGuard]
   },
   {
     path: 'users-list',
@@ -229,7 +229,7 @@ const routes: Routes = [
   },
   {
     path: 'add-user',
-    loadComponent: () => import('./add-user/add-user.page').then(m => m.AddUserPage)
+    loadComponent: () => import('./add-user/add-user.page').then(m => m.AddUserPage), canActivate: [AuthGuard]
   },
   {
     path: 'edit-user-profile',
@@ -243,43 +243,43 @@ const routes: Routes = [
   },
   {
     path: 'profile-image',
-    loadComponent: () => import('./modals/profile-image/profile-image.page').then(m => m.ProfileImagePage)
+    loadComponent: () => import('./modals/profile-image/profile-image.page').then(m => m.ProfileImagePage), canActivate: [AuthGuard]
   },
   {
     path: 'apply-vouches-code',
-    loadComponent: () => import('./apply-vouches-code/apply-vouches-code.page').then(m => m.ApplyVouchesCodePage)
+    loadComponent: () => import('./apply-vouches-code/apply-vouches-code.page').then(m => m.ApplyVouchesCodePage), canActivate: [AuthGuard]
   },
   {
     path: 'absent-students',
-    loadComponent: () => import('./absent-students/absent-students.page').then(m => m.AbsentStudentsPage)
+    loadComponent: () => import('./absent-students/absent-students.page').then(m => m.AbsentStudentsPage), canActivate: [AuthGuard]
   },
   {
     path: 'submit-absent-application',
-    loadComponent: () => import('./submit-absent-application/submit-absent-application.page').then(m => m.SubmitAbsentApplicationPage)
+    loadComponent: () => import('./submit-absent-application/submit-absent-application.page').then(m => m.SubmitAbsentApplicationPage), canActivate: [AuthGuard]
   },
   {
     path: 'all-application-list',
-    loadComponent: () => import('./all-application-list/all-application-list.page').then(m => m.AllApplicationListPage)
+    loadComponent: () => import('./all-application-list/all-application-list.page').then(m => m.AllApplicationListPage), canActivate: [AuthGuard]
   },
   {
     path: 'view-application-details',
-    loadComponent: () => import('./view-application-details/view-application-details.page').then(m => m.ViewApplicationDetailsPage)
+    loadComponent: () => import('./view-application-details/view-application-details.page').then(m => m.ViewApplicationDetailsPage), canActivate: [AuthGuard]
   },
   {
     path: 'all-devices',
-    loadComponent: () => import('./all-devices/all-devices.page').then(m => m.AllDevicesPage)
+    loadComponent: () => import('./all-devices/all-devices.page').then(m => m.AllDevicesPage), canActivate: [AuthGuard]
   },
   {
     path: 'pdfviewer',
-    loadComponent: () => import('./pdfviewer/pdfviewer.page').then(m => m.PdfviewerPage)
+    loadComponent: () => import('./pdfviewer/pdfviewer.page').then(m => m.PdfviewerPage), canActivate: [AuthGuard]
   },
   {
     path: 'user-selection',
-    loadComponent: () => import('./user-selection/user-selection.page').then(m => m.UserSelectionPage)
+    loadComponent: () => import('./user-selection/user-selection.page').then(m => m.UserSelectionPage), canActivate: [AuthGuard]
   },
   {
     path: 'student-titles',
-    loadComponent: () => import('./student-titles/student-titles.page').then(m => m.StudentTitlesPage)
+    loadComponent: () => import('./student-titles/student-titles.page').then(m => m.StudentTitlesPage), canActivate: [AuthGuard]
   },
 
 
