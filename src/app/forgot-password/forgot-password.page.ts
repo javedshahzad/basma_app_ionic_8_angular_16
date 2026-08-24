@@ -151,7 +151,13 @@ export class ForgotPasswordPage {
       let data = {
         email: this.email.trim(),
         password: this.password,
-        c_password: this.confirm_password
+        c_password: this.confirm_password,
+        // New API requires otp_no on reset_password (legacy never validated
+        // it here) — reuse the OTP already collected in step 2 (submitOTP()).
+        // Sent as both otp_no (the required field name) and otp (the
+        // documented mobile alias) for safety.
+        otp_no: this.otp.trim(),
+        otp: this.otp.trim()
       };
 
       this.dataProvider

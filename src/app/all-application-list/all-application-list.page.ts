@@ -60,6 +60,8 @@ export class AllApplicationListPage implements OnInit {
   async getAbsentApplication() {
     if (this.userDetails) {
       let data = {
+        user_no: this.userDetails.details.user_no,
+        session_id: this.userDetails.session_id,
         school_id: this.userDetails.details.school_id,
         datetime: this.SelectedDate
       };
@@ -76,6 +78,8 @@ export class AllApplicationListPage implements OnInit {
 
   submitApplication(application: AbsentApplication, status: string) {
     let data = {
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id,
       school_id: this.userDetails.details.school_id,
       application_status: status, // 0 for pending, 1 for accept,2 for reject
       cid: application.cid,

@@ -176,7 +176,10 @@ export class SettingsPage {
   getAllRules() {
     let data = {
       school_id: this.userDetails.details.school_id,
-      user_no: this.userDetails.details.user_no
+      user_no: this.userDetails.details.user_no,
+      // New API's getAllRules requires session_id (AuthorizeAdmin) — legacy
+      // didn't validate it here, school was implicitly scoped by school_id alone.
+      session_id: this.userDetails.session_id
     };
     this.dataProvider
       .getAllRules(data)
