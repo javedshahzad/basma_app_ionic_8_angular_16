@@ -25,6 +25,11 @@ export class AllApplicationListPage implements OnInit {
   SelectedDate: string;
   showCalenderModal: boolean = false;
 
+  // 🟢 عرض القائمة تدريجياً (Infinite Scroll) بدلاً من رسمها كاملة دفعة واحدة
+  private static readonly PAGE_SIZE = 20;
+  visibleApplications: AbsentApplication[] = [];
+  private visibleCount = 0;
+
   calendarDate: string = '';
 
   constructor(
@@ -69,11 +74,26 @@ export class AllApplicationListPage implements OnInit {
         const res = await this.dataProvider.run(() => this.absentApplicationApi.getAbsentApplication(data));
         console.log(res);
         this.AllAvailableApplications = res.data;
+        this.resetVisibleApplications();
         this.cdr.markForCheck();
       } catch (error) {
         this.dataProvider.showToast('error');
       }
     }
+  }
+
+  private resetVisibleApplications(): void {
+    this.visibleCount = AllApplicationListPage.PAGE_SIZE;
+    this.visibleApplications = (this.AllAvailableApplications || []).slice(0, this.visibleCount);
+  }
+
+  loadMoreApplications(infiniteScroll: any) {
+    setTimeout(() => {
+      this.visibleCount += AllApplicationListPage.PAGE_SIZE;
+      this.visibleApplications = (this.AllAvailableApplications || []).slice(0, this.visibleCount);
+      infiniteScroll.target.complete();
+      this.cdr.markForCheck();
+    }, 300);
   }
 
   submitApplication(application: AbsentApplication, status: string) {

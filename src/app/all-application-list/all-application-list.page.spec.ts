@@ -49,4 +49,40 @@ describe('AllApplicationListPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  function makeApplications(count: number) {
+    return Array.from({ length: count }, (_, i) => ({
+      id: i,
+      application_status: '0',
+      studentObj: { name: `Student ${i}` },
+      courseObj: { name: `Course ${i}` }
+    }));
+  }
+
+  it('only renders the first page of applications, not the full list', () => {
+    (component as any).AllAvailableApplications = makeApplications(45);
+    (component as any).resetVisibleApplications();
+    expect(component.visibleApplications.length).toBe(20);
+    expect(component.AllAvailableApplications.length).toBe(45);
+  });
+
+  it('loadMoreApplications() grows the visible page without truncating the source data', done => {
+    (component as any).AllAvailableApplications = makeApplications(45);
+    (component as any).resetVisibleApplications();
+
+    const infiniteScrollStub = { target: { complete: () => {} } };
+    component.loadMoreApplications(infiniteScrollStub);
+
+    setTimeout(() => {
+      expect(component.visibleApplications.length).toBe(40);
+      expect(component.AllAvailableApplications.length).toBe(45);
+      done();
+    }, 350);
+  });
+
+  it('a short list is fully visible after one page', () => {
+    (component as any).AllAvailableApplications = makeApplications(5);
+    (component as any).resetVisibleApplications();
+    expect(component.visibleApplications.length).toBe(5);
+  });
 });
