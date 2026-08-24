@@ -265,11 +265,13 @@ const routes: Routes = [
   },
   {
     path: 'all-application-list',
-    loadComponent: () => import('./all-application-list/all-application-list.page').then(m => m.AllApplicationListPage), canActivate: [AuthGuard]
+    loadComponent: () => import('./all-application-list/all-application-list.page').then(m => m.AllApplicationListPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin, UserType.Teacher, UserType.Moderator, UserType.Viewer, UserType.Register, UserType.Medical] }
   },
   {
     path: 'view-application-details',
-    loadComponent: () => import('./view-application-details/view-application-details.page').then(m => m.ViewApplicationDetailsPage), canActivate: [AuthGuard]
+    loadComponent: () => import('./view-application-details/view-application-details.page').then(m => m.ViewApplicationDetailsPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin, UserType.Teacher, UserType.Moderator, UserType.Viewer, UserType.Register, UserType.Medical] }
   },
   {
     path: 'all-devices',
