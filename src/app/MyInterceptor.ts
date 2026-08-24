@@ -7,7 +7,8 @@ import {
   HttpHandler,
   HttpEvent,
   HttpResponse,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpParams
 } from '@angular/common/http';
 import { Observable, throwError, timer, TimeoutError } from 'rxjs';
 import { tap, retry, catchError, timeout } from 'rxjs/operators';
@@ -27,6 +28,8 @@ export class MyInterceptor implements HttpInterceptor {
     let requestToHandle = request;
 
     // 1️⃣ الشق الأول: المنطق الخاص بك (إضافة UUID و user_no لطلبات POST المحددة)
+    // 🔒 تُضاف إلى جسم الطلب (body) بدلاً من رابط الطلب (query params) حتى لا تظهر
+    // في سجلات الخادم (access logs) كما لو كانت جزءاً من الرابط.
     if (
       request.method === 'POST' &&
       this.auth.currentUser &&
@@ -34,11 +37,25 @@ export class MyInterceptor implements HttpInterceptor {
       !request.url.endsWith('login') &&
       !request.url.endsWith('schoolRegister')
     ) {
-      requestToHandle = request.clone({
-        params: request.params
-          .set('uuid', this.auth.currentUuid || '1122112233112233')
-          .set('user_no', this.auth.currentUser.details?.user_no || '')
-      });
+      const uuid = this.auth.currentUuid || '1122112233112233';
+      const userNo = this.auth.currentUser.details?.user_no || '';
+
+      if (request.body instanceof HttpParams) {
+        requestToHandle = request.clone({
+          body: request.body.set('uuid', uuid).set('user_no', userNo)
+        });
+      } else if (request.body instanceof FormData) {
+        const formData = request.body;
+        formData.set('uuid', uuid);
+        formData.set('user_no', userNo);
+        requestToHandle = request.clone({ body: formData });
+      } else {
+        // Unknown body shape — fall back to the previous query-param
+        // behavior rather than risk mangling a body we don't recognize.
+        requestToHandle = request.clone({
+          params: request.params.set('uuid', uuid).set('user_no', userNo)
+        });
+      }
     }
 
     // رفع الملفات (FormData) قد يستغرق وقتاً طويلاً على شبكة بطيئة، لذا نستثنيه
