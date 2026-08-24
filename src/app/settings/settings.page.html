@@ -118,7 +118,8 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6" *ngIf="is_school_admin && userType===UserType.Admin">
+    <ng-container *appHasRole="[UserType.Admin]">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6" *ngIf="is_school_admin">
       <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-5 flex items-center gap-2">
         <ion-icon name="settings-outline" class="text-lg"></ion-icon> إعدادات المدرسة
       </h4>
@@ -171,6 +172,7 @@
         </div>
       </div>
     </div>
+    </ng-container>
 
     <div class="space-y-3 mt-8">
       <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-xl shadow-md shadow-indigo-200 transition-all flex justify-center items-center gap-2 active:scale-[0.98]" (click)="update()" [disabled]="show_save_spinner">

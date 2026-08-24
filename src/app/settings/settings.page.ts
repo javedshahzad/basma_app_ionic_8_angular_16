@@ -21,6 +21,8 @@ import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoggedInUser } from '../model/logged-in-user.model';
 import { SchoolRulesDetails } from '../service/data/data.service';
+import { HasRoleDirective } from '../directives/has-role.directive';
+import { PermissionService } from '../service/permission/permission.service';
 
 interface SettingsCountry {
   code?: string;
@@ -32,7 +34,7 @@ interface SettingsCountry {
     templateUrl: './settings.page.html',
     styleUrls: ['./settings.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
+    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe, HasRoleDirective]
 })
 export class SettingsPage {
   trackByIndex(index: number): number {
@@ -96,6 +98,7 @@ export class SettingsPage {
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     private deviceApi: DeviceApiService,
     private userManagementApi: UserManagementApiService,
+    private permissionService: PermissionService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(res => {
@@ -137,7 +140,7 @@ export class SettingsPage {
       this.userType = this.userDetails.details.user_type;
       this.is_school_admin = this.userDetails.details.is_school_admin;
 
-      if (this.userType == UserType.Admin) {
+      if (this.permissionService.hasRole(UserType.Admin)) {
         this.getAllRules();
       }
     } else {

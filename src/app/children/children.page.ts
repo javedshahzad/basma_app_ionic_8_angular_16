@@ -17,6 +17,7 @@ import { GamificationEngineService } from '../service/gamification-engine/gamifi
 import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
+import { PermissionService } from '../service/permission/permission.service';
 
 @Component({
     selector: 'app-children',
@@ -64,6 +65,7 @@ export class ChildrenPage {
     private gamification: GamificationEngineService,
     private route: ActivatedRoute,
     private storageSr: StorageService,
+    private permissionService: PermissionService,
     public zone: NgZone,
     //  public app: App,
     public translate: TranslateService,
@@ -80,13 +82,10 @@ export class ChildrenPage {
         this.cdr.markForCheck();
       });
     });
-    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async res => {
-      if (res.changeUser) {
-        // 🟢 حماية: لا تقم بتحديث صفحة الأبناء إلا إذا كان المستخدم الجديد هو ولي أمر فعلاً (user_type == 4)
-        let checkUser = await this.storageSr.get('userloggedin');
-        if (checkUser && checkUser.details && checkUser.details.user_type == UserType.Parent) {
-          this.ionViewWillEnter();
-        }
+    this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
+      // 🟢 حماية: لا تقم بتحديث صفحة الأبناء إلا إذا كان المستخدم الجديد هو ولي أمر فعلاً (user_type == 4)
+      if (res.changeUser && this.permissionService.hasRole(UserType.Parent)) {
+        this.ionViewWillEnter();
       }
     });
   }

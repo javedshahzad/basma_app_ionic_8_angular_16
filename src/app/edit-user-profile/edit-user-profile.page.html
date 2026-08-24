@@ -170,7 +170,8 @@
           <ion-toggle color="success" mode="md" [checked]="user.status === '1'" class="pointer-events-none m-0"></ion-toggle>
         </div>
 
-        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 hover:border-slate-200 transition-all" *ngIf="userType == UserType.Admin && user.user_type != UserType.Parent" [class.opacity-50]="user.status == '0'" [class.cursor-not-allowed]="user.status == '0'" (click)="user.status == '1' ? user.is_show_absent_students = user.is_show_absent_students == '1' ? '0' : '1' : null">
+        <ng-container *appHasRole="[UserType.Admin]">
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 hover:border-slate-200 transition-all" *ngIf="user.user_type != UserType.Parent" [class.opacity-50]="user.status == '0'" [class.cursor-not-allowed]="user.status == '0'" (click)="user.status == '1' ? user.is_show_absent_students = user.is_show_absent_students == '1' ? '0' : '1' : null">
           <div class="flex items-center gap-4">
             <div class="w-12 h-12 rounded-full flex items-center justify-center transition-colors" [ngClass]="user.is_show_absent_students === '1' ? 'bg-amber-50 text-amber-500' : 'bg-slate-200 text-slate-400'">
               <ion-icon name="people-outline" class="text-2xl"></ion-icon>
@@ -184,6 +185,7 @@
           </div>
           <ion-toggle color="warning" mode="md" [checked]="user.is_show_absent_students === '1'" [disabled]="user.status === '0'" class="pointer-events-none m-0"></ion-toggle>
         </div>
+        </ng-container>
 
         <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 hover:border-slate-200 transition-all" *ngIf="user.is_show_absent_students == '1' && user.user_type != UserType.Parent" [class.opacity-50]="user.status == '0'" [class.cursor-not-allowed]="user.status == '0'" (click)="user.status == '1' ? user.is_show_absent_application_list = user.is_show_absent_application_list == '1' ? '0' : '1' : null">
           <div class="flex items-center gap-4">

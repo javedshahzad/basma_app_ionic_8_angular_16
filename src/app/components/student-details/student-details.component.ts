@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../service/storage.service';
 import { UserManagementApiService } from '../../service/user-management-api/user-management-api.service';
 import { UserType } from '../../constants/user-type';
+import { PermissionService } from '../../service/permission/permission.service';
 
 @Component({
   selector: 'app-student-details',
@@ -39,6 +40,7 @@ export class StudentDetailsComponent implements OnInit {
     public modalController: ModalController,
     private storageSr: StorageService,
     private userManagementApi: UserManagementApiService,
+    private permissionService: PermissionService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -50,15 +52,7 @@ export class StudentDetailsComponent implements OnInit {
     this.phone = this.student?.phone_no;
     this.phone_no_two = this.student?.phone_no_two;
     this.medical_condition = this.student?.medical_condition;
-    if (
-      Number(this.userType) == Number(UserType.Admin) ||
-      Number(this.userType) == Number(UserType.Teacher) ||
-      Number(this.userType) == Number(UserType.Viewer)
-    ) {
-      this.disabledFileds = false;
-    } else {
-      this.disabledFileds = true;
-    }
+    this.disabledFileds = !this.permissionService.hasRole(UserType.Admin, UserType.Teacher, UserType.Viewer);
     this.cdr.markForCheck();
   }
 

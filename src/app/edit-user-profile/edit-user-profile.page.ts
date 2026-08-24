@@ -21,13 +21,14 @@ import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgClass, NgFor } from '@angular/common';
+import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
     selector: 'app-edit-user-profile',
     templateUrl: './edit-user-profile.page.html',
     styleUrls: ['./edit-user-profile.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, NgClass, NgFor, TranslatePipe]
+    imports: [IonicModule, FormsModule, NgIf, NgClass, NgFor, TranslatePipe, HasRoleDirective]
 })
 export class EditUserProfilePage {
   trackByIndex(index: number): number {
