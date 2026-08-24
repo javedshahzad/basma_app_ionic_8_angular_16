@@ -11,8 +11,7 @@
 
 <ion-content mode="md">
 	<div class="students" id="students" *ngIf="users" > 
-		<!-- <ion-virtual-scroll [items]="students" approxItemHeight="320px"> -->
-		<ion-card  class="text-left body-font card heigt-min"  *ngFor="let users of allUsers; let i=index; trackBy: trackByIndex">		
+		<ion-card  class="text-left body-font card heigt-min"  *ngFor="let users of allUsers; let i=index; trackBy: trackByIndex">
 			<ion-item  >
 				<ion-checkbox slot="end" id="ch{{i}}" (ionChange)="selectUser(users,$event,i)" [checked]="selectedUsers.includes(users.user_no)"></ion-checkbox>
 				<ion-avatar slot="start">
@@ -24,8 +23,7 @@
 			    	<!-- <p>{{users.user_no}}</p>  -->
 			    </ion-label>
 			</ion-item>
-		</ion-card> 
-			<!-- </ion-virtual-scroll> -->
+		</ion-card>
 			<ion-infinite-scroll (ionInfinite)="doInfinite($event)">
 			    <ion-infinite-scroll-content></ion-infinite-scroll-content>
 			  </ion-infinite-scroll>
