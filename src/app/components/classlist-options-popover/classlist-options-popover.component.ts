@@ -2,12 +2,13 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController, IonicModule } from '@ionic/angular';
 import { UserType } from '../../constants/user-type';
 import { NgIf } from '@angular/common';
+import { HasRoleDirective } from '../../directives/has-role.directive';
 
 @Component({
     selector: 'app-classlist-options-popover',
     templateUrl: './classlist-options-popover.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgIf, IonicModule]
+    imports: [NgIf, IonicModule, HasRoleDirective]
 })
 export class ClasslistOptionsPopoverComponent {
   readonly UserType = UserType;

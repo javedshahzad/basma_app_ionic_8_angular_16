@@ -15,7 +15,7 @@
 
     <ion-buttons slot="end" class="ml-2 w-10">
       <ion-button color="dark" class="custom-menu-btn"
-                  *ngIf="userType===UserType.Admin || userType===UserType.Viewer" 
+                  *appHasRole="[UserType.Admin, UserType.Viewer]"
                   (click)="openComposer()">
         <ion-icon name="add-outline"></ion-icon>
       </ion-button>

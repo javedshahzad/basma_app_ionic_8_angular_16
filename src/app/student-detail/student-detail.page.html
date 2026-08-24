@@ -41,8 +41,8 @@
                class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-slate-50 shadow-sm cursor-pointer hover:scale-105 transition-transform"
                (click)="$event.stopPropagation(); openFullscreenImage(studentDetails.pic)">
           
-          <button *ngIf="userType === UserType.Admin || userType === UserType.Moderator" 
-                  class="absolute -bottom-1 -right-1 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all" 
+          <button *appHasRole="[UserType.Admin, UserType.Moderator]"
+                  class="absolute -bottom-1 -right-1 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all"
                   (click)="$event.stopPropagation(); takePicture($event)">
             <ion-icon name="camera" class="text-sm"></ion-icon>
           </button>
@@ -300,7 +300,7 @@
                 </div>
               </div>
               <button class="w-full mt-3 flex items-center justify-center gap-2 py-2.5 text-sm font-bold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-100 border-dashed" 
-                      (click)="addAbsentNote(details.notes, details.date)" *ngIf="userType === UserType.Admin || userType === UserType.Moderator">
+                      (click)="addAbsentNote(details.notes, details.date)" *appHasRole="[UserType.Admin, UserType.Moderator]">
                 <ion-icon name="add-circle" class="text-lg"></ion-icon> إضافة ملاحظة غياب
               </button>
             </div>

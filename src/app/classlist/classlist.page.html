@@ -81,7 +81,7 @@
 
     <div *ngIf="!isLoading">
       
-      <div class="segment-wrapper" *ngIf="userType === UserType.Admin || userType === UserType.Moderator || userType === UserType.Viewer">
+      <div class="segment-wrapper" *appHasRole="[UserType.Admin, UserType.Moderator, UserType.Viewer]">
         <ion-segment [(ngModel)]="category" (ionChange)="segmentChanged($event)" mode="ios" class="lineone-segment" [disabled]="editMode || !canReorder">
           <ion-segment-button value="list">
             <ion-label>{{'classlist.pagetitle' | translate}}</ion-label>

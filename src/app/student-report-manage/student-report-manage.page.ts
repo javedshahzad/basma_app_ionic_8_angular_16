@@ -20,6 +20,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
 import { LoggedInUser } from '../model/logged-in-user.model';
 import { UserPlan } from '../service/plan-api/plan-api.service';
+import { HasRoleDirective } from '../directives/has-role.directive';
 
 const env = environment;
 
@@ -28,7 +29,7 @@ const env = environment;
     templateUrl: './student-report-manage.page.html',
     styleUrls: ['./student-report-manage.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, NgClass, NgFor, DatePipe, TranslatePipe]
+    imports: [IonicModule, FormsModule, NgIf, NgClass, NgFor, DatePipe, TranslatePipe, HasRoleDirective]
 })
 export class StudentReportManagePage implements OnInit {
   trackByIndex(index: number): number {

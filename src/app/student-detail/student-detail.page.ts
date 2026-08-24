@@ -40,6 +40,7 @@ import { UserPlan } from '../service/plan-api/plan-api.service';
 import { StudentNote, StudentNotesResponse } from '../service/notes-api/notes-api.service';
 import { StudentProfileDashboard, StudentInventory, SkillData } from '../service/gamification-api/gamification-api.service';
 import { StudentInventoryModalComponent } from '../components/student-inventory-modal/student-inventory-modal.component';
+import { HasRoleDirective } from '../directives/has-role.directive';
 
 const env = environment;
 
@@ -61,7 +62,7 @@ interface AbsenceNote {
     templateUrl: './student-detail.page.html',
     styleUrls: ['./student-detail.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, FormsModule, DecimalPipe, DatePipe, TranslatePipe, StudentInventoryModalComponent]
+    imports: [IonicModule, NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, FormsModule, DecimalPipe, DatePipe, TranslatePipe, StudentInventoryModalComponent, HasRoleDirective]
 })
 export class StudentDetailPage {
   readonly UserType = UserType;

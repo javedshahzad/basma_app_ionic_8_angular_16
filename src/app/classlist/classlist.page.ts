@@ -22,6 +22,7 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
+import { HasRoleDirective } from '../directives/has-role.directive';
 import { NgIf, NgClass, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Course } from '../service/courses-api/courses-api.service';
@@ -40,7 +41,7 @@ interface DashboardSeminar {
     templateUrl: './classlist.page.html',
     styleUrls: ['./classlist.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgClass, NgFor, FormsModule, TranslatePipe]
+    imports: [IonicModule, NgIf, NgClass, NgFor, FormsModule, TranslatePipe, HasRoleDirective]
 })
 export class ClasslistPage implements OnInit {
   readonly UserType = UserType;

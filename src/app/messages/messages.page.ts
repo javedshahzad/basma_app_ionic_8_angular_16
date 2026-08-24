@@ -13,13 +13,14 @@ import { StorageService } from '../service/storage.service';
 import { NotificationsApiService } from '../service/notifications-api/notifications-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor } from '@angular/common';
+import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
     selector: 'app-messages',
     templateUrl: './messages.page.html',
     styleUrls: ['./messages.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+    imports: [IonicModule, NgIf, NgFor, TranslatePipe, HasRoleDirective]
 })
 export class MessagesPage {
   readonly UserType = UserType;
