@@ -57,6 +57,17 @@ export interface FollowupStudentListResponse {
   submittedMsg?: string;
 }
 
+interface SaveMarksHttpResponse {
+  session?: boolean;
+  success?: boolean;
+  msg?: string;
+}
+
+interface SaveMarksResult {
+  session: boolean;
+  message?: string;
+}
+
 /**
  * Follow-up field configuration + teacher/class assignment HTTP calls,
  * split out of DataService. Depends on DataService for `lang`
@@ -243,6 +254,72 @@ export class FollowupFieldsApiService {
           }
         })
         .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
+    });
+  }
+
+  /**
+   * Attendance mark post function
+   * @param data user_no, session_id, cid, date, school_id, sheet
+   */
+  submitMarks(
+    data: Record<string, unknown> & {
+      course_id: string | number;
+      date: string;
+      session_id: string;
+      user_no: string | number;
+      school_id: string | number;
+    },
+    marksheet: unknown
+  ): Promise<SaveMarksResult> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.getNetworkInformation().then(isNetworkAvailable => {
+        if (isNetworkAvailable) {
+          data.lang_code = environment.lang_code;
+          let header = new HttpHeaders();
+          header.append('Content-Type', 'application/x-www-form-urlencoded');
+          let body: HttpParams = new HttpParams();
+          body = body.append('cid', data.course_id);
+          body = body.append('date', data.date);
+          body = body.append('session_id', data.session_id);
+          body = body.append('user_no', data.user_no);
+          body = body.append('lang_code', data.lang_code as string);
+
+          // `marksheet` is really an array of per-student mark records,
+          // iterated here via Object.keys() (works fine on arrays at
+          // runtime); typed as unknown and cast here rather than in the
+          // public signature.
+          const marksheetData = marksheet as Record<string, Record<string, string | number>>;
+          Object.keys(marksheetData).map(key => {
+            Object.keys(marksheetData[key]).map(sid => {
+              body = body.append('marksheet[' + key + '][' + sid + ']', marksheetData[key][sid]);
+            });
+          });
+
+          this.http
+            .post<SaveMarksHttpResponse>(environment.serverURL + 'saveStudentMarks/' + data.school_id, body, { headers: header })
+            .subscribe(
+              (response) => {
+                if (!response.session) {
+                  resolve({ session: false, message: response.msg });
+                } else if (response.success) {
+                  resolve({ session: true, message: response.msg });
+                } else {
+                  reject(response.msg);
+                }
+              },
+              error => {
+                console.log(error);
+                if (error.message != undefined && error.message != '' && error.message != null) {
+                  reject(error.message);
+                } else {
+                  reject(this.dataService.lang.usnexpectedError);
+                }
+              }
+            );
+        } else {
+          reject(this.dataService.lang.networkNotWorking);
+        }
+      });
     });
   }
 

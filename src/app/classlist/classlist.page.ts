@@ -261,7 +261,7 @@ export class ClasslistPage implements OnInit {
       user_no: this.userDetails.details.user_no
     };
     this.dataProvider
-      .run(() => this.dataProvider.revertDeletedSchoolSettings(data))
+      .run(() => this.userManagementApi.revertDeletedSchoolSettings(data))
       .then((response) => {
         this.dataProvider.errorALertMessage(response.message);
         this.deactivate_date = '';

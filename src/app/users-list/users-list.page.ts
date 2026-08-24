@@ -18,6 +18,7 @@ import { StorageService } from '../service/storage.service';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
 import { UserSearchPipe } from '../pipes/user-search.pipe';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
     selector: 'app-users-list',
@@ -48,6 +49,7 @@ export class UsersListPage implements OnInit {
     private router: Router,
     public modalController: ModalController,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private schoolDirectoryApi: SchoolDirectoryApiService,
     private cdr: ChangeDetectorRef
   ) {
     // 🟢 3. جعل الاشتراك (subscribe) async لجلب البيانات بأمان عند العودة
@@ -114,7 +116,7 @@ export class UsersListPage implements OnInit {
       user_no: this.userDetails.details.user_no
     };
 
-    this.dataProvider.getAllUsers(data).then(
+    this.schoolDirectoryApi.getAllUsers(data).then(
       res => {
         this.show_loading = false;
         console.log('allUsersdata', res.data);

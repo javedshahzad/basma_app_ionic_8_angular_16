@@ -18,6 +18,44 @@ export interface RawActionResponse {
   msg?: string;
 }
 
+export interface SchoolRulesDetails {
+  school_details?: {
+    delay_rule?: string | number;
+    report_condition?: string | number;
+    second_report_condition?: string | number;
+    third_report_condition?: string | number;
+    deactivate_date?: string;
+  };
+  user_details?: {
+    teacher_register_link?: string;
+    parent_register_link?: string;
+  };
+}
+
+interface GetAllRulesHttpResponse {
+  details?: SchoolRulesDetails;
+  msg?: string;
+}
+
+interface UpdateUserSettingsResult {
+  session: boolean;
+  message?: string;
+  pic?: string;
+}
+
+interface RevertSchoolHttpResponse {
+  session?: boolean;
+  success?: boolean;
+  msg?: string;
+  response?: { deactivate_date?: string };
+}
+
+interface RevertSchoolDeletionResult {
+  session: boolean;
+  message?: string;
+  deactive_date?: string;
+}
+
 /**
  * User/student/teacher/parent CRUD + push-notification/school-deletion-request
  * calls, split out of DataService. Depends on DataService for `lang`
@@ -177,6 +215,111 @@ export class UserManagementApiService {
           }
         }
       }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
+    });
+  }
+
+  getAllRules(data: Record<string, unknown>): Promise<SchoolRulesDetails> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest<GetAllRulesHttpResponse>(data, 'getAllRules')
+        .then((response) => {
+          if (response) {
+            if (response.details) {
+              resolve(response.details);
+            } else {
+              reject(response.msg);
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          if (error.message != undefined && error.message != '' && error.message != null) {
+            reject(error.message);
+          } else {
+            //  reject(this.dataService.lang.usnexpectedError)
+          }
+        });
+    });
+  }
+
+  /**
+   * Update user settings
+   * @param data user_no, session_id, user object
+   */
+  updateUserSettings(data: Record<string, unknown> & { users: Record<string, string> }): Promise<UpdateUserSettingsResult> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.getNetworkInformation().then(isNetworkAvailable => {
+        if (isNetworkAvailable) {
+          data.lang_code = environment.lang_code;
+          let header = new HttpHeaders();
+          header.append('Content-Type', 'application/x-www-form-urlencoded');
+          let body: HttpParams = this.apiClient.makeObjectToUrlParams(data);
+          Object.keys(data.users).map(key => {
+            if (data.users[key] != '') {
+              body = body.append('user[' + key + ']', data.users[key]);
+            }
+          });
+          this.httpClient.post<{ session?: boolean; success?: boolean; msg?: string; picUrl?: string }>(environment.serverURL + 'saveUser', body, { headers: header }).subscribe(
+            (response) => {
+              if (!response.session) {
+                resolve({ session: false, message: response.msg });
+              } else if (response.success) {
+                resolve({ session: true, message: response.msg, pic: response.picUrl });
+              } else {
+                reject(response.msg);
+              }
+            },
+            error => {
+              console.log(error);
+              if (error.message != undefined && error.message != '' && error.message != null) {
+                reject(error.message);
+              } else {
+                reject(this.dataService.lang.usnexpectedError);
+              }
+            }
+          );
+        } else {
+          reject(this.dataService.lang.networkNotWorking);
+        }
+      });
+    });
+  }
+
+  revertDeletedSchoolSettings(data: Record<string, unknown>): Promise<RevertSchoolDeletionResult> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.getNetworkInformation().then(isNetworkAvailable => {
+        if (isNetworkAvailable) {
+          data.lang_code = environment.lang_code;
+          let header = new HttpHeaders();
+          header.append('Content-Type', 'application/x-www-form-urlencoded');
+          let body: HttpParams = this.apiClient.makeObjectToUrlParams(data);
+          Object.keys(data).map(key => {
+            if (data[key] != '') {
+              body = body.append(key, data[key] as string | number | boolean);
+            }
+          });
+          this.httpClient.post<RevertSchoolHttpResponse>(environment.serverURL + 'revertDeleteSchool', body, { headers: header }).subscribe(
+            (response) => {
+              if (!response.session) {
+                resolve({ session: false, message: response.msg, deactive_date: response.response.deactivate_date });
+              } else if (response.success) {
+                resolve({ session: true, message: response.msg, deactive_date: response.response.deactivate_date });
+              } else {
+                reject(response.msg);
+              }
+            },
+            error => {
+              console.log(error);
+              if (error.message != undefined && error.message != '' && error.message != null) {
+                reject(error.message);
+              } else {
+                reject(this.dataService.lang.usnexpectedError);
+              }
+            }
+          );
+        } else {
+          reject(this.dataService.lang.networkNotWorking);
+        }
+      });
     });
   }
 

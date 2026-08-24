@@ -15,6 +15,35 @@ export interface School {
   detail?: string;
 }
 
+// getSchoolUsersList item shape — only the fields users-list.page.ts's
+// template actually reads; the rest of the real payload is unenumerated.
+export interface SchoolUser {
+  user_no?: string | number;
+  first_name?: string;
+  last_name?: string;
+  username?: string;
+  pic?: string;
+  [key: string]: unknown;
+}
+
+interface SchoolUsersHttpResponse {
+  session?: boolean;
+  msg?: string;
+  response?: SchoolUser[];
+}
+
+interface GetChildrensHttpResponse {
+  success?: boolean;
+  child?: Student[];
+  can_view_absent?: boolean;
+  msg?: string;
+}
+
+interface GetChildrensResult {
+  data?: Student[];
+  permit?: boolean;
+}
+
 /**
  * School roster lookups (students/users), split out of DataService.
  * Depends on DataService for `lang` (error-message fallback in
@@ -50,6 +79,44 @@ export class SchoolDirectoryApiService {
         }
       }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
+  }
+
+  /* get all the users except teacher studet and parent */
+  getAllUsers(users: Record<string, unknown>): Promise<{ session: boolean; message?: string; data?: SchoolUser[] }> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest<SchoolUsersHttpResponse>(users, 'getSchoolUsersList')
+        .then((response) => {
+          if (response) {
+            console.log('alluserslist', response);
+            if (response.session == false) {
+              resolve({ session: false, message: response.msg });
+            } else if (response.session == true) {
+              resolve({ session: true, data: response.response });
+            } else {
+              reject(response.msg);
+            }
+          } else {
+          }
+        })
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
+    });
+  }
+
+  /** Get a parent's own children (and whether they can view absence data). */
+  getChildrens(data: Record<string, unknown>): Promise<GetChildrensResult> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest<GetChildrensHttpResponse>(data, 'getChildrens')
+        .then((response) => {
+          if (response) {
+            if (response.success) {
+              resolve({ data: response.child, permit: response.can_view_absent });
+            } else {
+              reject(response.msg);
+            }
+          }
+        })
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
+    });
   }
 
   /** get all student of a school

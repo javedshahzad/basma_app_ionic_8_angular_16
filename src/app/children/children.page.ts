@@ -18,6 +18,7 @@ import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { PermissionService } from '../service/permission/permission.service';
+import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
     selector: 'app-children',
@@ -66,6 +67,7 @@ export class ChildrenPage {
     private route: ActivatedRoute,
     private storageSr: StorageService,
     private permissionService: PermissionService,
+    private schoolDirectoryApi: SchoolDirectoryApiService,
     public zone: NgZone,
     //  public app: App,
     public translate: TranslateService,
@@ -114,7 +116,7 @@ export class ChildrenPage {
         school_id: this.userDetails.details.school_id
       };
 
-      this.dataProvider
+      this.schoolDirectoryApi
         .getChildrens(payload)
         .then(async (children: any) => {
           if (children && children.data) {

@@ -15,12 +15,11 @@ import dayjs from 'dayjs';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
-import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
+import { UserManagementApiService, SchoolRulesDetails } from '../service/user-management-api/user-management-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoggedInUser } from '../model/logged-in-user.model';
-import { SchoolRulesDetails } from '../service/data/data.service';
 import { HasRoleDirective } from '../directives/has-role.directive';
 import { PermissionService } from '../service/permission/permission.service';
 
@@ -184,7 +183,7 @@ export class SettingsPage {
       // didn't validate it here, school was implicitly scoped by school_id alone.
       session_id: this.userDetails.session_id
     };
-    this.dataProvider
+    this.userManagementApi
       .getAllRules(data)
       .then(res => {
         if (res) {
@@ -252,7 +251,7 @@ export class SettingsPage {
       }
 
       this.dataProvider
-        .run(() => this.dataProvider.updateUserSettings(data))
+        .run(() => this.userManagementApi.updateUserSettings(data))
         .then(async response => {
           if (response.session) {
             this.dataProvider.showToast(response.message);
@@ -395,7 +394,7 @@ export class SettingsPage {
       user_no: this.userDetails.details.user_no
     };
     this.dataProvider
-      .run(() => this.dataProvider.revertDeletedSchoolSettings(data))
+      .run(() => this.userManagementApi.revertDeletedSchoolSettings(data))
       .then(response => {
         this.dataProvider.errorALertMessage(response.message);
         this.deactivate_date = '';

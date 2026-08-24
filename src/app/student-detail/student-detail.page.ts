@@ -36,7 +36,7 @@ import { NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, DecimalPipe, Dat
 import { FormsModule } from '@angular/forms';
 import { Student } from '../model/student.model';
 import { LoggedInUser } from '../model/logged-in-user.model';
-import { UserPlan } from '../service/plan-api/plan-api.service';
+import { PlanApiService, UserPlan } from '../service/plan-api/plan-api.service';
 import { StudentNote, StudentNotesResponse } from '../service/notes-api/notes-api.service';
 import { StudentProfileDashboard, StudentInventory, SkillData } from '../service/gamification-api/gamification-api.service';
 import { StudentInventoryModalComponent } from '../components/student-inventory-modal/student-inventory-modal.component';
@@ -171,6 +171,7 @@ export class StudentDetailPage {
     private followupFieldsApi: FollowupFieldsApiService,
     private userManagementApi: UserManagementApiService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
+    private planApi: PlanApiService,
     private storageSr: StorageService,
     private studentEngagement: StudentEngagementService,
     private cdr: ChangeDetectorRef
@@ -1198,8 +1199,8 @@ export class StudentDetailPage {
       user_no: this.userDetails.details.user_no
     };
     this.dataProvider.showLoading();
-    this.dataProvider
-      .openPdf(planData)
+    this.planApi
+      .checkUserPlan(planData)
       .then(res => {
         let url = env.serverURL + 'student_report_new?school_id=' + data.school_id + '&sid=' + data.sid;
         this.reportsApi
@@ -1318,8 +1319,8 @@ export class StudentDetailPage {
 
     this.dataProvider.showLoading();
 
-    this.dataProvider
-      .openPdf(planData)
+    this.planApi
+      .checkUserPlan(planData)
       .then(res => {
         let studentData = {
           school_id: this.userDetails.details.school_id,

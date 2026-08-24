@@ -24,6 +24,11 @@ export interface UserPlan {
   cardColor?: string;
 }
 
+interface CheckUserPlanResponse {
+  response?: boolean;
+  msg?: string;
+}
+
 /**
  * Subscription plan HTTP calls, split out of DataService. Depends on
  * DataService for `lang` (error-message fallbacks).
@@ -52,6 +57,27 @@ export class PlanApiService {
             reject(response);
         }
       }).catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
+    })
+  }
+
+  /** Checks the current user's subscription-plan status (despite the
+   * legacy endpoint name, this has nothing to do with PDFs). */
+  checkUserPlan(data: Record<string, unknown>): Promise<CheckUserPlanResponse> {
+    return new Promise((resolve, reject) => {
+      // console.log(data);
+      this.apiClient.postRequest<CheckUserPlanResponse>(data, 'check_user_plan')
+        .then((response) => {
+          if (response) {
+            if (response.response) {
+              resolve(response);
+            } else {
+              reject(response);
+            }
+          } else {
+            reject(response);
+          }
+        })
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError))
     })
   }
 

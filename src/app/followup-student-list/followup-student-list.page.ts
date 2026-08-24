@@ -29,13 +29,13 @@ import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
+import { PlanApiService, UserPlan } from '../service/plan-api/plan-api.service';
 import { FollowupFieldsApiService, FollowupStudentListResponse, FollowupStudentRecord, FollowupMarkEntry, FollowupField } from '../service/followup-fields-api/followup-fields-api.service';
 import { UserType } from '../constants/user-type';
 import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoggedInUser } from '../model/logged-in-user.model';
 import { Course } from '../service/courses-api/courses-api.service';
-import { UserPlan } from '../service/plan-api/plan-api.service';
 
 interface MarkSheetEntry {
   sid?: string | number;
@@ -121,7 +121,8 @@ export class FollowupStudentListPage {
     private holidaysApi: HolidaysApiService,
     private studentEngagement: StudentEngagementService,
     private gamificationApi: GamificationApiService,
-    private followupFieldsApi: FollowupFieldsApiService
+    private followupFieldsApi: FollowupFieldsApiService,
+    private planApi: PlanApiService
   ) {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
       const navigation = this.router.getCurrentNavigation();
@@ -376,8 +377,8 @@ export class FollowupStudentListPage {
     let planData = { user_no: this.userDetails.details.user_no, report_type: type };
 
     this.dataProvider.showLoading();
-    this.dataProvider
-      .openPdf(planData)
+    this.planApi
+      .checkUserPlan(planData)
       .then(res => {
         let studentData = {
           date: this.dataProvider.getFormatedDate(this.dateSelected),
@@ -547,7 +548,7 @@ export class FollowupStudentListPage {
 
       if (this.markSheet.length > 0) {
         this.dataProvider
-          .run(() => this.dataProvider.submitMarks(data, this.markSheet))
+          .run(() => this.followupFieldsApi.submitMarks(data, this.markSheet))
           .then(response => {
             if (response.session) {
               this.dataProvider.showToast(this.lang.marks_added || 'تم حفظ الدرجات');
