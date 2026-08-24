@@ -92,7 +92,8 @@ const routes: Routes = [
   },
   {
     path: 'post-news',
-    loadComponent: () => import('./post-news/post-news.page').then(m => m.PostNewsPage), canActivate: [AuthGuard]
+    loadComponent: () => import('./post-news/post-news.page').then(m => m.PostNewsPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin] }
   },
   {
     path: 'parent-register',
@@ -203,11 +204,13 @@ const routes: Routes = [
   },
   {
     path: 'student-report-manage',
-    loadComponent: () => import('./student-report-manage/student-report-manage.page').then(m => m.StudentReportManagePage), canActivate: [AuthGuard]
+    loadComponent: () => import('./student-report-manage/student-report-manage.page').then(m => m.StudentReportManagePage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin, UserType.Moderator, UserType.Viewer, UserType.Medical] }
   },
   {
     path: 'followup-add-fields',
-    loadComponent: () => import('./followup-add-fields/followup-add-fields.page').then(m => m.FollowupAddFieldsPage), canActivate: [AuthGuard]
+    loadComponent: () => import('./followup-add-fields/followup-add-fields.page').then(m => m.FollowupAddFieldsPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Teacher, UserType.Admin, UserType.Moderator] }
   },
   {
     path: 'add-teacher',
@@ -215,7 +218,8 @@ const routes: Routes = [
   },
   {
     path: 'add-parent',
-    loadComponent: () => import('./add-parent/add-parent.page').then(m => m.AddParentPage), canActivate: [AuthGuard]
+    loadComponent: () => import('./add-parent/add-parent.page').then(m => m.AddParentPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin] }
   },
  
   {
