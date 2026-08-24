@@ -196,11 +196,13 @@ const routes: Routes = [
   },
   {
     path: 'student-report-classes',
-    loadComponent: () => import('./student-report-classes/student-report-classes.page').then(m => m.StudentReportClassesPage), canActivate: [AuthGuard]
+    loadComponent: () => import('./student-report-classes/student-report-classes.page').then(m => m.StudentReportClassesPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin, UserType.Moderator, UserType.Viewer] }
   },
   {
     path: 'student-report-list',
-    loadComponent: () => import('./student-report-list/student-report-list.page').then(m => m.StudentReportListPage), canActivate: [AuthGuard]
+    loadComponent: () => import('./student-report-list/student-report-list.page').then(m => m.StudentReportListPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin, UserType.Moderator, UserType.Viewer] }
   },
   {
     path: 'student-report-manage',
