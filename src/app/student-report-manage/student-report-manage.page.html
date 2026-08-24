@@ -317,7 +317,8 @@
     </div>
 
 
-    <div *ngIf="(userDetails?.details?.user_type===UserType.Moderator || userDetails?.details?.user_type===UserType.Admin) && suspend.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.2s;">
+    <ng-container *appHasRole="[UserType.Moderator, UserType.Admin]">
+    <div *ngIf="suspend.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.2s;">
       <div class="flex items-center justify-between mb-4 px-1">
         <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.suspension_days' | translate}}</h3>
         <button class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-orange-100" (click)="printReport('suspend')">
@@ -343,8 +344,10 @@
         </div>
       </div>
     </div>
+    </ng-container>
 
-    <div *ngIf="(userDetails?.details?.user_type===UserType.Medical || userDetails?.details?.user_type===UserType.Admin) && medical.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.3s;">
+    <ng-container *appHasRole="[UserType.Medical, UserType.Admin]">
+    <div *ngIf="medical.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.3s;">
       <div class="flex items-center justify-between mb-4 px-1">
         <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.medical_days' | translate}}</h3>
         <button class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-emerald-100" (click)="printReport('medical')">
@@ -370,8 +373,10 @@
         </div>
       </div>
     </div>
+    </ng-container>
 
-    <div *ngIf="(userDetails?.details?.user_type===UserType.Medical || userDetails?.details?.user_type===UserType.Admin) && exitdays.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.4s;">
+    <ng-container *appHasRole="[UserType.Medical, UserType.Admin]">
+    <div *ngIf="exitdays.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.4s;">
       <div class="flex items-center justify-between mb-4 px-1">
         <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.exit_days' | translate}}</h3>
         <button class="bg-cyan-50 text-cyan-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-cyan-100" (click)="printReport('exit')">
@@ -393,6 +398,7 @@
         </div>
       </div>
     </div>
+    </ng-container>
 
     <ng-container *appHasRole="[UserType.Viewer, UserType.Admin, UserType.Moderator]">
       <div *ngIf="callOfStudentsReport.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.5s;">

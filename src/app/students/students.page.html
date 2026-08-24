@@ -142,7 +142,8 @@
 </ion-content>
 
 <!-- 🟢 الفوتر الذكي المطابق لتصميم صفحة تسجيل غياب الحصص -->
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="(userType === UserType.Admin || userType === UserType.Moderator) && !isHoliday && students?.length > 0">
+<ng-container *appHasRole="[UserType.Admin, UserType.Moderator]">
+<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="!isHoliday && students?.length > 0">
   <div class="p-5 max-w-6xl mx-auto transition-all duration-300">
     
     <!-- زر تفعيل التعديل (يظهر لمشرف النظام فقط إذا لم يكن النمط مفعلاً) -->
@@ -165,6 +166,7 @@
     
   </div>
 </ion-footer>
+</ng-container>
 
 
 <ion-modal [isOpen]="showCalenderModal" (didDismiss)="hideCalenderModal()" class="calendar-modal" [initialBreakpoint]="0.5" [breakpoints]="[0, 0.5, 0.75]">

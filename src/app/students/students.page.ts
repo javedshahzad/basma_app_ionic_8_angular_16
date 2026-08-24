@@ -31,13 +31,14 @@ import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtua
 import { Student } from '../model/student.model';
 import { LoggedInUser } from '../model/logged-in-user.model';
 import { Course } from '../service/courses-api/courses-api.service';
+import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
     selector: 'app-students',
     templateUrl: './students.page.html',
     styleUrls: ['./students.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgClass, ɵɵDir, NgIf, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf, NgFor, DecimalPipe, DatePipe, TranslatePipe]
+    imports: [IonicModule, NgClass, ɵɵDir, NgIf, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf, NgFor, DecimalPipe, DatePipe, TranslatePipe, HasRoleDirective]
 })
 export class StudentsPage {
   readonly UserType = UserType;
