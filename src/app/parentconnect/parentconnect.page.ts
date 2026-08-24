@@ -21,6 +21,7 @@ import { ParentConnectApiService, ParentConnectChat } from '../service/parent-co
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { DateFormatPipe } from '../pipes/date-format/date-format.pipe';
+import { HasRoleDirective } from '../directives/has-role.directive';
 import { LoggedInUser } from '../model/logged-in-user.model';
 
 @Component({
@@ -28,7 +29,7 @@ import { LoggedInUser } from '../model/logged-in-user.model';
     templateUrl: './parentconnect.page.html',
     styleUrls: ['./parentconnect.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, DateFormatPipe, TranslatePipe]
+    imports: [IonicModule, NgIf, NgFor, NgClass, DateFormatPipe, TranslatePipe, HasRoleDirective]
 })
 export class ParentconnectPage {
   trackByIndex(index: number): number {

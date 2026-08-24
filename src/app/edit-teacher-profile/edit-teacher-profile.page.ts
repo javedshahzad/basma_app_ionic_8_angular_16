@@ -22,13 +22,14 @@ import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { NgIf } from '@angular/common';
+import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
     selector: 'app-edit-teacher-profile',
     templateUrl: './edit-teacher-profile.page.html',
     styleUrls: ['./edit-teacher-profile.page.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, IonicSelectableComponent, NgIf, TranslatePipe]
+    imports: [IonicModule, FormsModule, IonicSelectableComponent, NgIf, TranslatePipe, HasRoleDirective]
 })
 export class EditTeacherProfilePage {
   trackByIndex(index: number): number {
