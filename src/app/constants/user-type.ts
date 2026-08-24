@@ -9,10 +9,13 @@ export enum UserType {
   Teacher = '2',
   Moderator = '3',
   Parent = '4',
-  // 5 and 6 are real backend role codes with no prior frontend constant --
-  // student-report-manage.page.html already gates its medical-report
-  // section on the raw string '6', so this just names what was already
-  // being checked, matching the enum's own established pattern.
+  // 5 and 6 were real backend role codes with no prior frontend constant --
+  // edit-user-profile.page.html already excludes both together (as raw
+  // strings) from the attendance-edit-permission toggle, and
+  // student-report-manage.page.html separately gates its medical-report
+  // section on raw '6'. Named here, matching the enum's own established
+  // pattern, rather than left as unexplained magic strings.
+  Register = '5',
   Medical = '6',
   Viewer = '7',
   Student = '8',
