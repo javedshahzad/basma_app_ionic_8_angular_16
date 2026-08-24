@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../service/storage.service';
+import { CredentialStorageService } from '../../service/credential-storage/credential-storage.service';
 import { DeviceApiService } from '../../service/device-api/device-api.service';
 import { UserType } from '../../constants/user-type';
 
@@ -50,6 +51,7 @@ export class SwitchAccountComponent implements OnInit {
     public dataProvider: DataService,
     public modalController: ModalController,
     private storageSr: StorageService,
+    private credentialStorage: CredentialStorageService,
     private cdr: ChangeDetectorRef,
     private deviceApi: DeviceApiService
   ) {}
@@ -92,15 +94,10 @@ export class SwitchAccountComponent implements OnInit {
       } catch (e) {}
     }
 
-    let earlyLoginData = await this.storageSr.get('earlyLogin');
-    if (!earlyLoginData) {
-      let oldEarly = localStorage.getItem('earlyLogin');
-      if (oldEarly) earlyLoginData = JSON.parse(oldEarly);
-    } else if (typeof earlyLoginData === 'string') {
-      try {
-        earlyLoginData = JSON.parse(earlyLoginData);
-      } catch (e) {}
-    }
+    // CredentialStorageService already handles the encrypted-native vs.
+    // web fallback, plus one-time migration of any pre-existing plaintext
+    // copy — no manual raw-localStorage fallback needed here anymore.
+    let earlyLoginData = await this.credentialStorage.get('earlyLogin');
 
     this.zone.run(() => {
       if (userLoggedInData && userLoggedInData.details) {
@@ -126,8 +123,7 @@ export class SwitchAccountComponent implements OnInit {
           this.loggedinUser.splice(i, 1);
           this.cdr.detectChanges();
         });
-        await this.storageSr.set('earlyLogin', this.loggedinUser);
-        localStorage.setItem('earlyLogin', JSON.stringify(this.loggedinUser));
+        await this.credentialStorage.set('earlyLogin', this.loggedinUser);
       },
       (e: any) => {}
     );

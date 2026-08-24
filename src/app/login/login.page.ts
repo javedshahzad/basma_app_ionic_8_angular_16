@@ -11,6 +11,7 @@ import { LoaderComponent } from '../components/loader/loader.component';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { CredentialStorageService } from '../service/credential-storage/credential-storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
 import { NgIf, NgFor } from '@angular/common';
@@ -46,6 +47,7 @@ export class LoginPage {
     public dbProvider: DatabaseService,
     public modalController: ModalController,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
+    private credentialStorage: CredentialStorageService,
     private deviceApi: DeviceApiService,
     private planApi: PlanApiService,
     private cdr: ChangeDetectorRef
@@ -73,7 +75,7 @@ export class LoginPage {
     this.user.device_id = this.uniqueDeviceId;
 
     // 2. استرجاع بيانات "تذكرني" بذكاء
-    const credentials = await this.storageSr.get('usercredentials');
+    const credentials = await this.credentialStorage.get('usercredentials');
 
     if (credentials) {
       // 🟢 نستخدم zone.run مع تأخير بسيط لضمان أن الحقول جاهزة للاستقبال
@@ -89,7 +91,7 @@ export class LoginPage {
     }
 
     // استرجاع قائمة الحسابات السابقة
-    let earlyLoginData = await this.storageSr.get('earlyLogin');
+    let earlyLoginData = await this.credentialStorage.get('earlyLogin');
     if (earlyLoginData) {
       this.zone.run(() => {
         this.loggedinUser = earlyLoginData;
@@ -116,13 +118,13 @@ export class LoginPage {
     }
 
     if (this.rememberMe) {
-      await this.storageSr.set('usercredentials', {
+      await this.credentialStorage.set('usercredentials', {
         email_id: this.user.email_id,
         password: this.user.password,
         rememberMe: this.rememberMe
       });
     } else {
-      await this.storageSr.remove('usercredentials');
+      await this.credentialStorage.remove('usercredentials');
     }
 
     await this.presentPopover();
@@ -152,7 +154,7 @@ export class LoginPage {
           this.loggedinUser[index] = currentUserData;
         }
 
-        await this.storageSr.set('earlyLogin', this.loggedinUser);
+        await this.credentialStorage.set('earlyLogin', this.loggedinUser);
 
         // 🟢 1. تسجيل الجهاز في السيرفر فوراً لمنع الطرد
         await this.LogInDevice(response.details.user_no);

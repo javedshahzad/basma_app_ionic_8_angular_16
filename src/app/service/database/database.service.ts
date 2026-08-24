@@ -117,6 +117,13 @@ export class DatabaseService {
                           content TEXT, detail TEXT, school_id INT, news_image TEXT,
                           school_logo TEXT, school_name TEXT, status INT, title VARCHAR(150), total_likes INT
                         );`;
+      // Password-bearing "remember me" / multi-account credentials — kept in
+      // this same encrypted attendance.db rather than the plaintext
+      // IonicStorage/localStorage used elsewhere. Unlike the cache tables
+      // above, this one is NOT truncated by deleteDataBase() on logout.
+      const credentialsTable = `CREATE TABLE IF NOT EXISTS credentials (
+                                key VARCHAR(50) PRIMARY KEY, value TEXT
+                              );`;
 
       // تنفيذ الجداول بالتسلسل
       await this.db.execute(classesTable);
@@ -124,6 +131,7 @@ export class DatabaseService {
       await this.db.execute(privateMsgTable);
       await this.db.execute(parentConnTable);
       await this.db.execute(newsTable);
+      await this.db.execute(credentialsTable);
       
       console.log('All Tables created successfully');
       return Promise.resolve(true);
@@ -342,6 +350,60 @@ export class DatabaseService {
       console.log("Local database tables cleared successfully");
     } catch (error) {
       console.error("Error clearing database: ", error);
+    }
+    // Deliberately NOT clearing `credentials` here — "remember me" and
+    // multi-account switching both need to survive a logout.
+  }
+
+  /**
+   * Opens the connection/creates tables on demand, in case a credential
+   * method runs before app.component.ts's normal startup sequence has
+   * done so (mirrors StorageService's own defensive lazy-init pattern).
+   */
+  private async ensureReady(): Promise<void> {
+    if (!this.db) {
+      await this.openDataBase();
+      await this.createTable();
+    }
+  }
+
+  /**
+   * Store a password-bearing value (remember-me credentials, the
+   * multi-account "earlyLogin" list) in the encrypted attendance.db.
+   * No-ops on web, where CapacitorSQLite isn't available — callers should
+   * fall back to CredentialStorageService's web path, not call this
+   * directly.
+   */
+  async setCredential(key: string, value: unknown): Promise<void> {
+    if (!this.isNative) return;
+    await this.ensureReady();
+    try {
+      await this.db.run('INSERT OR REPLACE INTO credentials (key, value) VALUES (?, ?)', [key, JSON.stringify(value)]);
+    } catch (error) {
+      console.error('Error saving credential: ', error);
+    }
+  }
+
+  async getCredential<T = any>(key: string): Promise<T | null> {
+    if (!this.isNative) return null;
+    await this.ensureReady();
+    try {
+      const response = await this.db.query('SELECT value FROM credentials WHERE key = ?', [key]);
+      const row = response.values && response.values[0];
+      return row ? JSON.parse(row.value) : null;
+    } catch (error) {
+      console.error('Error reading credential: ', error);
+      return null;
+    }
+  }
+
+  async removeCredential(key: string): Promise<void> {
+    if (!this.isNative) return;
+    await this.ensureReady();
+    try {
+      await this.db.run('DELETE FROM credentials WHERE key = ?', [key]);
+    } catch (error) {
+      console.error('Error removing credential: ', error);
     }
   }
 }
