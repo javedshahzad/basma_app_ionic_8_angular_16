@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 // 🟢 1. استيراد خدمة التخزين الجديدة
 import { StorageService } from '../service/storage.service';
 import { NgIf } from '@angular/common';
+import { PermissionService } from '../service/permission/permission.service';
+import { UserType } from '../constants/user-type';
 
 @Component({
     selector: 'app-tabs',
@@ -27,8 +29,7 @@ export class TabsPage {
   user = {
     name: 'Guest',
     description: 'Guest',
-    image: './assets/imgs/logo.png',
-    userType: 'guest'
+    image: './assets/imgs/logo.png'
   };
   hide_new: any;
 
@@ -38,6 +39,7 @@ export class TabsPage {
     public dataProvider: DataService,
     private router: Router,
     private storageSr: StorageService,
+    private permissionService: PermissionService,
     private cdr: ChangeDetectorRef
   ) {
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async res => {
@@ -68,22 +70,10 @@ export class TabsPage {
   }
 
   processUserType() {
-    if (this.user.userType == 'parent') {
-      this.isParent = true;
-      this.isStudent = false;
-      this.isTM = false;
-      this.isteacher = false;
-    } else if (this.user.userType == 'student') {
-      this.isStudent = true;
-      this.isParent = false;
-      this.isTM = false;
-      this.isteacher = false;
-    } else {
-      this.isStudent = false;
-      this.isParent = false;
-      this.isTM = true;
-      this.isteacher = this.user.userType == 'teacher';
-    }
+    this.isParent = this.permissionService.hasRole(UserType.Parent);
+    this.isStudent = this.permissionService.hasRole(UserType.Student);
+    this.isteacher = this.permissionService.hasRole(UserType.Teacher);
+    this.isTM = !this.isParent && !this.isStudent;
     // 🟢 قمنا بحذف التوجيه (Navigate) من هنا لكي لا يتعارض مع التوجيه الصحيح في switch-account
   }
 
@@ -99,21 +89,8 @@ export class TabsPage {
       // 👈 الحفظ الآمن بدلاً من localStorage.setItem
       await this.storageSr.set('user_type', userDetail.details.user_type);
 
-      if (userDetail.details.user_type == '1') {
-        if (userDetail.details.school_details != '') {
-          this.user.description = userDetail.details.school_details;
-        }
-        this.user.userType = 'admin';
-      } else if (userDetail.details.user_type == '2') {
-        this.user.userType = 'teacher';
-      } else if (userDetail.details.user_type == '3') {
-        this.user.userType = 'moderator';
-      } else if (userDetail.details.user_type == '4') {
-        this.user.userType = 'parent';
-      } else if (userDetail.details.user_type == '7') {
-        this.user.userType = 'viewer';
-      } else if (userDetail.details.user_type == '8') {
-        this.user.userType = 'student';
+      if (userDetail.details.user_type == UserType.Admin && userDetail.details.school_details != '') {
+        this.user.description = userDetail.details.school_details;
       }
     }
   }

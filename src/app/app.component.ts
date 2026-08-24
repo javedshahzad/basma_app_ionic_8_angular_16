@@ -27,6 +27,7 @@ import { Browser } from '@capacitor/browser';
 import { PushNotifications } from '@capacitor/push-notifications';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PermissionService } from './service/permission/permission.service';
 
 declare var cordova: any;
 
@@ -39,6 +40,7 @@ declare var cordova: any;
 })
 export class AppComponent {
   private destroyRef = inject(DestroyRef);
+  readonly UserType = UserType;
 
   trackByIndex(index: number): number {
     return index;
@@ -83,6 +85,7 @@ export class AppComponent {
     private http: HttpClient,
     private planApi: PlanApiService,
     private reportsApi: ReportsApiService,
+    public permissionService: PermissionService,
     private cdr: ChangeDetectorRef
   ) {
     this.storageSr.init();
@@ -198,11 +201,11 @@ export class AppComponent {
             await this.setUserdetails(true);
             this.pages = [];
 
-            if (this.user.userType !== 'student' && this.user.userType !== 'parent') {
+            if (!this.permissionService.hasRole(UserType.Student, UserType.Parent)) {
               this.pages.push({ title: this.lang.sidemenu.class_list, component: 'tabs', icon: 'list' });
             }
 
-            if (this.user.userType === 'moderator' || this.user.userType === 'viewer') {
+            if (this.permissionService.hasRole(UserType.Moderator, UserType.Viewer)) {
               this.pages.push({
                 title: this.lang.sidemenu.student_report,
                 component: 'student-report-classes',
@@ -210,7 +213,7 @@ export class AppComponent {
               });
             }
 
-            if (this.user.userType === 'admin') {
+            if (this.permissionService.hasRole(UserType.Admin)) {
               this.pages.push({
                 title: this.lang.sidemenu.student_report,
                 component: 'student-report-classes',
@@ -228,13 +231,13 @@ export class AppComponent {
               this.pages.push({ title: this.lang.sidemenu.parent_connect, component: 'parentconnect', icon: 'list' });
             }
 
-            if (['admin', 'teacher', 'moderator', 'viewer'].includes(this.user.userType)) {
+            if (this.permissionService.hasRole(UserType.Admin, UserType.Teacher, UserType.Moderator, UserType.Viewer)) {
               if (!this.pages?.some(p => p.component === 'bulletins')) {
                 this.pages.push({ title: this.lang.sidemenu.billetins, component: 'bulletins', icon: 'list' });
               }
             }
 
-            this.rootPage = this.user.userType === 'parent' ? 'ChildrenPage' : 'tabs';
+            this.rootPage = this.permissionService.hasRole(UserType.Parent) ? 'ChildrenPage' : 'tabs';
 
             if (this.AvailablePlan && this.AvailablePlan.plan.slug != 'free' && this.AvailablePlan.isExpire == false) {
               if (!this.pages.some(p => p.component === 'elearning-schools')) {
@@ -399,11 +402,11 @@ export class AppComponent {
       if (oldLog) isLoggedIn = JSON.parse(oldLog);
     }
 
-    if (this.user.userType == 'parent') {
+    if (this.permissionService.hasRole(UserType.Parent)) {
       this.navController.navigateRoot('/tabs/children', { animated: true, animationDirection: 'forward' });
-    } else if ((!this.user.userType || this.user.userType === 'undefined') && !isLoggedIn?.success) {
+    } else if (!this.permissionService.currentUserType && !isLoggedIn?.success) {
       this.navController.navigateRoot('/login', { animated: true, animationDirection: 'back' });
-    } else if (this.user.userType === 'student') {
+    } else if (this.permissionService.hasRole(UserType.Student)) {
       this.navController.navigateRoot('/tabs/student-titles', { animated: true, animationDirection: 'forward' });
     } else {
       this.navController.navigateRoot('/tabs/classlist', { animated: true, animationDirection: 'forward' });
@@ -472,21 +475,8 @@ export class AppComponent {
       this.user.school_image = userDetail.details.school_logo;
       this.user.is_school_admin = userDetail.details.is_school_admin;
 
-      if (userDetail.details.user_type == UserType.Admin) {
-        if (userDetail.details.school_details != '') {
-          this.user.description = userDetail.details.is_school_admin != 1 ? '' : userDetail.details.school_details;
-        }
-        this.user.userType = 'admin';
-      } else if (userDetail.details.user_type == UserType.Teacher) {
-        this.user.userType = 'teacher';
-      } else if (userDetail.details.user_type == UserType.Moderator) {
-        this.user.userType = 'moderator';
-      } else if (userDetail.details.user_type == UserType.Parent) {
-        this.user.userType = 'parent';
-      } else if (userDetail.details.user_type == UserType.Viewer) {
-        this.user.userType = 'viewer';
-      } else if (userDetail.details.user_type == UserType.Student) {
-        this.user.userType = 'student';
+      if (userDetail.details.user_type == UserType.Admin && userDetail.details.school_details != '') {
+        this.user.description = userDetail.details.is_school_admin != 1 ? '' : userDetail.details.school_details;
       }
     }
     this.cdr.markForCheck();
@@ -593,20 +583,20 @@ export class AppComponent {
 
   updateMenuTranslations() {
     this.pages = [];
-    if (!this.user || !this.user.userType) return;
+    if (!this.permissionService.currentUserType) return;
 
-    if (this.user.userType == 'parent') {
+    if (this.permissionService.hasRole(UserType.Parent)) {
       // no side menu for parents
-    } else if (this.user.userType == 'student') {
+    } else if (this.permissionService.hasRole(UserType.Student)) {
       // no side menu for students
-    } else if (['admin', 'teacher', 'moderator', 'viewer'].includes(this.user.userType)) {
+    } else if (this.permissionService.hasRole(UserType.Admin, UserType.Teacher, UserType.Moderator, UserType.Viewer)) {
       this.pages.push({
         title: this.lang.sidemenu?.class_list || 'قائمة الفصول',
         component: 'tabs',
         icon: 'grid-outline'
       });
 
-      if (this.user.userType == 'moderator' || this.user.userType == 'viewer') {
+      if (this.permissionService.hasRole(UserType.Moderator, UserType.Viewer)) {
         this.pages.push({
           title: this.lang.sidemenu?.student_report || 'تقرير الطلاب',
           component: 'student-report-classes',
@@ -614,7 +604,7 @@ export class AppComponent {
         });
       }
 
-      if (this.user.userType == 'admin') {
+      if (this.permissionService.hasRole(UserType.Admin)) {
         this.pages.push({
           title: this.lang.sidemenu?.student_report || 'تقرير الطلاب',
           component: 'student-report-classes',
@@ -652,7 +642,7 @@ export class AppComponent {
         });
       }
 
-      if (['admin', 'teacher', 'moderator'].includes(this.user.userType)) {
+      if (this.permissionService.hasRole(UserType.Admin, UserType.Teacher, UserType.Moderator)) {
         this.pages.push({
           title: this.lang.sidemenu?.billetins || 'النشرات',
           component: 'bulletins',
