@@ -31,3 +31,14 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+
+# Signing keys / Firebase config — must stay local-only (build-time
+# secrets), not committed. Un-anchored so this catches every copy: the
+# root-level ones used by tooling, android/app/google-services.json, and
+# ios/App/App/GoogleService-Info.plist. Files already tracked before this
+# was added need `git rm --cached` once to actually stop tracking them —
+# adding the pattern alone doesn't retroactively untrack them.
+*.jks
+*.keystore
+google-services.json
+GoogleService-Info.plist
