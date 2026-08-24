@@ -37,10 +37,8 @@ public getPlan: Subject<boolean> = new Subject();
         PushNotifications.addListener(
           'registration',
           (token: Token) => {
-            console.log('My token: ' + JSON.stringify(token));
             this.FcmToken = token.value;
             localStorage.setItem("FcmToken",this.FcmToken);
-            console.log("Token= " ,this.FcmToken);
             if(this.FcmToken){
               let opt = { topic: 'all' };
               FCM.subscribeTo(opt).then((subs)=>{
