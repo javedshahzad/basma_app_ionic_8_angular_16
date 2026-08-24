@@ -56,6 +56,13 @@ export class FollowupStudentListPage {
   readonly UserType = UserType;
   private destroyRef = inject(DestroyRef);
 
+  // 🟢 عرض الطلاب تدريجياً (Infinite Scroll) بدلاً من رسم القائمة كاملة دفعة
+  // واحدة — كل صف يحتوي صورة وحقول درجات متعددة، فرسمها كلها دفعة واحدة
+  // لفصل كبير العدد يُبطئ الرسم الأول والتمرير بلا داعٍ.
+  private static readonly PAGE_SIZE = 20;
+  visibleStudents: FollowupStudentRecord[] = [];
+  private visibleCount = 0;
+
   courseInfo: Course;
   dateSelected: Date;
   attendanceResponse: FollowupStudentListResponse = {};
@@ -253,6 +260,8 @@ export class FollowupStudentListPage {
           if (this.attendanceResponse.students && this.attendanceResponse.students.length === 0) {
             this.noDataFound = this.lang.no_students_in_class || 'لا يوجد طلاب متاحين للتقييم.';
           }
+
+          this.resetVisibleStudents();
         } else {
           this.authProvider.flushLocalStorage();
           this.dataProvider.errorALertMessage(res.message);
@@ -265,6 +274,20 @@ export class FollowupStudentListPage {
         this.dataProvider.errorALertMessage(error);
         this.cdr.markForCheck();
       });
+  }
+
+  private resetVisibleStudents(): void {
+    this.visibleCount = FollowupStudentListPage.PAGE_SIZE;
+    this.visibleStudents = (this.attendanceResponse.students || []).slice(0, this.visibleCount);
+  }
+
+  loadMoreStudents(infiniteScroll: any) {
+    setTimeout(() => {
+      this.visibleCount += FollowupStudentListPage.PAGE_SIZE;
+      this.visibleStudents = (this.attendanceResponse.students || []).slice(0, this.visibleCount);
+      infiniteScroll.target.complete();
+      this.cdr.markForCheck();
+    }, 300);
   }
 
   isStudentFrozen(student: FollowupStudentRecord): boolean {

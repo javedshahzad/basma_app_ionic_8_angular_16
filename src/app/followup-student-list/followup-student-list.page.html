@@ -55,7 +55,7 @@
   <div class="p-4 max-w-3xl mx-auto" dir="rtl">
 
     <div class="space-y-4" *ngIf="attendanceResponse.students?.length > 0">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all" *ngFor="let student of attendanceResponse.students; let sno = index; trackBy: trackByStudent">
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all" *ngFor="let student of visibleStudents; let sno = index; trackBy: trackByStudent">
         
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
@@ -114,6 +114,10 @@
         </div>
 
       </div>
+
+      <ion-infinite-scroll (ionInfinite)="loadMoreStudents($event)" [disabled]="visibleStudents.length >= (attendanceResponse.students?.length || 0)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
     </div>
 
     <!-- شاشة التحميل -->

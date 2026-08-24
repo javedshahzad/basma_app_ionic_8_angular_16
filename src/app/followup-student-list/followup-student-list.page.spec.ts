@@ -47,4 +47,35 @@ describe('FollowupStudentListPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  function makeStudents(count: number) {
+    return Array.from({ length: count }, (_, i) => ({ sid: i, name: `Student ${i}`, sheet: [] }));
+  }
+
+  it('only renders the first page of students, not the full list', () => {
+    (component as any).attendanceResponse = { students: makeStudents(45) };
+    (component as any).resetVisibleStudents();
+    expect(component.visibleStudents.length).toBe(20);
+    expect(component.attendanceResponse.students.length).toBe(45);
+  });
+
+  it('loadMoreStudents() grows the visible page without truncating the source data', done => {
+    (component as any).attendanceResponse = { students: makeStudents(45) };
+    (component as any).resetVisibleStudents();
+
+    const infiniteScrollStub = { target: { complete: () => {} } };
+    component.loadMoreStudents(infiniteScrollStub);
+
+    setTimeout(() => {
+      expect(component.visibleStudents.length).toBe(40);
+      expect(component.attendanceResponse.students.length).toBe(45);
+      done();
+    }, 350);
+  });
+
+  it('a short list is fully visible after one page', () => {
+    (component as any).attendanceResponse = { students: makeStudents(5) };
+    (component as any).resetVisibleStudents();
+    expect(component.visibleStudents.length).toBe(5);
+  });
 });
