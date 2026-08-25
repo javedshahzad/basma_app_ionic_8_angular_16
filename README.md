@@ -80,7 +80,7 @@ The backend is a REST API at `{serverURL}` (PHP-style endpoints, not OpenAPI-doc
 
 Session state lives in `StorageService` (a thin wrapper over `@ionic/storage-angular`'s `Storage` — note this re-exports `@ionic/storage`'s `Storage` class under the hood, they're the same DI token). `AuthService` and `DataService` are the two root-provided services most pages depend on.
 
-Roles are represented as string `user_type` codes checked ad hoc throughout templates/components (`'1'` = admin, `'2'` = teacher, `'3'` = moderator, `'4'` = parent, `'7'` = viewer, `'8'` = student) — there's no shared enum for these yet, so grep for the literal string when tracing role-gated behavior.
+Roles are represented as string `user_type` codes: `'1'` = admin, `'2'` = teacher, `'3'` = moderator, `'4'` = parent, `'5'` = register, `'6'` = medical, `'7'` = viewer, `'8'` = student. A `UserType` enum (`constants/user-type.ts`) names all eight, but most call sites still compare against the raw string literal directly rather than the enum — grep for the literal when tracing role-gated behavior.
 
 ## Testing
 
