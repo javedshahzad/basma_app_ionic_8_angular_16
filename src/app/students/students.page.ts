@@ -29,7 +29,7 @@ import { UserType } from '../constants/user-type';
 import { NgClass, NgIf, NgFor, DecimalPipe, DatePipe } from '@angular/common';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 import { Student } from '../model/student.model';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { Course } from '../service/courses-api/courses-api.service';
 import { HasRoleDirective } from '../directives/has-role.directive';
 
@@ -77,6 +77,15 @@ export class StudentsPage {
   showImageViewer: boolean = false;
   viewImageUrl: string = '';
 
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after the
+  // constructor's `if (userLoggedIn)` guard has already populated it —
+  // the non-null assertion documents that invariant once instead of at
+  // every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
+
   constructor(
     public navCtrl: NavController,
     public dataProvider: DataService,
@@ -118,17 +127,17 @@ export class StudentsPage {
       if (userLoggedIn) {
         this.dateSelected = new Date();
         this.userDetails = userLoggedIn;
-        this.userType = this.userDetails.details.user_type;
+        this.userType = this.userInfo.user_type || '';
         let data = {
-          user_no: this.userDetails.details.user_no,
-          school_id: this.userDetails.details.school_id,
+          user_no: this.userInfo.user_no,
+          school_id: this.userInfo.school_id,
           session_id: this.userDetails.session_id
         };
         this.holidaysApi
           .getHolidays(data)
           .then(response => {
-            if (response && response.holidays.length > 0) {
-              this.holidayString = response.holiday_string;
+            if (response && response.holidays && response.holidays.length > 0) {
+              this.holidayString = response.holiday_string || '';
               this.checkIfHoliday();
             }
             this.cdr.markForCheck();
@@ -183,7 +192,7 @@ export class StudentsPage {
 
   getStudentPoints() {
     this.gamificationApi.getPointsValue().then(res => {
-      this.student_points = res.points;
+      this.student_points = res.points || [];
       this.cdr.markForCheck();
     });
   }
@@ -194,10 +203,10 @@ export class StudentsPage {
     this.courseInfo = course;
     let studentData = {
       date: this.dataProvider.getFormatedDate(this.dateSelected),
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       session_id: this.userDetails.session_id,
       course_id: course.cid,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userInfo.school_id
     };
 
     let delayClassLocalAtt = await this.storageSr.get('delayclasslocalatt');
@@ -212,10 +221,10 @@ export class StudentsPage {
 
     this.attendanceApi.getDelayClassStudentList(studentData).then(async res => {
       this.show_loading = false;
-      if (res.success) {
+      if (res.success && res.data) {
         let responseData = res.data;
         this.delayRule = parseInt(String(responseData.delay_rule));
-        this.students = responseData.students;
+        this.students = responseData.students || [];
         this.attMarkBegin = false;
         this.attendanceSheet = {};
 
@@ -232,7 +241,7 @@ export class StudentsPage {
       } else {
         this.show_loading = false;
         this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(res.message);
+        this.dataProvider.errorALertMessage(res.message || '');
         this.router.navigate(['login'], { replaceUrl: true });
       }
       this.cdr.markForCheck();
@@ -307,10 +316,11 @@ export class StudentsPage {
       this.student = student;
 
       let behaviour = this.lang.no_behaviour;
-      if (student.agg_ranking > 0 && student.agg_ranking < 2.6) behaviour = this.lang.warning_behaviour;
-      else if (student.agg_ranking > 2.5 && student.agg_ranking < 3.6) behaviour = this.lang.good_behaviour;
-      else if (student.agg_ranking > 3.5 && student.agg_ranking < 4.6) behaviour = this.lang.very_good_behaviour;
-      else if (student.agg_ranking > 4.5 && student.agg_ranking < 5.1) behaviour = this.lang.excellent_behaviour;
+      const aggRanking = student.agg_ranking || 0;
+      if (aggRanking > 0 && aggRanking < 2.6) behaviour = this.lang.warning_behaviour;
+      else if (aggRanking > 2.5 && aggRanking < 3.6) behaviour = this.lang.good_behaviour;
+      else if (aggRanking > 3.5 && aggRanking < 4.6) behaviour = this.lang.very_good_behaviour;
+      else if (aggRanking > 4.5 && aggRanking < 5.1) behaviour = this.lang.excellent_behaviour;
 
       student.studentBehaviour = behaviour;
 
@@ -390,11 +400,14 @@ export class StudentsPage {
     this.attMarkBegin = true;
     this.attNotMarked = false;
 
-    if (student.sheet['cem-1']) {
-      student.sheet['cem-1'] = false;
+    if (!student.sheet) student.sheet = {};
+    const sheet = student.sheet;
+
+    if (sheet['cem-1']) {
+      sheet['cem-1'] = false;
       this.attendanceSheet['sid-' + student.sid] = '0';
     } else {
-      student.sheet['cem-1'] = true;
+      sheet['cem-1'] = true;
       this.attendanceSheet['sid-' + student.sid] = '1';
     }
   }
@@ -414,14 +427,15 @@ export class StudentsPage {
       let data: AttendanceSubmitPayload = {} as AttendanceSubmitPayload;
       data.sheet = {};
       data.sheet['cem-1'] = {};
-      data.user_no = this.userDetails.details.user_no;
-      data.session_id = this.userDetails.session_id;
+      const cem1Sheet = data.sheet['cem-1'];
+      data.user_no = this.userInfo.user_no!;
+      data.session_id = this.userDetails.session_id!;
       data.cid = this.navData.cid as string | number;
       data.date = this.dataProvider.getFormatedDate(this.dateSelected);
-      data.school_id = this.userDetails.details.school_id;
+      data.school_id = this.userInfo.school_id!;
 
       Object.keys(this.attendanceSheet).map(key => {
-        data.sheet['cem-1'][key] = this.attendanceSheet[key];
+        cem1Sheet[key] = this.attendanceSheet[key];
       });
 
       let submittedByUser = this.userType == UserType.Admin ? 1 : this.userType == UserType.Moderator ? 2 : 0;
@@ -550,7 +564,7 @@ export class StudentsPage {
     }
   }
 
-  async presentPointsActionSheet(event: Event, student: Student) {
+  async presentPointsActionSheet(event: Event | null, student: Student) {
     if (this.platform.width() >= 768 && event) {
       const popover = await this.popoverController.create({
         component: StudentPointsPopoverComponent,
@@ -608,12 +622,12 @@ export class StudentsPage {
   addStudentPoints(point: string | number, student: Student) {
     let body = {
       sid: student.sid,
-      userId: this.userDetails.details.user_no,
+      userId: this.userInfo.user_no,
       points: point
     };
     this.studentEngagement.awardSkillPoints(body).then(res => {
       if (res.success) {
-        this.dataProvider.showToast(res.msg);
+        this.dataProvider.showToast(res.msg || '');
       }
     });
   }
@@ -664,7 +678,7 @@ export class StudentsPage {
           let data = {
             sid: this.studentData.sid,
             note: this.noteMessage,
-            user_id: this.userDetails.details.user_no,
+            user_id: this.userInfo.user_no,
             rating: this.ratingStars,
             new_rating: JSON.stringify(this.ratingStars)
           };
@@ -698,7 +712,7 @@ export class StudentsPage {
           let data = {
             sid: this.studentData.sid,
             note: this.noteMessage,
-            user_id: this.userDetails.details.user_no,
+            user_id: this.userInfo.user_no,
             rating: 0,
             new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
           };
@@ -791,7 +805,7 @@ export class StudentsPage {
     };
     Camera.getPhoto(options).then(imageData => {
       if (imageData) {
-        this.ChangeStudentProfileAvatar(imageData.base64String);
+        this.ChangeStudentProfileAvatar(imageData.base64String || '');
       }
     });
   }
@@ -807,7 +821,7 @@ export class StudentsPage {
     };
     Camera.getPhoto(options).then(imageData => {
       if (imageData) {
-        this.ChangeStudentProfileAvatar(imageData.base64String);
+        this.ChangeStudentProfileAvatar(imageData.base64String || '');
       }
     });
   }
@@ -857,6 +871,7 @@ export class StudentsPage {
         canvas.width = img.width;
         canvas.height = img.height;
         const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas 2D context unavailable');
         ctx.drawImage(img, 0, 0);
         const fullBase64 = canvas.toDataURL('image/png');
         const pureBase64 = fullBase64.split(',')[1];
@@ -924,9 +939,9 @@ export class StudentsPage {
     // 🟢 عدنا للدالة الصحيحة الخاصة بك والتي تعمل بامتياز
     try {
       const result = await this.studentEngagement.uploadAvatar(base64Data, {
-        user_no: this.userDetails.details.user_no,
-        session_id: this.userDetails.session_id,
-        sid: this.student.sid
+        user_no: this.userInfo.user_no!,
+        session_id: this.userDetails.session_id!,
+        sid: this.student.sid!
       });
       this.dataProvider.hideLoading();
 
@@ -950,7 +965,7 @@ export class StudentsPage {
         this.dataProvider.showToast('تم تحديث صورة الطالب بنجاح');
       } else {
         this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(result.message);
+        this.dataProvider.errorALertMessage(result.message || '');
         this.router.navigate(['login'], { replaceUrl: true });
       }
     } catch (error) {
