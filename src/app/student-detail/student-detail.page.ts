@@ -35,7 +35,7 @@ import { UserType } from '../constants/user-type';
 import { NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, DecimalPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Student } from '../model/student.model';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { PlanApiService, UserPlan } from '../service/plan-api/plan-api.service';
 import { StudentNote, StudentNotesResponse } from '../service/notes-api/notes-api.service';
 import { StudentProfileDashboard, StudentInventory, SkillData } from '../service/gamification-api/gamification-api.service';
@@ -120,18 +120,18 @@ export class StudentDetailPage {
 
   showAbsenceNoteModal: boolean = false;
   absenceNoteText: string = '';
-  currentAbsenceDate: string = null;
-  currentAbsenceNotesArray: StudentNote[] = null;
+  currentAbsenceDate: string | null = null;
+  currentAbsenceNotesArray: AbsenceNote[] | null = null;
 
   showDeleteConfirmModal: boolean = false;
-  deletePayload: DeletePayload = null;
+  deletePayload: DeletePayload | null = null;
 
   showImageViewer: boolean = false;
   viewImageUrl: string = '';
 
   isLoadingSkills: boolean = false;
   studentTotalPoints: number = 0;
-  studentSkillData: SkillData = null;
+  studentSkillData: SkillData | null = null;
   studentTitle: string = '';
   skillMaxTarget: number = 100;
 
@@ -144,6 +144,15 @@ export class StudentDetailPage {
   showWarningPopup: boolean = false;
   warningMessage: string = '';
   warningType: 'frozen' | 'warning' = 'warning';
+
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // checkProfile()'s `if (userData)` guard has already populated it — the
+  // non-null assertion documents that invariant once instead of at every
+  // access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -230,7 +239,7 @@ export class StudentDetailPage {
 
     let body = {
       sid: String(this.studentDetails.sid),
-      userId: String(this.userDetails.details.user_no),
+      userId: String(this.userInfo.user_no),
       points: formattedPoint,
       skill_type: skillType
     };
@@ -292,9 +301,9 @@ export class StudentDetailPage {
         this.isLoadingSkills = false;
         if (res && res.success) {
           this.studentTotalPoints = res.total_points || 0;
-          this.studentSkillData = res.skills;
+          this.studentSkillData = res.skills || null;
           this.studentTitle = this.gamification.getFinalStudentTitle(
-            this.activeCraftedTitle,
+            this.activeCraftedTitle || '',
             res.skills,
             this.studentTotalPoints
           );
@@ -355,7 +364,7 @@ export class StudentDetailPage {
 
   getStudentPoints() {
     this.gamificationApi.getPointsValue().then(res => {
-      this.student_points = res.points;
+      this.student_points = res.points || [];
       this.cdr.markForCheck();
     });
   }
@@ -380,7 +389,7 @@ export class StudentDetailPage {
               if (this.userType == UserType.Teacher) {
                 this.category = 'notes';
               }
-              if (this.studentDetails.absents.length == 0) {
+              if ((this.studentDetails.absents || []).length == 0) {
                 this.noAbsenceFound = this.lang.no_absent;
               }
               this.cdr.markForCheck();
@@ -431,10 +440,10 @@ export class StudentDetailPage {
           this.studentBehaviour.icon = 'chatbubbles';
           this.studentBehaviour.text = this.lang.no_behaviour;
         }
-        if (response.notes.length > 0) {
-          this.notes.notes.forEach((note: StudentNote) => {
-            if (note.user_id == this.userDetails.details.user_no && this.userDetails.details.pic) {
-              note.teacher_pic = this.userDetails.details.pic;
+        if ((response.notes || []).length > 0) {
+          (this.notes.notes || []).forEach((note: StudentNote) => {
+            if (note.user_id == this.userInfo.user_no && this.userInfo.pic) {
+              note.teacher_pic = this.userInfo.pic;
             }
             let picToUse = note.teacher_pic ? note.teacher_pic : note.pic;
             if (!picToUse || picToUse === '' || picToUse === 'null' || picToUse.includes('default_avatar')) {
@@ -445,10 +454,10 @@ export class StudentDetailPage {
             note.display_pic = picToUse;
 
             if (
-              (this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) ||
-              this.userDetails.details.user_type != UserType.Teacher
+              (this.checkNoteDate(new Date(note.date || '')) && note.user_id == this.userInfo.user_no) ||
+              this.userInfo.user_type != UserType.Teacher
             ) {
-              if (this.userDetails.details.user_type === UserType.Teacher) {
+              if (this.userInfo.user_type === UserType.Teacher) {
                 this.canAddStudentNote = false;
               }
             }
@@ -460,10 +469,11 @@ export class StudentDetailPage {
             }
           });
           let realNo = 0;
-          if (this.notes.agg_ranking % 1 == 0) {
-            realNo = parseInt(String(this.notes.agg_ranking));
+          const aggRanking = this.notes.agg_ranking || 0;
+          if (aggRanking % 1 == 0) {
+            realNo = parseInt(String(aggRanking));
           } else {
-            realNo = Math.floor(this.notes.agg_ranking);
+            realNo = Math.floor(aggRanking);
             this.halfStarPosition = realNo;
             this.halfStar = true;
           }
@@ -487,10 +497,10 @@ export class StudentDetailPage {
         const userData = await this.storageSr.get('userloggedin');
         if (userData) {
           this.userDetails = userData;
-          this.userType = this.userDetails.details.user_type;
+          this.userType = this.userInfo.user_type || '';
 
           let data = {
-            user_no: this.userDetails.details.user_no,
+            user_no: this.userInfo.user_no,
             session_id: this.userDetails.session_id,
             cid: this.navData?.course_id || '',
             date: this.navData?.dateSelected || this.dataProvider.getFormatedDate(new Date()),
@@ -514,7 +524,7 @@ export class StudentDetailPage {
 
             let dashboardData = {
               sid: String(data.sid),
-              userId: String(this.userDetails.details.user_no)
+              userId: String(this.userInfo.user_no)
             };
 
             const dashRes: StudentProfileDashboard | false = await this.gamificationApi.getStudentProfileDashboard(dashboardData);
@@ -523,13 +533,13 @@ export class StudentDetailPage {
               let rawTitle = dashRes.inventory?.active_title;
               if (rawTitle && rawTitle !== 'null' && rawTitle !== '') {
                 this.activeCraftedTitle =
-                  typeof rawTitle === 'object' ? rawTitle.code || rawTitle.title_name : rawTitle;
+                  (typeof rawTitle === 'object' ? rawTitle.code || rawTitle.title_name : rawTitle) || null;
               } else {
                 this.activeCraftedTitle = null;
               }
 
               if (this.studentDetails) {
-                this.studentDetails.active_crafted_title = this.activeCraftedTitle;
+                this.studentDetails.active_crafted_title = this.activeCraftedTitle || undefined;
               }
 
               this.studentTotalPoints = dashRes.skill_tree?.skill_tree_total || 0;
@@ -557,7 +567,7 @@ export class StudentDetailPage {
   getNotes(): Promise<void> {
     return new Promise(resolve => {
       let data = {
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         session_id: this.userDetails.session_id,
         cid: this.navData.course_id,
         date: this.navData.dateSelected,
@@ -571,10 +581,10 @@ export class StudentDetailPage {
           this.aggStars = ['#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee'];
           this.notes = response;
 
-          if (response.notes.length > 0) {
-            this.notes.notes.forEach((note: StudentNote) => {
-              if (note.user_id == this.userDetails.details.user_no && this.userDetails.details.pic) {
-                note.teacher_pic = this.userDetails.details.pic;
+          if ((response.notes || []).length > 0) {
+            (this.notes.notes || []).forEach((note: StudentNote) => {
+              if (note.user_id == this.userInfo.user_no && this.userInfo.pic) {
+                note.teacher_pic = this.userInfo.pic;
               }
 
               let picToUse = note.teacher_pic ? note.teacher_pic : note.pic;
@@ -588,10 +598,10 @@ export class StudentDetailPage {
               note.display_pic = picToUse;
 
               if (
-                (this.checkNoteDate(new Date(note.date)) && note.user_id == this.userDetails.details.user_no) ||
-                this.userDetails.details.user_type != UserType.Teacher
+                (this.checkNoteDate(new Date(note.date || '')) && note.user_id == this.userInfo.user_no) ||
+                this.userInfo.user_type != UserType.Teacher
               ) {
-                if (this.userDetails.details.user_type === UserType.Teacher) {
+                if (this.userInfo.user_type === UserType.Teacher) {
                   this.canAddStudentNote = false;
                 }
               }
@@ -605,10 +615,11 @@ export class StudentDetailPage {
             });
 
             let realNo = 0;
-            if (this.notes.agg_ranking % 1 == 0) {
-              realNo = parseInt(String(this.notes.agg_ranking));
+            const aggRanking = this.notes.agg_ranking || 0;
+            if (aggRanking % 1 == 0) {
+              realNo = parseInt(String(aggRanking));
             } else {
-              realNo = Math.floor(this.notes.agg_ranking);
+              realNo = Math.floor(aggRanking);
               this.halfStarPosition = realNo;
               this.halfStar = true;
             }
@@ -634,7 +645,7 @@ export class StudentDetailPage {
 
   async addAbsentNote(notes: AbsenceNote[], date: string) {
     let note = notes.filter((note: AbsenceNote) => {
-      return note.created_by == this.userDetails.details.user_no;
+      return note.created_by == this.userInfo.user_no;
     });
 
     if (note.length == 0) {
@@ -655,7 +666,7 @@ export class StudentDetailPage {
   submitAbsenceNote() {
     if (this.absenceNoteText && this.absenceNoteText.trim() != '') {
       let dataToSave = { note: this.absenceNoteText };
-      this.saveNote(dataToSave, this.currentAbsenceNotesArray, this.currentAbsenceDate);
+      this.saveNote(dataToSave, this.currentAbsenceNotesArray!, this.currentAbsenceDate!);
       this.hideAbsenceNoteModal();
     } else {
       this.dataProvider.showToast(this.lang.empty_note);
@@ -668,7 +679,7 @@ export class StudentDetailPage {
       cid: this.navData.course_id,
       date: date,
       note: noteData.note,
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       session_id: this.userDetails.session_id
     };
 
@@ -679,12 +690,12 @@ export class StudentDetailPage {
           notes.push({
             note: noteData.note,
             ID: response.note_id,
-            created_by: this.userDetails.details.user_no
+            created_by: this.userInfo.user_no
           });
-          this.dataProvider.showToast(response.message);
+          this.dataProvider.showToast(response.message || '');
         } else {
           this.authProvider.flushLocalStorage();
-          this.dataProvider.errorALertMessage(response.message);
+          this.dataProvider.errorALertMessage(response.message || '');
         }
         this.cdr.markForCheck();
       })
@@ -710,15 +721,16 @@ export class StudentDetailPage {
 
   confirmDelete() {
     if (!this.deletePayload) return;
+    const payload = this.deletePayload;
 
     let data = {
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       session_id: this.userDetails.session_id
     };
 
-    if (this.deletePayload.type === 'note') {
+    if (payload.type === 'note') {
       this.dataProvider
-        .run(() => this.notesApi.deleteStudentNote(data, this.deletePayload.id))
+        .run(() => this.notesApi.deleteStudentNote(data, payload.id))
         .then(response => {
           this.canAddStudentNote = true;
           this.getNotes();
@@ -730,16 +742,16 @@ export class StudentDetailPage {
           this.hideDeleteConfirmModal();
           this.cdr.markForCheck();
         });
-    } else if (this.deletePayload.type === 'absence') {
+    } else if (payload.type === 'absence') {
       this.dataProvider
-        .run(() => this.notesApi.deleteAbsenceNote(data, this.deletePayload.id))
+        .run(() => this.notesApi.deleteAbsenceNote(data, payload.id))
         .then(response => {
           if (response.session) {
-            this.deletePayload.notesArray.splice(this.deletePayload.index, 1);
-            this.dataProvider.showToast(response.message);
+            (payload.notesArray || []).splice(payload.index, 1);
+            this.dataProvider.showToast(response.message || '');
           } else {
             this.authProvider.flushLocalStorage();
-            this.dataProvider.errorALertMessage(response.message);
+            this.dataProvider.errorALertMessage(response.message || '');
           }
           this.hideDeleteConfirmModal();
           this.cdr.markForCheck();
@@ -759,7 +771,7 @@ export class StudentDetailPage {
           let data = {
             sid: this.navData.student_id,
             note: this.noteMessage,
-            user_id: this.userDetails.details.user_no,
+            user_id: this.userInfo.user_no,
             rating: this.ratingStars,
             new_rating: JSON.stringify(this.ratingStars)
           };
@@ -829,9 +841,9 @@ export class StudentDetailPage {
           let data = {
             sid: this.navData.student_id,
             note: this.noteMessage,
-            user_id: this.userDetails.details.user_no,
+            user_id: this.userInfo.user_no,
             rating: 0,
-            user_type: this.userDetails.details.user_type,
+            user_type: this.userInfo.user_type,
             new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
           };
           this.dataProvider
@@ -928,13 +940,13 @@ export class StudentDetailPage {
       rating: data.data,
       new_rating: data.data,
       note: data.noteMessage,
-      updated_by: this.userDetails.details.user_no
+      updated_by: this.userInfo.user_no
     };
     this.notesApi
       .editAbsentNotes(updates)
       .then(res => {
-        if (res) {
-          this.dataProvider.showToast(res.data.msg);
+        if (res && res.data) {
+          this.dataProvider.showToast(res.data.msg || '');
           this.getNotes();
         }
       })
@@ -1056,8 +1068,8 @@ export class StudentDetailPage {
     try {
       const result = await this.dataProvider.run(() =>
         this.studentEngagement.uploadAvatar(base64Data, {
-          user_no: this.userDetails.details.user_no,
-          session_id: this.userDetails.session_id,
+          user_no: this.userInfo.user_no!,
+          session_id: this.userDetails.session_id!,
           sid: this.navData.student_id as string | number
         })
       );
@@ -1067,7 +1079,7 @@ export class StudentDetailPage {
         this.dataProvider.showToast('تم تحديث الصورة بنجاح');
       } else {
         this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(result.message);
+        this.dataProvider.errorALertMessage(result.message || '');
       }
       this.cdr.markForCheck();
     } catch (error: unknown) {
@@ -1192,11 +1204,11 @@ export class StudentDetailPage {
 
   openPdf() {
     let data = {
-      school_id: this.userDetails.details.school_id,
+      school_id: this.userInfo.school_id,
       sid: this.navData.student_id
     };
     let planData = {
-      user_no: this.userDetails.details.user_no
+      user_no: this.userInfo.user_no
     };
     this.dataProvider.showLoading();
     this.planApi
@@ -1313,7 +1325,7 @@ export class StudentDetailPage {
 
   printReport(type: string) {
     let planData = {
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       report_type: type
     };
 
@@ -1323,7 +1335,7 @@ export class StudentDetailPage {
       .checkUserPlan(planData)
       .then(res => {
         let studentData = {
-          school_id: this.userDetails.details.school_id,
+          school_id: this.userInfo.school_id,
           sid: this.navData.student_id,
           report_type: type
         };
@@ -1433,9 +1445,9 @@ export class StudentDetailPage {
 
     const alert = await this.alertCtrl.create({
       header:
-        this.userDetails.details.is_school_admin == 1 ? this.planLang.not_valid : this.planLang.not_valid_for_others,
+        this.userInfo.is_school_admin == 1 ? this.planLang.not_valid : this.planLang.not_valid_for_others,
       mode: 'ios',
-      buttons: this.userDetails.details.is_school_admin == 1 ? buttonsAdmin : button
+      buttons: this.userInfo.is_school_admin == 1 ? buttonsAdmin : button
     });
 
     await alert.present();
@@ -1509,7 +1521,7 @@ export class StudentDetailPage {
 
   sendPushMessageToStudentParent(msg: string) {
     let studentData = {
-      student_id: this.userDetails.details.school_id,
+      student_id: this.userInfo.school_id,
       message: msg,
       title: 'Absent'
     };
@@ -1526,13 +1538,13 @@ export class StudentDetailPage {
 
   getStudentCallOfReports() {
     let data = {
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       student_id: this.navData.student_id,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userInfo.school_id
     };
     this.reportsApi.GetAllCallOfStudentReport(data).then(
       res => {
-        this.callOfStudentsReport = res.data;
+        this.callOfStudentsReport = res.data || [];
         this.cdr.markForCheck();
       },
       error => {
@@ -1545,13 +1557,13 @@ export class StudentDetailPage {
 
   GetStudentPledgesReport() {
     let data = {
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       student_id: this.navData.student_id,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userInfo.school_id
     };
     this.reportsApi.GetStudentPledgesReport(data).then(
       res => {
-        this.AllStudentPledgesReports = res.data;
+        this.AllStudentPledgesReports = res.data || [];
         this.cdr.markForCheck();
       },
       error => {
@@ -1564,18 +1576,18 @@ export class StudentDetailPage {
   printReports(type: string) {
     if (type == 'pledges') {
       let data = {
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         course_id: this.navData.course_id,
         student_id: this.navData.student_id,
-        school_id: this.userDetails.details.school_id
+        school_id: this.userInfo.school_id
       };
       this.dataProvider
         .run(() => this.reportsApi.generateStudentPledgesReportPDF(data))
         .then(
           res => {
-            let data = res.data;
+            let data = String(res.data ?? '');
             let options: PrintOptions = { orientation: 'portrait' };
-            this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then(
+            this.printer.print(data.replace(/(\r\n|\n|\r)/gm, '')).then(
               () => {},
               (e) => {
                 this.dataProvider.showToast(this.lang.report_error);
@@ -1589,18 +1601,18 @@ export class StudentDetailPage {
     }
     if (type == 'callOfParent') {
       let data = {
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         course_id: this.navData.course_id,
         student_id: this.navData.student_id,
-        school_id: this.userDetails.details.school_id
+        school_id: this.userInfo.school_id
       };
       this.dataProvider
         .run(() => this.reportsApi.generateCallOfStudentPDF(data))
         .then(
           res => {
-            let data = res.data;
+            let data = String(res.data ?? '');
             let options: PrintOptions = { orientation: 'portrait' };
-            this.printer.print(data.toString().replace(/(\r\n|\n|\r)/gm, '')).then(
+            this.printer.print(data.replace(/(\r\n|\n|\r)/gm, '')).then(
               () => {},
               (e) => {
                 this.dataProvider.showToast(this.lang.report_error);
@@ -1615,7 +1627,7 @@ export class StudentDetailPage {
   }
 
   showInventoryModal: boolean = false;
-  activeCraftedTitle: string = null;
+  activeCraftedTitle: string | null = null;
 
   @ViewChild(StudentInventoryModalComponent) inventoryModal: StudentInventoryModalComponent;
 
@@ -1635,7 +1647,7 @@ export class StudentDetailPage {
   onInventoryActiveTitleChange(title: string | null) {
     this.activeCraftedTitle = title;
     if (this.studentDetails) {
-      this.studentDetails.active_crafted_title = title;
+      this.studentDetails.active_crafted_title = title || undefined;
     }
   }
 
@@ -1654,10 +1666,10 @@ export class StudentDetailPage {
     if (this.category === 'absence' && !this.isAbsenceLoaded) {
       let followUpData = {
         date: this.navData.dateSelected || new Date().toISOString().split('T')[0],
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         session_id: this.userDetails.session_id,
         course_id: this.navData.course_id,
-        school_id: this.userDetails.details.school_id
+        school_id: this.userInfo.school_id
       };
 
       try {
@@ -1740,7 +1752,7 @@ export class StudentDetailPage {
 
     const totalPoints = Number(this.studentDetails.student_points || 0);
 
-    return this.gamification.getFinalStudentTitle(activeTitle, skillsData, totalPoints);
+    return this.gamification.getFinalStudentTitle(activeTitle || '', skillsData, totalPoints);
   }
 
   getStudentTitle(student: Student): string {
@@ -1762,7 +1774,7 @@ export class StudentDetailPage {
     };
     const totalPoints = Number(student.student_points || this.studentTotalPoints || 0);
 
-    return this.gamification.getFinalStudentTitle(activeCode, skillsData, totalPoints);
+    return this.gamification.getFinalStudentTitle(activeCode || '', skillsData, totalPoints);
   }
 
   // 🟢 دالة للتعامل مع زر العودة بناءً على نوع المستخدم
