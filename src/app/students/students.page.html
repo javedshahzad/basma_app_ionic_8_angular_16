@@ -54,10 +54,10 @@
   <button (click)="toggleEditMode()" class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm">إلغاء التعديل</button>
 </div>
 
-<ion-content class="bg-[#f8fafc]" mode="md" [scrollY]="!(students?.length > 0)">
+<ion-content class="bg-[#f8fafc]" mode="md" [scrollY]="!((students?.length || 0) > 0)">
   <div class="h-full flex flex-col max-w-4xl mx-auto" dir="rtl">
 
-    <ng-container *ngIf="students?.length > 0">
+    <ng-container *ngIf="(students?.length || 0) > 0">
       <!-- 🟢 Virtual scroll: يعرض فقط الصفوف الظاهرة على الشاشة بدل رسم القائمة كاملة دفعة واحدة،
            مهم لمدارس ذات أعداد طلاب كبيرة. itemSize يطابق ارتفاع الصف الفعلي (p-3 + الصورة 48px + الهامش). -->
       <cdk-virtual-scroll-viewport itemSize="88" style="height: 100%;" class="px-4 pt-4 pb-6">
@@ -143,7 +143,7 @@
 
 <!-- 🟢 الفوتر الذكي المطابق لتصميم صفحة تسجيل غياب الحصص -->
 <ng-container *appHasRole="[UserType.Admin, UserType.Moderator]">
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="!isHoliday && students?.length > 0">
+<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="!isHoliday && (students?.length || 0) > 0">
   <div class="p-5 max-w-6xl mx-auto transition-all duration-300">
     
     <!-- زر تفعيل التعديل (يظهر لمشرف النظام فقط إذا لم يكن النمط مفعلاً) -->

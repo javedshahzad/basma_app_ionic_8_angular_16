@@ -16,9 +16,9 @@
           <span class="text-xs font-bold text-slate-700 mt-0.5" dir="ltr">{{dateSelected | date: 'dd/MM'}}</span>
         </div>
 
-        <div class="w-px h-5 bg-slate-300 mx-1 rounded-full" *ngIf="isTeacherUser && totalSemArray?.length > 0"></div>
+        <div class="w-px h-5 bg-slate-300 mx-1 rounded-full" *ngIf="isTeacherUser && (totalSemArray?.length || 0) > 0"></div>
 
-        <div *ngIf="isTeacherUser && totalSemArray?.length > 0" 
+        <div *ngIf="isTeacherUser && (totalSemArray?.length || 0) > 0" 
              class="flex-1 relative flex items-center justify-center gap-1 py-1.5 px-2 rounded-full transition-all hover:bg-white hover:shadow-sm cursor-pointer">
           
           <span class="text-xs font-bold text-indigo-700 mt-0.5 pointer-events-none w-full text-center truncate">
@@ -80,7 +80,7 @@
   <button (click)="toggleEditMode()" class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm">إلغاء التعديل</button>
 </div>
 
-<ion-content class="bg-slate-50" mode="md" [scrollY]="!(students?.length > 0)">
+<ion-content class="bg-slate-50" mode="md" [scrollY]="!((students?.length || 0) > 0)">
 
   <div *ngIf="show_loading" class="p-4 space-y-4">
     <div *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex" class="h-20 bg-slate-200 rounded-2xl animate-pulse"></div>
@@ -92,7 +92,7 @@
       <p>{{ noDataFound }}</p>
     </div>
 
-    <ng-container *ngIf="students?.length > 0">
+    <ng-container *ngIf="(students?.length || 0) > 0">
 
       <app-supervisor-view
         class="flex-1 min-h-0"

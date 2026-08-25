@@ -95,7 +95,7 @@
       <div *ngIf="category === 'list'" class="fade-in">
         <ion-grid class="ion-no-padding">
           
-          <ng-container *ngIf="classes?.length > 0; else noClasses">
+          <ng-container *ngIf="(classes?.length || 0) > 0; else noClasses">
             <ion-reorder-group [disabled]="canReorder" (ionItemReorder)="doReorder($event)" class="w-full flex flex-wrap">
               <ion-col size="12" size-md="6" size-lg="4" *ngFor="let course of classes; let i = index; trackBy: trackByCourse">
                 
@@ -137,7 +137,7 @@
 
       <div *ngIf="category === 'dashboard'" class="fade-in">
         <ion-grid class="ion-no-padding">
-          <ion-row *ngIf="dashBoard?.length > 0; else noDash">
+          <ion-row *ngIf="(dashBoard?.length || 0) > 0; else noDash">
             
             <ion-col size="12" size-md="6" size-lg="4" *ngFor="let seminar of dashBoard; let i = index; trackBy: trackByIndex">
               <ion-card class="lineone-card dashboard-card" (click)="openSeminar(i+1)">

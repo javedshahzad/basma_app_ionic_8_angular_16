@@ -34,7 +34,7 @@
 <ion-content class="bg-[#f8fafc]" mode="md">
   <div class="p-4 max-w-2xl mx-auto space-y-4 pb-8" dir="rtl">
     
-    <div *ngIf="chats?.length > 0" class="space-y-4">
+    <div *ngIf="(chats?.length || 0) > 0" class="space-y-4">
       <div class="bg-white rounded-3xl p-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 transition-all hover:shadow-md cursor-pointer relative overflow-hidden" 
            *ngFor="let chatuser of chats; trackBy: trackByIndex" 
            (click)="openChat(chatuser)">

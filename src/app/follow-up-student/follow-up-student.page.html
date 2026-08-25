@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2" *ngIf="!isLoading && classes?.length > 0">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2" *ngIf="!isLoading && (classes?.length || 0) > 0">
       
       <div *ngFor="let course of classes; trackBy: trackByIndex"
            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center gap-4 cursor-pointer hover:shadow-md hover:border-indigo-200 transition-all active:scale-[0.98] group"

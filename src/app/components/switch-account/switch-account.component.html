@@ -1,6 +1,6 @@
 ﻿<div class="bg-white w-full max-w-md mx-auto rounded-3xl p-4 sm:p-6" dir="rtl">
   
-  <div class="space-y-2.5 max-h-[60vh] overflow-y-auto custom-scrollbar pb-2" *ngIf="loggedinUser?.length > 0">
+  <div class="space-y-2.5 max-h-[60vh] overflow-y-auto custom-scrollbar pb-2" *ngIf="(loggedinUser?.length || 0) > 0">
     
     <div *ngFor="let oldUser of loggedinUser; let i=index; trackBy: trackByIndex" 
          (click)="loginOldUser(oldUser)"

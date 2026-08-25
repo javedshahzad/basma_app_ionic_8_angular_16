@@ -375,7 +375,7 @@
             <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5" *ngFor="let rating of ['five', 'four', 'three', 'two', 'one']; let idx = index; trackBy: trackByIndex">
               <span class="w-2 text-center">{{5 - idx}}</span>
               <div class="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                <div class="h-full bg-amber-400 rounded-full" [style.width]="(notes.total_rating[rating + '_stars'] || 0) + '%'"></div>
+                <div class="h-full bg-amber-400 rounded-full" [style.width]="(notes.total_rating?.[rating + '_stars'] || 0) + '%'"></div>
               </div>
             </div>
           </div>
@@ -487,7 +487,7 @@
     </div>
     
     <div class="flex justify-between items-center mb-6">
-      <p class="text-xs text-slate-400 font-bold m-0" [ngClass]="{'text-rose-500': noteMessage?.length > 45}">{{noteMessage?.length || 0}} / 45</p>
+      <p class="text-xs text-slate-400 font-bold m-0" [ngClass]="{'text-rose-500': (noteMessage?.length || 0) > 45}">{{noteMessage?.length || 0}} / 45</p>
     </div>
     
     <div class="flex gap-3">

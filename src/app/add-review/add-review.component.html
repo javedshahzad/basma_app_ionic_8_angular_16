@@ -225,13 +225,13 @@
         <ion-icon name="document-text" class="text-indigo-500 text-lg p-1.5 bg-indigo-50 rounded-lg"></ion-icon>
         ملاحظات إضافية <span class="text-rose-500">*</span>
       </h4>
-      <span class="text-[10px] font-bold" [ngClass]="noteMessage?.length > 45 ? 'text-rose-500' : 'text-slate-400'">
+      <span class="text-[10px] font-bold" [ngClass]="(noteMessage?.length || 0) > 45 ? 'text-rose-500' : 'text-slate-400'">
         {{noteMessage?.length || 0}}/45
       </span>
     </div>
     
     <div class="bg-slate-50 rounded-xl border focus-within:ring-2 transition-all p-1" 
-         [ngClass]="noteMessage?.length > 45 ? 'border-rose-300 focus-within:border-rose-400 focus-within:ring-rose-100' : 'border-slate-200 focus-within:border-indigo-400 focus-within:ring-indigo-100'" dir="rtl">
+         [ngClass]="(noteMessage?.length || 0) > 45 ? 'border-rose-300 focus-within:border-rose-400 focus-within:ring-rose-100' : 'border-slate-200 focus-within:border-indigo-400 focus-within:ring-indigo-100'" dir="rtl">
       <ion-textarea rows="6" [(ngModel)]="noteMessage" 
                     placeholder="{{'student-details.type_here' | translate}}"
                     class="text-sm text-slate-700 bg-transparent px-2 font-medium">
@@ -241,7 +241,7 @@
 
   <button (click)="onClickSend()" 
           class="w-full text-white font-bold text-base py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 flex justify-center items-center gap-2 mb-4"
-          [ngClass]="(!noteMessage || noteMessage?.trim() === '' || noteMessage?.length > 45) ? 'bg-slate-300 shadow-none pointer-events-none' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'">
+          [ngClass]="(!noteMessage || noteMessage?.trim() === '' || (noteMessage?.length || 0) > 45) ? 'bg-slate-300 shadow-none pointer-events-none' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'">
     <ion-icon name="save-outline" class="text-xl"></ion-icon>
     {{'contact.submit' | translate}}
   </button>

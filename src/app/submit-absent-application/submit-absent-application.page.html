@@ -29,7 +29,7 @@
       </div>
 
       <!-- اختيار الحصص -->
-      <div class="space-y-1.5" *ngIf="seminarsList?.length > 0">
+      <div class="space-y-1.5" *ngIf="(seminarsList?.length || 0) > 0">
         <label class="block text-[11px] font-black text-slate-500 uppercase px-1">{{'absent_students.Sems' | translate}}</label>
         <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 flex items-center focus-within:ring-2 focus-within:ring-indigo-100 transition-all animate-fade-in">
           <ion-icon name="time-outline" class="text-slate-400 text-lg ml-2"></ion-icon>
