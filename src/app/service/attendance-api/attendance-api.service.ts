@@ -70,16 +70,18 @@ export class AttendanceApiService {
 
           let index = 0;
           if (data.removal_sheet) {
-            Object.keys(data.removal_sheet).map((key) => {
-              body = body.append('removal_sheet[' + index + '][sid]', data.removal_sheet[key].sid);
-              body = body.append('removal_sheet[' + index + '][sem]', data.removal_sheet[key].sem);
+            const removalSheet = data.removal_sheet;
+            Object.keys(removalSheet).map((key) => {
+              body = body.append('removal_sheet[' + index + '][sid]', removalSheet[key].sid);
+              body = body.append('removal_sheet[' + index + '][sem]', removalSheet[key].sem);
               index++;
             })
           }
           if (data.sheet) {
-            Object.keys(data.sheet).map((key) => {
-              Object.keys(data.sheet[key]).map((sid) => {
-                body = body.append('sheet[' + key + '][' + sid + ']', data.sheet[key][sid]);
+            const sheet = data.sheet;
+            Object.keys(sheet).map((key) => {
+              Object.keys(sheet[key]).map((sid) => {
+                body = body.append('sheet[' + key + '][' + sid + ']', sheet[key][sid]);
               })
             })
           }
@@ -152,9 +154,10 @@ export class AttendanceApiService {
           body= body.append("session_id", data.session_id);
           body= body.append("user_no", data.user_no);
           body= body.append("lang_code", data.lang_code);
-          Object.keys(data.sheet).map((key) => {
-            Object.keys(data.sheet[key]).map((sid) => {
-              body=body.append('sheet[' + key + '][' + sid + ']', data.sheet[key][sid]);
+          const sheet = data.sheet || {};
+          Object.keys(sheet).map((key) => {
+            Object.keys(sheet[key]).map((sid) => {
+              body=body.append('sheet[' + key + '][' + sid + ']', sheet[key][sid]);
             })
           })
           this.http.post<{ success?: boolean; msg?: string }>(environment.serverURL + 'ManroxTesting2/' + data.school_id + '/' + submittedByUser, body, { headers: header }).subscribe((response) => {
@@ -189,9 +192,10 @@ export class AttendanceApiService {
           body= body.append("session_id", data.session_id);
           body= body.append("user_no", data.user_no);
           body= body.append("lang_code", data.lang_code);
-          Object.keys(data.sheet).map((key) => {
-            Object.keys(data.sheet[key]).map((sid) => {
-              body= body.append('sheet[' + key + '][' + sid + ']', data.sheet[key][sid]);
+          const sheet = data.sheet || {};
+          Object.keys(sheet).map((key) => {
+            Object.keys(sheet[key]).map((sid) => {
+              body= body.append('sheet[' + key + '][' + sid + ']', sheet[key][sid]);
             })
           })
           this.http.post<{ success?: boolean }>(environment.serverURL + 'saveOfflineDelayAttendance/' + data.school_id + '/' + submittedByUser, body, { headers: header }).subscribe((response) => {
@@ -225,7 +229,7 @@ export class AttendanceApiService {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
             } else if (response.success) {
-              this.dbProvider.insertStudentList(response.students, 5);
+              this.dbProvider.insertStudentList(response.students || [], 5);
               resolve({ session: true, data: response });
             } else {
               reject(response.msg);
@@ -269,9 +273,9 @@ export class AttendanceApiService {
           const response = res as AttendanceResponse;
           if (response) {
             if (!response.session) {
-              resolve({ session: response.session, message: response.msg, success: response.success, data: response });
+              resolve({ session: !!response.session, message: response.msg, success: response.success, data: response });
             } else if (response.success) {
-              this.dbProvider.insertStudentList(response.students, response.delay_rule);
+              this.dbProvider.insertStudentList(response.students || [], response.delay_rule);
               resolve({ session: response.session, data: response, success: response.success });
             } else {
               reject(response.msg);
