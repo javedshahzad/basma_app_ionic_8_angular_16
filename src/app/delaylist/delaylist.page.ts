@@ -154,7 +154,7 @@ export class DelaylistPage implements OnInit {
           } else {
             this.authProvider.flushLocalStorage();
             this.router.navigate(['login'], { replaceUrl: true });
-            this.dataProvider.errorALertMessage(response.message);
+            this.dataProvider.errorALertMessage(response.message || '');
           }
           this.cdr.markForCheck();
         })

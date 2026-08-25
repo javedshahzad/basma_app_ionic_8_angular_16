@@ -22,7 +22,7 @@ export class AuthService {
   // 🔒 نسخة في الذاكرة فقط (لا تُخزَّن على القرص) لتمكين MyInterceptor من
   // قراءة بيانات الجلسة بشكل متزامن دون اللجوء لتخزينها كنص صريح في localStorage
   public currentUser: any = null;
-  public currentUuid: string = null;
+  public currentUuid: string | null = null;
 
   constructor(
     public http: HttpClient,

@@ -93,9 +93,9 @@ export class ElearningSchoolsPage {
     this.cdr.markForCheck();
   }
 
-  getSchool(location: string) {
+  getSchool(location: string | null) {
     this.schoolDirectoryApi
-      .getSchool(location)
+      .getSchool(location || '')
       .then(schoolList => {
         this.show_loading = false;
         this.schools = schoolList || [];

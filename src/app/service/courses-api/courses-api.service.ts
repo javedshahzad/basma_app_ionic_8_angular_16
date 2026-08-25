@@ -64,7 +64,7 @@ export class CoursesApiService {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
             } else if (response.success) {
-              this.dbProvider.insertClasses(response.courses);
+              this.dbProvider.insertClasses(response.courses || []);
               resolve({ session: true, data: response.courses, linkData: response.activeLink });
             } else {
               reject(response.msg);
@@ -207,8 +207,8 @@ export class CoursesApiService {
           body = body.append('session_id', data.session_id);
           body = body.append('user_no', data.user_no);
           body = body.append('lang_code', data.lang_code);
-          body = body.append('course[name]', data.course.name);
-          body = body.append('course[desc]', data.course.desc);
+          body = body.append('course[name]', data.course.name || '');
+          body = body.append('course[desc]', data.course.desc || '');
           this.http.post<{ session?: boolean; success?: boolean; msg?: string; courses?: Course[] }>(environment.serverURL + '/manageCourse', body, { headers }).subscribe(
             (response) => {
               if (!response.session) {

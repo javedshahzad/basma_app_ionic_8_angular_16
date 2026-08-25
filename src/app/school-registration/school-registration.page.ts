@@ -153,7 +153,7 @@ export class SchoolRegistrationPage implements OnInit {
     };
     const image = await Camera.getPhoto(options);
     if (image) {
-      this.handleImageData(image.base64String, type);
+      this.handleImageData(image.base64String || '', type);
     }
   }
 
@@ -165,7 +165,7 @@ export class SchoolRegistrationPage implements OnInit {
     };
     const image = await Camera.getPhoto(options);
     if (image) {
-      this.handleImageData(image.base64String, type);
+      this.handleImageData(image.base64String || '', type);
     }
   }
 

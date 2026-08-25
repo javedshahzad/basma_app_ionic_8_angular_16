@@ -338,7 +338,7 @@
               <span class="block font-black text-orange-500 text-lg leading-tight">{{sdays.amount_days}}</span>
             </div>
           </div>
-          <button (click)="openDeleteConfirm(sdays.id,'suspend')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
+          <button (click)="openDeleteConfirm(sdays.id || '','suspend')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
             <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
           </button>
         </div>
@@ -367,7 +367,7 @@
               <span class="block font-black text-emerald-600 text-lg leading-tight">{{mdays.amount_days}}</span>
             </div>
           </div>
-          <button (click)="openDeleteConfirm(mdays.id,'medical')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
+          <button (click)="openDeleteConfirm(mdays.id || '','medical')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
             <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
           </button>
         </div>
@@ -391,7 +391,7 @@
               <span class="text-[10px] font-bold text-slate-400">{{'manage_report.date' | translate}} / {{'manage_report.time' | translate}}</span>
               <div class="font-bold text-[13px] text-slate-800 mt-0.5">{{edays.date}} <span class="text-slate-300 mx-2">|</span> <span class="text-cyan-600">{{edays.time}}</span></div>
             </div>
-            <button (click)="openDeleteConfirm(edays.id,'exit')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
+            <button (click)="openDeleteConfirm(edays.id || '','exit')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
               <ion-icon name="trash-outline"></ion-icon> حذف
             </button>
           </div>
@@ -418,7 +418,7 @@
               <span class="text-[10px] font-bold text-slate-400">{{'manage_report.reason' | translate}}</span>
               <div class="font-bold text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100 leading-relaxed">{{edays.reason}}</div>
             </div>
-            <button (click)="openDeleteConfirm(edays.id,'callofparent')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
+            <button (click)="openDeleteConfirm(edays.id || '','callofparent')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
               <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
             </button>
           </div>
@@ -464,7 +464,7 @@
               </div>
 
             </div>
-            <button (click)="openDeleteConfirm(edays.id,'PledgesReports')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100 mt-1">
+            <button (click)="openDeleteConfirm(edays.id || '','PledgesReports')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100 mt-1">
               <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
             </button>
           </div>

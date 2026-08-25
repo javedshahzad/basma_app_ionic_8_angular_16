@@ -123,7 +123,7 @@ export class AbsentStudentsPage implements OnInit {
     this.attendanceApi
       .getClassStudentList(studentData)
       .then(response => {
-        this.StudentsList = response.data.students;
+        this.StudentsList = response.data?.students || [];
         this.cdr.markForCheck();
       })
       .catch(error => {});

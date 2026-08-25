@@ -32,8 +32,8 @@
             <ion-input type="tel" name="teacherID" #teacherID='ngModel' [(ngModel)]="teacher.teacherId" pattern="[0-9]*$" (keypress)="_keyPress($event)" required class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
           </div>
           <div *ngIf="teacherID.invalid && (teacherID.touched)" class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
-            <span *ngIf="teacherID.errors.required">{{'validations.required' | translate}}</span>
-            <span *ngIf="teacherID.errors.pattern">{{'validations.invalidteacherId' | translate}}</span>
+            <span *ngIf="teacherID.errors?.required">{{'validations.required' | translate}}</span>
+            <span *ngIf="teacherID.errors?.pattern">{{'validations.invalidteacherId' | translate}}</span>
           </div>
         </div>
 
@@ -43,7 +43,7 @@
             <ion-input type="text" name="teacherName" #teacherName='ngModel' [(ngModel)]="teacher.name" required class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
           </div>
           <div *ngIf="teacherName.invalid && (teacherName.touched)" class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
-            <span *ngIf="teacherName.errors.required">{{'validations.required' | translate}}</span>
+            <span *ngIf="teacherName.errors?.required">{{'validations.required' | translate}}</span>
           </div>
         </div>
 
@@ -53,7 +53,7 @@
             <ion-input type="password" name="teacherPassword" #teacherPassword='ngModel' [(ngModel)]="teacher.password" required class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
           </div>
           <div *ngIf="teacherPassword.invalid && (teacherPassword.touched)" class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
-            <span *ngIf="teacherPassword.errors.required">{{'validations.required' | translate}}</span>
+            <span *ngIf="teacherPassword.errors?.required">{{'validations.required' | translate}}</span>
           </div>
         </div>
       </div>

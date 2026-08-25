@@ -349,7 +349,7 @@ export class SendmessagePage {
 
     Camera.getPhoto(options).then(imageData => {
       if (imageData) {
-        this.ticketImage = imageData.base64String;
+        this.ticketImage = imageData.base64String || '';
         this.mediaType = 'image/jpg';
       }
       this.cdr.markForCheck();
@@ -365,7 +365,7 @@ export class SendmessagePage {
 
     Camera.getPhoto(options).then(imageData => {
       if (imageData) {
-        this.ticketImage = imageData.base64String;
+        this.ticketImage = imageData.base64String || '';
         this.mediaType = 'image/jpg';
       }
       this.cdr.markForCheck();

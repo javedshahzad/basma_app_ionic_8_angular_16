@@ -64,7 +64,7 @@ export class ParentConnectApiService {
           if (!response.session) {
             resolve({ session: false, message: response.msg });
           } else if (response.success) {
-            this.dbProvider.insertParentConnectMessages(response.chat_list);
+            this.dbProvider.insertParentConnectMessages(response.chat_list || []);
             resolve({ session: true, chatList: response.chat_list });
           } else {
             reject(response.msg)
@@ -104,8 +104,9 @@ export class ParentConnectApiService {
           body= body.append("school_id", data.school_id);
           body= body.append("lang_code", data.lang_code as string);
           if(data.chat_msg){
-             Object.keys(data.chat_msg).forEach((key) => {
-                 body= body.append('chat_msg[' + key + ']', data.chat_msg[key]);
+             const chatMsg = data.chat_msg;
+             Object.keys(chatMsg).forEach((key) => {
+                 body= body.append('chat_msg[' + key + ']', chatMsg[key]);
               });
           }
           Object.keys(data.message).map((key) => {

@@ -269,7 +269,7 @@ export class FollowBulletinsPage {
   }
 
   scanDocument() {
-    document.getElementById('myFileInput').click();
+    document.getElementById('myFileInput')?.click();
   }
 
   removeImage(i: number) {

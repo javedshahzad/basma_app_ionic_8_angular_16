@@ -56,7 +56,7 @@ describe('FollowupStudentListPage', () => {
     (component as any).attendanceResponse = { students: makeStudents(45) };
     (component as any).resetVisibleStudents();
     expect(component.visibleStudents.length).toBe(20);
-    expect(component.attendanceResponse.students.length).toBe(45);
+    expect(component.attendanceResponse.students!.length).toBe(45);
   });
 
   it('loadMoreStudents() grows the visible page without truncating the source data', done => {
@@ -68,7 +68,7 @@ describe('FollowupStudentListPage', () => {
 
     setTimeout(() => {
       expect(component.visibleStudents.length).toBe(40);
-      expect(component.attendanceResponse.students.length).toBe(45);
+      expect(component.attendanceResponse.students!.length).toBe(45);
       done();
     }, 350);
   });

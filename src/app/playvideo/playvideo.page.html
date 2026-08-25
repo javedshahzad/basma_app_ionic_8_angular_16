@@ -44,7 +44,7 @@
     </div>
 
     <!-- 🟢 قائمة الفيديوهات ذات الصلة -->
-    <div class="px-4" *ngIf="material.related_videos?.length > 0">
+    <div class="px-4" *ngIf="(material.related_videos?.length || 0) > 0">
       <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4 px-1 flex items-center gap-2">
         <ion-icon name="albums-outline" class="text-base"></ion-icon>
         مقاطع ذات صلة
@@ -52,7 +52,7 @@
       
       <div class="space-y-3">
         <div *ngFor="let relatedVideo of material.related_videos; trackBy: trackByIndex" 
-             (click)="playRelatedVideo(relatedVideo.id)"
+             (click)="playRelatedVideo(relatedVideo.id || '')"
              class="bg-white rounded-2xl p-3 border border-slate-100 flex items-start gap-3 shadow-sm hover:shadow-md cursor-pointer transition-all active:scale-[0.98]">
           
           <!-- الغلاف أو الصورة المصغرة (Thumbnail) -->

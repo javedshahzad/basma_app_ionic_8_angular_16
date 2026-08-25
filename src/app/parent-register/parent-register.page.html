@@ -32,7 +32,7 @@
             <ion-input type="text" name="parentName" #parentName='ngModel' [(ngModel)]="parent.name" required class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
           </div>
           <div *ngIf="parentName.invalid && (parentName.touched)" class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
-            <span *ngIf="parentName.errors.required">{{'validations.required' | translate}}</span>
+            <span *ngIf="parentName.errors?.required">{{'validations.required' | translate}}</span>
           </div>
         </div>
 
@@ -42,8 +42,8 @@
             <ion-input type="tel" name="parentID" #parentID='ngModel' [(ngModel)]="parent.parentId" pattern="[0-9]*$" (keypress)="_keyPress($event)" required class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
           </div>
           <div *ngIf="parentID.invalid && (parentID.touched)" class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
-            <span *ngIf="parentID.errors.required">{{'validations.required' | translate}}</span>
-            <span *ngIf="parentID.errors.pattern">{{'validations.invalidparentId' | translate}}</span>
+            <span *ngIf="parentID.errors?.required">{{'validations.required' | translate}}</span>
+            <span *ngIf="parentID.errors?.pattern">{{'validations.invalidparentId' | translate}}</span>
           </div>
         </div>
 
@@ -53,7 +53,7 @@
             <ion-input type="tel" name="studentId" #studentId='ngModel' [(ngModel)]="parent.studentId" required (keypress)="_keyPress($event)" class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
           </div>
           <div *ngIf="studentId.invalid && (studentId.touched)" class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
-            <span *ngIf="studentId.errors.required">{{'validations.required' | translate}}</span>
+            <span *ngIf="studentId.errors?.required">{{'validations.required' | translate}}</span>
           </div>
         </div>
 
@@ -63,7 +63,7 @@
             <ion-input type="password" name="parentPassword" #parentPassword='ngModel' [(ngModel)]="parent.password" required class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
           </div>
           <div *ngIf="parentPassword.invalid && (parentPassword.touched)" class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
-            <span *ngIf="parentPassword.errors.required">{{'validations.required' | translate}}</span>
+            <span *ngIf="parentPassword.errors?.required">{{'validations.required' | translate}}</span>
           </div>
         </div>
       </div>

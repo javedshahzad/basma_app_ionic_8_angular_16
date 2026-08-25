@@ -165,7 +165,7 @@ export class EditTeacherProfilePage {
             this.userManagementApi
               .deleteTeacher(deleteData)
               .then(res => {
-                this.dataProvider.showToast(res.msg);
+                this.dataProvider.showToast(res.msg || '');
                 const navigation: NavigationExtras = {
                   state: {
                     isUpdated: true
@@ -201,10 +201,10 @@ export class EditTeacherProfilePage {
       .then(response => {
         if (response.session) {
           let all_classes_cid = [];
-          response.data.forEach(item => {
+          (response.data || []).forEach(item => {
             all_classes_cid.push(item.cid);
           });
-          this.classes = response.data;
+          this.classes = response.data || [];
           // this.classes.splice(0, 0, {name: 'Select All', cid: all_classes_cid});
         }
         this.cdr.markForCheck();

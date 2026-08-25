@@ -140,7 +140,7 @@ export class AddParentPage implements OnInit {
 
     // تحديث قيمة الـ FormGroup
     this.parentForm.patchValue({ selected_student: currentSelection });
-    this.parentForm.get('selected_student').markAsTouched();
+    this.parentForm.get('selected_student')?.markAsTouched();
   }
 
   // =====================================
@@ -162,7 +162,7 @@ export class AddParentPage implements OnInit {
 
       // تحديث قيمة الـ Form وعكس التغيير على الواجهة
       this.parentForm.patchValue({ selected_student: currentSelection });
-      this.parentForm.get('selected_student').markAsTouched();
+      this.parentForm.get('selected_student')?.markAsTouched();
     }
   }
 

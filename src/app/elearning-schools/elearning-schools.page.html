@@ -64,7 +64,7 @@
            (click)="openschool(school)"
            class="bg-white rounded-2xl p-3 shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer hover:border-indigo-300 hover:shadow-md transition-all active:scale-[0.98] group mt-3">
         
-        <div class="relative shrink-0" (click)="$event.stopPropagation(); dataProvider.openAvatarModel(school.pic)">
+        <div class="relative shrink-0" (click)="$event.stopPropagation(); dataProvider.openAvatarModel(school.pic || '')">
           <img loading="lazy" [src]="school.pic" onerror="this.onerror=null;this.src='assets/imgs/logo.png';" class="w-14 h-14 rounded-xl object-cover border border-slate-200 bg-slate-50">
         </div>
         

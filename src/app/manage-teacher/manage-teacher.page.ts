@@ -103,13 +103,13 @@ export class ManageTeacherPage {
         this.show_loading = true;
 
         if (res.session) {
-          this.selectedTeacher = res.data;
+          this.selectedTeacher = res.data || [];
           if (this.selectedTeacher.length > 20) {
             this.trimmedTeacher = [...this.selectedTeacher].slice(0, 20);
           } else {
             this.trimmedTeacher = [...this.selectedTeacher];
           }
-          this.noTeacher = res.data.length < 1;
+          this.noTeacher = this.selectedTeacher.length < 1;
         } else {
           this.noTeacher = true;
         }

@@ -44,7 +44,7 @@ export class ElearningApiService {
           let url = environment.serverURL + 'getElearningMaterials/' + schoolId + ((country_code && typeof country_code !== 'undefined') ? '?country_code=' + country_code : '');
           this.http.get<{ success?: boolean; materials?: ElearningCategory[] }>(url, { headers: header }).subscribe((response) => {
             if (response.success) {
-              resolve(response.materials);
+              resolve(response.materials || []);
             } else {
               reject("Server is not responding")
             }
@@ -72,7 +72,7 @@ export class ElearningApiService {
           let header = new HttpHeaders();
           header.append('Content-Type', 'application/json');
           this.http.get<{ success?: boolean; material?: ElearningMaterial }>(environment.serverURL + 'getMaterialDetails/' + materialId, { headers: header }).subscribe((response) => {
-            if (response.success) {
+            if (response.success && response.material) {
               resolve(response.material);
             } else {
               reject("Server is not responding")

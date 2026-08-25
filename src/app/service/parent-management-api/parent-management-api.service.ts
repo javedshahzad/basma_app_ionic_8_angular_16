@@ -133,7 +133,7 @@ export class ParentManagementApiService {
       this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'createNewParent').then((response) => {
         if (response) {
           if(response.success) {
-            resolve(response.msg);
+            resolve(response.msg || '');
           } else {
             reject(response.msg)
           }

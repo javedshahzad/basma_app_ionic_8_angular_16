@@ -111,7 +111,7 @@ export class NotesApiService {
       this.apiClient.postRequest<{ success?: boolean; note_id?: string | number; msg?: string }>(data, 'addStudentNote').then((response) => {
         if (response) {
           if (response.success) {
-            resolve(response.note_id);
+            resolve(response.note_id ?? '');
           } else {
             reject(response.msg)
           }
@@ -131,7 +131,7 @@ export class NotesApiService {
       this.apiClient.postRequest<{ success?: boolean; note_id?: string | number; msg?: string }>(data, 'editStudentNote').then((response) => {
         if (response) {
           if (response.success) {
-            resolve(response.note_id);
+            resolve(response.note_id ?? '');
           } else {
             reject(response.msg)
           }

@@ -49,7 +49,7 @@ export class CreateClassPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan'));
+    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan') || '{}');
     console.log('ionViewDidLoad CreateClassPage');
     const user = await this.storageSr.get('userloggedin');
     if (user) {

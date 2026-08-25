@@ -39,7 +39,7 @@
         <div class="relative shrink-0">
           <img loading="lazy" [src]="studentDetails.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
                class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-slate-50 shadow-sm cursor-pointer hover:scale-105 transition-transform"
-               (click)="$event.stopPropagation(); openFullscreenImage(studentDetails.pic)">
+               (click)="$event.stopPropagation(); openFullscreenImage(studentDetails.pic || '')">
           
           <button *appHasRole="[UserType.Admin, UserType.Moderator]"
                   class="absolute -bottom-1 -right-1 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all"
@@ -51,11 +51,11 @@
         <div class="flex-1">
           <div class="flex items-center gap-2">
           <h2 class="text-lg sm:text-xl font-black text-slate-800 m-0 leading-tight">{{studentDetails.name}}</h2>
-          <span *ngIf="studentDetails?.current_streak >= 10" class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام">
+          <span *ngIf="(studentDetails?.current_streak || 0) >= 10" class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام">
             <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{studentDetails?.current_streak}}</span>
           </span>
-          
-          <span *ngIf="studentDetails?.current_streak >= 5 && studentDetails?.current_streak < 10" class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل">
+
+          <span *ngIf="(studentDetails?.current_streak || 0) >= 5 && (studentDetails?.current_streak || 0) < 10" class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل">
             <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{studentDetails?.current_streak}}</span>
           </span>
 
@@ -272,7 +272,7 @@
             <div class="bg-slate-50 border-b border-slate-100 p-3 flex flex-col gap-2.5">
               <div class="flex items-center gap-2 text-sm font-bold text-slate-700">
                 <ion-icon name="calendar-outline" class="text-indigo-500"></ion-icon>
-                <span>{{getArabicDayName(details.date)}}</span>
+                <span>{{getArabicDayName(details.date || '')}}</span>
                 <span class="text-slate-300">|</span>
                 <span dir="ltr">{{details.date}}</span>
               </div>
@@ -294,13 +294,13 @@
                   <div class="flex-1 text-sm text-slate-700 font-medium leading-relaxed text-right">{{note.note}}</div>
                   <button class="text-rose-400 hover:text-rose-600 p-1 transition-colors bg-white rounded shadow-sm border border-rose-100" 
                           *ngIf="userDetails.details && (note.created_by === userDetails.details.user_no || userDetails.details.user_type === UserType.Admin)" 
-                          (click)="deleteAbsenceNote(details.notes, note.ID, i)">
+                          (click)="deleteAbsenceNote(details.notes || [], note.ID || '', i)">
                     <ion-icon name="trash" class="text-base"></ion-icon>
                   </button>
                 </div>
               </div>
               <button class="w-full mt-3 flex items-center justify-center gap-2 py-2.5 text-sm font-bold text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors border border-indigo-100 border-dashed" 
-                      (click)="addAbsentNote(details.notes, details.date)" *appHasRole="[UserType.Admin, UserType.Moderator]">
+                      (click)="addAbsentNote(details.notes || [], details.date || '')" *appHasRole="[UserType.Admin, UserType.Moderator]">
                 <ion-icon name="add-circle" class="text-lg"></ion-icon> إضافة ملاحظة غياب
               </button>
             </div>
@@ -392,7 +392,7 @@
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 relative" *ngFor="let note of notes?.notes; let i = index; trackBy: trackByNoteId" dir="rtl">
              <div class="flex justify-between items-start mb-3">
                <div class="flex items-center gap-3">
-                 <img loading="lazy" [src]="note.display_pic" class="w-10 h-10 rounded-xl object-cover border border-slate-200 bg-slate-50 cursor-pointer hover:scale-105 transition-transform" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" (click)="$event.stopPropagation(); openFullscreenImage(note.display_pic)">
+                 <img loading="lazy" [src]="note.display_pic" class="w-10 h-10 rounded-xl object-cover border border-slate-200 bg-slate-50 cursor-pointer hover:scale-105 transition-transform" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" (click)="$event.stopPropagation(); openFullscreenImage(note.display_pic || '')">
                  <div class="text-right">
                    <h5 class="text-sm font-bold text-slate-800 m-0">{{note.first_name}} {{note.last_name}}</h5>
                    <p class="text-[10px] font-bold text-slate-400 m-0 mt-1 flex items-center justify-start gap-1">
@@ -402,7 +402,7 @@
                </div>
                <button class="text-slate-400 hover:text-indigo-600 bg-slate-50 border border-slate-100 rounded-lg p-1.5 transition-colors mr-auto" 
                       *ngIf="userDetails.details && (note.user_id === userDetails.details.user_no || userType === UserType.Admin)" 
-                      (click)="editDeleteNotes($event, note.id, i, note)">
+                      (click)="editDeleteNotes($event, note.id || '', i, note)">
                 <ion-icon name="ellipsis-vertical" class="text-lg"></ion-icon>
               </button>
              </div>
@@ -558,7 +558,7 @@
 <app-student-inventory-modal
   [isOpen]="showInventoryModal"
   [sid]="selectedStudentId"
-  [userNo]="userDetails?.details?.user_no"
+  [userNo]="userDetails?.details?.user_no || ''"
   [skillData]="studentSkillData"
   [totalPoints]="studentTotalPoints"
   [activeCraftedTitle]="activeCraftedTitle"

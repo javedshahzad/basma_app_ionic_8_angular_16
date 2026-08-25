@@ -39,7 +39,7 @@ export class NotificationsApiService {
             if (!response.session) {
               resolve({ session: false, message: response.msg });
             } else if (response.success) {
-              this.dbProvider.insertPrivateMessages(response.list);
+              this.dbProvider.insertPrivateMessages(response.list || []);
               resolve({ session: true, data: response.list });
             } else {
               reject(response.msg);

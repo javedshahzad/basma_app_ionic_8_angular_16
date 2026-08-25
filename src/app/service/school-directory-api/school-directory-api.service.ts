@@ -186,7 +186,7 @@ export class SchoolDirectoryApiService {
           this.http.post<{ success?: boolean; schools?: School[] }>(url, country_code, { headers: header }).subscribe(
             (response) => {
               if (response.success) {
-                resolve(response.schools);
+                resolve(response.schools || []);
               } else {
                 reject('Server is not responding');
               }

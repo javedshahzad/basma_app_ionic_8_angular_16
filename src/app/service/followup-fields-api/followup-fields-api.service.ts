@@ -148,7 +148,7 @@ export class FollowupFieldsApiService {
           } else if (response.response==true) {
             resolve({ session: true, data: response.msg});
           } else {
-            resolve(response.msg)
+            resolve(response.msg || '')
           }
         } else {
         }
@@ -186,7 +186,7 @@ export class FollowupFieldsApiService {
           } else if (response.success==true) {
             resolve({ session: true, data: response.result});
           } else {
-            resolve(response.msg)
+            resolve(response.msg || '')
           }
         } else {
         }

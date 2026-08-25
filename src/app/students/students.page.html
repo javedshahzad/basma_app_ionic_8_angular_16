@@ -63,7 +63,7 @@
       <cdk-virtual-scroll-viewport itemSize="88" style="height: 100%;" class="px-4 pt-4 pb-6">
         <div class="bg-white rounded-xl p-3 mb-3 shadow-sm border border-slate-200 flex items-center justify-between hover:border-indigo-200 transition-colors" *cdkVirtualFor="let student of students; let sno = index; trackBy: trackByStudent">
 
-          <div class="flex items-center gap-3 flex-1 text-right cursor-pointer" (click)="openStudentDetail(student.sid, student)">
+          <div class="flex items-center gap-3 flex-1 text-right cursor-pointer" (click)="openStudentDetail(student.sid || '', student)">
             <div class="relative flex-shrink-0" (click)="$event.stopPropagation(); openUserImageModal(student)">
               <img loading="lazy" [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-xl object-cover bg-slate-100 border border-slate-200">
               <div class="absolute -bottom-1 -left-1 bg-rose-500 text-white text-[10px] font-bold rounded-md px-1 py-0.5 border border-white" *ngIf="student.medical_leave">M</div>
@@ -88,10 +88,10 @@
               <span class="text-[9px] font-bold text-slate-400 mb-0.5">{{'delay_stu_list.a_d' | translate}}</span>
               <div class="flex items-center text-xs font-bold" dir="ltr">
                 <span class="text-rose-500" title="أيام الغياب بسبب التأخير">
-                  {{ delayRule > 0 ? (student.useedforabsent.one / delayRule | number:'1.0-0') : 0 }}
+                  {{ delayRule > 0 ? ((student.useedforabsent?.one || 0) / delayRule | number:'1.0-0') : 0 }}
                 </span>
                 <span class="text-slate-300 mx-1">/</span>
-                <span class="text-orange-500" title="مرات التأخير الحالية">{{student.useedforabsent.zero}}</span>
+                <span class="text-orange-500" title="مرات التأخير الحالية">{{student.useedforabsent?.zero}}</span>
               </div>
             </div>
 
@@ -99,14 +99,14 @@
             <div (click)="changeAttendanceStatus(student)"
                  class="w-11 h-11 flex items-center justify-center rounded-xl cursor-pointer transition-all border shadow-sm flex-shrink-0 relative overflow-hidden"
                  [ngClass]="{
-                   'bg-emerald-500 border-emerald-600 text-white': student.sheet['cem-1'] === true,
+                   'bg-emerald-500 border-emerald-600 text-white': student.sheet?.['cem-1'] === true,
                    'bg-rose-500 border-rose-600 text-white': student.suspend_leave === true || student.medical_leave === true,
-                   'bg-white border-slate-200 text-slate-400 hover:bg-slate-50': student.sheet['cem-1'] === 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave),
+                   'bg-white border-slate-200 text-slate-400 hover:bg-slate-50': student.sheet?.['cem-1'] === 'undefined' || (!student.sheet?.['cem-1'] && !student.suspend_leave && !student.medical_leave),
                    'opacity-50': userType === UserType.Admin && !editMode
                  }">
-              <ion-icon name="checkmark-circle" *ngIf="student.sheet['cem-1'] === true" class="text-2xl"></ion-icon>
+              <ion-icon name="checkmark-circle" *ngIf="student.sheet?.['cem-1'] === true" class="text-2xl"></ion-icon>
               <ion-icon name="close-circle" *ngIf="student.suspend_leave || student.medical_leave" class="text-2xl"></ion-icon>
-              <ion-icon name="add-circle-outline" *ngIf="student.sheet['cem-1'] === 'undefined' || (!student.sheet['cem-1'] && !student.suspend_leave && !student.medical_leave)" class="text-2xl opacity-40"></ion-icon>
+              <ion-icon name="add-circle-outline" *ngIf="student.sheet?.['cem-1'] === 'undefined' || (!student.sheet?.['cem-1'] && !student.suspend_leave && !student.medical_leave)" class="text-2xl opacity-40"></ion-icon>
 
               <!-- طبقة حماية تمنع النقر وتوحي بالتعطيل إذا لم يتم تفعيل وضع التعديل -->
               <div *ngIf="userType === UserType.Admin && !editMode" class="absolute inset-0 bg-white/20 backdrop-blur-[1px]"></div>

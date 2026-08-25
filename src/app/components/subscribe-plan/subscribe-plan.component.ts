@@ -58,7 +58,7 @@ export class SubscribePlanComponent implements OnInit {
     this.planApi
       .getPlan(data)
       .then(res => {
-        this.plans = res.response;
+        this.plans = res.response || [];
         let premium = this.plans.filter(p => p.slug == 'premium');
         this.PremiumPlan = premium[0];
         console.log(this.PremiumPlan);

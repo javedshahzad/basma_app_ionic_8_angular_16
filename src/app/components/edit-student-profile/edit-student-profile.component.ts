@@ -63,8 +63,9 @@ export class EditStudentProfileComponent implements OnInit {
       this.currentUserEmail = this.userDetails.details.email_id;
       // console.log('th',this.currentUser);
     }
-    if (localStorage.getItem('earlyLogin')) {
-      this.loggedinUser = JSON.parse(localStorage.getItem('earlyLogin'));
+    const earlyLogin = localStorage.getItem('earlyLogin');
+    if (earlyLogin) {
+      this.loggedinUser = JSON.parse(earlyLogin);
       // console.log(this.loggedinUser);
     }
   }

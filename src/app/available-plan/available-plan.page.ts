@@ -229,11 +229,11 @@ export class AvailablePlanPage implements OnInit {
       .run(() => this.planApi.ApplyVoucherCode(data))
       .then(res => {
         if (res.success) {
-          this.dataProvider.showToast(res.msg);
+          this.dataProvider.showToast(res.msg || '');
           this.closeVoucherModal();
           this.getUserPlan(); // 🟢 تحديث واجهة الباقة فوراً بدلاً من الانتقال الأعمى للقائمة
         } else {
-          this.dataProvider.showToast(res.msg);
+          this.dataProvider.showToast(res.msg || '');
         }
       })
       .catch(error => {

@@ -51,7 +51,7 @@
           <div class="flex-1 overflow-hidden pt-1">
             <div class="flex items-center justify-between mb-1">
               <h3 class="text-sm font-bold text-slate-800 m-0 truncate pr-1">{{chatuser.name}}</h3>
-              <span class="text-[11px] font-bold text-slate-400 whitespace-nowrap" dir="ltr">{{chatuser.updated_time | dateFormat}}</span>
+              <span class="text-[11px] font-bold text-slate-400 whitespace-nowrap" dir="ltr">{{(chatuser.updated_time || '') | dateFormat}}</span>
             </div>
             <p class="text-xs font-medium text-slate-500 m-0 truncate leading-relaxed mb-3 pr-1">{{chatuser.title}}</p>
             

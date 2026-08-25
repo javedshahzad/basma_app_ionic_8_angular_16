@@ -54,7 +54,7 @@
 <ion-content class="bg-slate-50" mode="md">
   <div class="p-4 max-w-3xl mx-auto" dir="rtl">
 
-    <div class="space-y-4" *ngIf="attendanceResponse.students?.length > 0">
+    <div class="space-y-4" *ngIf="(attendanceResponse.students?.length || 0) > 0">
       <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all" *ngFor="let student of visibleStudents; let sno = index; trackBy: trackByStudent">
         
         <div class="flex items-center justify-between mb-4">
@@ -66,11 +66,11 @@
               <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1 m-0">
                 <span class="text-slate-400 text-xs">{{sno+1}}.</span> {{student.name}}
                 
-                <span *ngIf="student.current_streak >= 10" class="flex items-center gap-0.5 bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-200 shadow-sm animate-pulse" title="أسطورة الالتزام">
+                <span *ngIf="(student.current_streak || 0) >= 10" class="flex items-center gap-0.5 bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-200 shadow-sm animate-pulse" title="أسطورة الالتزام">
                   <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span>
                 </span>
 
-                <span *ngIf="student.current_streak >= 5 && student.current_streak < 10" class="flex items-center gap-0.5 bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded border border-orange-200 shadow-sm" title="مشتعل">
+                <span *ngIf="(student.current_streak || 0) >= 5 && (student.current_streak || 0) < 10" class="flex items-center gap-0.5 bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded border border-orange-200 shadow-sm" title="مشتعل">
                   <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span>
                 </span>
 
@@ -96,7 +96,7 @@
         </div>
 
         <!-- حقول إدخال الدرجات -->
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100" *ngIf="student.sheet.length">
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100" *ngIf="student.sheet?.length">
           <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
             <div *ngFor="let sheet of student.sheet; trackBy: trackByIndex" class="flex flex-col">
               <label class="text-[10px] font-bold text-slate-500 mb-1 text-center leading-tight px-1 h-7 flex items-end justify-center break-words line-clamp-2" title="{{sheet.field_name}}">{{sheet.field_name}}</label>
@@ -147,7 +147,7 @@
 </ion-content>
 
 <!-- زر الحفظ -->
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="!isHoliday && userType !== UserType.Viewer && attendanceResponse.students?.length > 0">
+<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="!isHoliday && userType !== UserType.Viewer && (attendanceResponse.students?.length || 0) > 0">
   <div class="p-5 max-w-3xl mx-auto">
     <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2"
             (click)="submitMarks()">

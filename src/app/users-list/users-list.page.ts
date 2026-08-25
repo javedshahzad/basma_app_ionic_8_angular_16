@@ -54,8 +54,9 @@ export class UsersListPage implements OnInit {
   ) {
     // 🟢 3. جعل الاشتراك (subscribe) async لجلب البيانات بأمان عند العودة
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async params => {
-      if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
-        let isUpdated = this.router.getCurrentNavigation().extras.state['isUpdated'];
+      const navigationState = this.router.getCurrentNavigation()?.extras.state;
+      if (navigationState) {
+        let isUpdated = navigationState['isUpdated'];
         if (isUpdated) {
           let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
           if (userLoggedIn) {

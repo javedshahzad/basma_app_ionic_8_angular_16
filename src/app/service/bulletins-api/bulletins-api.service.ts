@@ -68,11 +68,11 @@ export class BulletinsApiService {
           })
               // console.log(body);
 
-      this.http.post<{ response?: string; msg?: string }>(environment.serverURL + 'shareBulletins', body, { headers: header }).subscribe((response) => {
+      this.http.post<{ response?: string; msg?: string } | null>(environment.serverURL + 'shareBulletins', body, { headers: header }).subscribe((response) => {
         if (response) {
             resolve({ session: true, data: response.response, message: response.msg });
         } else {
-            reject(response.msg)
+            reject(this.dataService.lang.usnexpectedError)
         }
       }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     })

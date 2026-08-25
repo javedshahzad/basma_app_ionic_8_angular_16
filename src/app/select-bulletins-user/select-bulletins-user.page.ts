@@ -214,7 +214,7 @@ export class SelectBulletinsUserPage {
       this.dataProvider
         .run(() => this.bulletinsApi.shareBulletins(this.data))
         .then(res => {
-          this.dataProvider.showToast(res.message);
+          this.dataProvider.showToast(res.message || '');
           this.router.navigate(['bulletins']);
         })
         .catch(err => {
