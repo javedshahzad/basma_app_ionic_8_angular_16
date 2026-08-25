@@ -41,7 +41,7 @@ export class StudentTitlesPage {
   studentWallet: Record<string, string | number> = {};
   unlockedTitles: string[] = [];
   unlockedBadges: string[] = [];
-  activeCraftedTitle: string = null;
+  activeCraftedTitle: string | null = null;
 
   isLoadingData: boolean = false;
   isLoadingSkills: boolean = false;
@@ -100,6 +100,15 @@ export class StudentTitlesPage {
     }
   ];
 
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // ionViewWillEnter()'s `if (userLoggedIn)` guard has already populated
+  // it — the non-null assertion documents that invariant once instead of
+  // at every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
+
   constructor(
     public navCtrl: NavController,
     public translate: TranslateService,
@@ -127,10 +136,10 @@ export class StudentTitlesPage {
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      this.userType = this.userDetails.details.user_type;
-      this.navData = this.userDetails.details;
+      this.userType = this.userInfo.user_type || '';
+      this.navData = this.userDetails.details || {};
 
-      let sid = this.userDetails.details.stu_id;
+      let sid = this.userInfo.stu_id!;
 
       // منع تكرار الطلبات إذا كانت الصفحة تقوم بالتحميل بالفعل
       if (this.isLoadingData) return;
@@ -146,7 +155,7 @@ export class StudentTitlesPage {
   fetchStudentProfile(sid: string | number): Promise<void> {
     return new Promise(resolve => {
       let data = {
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         session_id: this.userDetails.session_id,
         sid: String(sid),
         cid: '',
@@ -171,7 +180,7 @@ export class StudentTitlesPage {
           const res = raw as { success?: boolean; total_points?: number; skills?: SkillData } | undefined;
           if (res && res.success) {
             this.studentTotalPoints = res.total_points || 0;
-            this.studentSkillData = res.skills;
+            this.studentSkillData = res.skills || null;
           }
           resolve();
         })
@@ -180,7 +189,7 @@ export class StudentTitlesPage {
   }
 
   doRefresh(event: any) {
-    let sid = this.userDetails.details.stu_id;
+    let sid = this.userInfo.stu_id!;
     this.loadAllDataSequentially(sid).then(() => {
       event.target.complete();
     });
@@ -227,7 +236,7 @@ export class StudentTitlesPage {
 
   fetchInventory(sid: string | number): Promise<void> {
     return new Promise(resolve => {
-      let body = { sid: String(sid), userId: String(this.userDetails.details.user_no) };
+      let body = { sid: String(sid), userId: String(this.userInfo.user_no) };
       this.gamificationApi
         .getStudentInventory(body)
         .then((res) => {
@@ -243,14 +252,14 @@ export class StudentTitlesPage {
             let rawActive = res.active_title;
             if (rawActive !== undefined && rawActive !== null) {
               this.activeCraftedTitle =
-                typeof rawActive === 'object' ? rawActive.title_ar || rawActive.title_name || rawActive.title : rawActive;
+                (typeof rawActive === 'object' ? rawActive.title_ar || rawActive.title_name || rawActive.title : rawActive) || null;
             }
 
             this.alchemyTitlesList = this.gamification.processTitles(this.unlockedTitles);
             this.secretBadgesList = this.gamification.processBadges(this.unlockedBadges);
 
             this.studentTitle = this.gamification.getFinalStudentTitle(
-              this.activeCraftedTitle,
+              this.activeCraftedTitle || '',
               this.studentSkillData,
               this.studentTotalPoints
             );
@@ -324,25 +333,25 @@ export class StudentTitlesPage {
       this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.');
       return;
     }
-    let sid = this.userDetails.details.stu_id;
+    let sid = this.userInfo.stu_id!;
 
     let body = {
       sid: String(sid),
       title_code: title.code,
       cost: JSON.stringify(title.cost),
-      userId: String(this.userDetails.details.user_no)
+      userId: String(this.userInfo.user_no)
     };
 
     try {
       const res = (await this.dataProvider.run(() => this.gamificationApi.craftSkillTitle(body))) as ApiResponse | undefined;
-      if (res.success) {
-        this.dataProvider.showToast(res.msg);
+      if (res && res.success) {
+        this.dataProvider.showToast(res.msg || '');
         await this.fetchInventory(sid);
 
         // 🟢 4. استدعاء هذه الدالة إجباري لكي تتحدث حالة الأزرار في الواجهة (من دمج إلى استخدام)
         this.mapDataToUI();
-      } else {
-        this.dataProvider.errorALertMessage(res.msg);
+      } else if (res) {
+        this.dataProvider.errorALertMessage(res.msg || '');
       }
     } catch (e) {
       this.dataProvider.showToast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
@@ -351,19 +360,19 @@ export class StudentTitlesPage {
   }
 
   async toggleTitle(titleCode: string | null) {
-    let sid = this.userDetails.details.stu_id;
+    let sid = this.userInfo.stu_id!;
 
     let body = {
       sid: String(sid),
       title_code: titleCode ? String(titleCode) : '',
-      userId: String(this.userDetails.details.user_no)
+      userId: String(this.userInfo.user_no)
     };
 
     try {
       const res = (await this.dataProvider.run(() => this.gamificationApi.equipTitle(body))) as ApiResponse | undefined;
-      if (res.success) {
+      if (res && res.success) {
         this.activeCraftedTitle = titleCode;
-        this.dataProvider.showToast(res.msg);
+        this.dataProvider.showToast(res.msg || '');
         this.updateStudentTitle();
       }
     } catch (e) {
