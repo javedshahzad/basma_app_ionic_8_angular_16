@@ -13,7 +13,7 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
 import { CoursesApiService, Course } from '../service/courses-api/courses-api.service';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { Student } from '../model/student.model';
 
 type EditableCourse = Course & { course_id?: string | number; id?: string | number };
@@ -55,6 +55,15 @@ export class EditStudentProfilePage {
   showDeleteModal: boolean = false;
 
   isDataReady: boolean = false; // 🟢 متغير جديد للتحكم بظهور القائمة
+
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // ionViewWillEnter()'s `if (userLoggedIn)` guard has already populated
+  // it — the non-null assertion documents that invariant once instead of
+  // at every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
 
   constructor(
     public popoverController: PopoverController,
@@ -126,9 +135,9 @@ export class EditStudentProfilePage {
   getClasses() {
     return new Promise(resolve => {
       let data = {
-        user_no: this.userDetails.details.user_no,
-        school_id: this.userDetails.details.school_id,
-        session_id: this.userDetails.session_id
+        user_no: this.userInfo.user_no!,
+        school_id: this.userInfo.school_id!,
+        session_id: this.userDetails.session_id!
       };
 
       this.coursesApi
@@ -150,8 +159,8 @@ export class EditStudentProfilePage {
   getStudentProfile() {
     return new Promise(resolve => {
       let data = {
-        user_no: this.userDetails.details.user_no,
-        session_id: this.userDetails.session_id,
+        user_no: this.userInfo.user_no!,
+        session_id: this.userDetails.session_id!,
         cid: this.navData?.course_id || this.navData?.student?.cid || '',
         date: this.navData?.dateSelected || this.dataProvider.getFormatedDate(new Date()),
         sid: this.navData?.student?.sid
@@ -162,8 +171,8 @@ export class EditStudentProfilePage {
         .then((response) => {
           if (response && response.session) {
             this.student = response.data || {};
-            this.studentName = this.student.name;
-            this.student_id = this.student.student_id;
+            this.studentName = this.student.name || '';
+            this.student_id = this.student.student_id || '';
 
             console.log('----------------- بدء عملية المطابقة -----------------');
             console.log('1️⃣ بيانات navData كاملة:', this.navData);
@@ -191,7 +200,7 @@ export class EditStudentProfilePage {
               );
 
               if (targetName) {
-                let matched = this.classes.find(c => c.name.toString().trim() === targetName);
+                let matched = this.classes.find(c => (c.name || '').toString().trim() === targetName);
                 if (matched) {
                   rawId = matched.cid;
                   console.log('✅ نجحت المطابقة عبر الاسم! المعرف هو:', rawId);
@@ -224,15 +233,15 @@ export class EditStudentProfilePage {
       class_id: this.studentSemester, // 🟢 التأكيد على إرسالها بكلا المسميين
       student_name: this.studentName,
       student_id: this.student_id,
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
 
     try {
       const res = await this.dataProvider.run(() => this.userManagementApi.updateStudentProfile(updateData));
       if (!res.response) {
-        this.dataProvider.errorALertMessage(res.msg);
+        this.dataProvider.errorALertMessage(res.msg || '');
       } else {
         this.dataProvider.showToast(this.lang.edit_student_success_msg);
         const navigation: NavigationExtras = {
@@ -260,14 +269,14 @@ export class EditStudentProfilePage {
     let deleteData = {
       sid: this.student.sid,
       cid: this.student.cid,
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
 
     try {
       const res = await this.dataProvider.run(() => this.userManagementApi.deleteStudent(deleteData));
-      this.dataProvider.showToast(res.msg);
+      this.dataProvider.showToast(res.msg || '');
       const navigation: NavigationExtras = {
         state: { isUpdated: true }
       };
@@ -283,14 +292,14 @@ export class EditStudentProfilePage {
     let deleteData = {
       sid: this.student.sid,
       cid: this.student.cid,
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
 
     try {
       const res = await this.dataProvider.run(() => this.userManagementApi.deleteStudentClass(deleteData));
-      this.dataProvider.showToast(res.msg);
+      this.dataProvider.showToast(res.msg || '');
       this.router.navigate(['manage-student']);
     } catch (error: unknown) {
       this.dataProvider.errorALertMessage((error as { message?: string })?.message || this.lang.usnexpectedError);
