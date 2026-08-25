@@ -171,7 +171,8 @@ export class ClasslistPage implements OnInit {
     let data = {
       list: this.reorderList,
       user_no: this.userInfo.user_no!,
-      school_id: this.userInfo.school_id!
+      school_id: this.userInfo.school_id!,
+      session_id: this.userDetails.session_id
     };
     if (this.reorderList.length) {
       this.presentPopover();

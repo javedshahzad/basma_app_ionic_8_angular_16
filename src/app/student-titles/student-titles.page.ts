@@ -176,7 +176,7 @@ export class StudentTitlesPage {
 
   fetchStudentSkills(sid: string | number): Promise<void> {
     return new Promise(resolve => {
-      let body = { sid: String(sid) };
+      let body = { sid: String(sid), session_id: this.userDetails.session_id };
       this.gamificationApi
         .getStudentSkillTree(body)
         .then(raw => {
@@ -239,7 +239,7 @@ export class StudentTitlesPage {
 
   fetchInventory(sid: string | number): Promise<void> {
     return new Promise(resolve => {
-      let body = { sid: String(sid), userId: String(this.userInfo.user_no) };
+      let body = { sid: String(sid), userId: String(this.userInfo.user_no), session_id: this.userDetails.session_id };
       this.gamificationApi
         .getStudentInventory(body)
         .then(res => {
@@ -344,7 +344,8 @@ export class StudentTitlesPage {
       sid: String(sid),
       title_code: title.code,
       cost: JSON.stringify(title.cost),
-      userId: String(this.userInfo.user_no)
+      userId: String(this.userInfo.user_no),
+      session_id: this.userDetails.session_id
     };
 
     try {
@@ -371,7 +372,8 @@ export class StudentTitlesPage {
     let body = {
       sid: String(sid),
       title_code: titleCode ? String(titleCode) : '',
-      userId: String(this.userInfo.user_no)
+      userId: String(this.userInfo.user_no),
+      session_id: this.userDetails.session_id
     };
 
     try {

@@ -131,7 +131,7 @@ export class CoursesApiService {
 
   /** reorder all classes
   */
-  reorderClasses(data: { school_id: string | number; user_no: string | number; lang_code?: string; list: unknown }): Promise<boolean> {
+  reorderClasses(data: { school_id: string | number; user_no: string | number; session_id?: string; lang_code?: string; list: unknown }): Promise<boolean> {
     return new Promise((resolve, reject) => {
       // console.log(data);
 
@@ -141,6 +141,7 @@ export class CoursesApiService {
       let body: HttpParams = new HttpParams();
       body = body.append('school_id', data.school_id);
       body = body.append('user_no', data.user_no);
+      body = body.append('session_id', data.session_id ?? '');
       body = body.append('lang_code', data.lang_code);
       // `list` is really an array of per-class {cid, sem, ...} records, but
       // is iterated here via Object.keys() (works fine on arrays at runtime

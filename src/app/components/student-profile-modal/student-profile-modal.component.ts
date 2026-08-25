@@ -22,6 +22,7 @@ export class StudentProfileModalComponent implements OnInit, OnDestroy {
   @Input() student: any;
   @Input() userType: string;
   @Input() editMode: boolean = false;
+  @Input() sessionId: string;
 
   // استقبال الدوال من الصفحة الأم
   @Input() onPhotoClick: (event: any) => void;
@@ -62,7 +63,7 @@ export class StudentProfileModalComponent implements OnInit, OnDestroy {
     this.isLoadingSkills = true;
     try {
       // 🟢 1. الإصلاح: استخدام الدالة الصحيحة للمهارات وإرسال (sid)
-      const skillRes: any = await this.gamificationApi.getStudentSkillTree({ sid: this.student.sid });
+      const skillRes: any = await this.gamificationApi.getStudentSkillTree({ sid: this.student.sid, session_id: this.sessionId });
 
       this.isLoadingSkills = false;
 

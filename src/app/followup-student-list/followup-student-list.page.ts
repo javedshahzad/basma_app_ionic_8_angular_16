@@ -797,7 +797,8 @@ export class FollowupStudentListPage {
       },
       (url: string) => {
         this.openFullscreenImage(url);
-      }
+      },
+      this.userDetails.session_id
     );
   }
 

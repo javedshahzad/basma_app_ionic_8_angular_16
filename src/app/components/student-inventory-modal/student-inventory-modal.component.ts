@@ -28,6 +28,7 @@ export class StudentInventoryModalComponent {
   @Input() isOpen = false;
   @Input() sid: string | number;
   @Input() userNo: string | number;
+  @Input() sessionId: string;
   @Input() skillData: SkillData | null = null;
   @Input() totalPoints = 0;
   @Input() activeCraftedTitle: string | null = null;
@@ -68,7 +69,8 @@ export class StudentInventoryModalComponent {
     return new Promise(resolve => {
       let body = {
         sid: String(this.sid),
-        userId: String(this.userNo)
+        userId: String(this.userNo),
+        session_id: this.sessionId
       };
 
       this.gamificationApi
@@ -125,7 +127,8 @@ export class StudentInventoryModalComponent {
       sid: String(this.sid),
       title_code: title.code,
       cost: JSON.stringify(title.cost),
-      userId: String(this.userNo)
+      userId: String(this.userNo),
+      session_id: this.sessionId
     };
 
     try {
@@ -145,7 +148,8 @@ export class StudentInventoryModalComponent {
     let body = {
       sid: String(this.sid),
       title_code: titleCode ? String(titleCode) : '',
-      userId: String(this.userNo)
+      userId: String(this.userNo),
+      session_id: this.sessionId
     };
 
     try {

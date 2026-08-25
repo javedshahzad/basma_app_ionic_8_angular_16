@@ -666,7 +666,8 @@ export class ListStudentPage {
         },
         (url: string) => {
           this.openFullscreenImage(url);
-        }
+        },
+        this.userDetails.session_id
       );
       this.updateStudentLiveStats(student);
     } else {

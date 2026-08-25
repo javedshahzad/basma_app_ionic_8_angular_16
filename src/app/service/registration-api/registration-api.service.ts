@@ -127,7 +127,7 @@ export class RegistrationApiService {
   /** update teacher list of a perticular class of a school .
    * @returns updation status
    */
-  updateTeacher(data: { class_id: string | number; school_id: string | number; user_no: string | number; lang_code?: string; teachersList: unknown }): Promise<{ session: boolean; message?: string; data?: string }> {
+  updateTeacher(data: { class_id: string | number; school_id: string | number; user_no: string | number; session_id?: string; lang_code?: string; teachersList: unknown }): Promise<{ session: boolean; message?: string; data?: string }> {
     return new Promise((resolve, reject) => {
       // console.log(data);
       data.lang_code = environment.lang_code;
@@ -137,6 +137,7 @@ export class RegistrationApiService {
       body = body.append('class_id', data.class_id);
       body = body.append('school_id', data.school_id);
       body = body.append('user_no', data.user_no);
+      body = body.append('session_id', data.session_id ?? '');
       body = body.append('lang_code', data.lang_code);
       // `teachersList` is really an array of {teacher_no, ...} records,
       // iterated here via Object.keys() (works fine on arrays at runtime);

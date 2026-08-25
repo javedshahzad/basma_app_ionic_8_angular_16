@@ -316,7 +316,7 @@ export class StudentDetailPage {
     this.studentSkillData = null;
     this.studentTitle = 'جاري التحليل...';
 
-    let body = { sid: sid };
+    let body = { sid: sid, session_id: this.userDetails.session_id };
 
     this.gamificationApi
       .getStudentSkillTree(body)
@@ -548,7 +548,8 @@ export class StudentDetailPage {
 
             let dashboardData = {
               sid: String(data.sid),
-              userId: String(this.userInfo.user_no)
+              userId: String(this.userInfo.user_no),
+              session_id: this.userDetails.session_id
             };
 
             const dashRes: StudentProfileDashboard | false =

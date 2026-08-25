@@ -95,11 +95,14 @@ export class GamificationApiService {
   }
 
   // 🔴 دالة جلب بيانات شجرة المهارات للطالب (تم حل مشكلة CORS)
-  getStudentSkillTree(data: { sid?: string | number }): Promise<unknown> {
+  getStudentSkillTree(data: { sid?: string | number; session_id?: string }): Promise<unknown> {
     return new Promise((resolve, reject) => {
       // 1. تحويل البيانات إلى FormData لتتطابق مع سياسة السيرفر وتتجاوز الـ CORS
       let formData = new FormData();
       formData.append('sid', String(data.sid));
+      // The new Node.js API requires session_id (not just uuid/user_no,
+      // which MyInterceptor auto-attaches) to authorize this endpoint.
+      formData.append('session_id', String(data.session_id ?? ''));
 
       // 2. تجهيز الرابط (تأكد أن تستخدم environment.serverURL أو this.serverURL حسب ما يعمل لديك)
       let url = environment.serverURL + 'getStudentSkillTree';

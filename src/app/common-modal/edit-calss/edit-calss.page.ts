@@ -145,7 +145,8 @@ export class EditCalssPage {
       teachersList: this.selectedTeacher,
       class_id: this.course.cid,
       school_id: this.userDetails.school_id,
-      user_no: this.userDetails.user_no
+      user_no: this.userDetails.user_no,
+      session_id: this.userDetails.session_id
     };
     this.dataProvider
       .run(() => this.registrationApi.updateTeacher(data))

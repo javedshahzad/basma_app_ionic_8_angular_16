@@ -357,7 +357,8 @@ export class StudentsPage {
           },
           onFullscreenClick: (url: string) => {
             this.openFullscreenImage(url);
-          }
+          },
+          sessionId: this.userDetails.session_id
         }
       });
       return await modal.present();

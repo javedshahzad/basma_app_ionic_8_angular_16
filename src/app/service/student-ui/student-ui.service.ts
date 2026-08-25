@@ -95,7 +95,7 @@ export class StudentUiService {
   }
 
   // 5. 🟢 إدارة نافذة ملف الطالب (تم نقلها بالكامل لتنظيف الكنترولر)
-  async openStudentProfileModal(student: any, userType: string, editMode: boolean, onPhotoClick: Function, onFullscreenClick: Function): Promise<any> {
+  async openStudentProfileModal(student: any, userType: string, editMode: boolean, onPhotoClick: Function, onFullscreenClick: Function, sessionId: string | undefined): Promise<any> {
     const { StudentProfileModalComponent } = await import('../../components/student-profile-modal/student-profile-modal.component');
     const modal = await this.modalCtrl.create({
       component: StudentProfileModalComponent,
@@ -105,7 +105,8 @@ export class StudentUiService {
         userType: userType,
         editMode: editMode,
         onPhotoClick: onPhotoClick,
-        onFullscreenClick: onFullscreenClick
+        onFullscreenClick: onFullscreenClick,
+        sessionId: sessionId
       }
     });
     await modal.present();
