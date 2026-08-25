@@ -26,7 +26,7 @@ import { HasRoleDirective } from '../directives/has-role.directive';
 import { NgIf, NgClass, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Course } from '../service/courses-api/courses-api.service';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { RawActionResponse } from '../service/user-management-api/user-management-api.service';
 
 interface DashboardSeminar {
@@ -81,6 +81,15 @@ export class ClasslistPage implements OnInit {
   isPopoverOpen: boolean = false;
   popoverEvent: unknown;
   editingClass: Course = {};
+
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // ngOnInit()/refresh()'s `if (userLoggedIn)` guard has already
+  // populated it — the non-null assertion documents that invariant once
+  // instead of at every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -142,8 +151,8 @@ export class ClasslistPage implements OnInit {
   changeOrder() {
     let data = {
       list: this.reorderList,
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id
+      user_no: this.userInfo.user_no!,
+      school_id: this.userInfo.school_id!
     };
     if (this.reorderList.length) {
       this.presentPopover();
@@ -164,7 +173,7 @@ export class ClasslistPage implements OnInit {
   prepareArray(startfrom: number, endTo: number) {
     if (!this.reorderList.length) {
       this.classes.forEach((res, index) => {
-        this.reorderList.push({ cid: res.cid, index: index });
+        this.reorderList.push({ cid: res.cid!, index: index });
       });
     }
     if (startfrom < endTo) {
@@ -230,8 +239,8 @@ export class ClasslistPage implements OnInit {
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      this.userType = String(this.userDetails.details.user_type);
-      this.is_school_admin = this.userDetails.details.is_school_admin;
+      this.userType = String(this.userInfo.user_type);
+      this.is_school_admin = this.userInfo.is_school_admin || false;
       this.cdr.markForCheck();
 
       this.getCourse(loader);
@@ -261,13 +270,13 @@ export class ClasslistPage implements OnInit {
 
   revertSchoolDeletion() {
     let data = {
-      school_id: this.userDetails.details.school_id,
-      user_no: this.userDetails.details.user_no
+      school_id: this.userInfo.school_id,
+      user_no: this.userInfo.user_no
     };
     this.dataProvider
       .run(() => this.userManagementApi.revertDeletedSchoolSettings(data))
       .then((response) => {
-        this.dataProvider.errorALertMessage(response.message);
+        this.dataProvider.errorALertMessage(response.message || '');
         this.deactivate_date = '';
         this.dataProvider.deactivate_date = '';
         this.cdr.markForCheck();
@@ -293,8 +302,8 @@ export class ClasslistPage implements OnInit {
     if (loader) this.isLoading = true;
 
     let data = {
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
 
@@ -339,8 +348,8 @@ export class ClasslistPage implements OnInit {
 
   getTodayDeshboard(loader: boolean = true) {
     let data = {
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
 
@@ -348,7 +357,7 @@ export class ClasslistPage implements OnInit {
       .todayDashboard(data)
       .then(response => {
         if (response && response.session) {
-          this.dashBoard = (response.data as { seminar?: DashboardSeminar[] })?.seminar;
+          this.dashBoard = (response.data as { seminar?: DashboardSeminar[] })?.seminar || [];
         }
         this.cdr.markForCheck();
       })
@@ -405,9 +414,9 @@ export class ClasslistPage implements OnInit {
       this.editingClass.name.trim() != ''
     ) {
       let postData = {
-        cid: this.editingClass.cid,
-        user_no: this.userDetails.details.user_no,
-        session_id: this.userDetails.session_id,
+        cid: this.editingClass.cid!,
+        user_no: this.userInfo.user_no!,
+        session_id: this.userDetails.session_id!,
         course: {
           name: this.editingClass.name,
           desc: this.editingClass.desc
@@ -447,8 +456,8 @@ export class ClasslistPage implements OnInit {
   deletClass(course: Course) {
     let data = {
       class_id: course.cid,
-      school_id: this.userDetails.details.school_id,
-      user_no: this.userDetails.details.user_no
+      school_id: this.userInfo.school_id,
+      user_no: this.userInfo.user_no
     };
 
     this.dataProvider
@@ -595,8 +604,8 @@ export class ClasslistPage implements OnInit {
 
   async checkAndDeleteAccount() {
     let data = {
-      school_id: this.userDetails.details.school_id,
-      user_no: this.userDetails.details.user_no
+      school_id: this.userInfo.school_id,
+      user_no: this.userInfo.user_no
     };
     try {
       const response = await this.userManagementApi.deleteSchoolPermanentlyRequest(data);
@@ -609,7 +618,7 @@ export class ClasslistPage implements OnInit {
       this.dataProvider.hideLoading();
 
       if (responseData.success) {
-        this.dataProvider.showToast(response.msg);
+        this.dataProvider.showToast(response.msg || '');
 
         let userDetail = await this.storageSr.get('userloggedin');
 
@@ -631,8 +640,8 @@ export class ClasslistPage implements OnInit {
       }
       if (!responseData.success) {
         const deactivateInfo = responseData.response as { deactivate_date?: string };
-        this.deactivate_date = deactivateInfo.deactivate_date;
-        this.dataProvider.deactivate_date = deactivateInfo.deactivate_date;
+        this.deactivate_date = deactivateInfo.deactivate_date || '';
+        this.dataProvider.deactivate_date = deactivateInfo.deactivate_date || '';
         this.cdr.markForCheck();
       }
     } catch (error) {
