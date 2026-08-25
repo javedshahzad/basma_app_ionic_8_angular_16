@@ -18,7 +18,7 @@ import { HolidaysApiService } from '../service/holidays-api/holidays-api.service
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { UserPlan } from '../service/plan-api/plan-api.service';
 import { HasRoleDirective } from '../directives/has-role.directive';
 
@@ -84,13 +84,22 @@ export class StudentReportManagePage implements OnInit {
   isHoliday: boolean = false;
 
   isDeleteModalOpen: boolean = false;
-  reportToDeleteId: string | number = null;
+  reportToDeleteId: string | number | null = null;
   reportToDeleteType: string = '';
 
   isViolationModalOpen: boolean = false;
   isActionModalOpen: boolean = false;
   filteredViolations: DegreeViolation[] = [];
   filteredActions: DegreeAction[] = [];
+
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // ionViewWillEnter()'s `if (userLoggedIn)` guard has already populated
+  // it — the non-null assertion documents that invariant once instead of
+  // at every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -180,8 +189,8 @@ export class StudentReportManagePage implements OnInit {
       selectedDate: finalFormattedDate,
       student_id: this.navData.student_id,
       course_id: this.navData.course_id,
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
 
@@ -205,8 +214,8 @@ export class StudentReportManagePage implements OnInit {
     let data = {
       student_id: this.navData.student_id,
       course_id: this.navData.course_id,
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
     if (loader) this.dataProvider.showLoading();
@@ -217,16 +226,16 @@ export class StudentReportManagePage implements OnInit {
         if (loader) this.dataProvider.hideLoading();
         if (res.session) {
           if (res.data) {
-            if (res.data.suspend.length) {
+            if (res.data.suspend && res.data.suspend.length) {
               this.suspend = res.data.suspend;
               this.foundAnyReport = false;
             } else {
               this.suspend = [];
             }
-            if (res.data.exitdays.length) {
+            if (res.data.exitdays && res.data.exitdays.length) {
               this.exitdays = res.data.exitdays;
               this.exitdays.forEach(d => {
-                let spl = d.date.split(' ');
+                let spl = (d.date || '').split(' ');
                 d.date = spl[0];
                 d.time = spl[1];
               });
@@ -234,7 +243,7 @@ export class StudentReportManagePage implements OnInit {
             } else {
               this.exitdays = [];
             }
-            if (res.data.medical.length) {
+            if (res.data.medical && res.data.medical.length) {
               this.medical = res.data.medical;
               this.foundAnyReport = false;
             } else {
@@ -285,15 +294,15 @@ export class StudentReportManagePage implements OnInit {
     let data = {
       student_id: this.navData.student_id,
       course_id: this.navData.course_id,
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
     this.dataProvider
       .run(() => this.reportsApi.GetAllDegrees(data))
       .then(res => {
         console.log(res);
-        this.AllDegrees = res.data;
+        this.AllDegrees = res.data || [];
         this.cdr.markForCheck();
       });
   }
@@ -309,7 +318,7 @@ export class StudentReportManagePage implements OnInit {
     this.dataProvider.showLoading();
 
     this.reportsApi.GetAllDegreeViolations(data).then(res => {
-      let violations = res.data;
+      let violations = res.data || [];
       violations.forEach((element, index) => {
         violations[index].description = `${element.desc_number}-${element.description}`;
       });
@@ -319,7 +328,7 @@ export class StudentReportManagePage implements OnInit {
     });
 
     this.reportsApi.GetAllDegreeActions(data).then(res => {
-      let actions = res.data;
+      let actions = res.data || [];
       actions.forEach((element, index) => {
         actions[index].description = `${element.action_number}-${element.description}`;
       });
@@ -332,12 +341,12 @@ export class StudentReportManagePage implements OnInit {
 
   searchViolations(event: Event) {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.filteredViolations = this.AllDegreesViolations.filter(d => d.description.toLowerCase().indexOf(query) > -1);
+    this.filteredViolations = this.AllDegreesViolations.filter(d => (d.description || '').toLowerCase().indexOf(query) > -1);
   }
 
   searchActions(event: Event) {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.filteredActions = this.AllDegreeActions.filter(d => d.description.toLowerCase().indexOf(query) > -1);
+    this.filteredActions = this.AllDegreeActions.filter(d => (d.description || '').toLowerCase().indexOf(query) > -1);
   }
 
   selectViolation(item: DegreeViolation) {
@@ -359,8 +368,8 @@ export class StudentReportManagePage implements OnInit {
       reportType: reportType,
       student_id: this.navData.student_id,
       course_id: this.navData.course_id,
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id
     };
 
     this.reportsApi
@@ -423,8 +432,8 @@ export class StudentReportManagePage implements OnInit {
     let data = {
       student_id: this.navData.student_id,
       course_id: this.navData.course_id,
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       report_type: reportType
     };
 
@@ -467,10 +476,10 @@ export class StudentReportManagePage implements OnInit {
   printReports(type: string) {
     if (type == 'pledges') {
       let data = {
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         course_id: this.navData.course_id,
         student_id: this.navData.student_id,
-        school_id: this.userDetails.details.school_id
+        school_id: this.userInfo.school_id
       };
       this.dataProvider
         .run(() => this.reportsApi.generateStudentPledgesReportPDF(data))
@@ -511,10 +520,10 @@ export class StudentReportManagePage implements OnInit {
 
     if (type == 'callOfParent') {
       let data = {
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         course_id: this.navData.course_id,
         student_id: this.navData.student_id,
-        school_id: this.userDetails.details.school_id
+        school_id: this.userInfo.school_id
       };
       this.dataProvider
         .run(() => this.reportsApi.generateCallOfStudentPDF(data))
@@ -563,7 +572,7 @@ export class StudentReportManagePage implements OnInit {
   confirmDelete() {
     this.isDeleteModalOpen = false;
 
-    let rid = this.reportToDeleteId;
+    let rid = this.reportToDeleteId!;
     let type = this.reportToDeleteType;
 
     if (type == 'callofparent') {
@@ -579,15 +588,15 @@ export class StudentReportManagePage implements OnInit {
 
   getStudentCallOfReports() {
     let data = {
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       course_id: this.navData.course_id,
       student_id: this.navData.student_id,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userInfo.school_id
     };
     this.reportsApi.GetAllCallOfStudentReport(data).then(
       res => {
         console.log(res);
-        this.callOfStudentsReport = res.data;
+        this.callOfStudentsReport = res.data || [];
         this.cdr.markForCheck();
       },
       error => {
@@ -600,15 +609,15 @@ export class StudentReportManagePage implements OnInit {
 
   GetStudentPledgesReport() {
     let data = {
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       course_id: this.navData.course_id,
       student_id: this.navData.student_id,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userInfo.school_id
     };
     this.reportsApi.GetStudentPledgesReport(data).then(
       res => {
         console.log(res);
-        this.AllStudentPledgesReports = res.data;
+        this.AllStudentPledgesReports = res.data || [];
         this.cdr.markForCheck();
       },
       error => {
@@ -621,16 +630,16 @@ export class StudentReportManagePage implements OnInit {
   getHolidaysForOff() {
     this.dateSelected = new Date();
     let data = {
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
     this.holidaysApi
       .getHolidays(data)
       .then(response => {
         if (response) {
-          if (response.holidays.length > 0) {
-            this.holidayString = response.holiday_string;
+          if (response.holidays && response.holidays.length > 0) {
+            this.holidayString = response.holiday_string || '';
             response.holidays.forEach(holiday => {
               let date = new Date(holiday.date);
               let p = {
