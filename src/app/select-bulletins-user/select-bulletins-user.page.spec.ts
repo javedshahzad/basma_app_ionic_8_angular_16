@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { SelectBulletinsUserPage } from './select-bulletins-user.page';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('SelectBulletinsUserPage', () => {
   let component: SelectBulletinsUserPage;
@@ -16,24 +16,25 @@ describe('SelectBulletinsUserPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, SelectBulletinsUserPage],
-    providers: [
+      imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, SelectBulletinsUserPage],
+      providers: [
         { provide: AppRate, useValue: {} },
         {
-            provide: IonicStorage,
-            useValue: {
-                create: () => Promise.resolve({
-                    get: () => Promise.resolve(null),
-                    set: () => Promise.resolve(),
-                    remove: () => Promise.resolve(),
-                    clear: () => Promise.resolve()
-                })
-            }
+          provide: IonicStorage,
+          useValue: {
+            create: () =>
+              Promise.resolve({
+                get: () => Promise.resolve(null),
+                set: () => Promise.resolve(),
+                remove: () => Promise.resolve(),
+                clear: () => Promise.resolve()
+              })
+          }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SelectBulletinsUserPage);
     component = fixture.componentInstance;

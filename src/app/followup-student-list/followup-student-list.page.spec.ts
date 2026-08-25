@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { FollowupStudentListPage } from './followup-student-list.page';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('FollowupStudentListPage', () => {
   let component: FollowupStudentListPage;
@@ -16,24 +16,25 @@ describe('FollowupStudentListPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, FollowupStudentListPage],
-    providers: [
+      imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, FollowupStudentListPage],
+      providers: [
         { provide: AppRate, useValue: {} },
         {
-            provide: IonicStorage,
-            useValue: {
-                create: () => Promise.resolve({
-                    get: () => Promise.resolve(null),
-                    set: () => Promise.resolve(),
-                    remove: () => Promise.resolve(),
-                    clear: () => Promise.resolve()
-                })
-            }
+          provide: IonicStorage,
+          useValue: {
+            create: () =>
+              Promise.resolve({
+                get: () => Promise.resolve(null),
+                set: () => Promise.resolve(),
+                remove: () => Promise.resolve(),
+                clear: () => Promise.resolve()
+              })
+          }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FollowupStudentListPage);
     component = fixture.componentInstance;

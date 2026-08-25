@@ -9,7 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DummyRouteComponent } from '@app/testing/dummy-route.component';
 
 import { StudentProfileModalComponent } from './student-profile-modal.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('StudentProfileModalComponent', () => {
   let component: StudentProfileModalComponent;
@@ -38,7 +38,7 @@ describe('StudentProfileModalComponent', () => {
               })
           }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     }).compileComponents();

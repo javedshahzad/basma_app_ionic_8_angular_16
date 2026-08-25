@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { EditClassModalComponent } from './edit-class-modal.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('EditClassModalComponent', () => {
   let component: EditClassModalComponent;
@@ -16,24 +16,25 @@ describe('EditClassModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, EditClassModalComponent],
-    providers: [
+      imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, EditClassModalComponent],
+      providers: [
         { provide: AppRate, useValue: {} },
         {
-            provide: IonicStorage,
-            useValue: {
-                create: () => Promise.resolve({
-                    get: () => Promise.resolve(null),
-                    set: () => Promise.resolve(),
-                    remove: () => Promise.resolve(),
-                    clear: () => Promise.resolve()
-                })
-            }
+          provide: IonicStorage,
+          useValue: {
+            create: () =>
+              Promise.resolve({
+                get: () => Promise.resolve(null),
+                set: () => Promise.resolve(),
+                remove: () => Promise.resolve(),
+                clear: () => Promise.resolve()
+              })
+          }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(EditClassModalComponent);
     component = fixture.componentInstance;

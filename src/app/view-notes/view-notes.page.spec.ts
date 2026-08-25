@@ -10,7 +10,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DummyRouteComponent } from '@app/testing/dummy-route.component';
 
 import { ViewNotesPage } from './view-notes.page';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('ViewNotesPage', () => {
   let component: ViewNotesPage;
@@ -18,30 +18,31 @@ describe('ViewNotesPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         IonicModule.forRoot(),
         TranslateModule.forRoot(),
         RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }]),
         ViewNotesPage
-    ],
-    providers: [
+      ],
+      providers: [
         { provide: AppRate, useValue: {} },
-        { provide: PhotoViewer, useValue: { show: () => { } } },
+        { provide: PhotoViewer, useValue: { show: () => {} } },
         {
-            provide: IonicStorage,
-            useValue: {
-                create: () => Promise.resolve({
-                    get: () => Promise.resolve(null),
-                    set: () => Promise.resolve(),
-                    remove: () => Promise.resolve(),
-                    clear: () => Promise.resolve()
-                })
-            }
+          provide: IonicStorage,
+          useValue: {
+            create: () =>
+              Promise.resolve({
+                get: () => Promise.resolve(null),
+                set: () => Promise.resolve(),
+                remove: () => Promise.resolve(),
+                clear: () => Promise.resolve()
+              })
+          }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ViewNotesPage);
     component = fixture.componentInstance;

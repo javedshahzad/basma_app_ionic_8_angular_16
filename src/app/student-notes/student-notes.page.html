@@ -35,7 +35,7 @@
             <div class="relative shrink-0">
               <img
                 loading="lazy"
-                [src]="note?.created_by?.pic"
+                [src]="$safeNavigationMigration(note?.created_by?.pic)"
                 onerror="
                   this.onerror = null;
                   this.src = 'assets/imgs/default_avatar.png';

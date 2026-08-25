@@ -10,7 +10,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DummyRouteComponent } from '@app/testing/dummy-route.component';
 
 import { NewsPage } from './news.page';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('NewsPage', () => {
   let component: NewsPage;
@@ -18,43 +18,44 @@ describe('NewsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         IonicModule.forRoot(),
         TranslateModule.forRoot(),
         RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }]),
         NewsPage
-    ],
-    providers: [
+      ],
+      providers: [
         { provide: AppRate, useValue: {} },
         {
-            provide: GeoServiceProvider,
-            useValue: {
-                getAllCountries: (): any[] => [],
-                getEnCountries: (): any[] => [],
-                getArCountries: (): any[] => [],
-                get_country_name: () => '',
-                getCountryName: () => '',
-                getCountryDetails: () => ({}),
-                getCountryPhone: () => '',
-                getCountriesData: (): any[] => [],
-                getMyLocation: () => Promise.resolve({})
-            }
+          provide: GeoServiceProvider,
+          useValue: {
+            getAllCountries: (): any[] => [],
+            getEnCountries: (): any[] => [],
+            getArCountries: (): any[] => [],
+            get_country_name: () => '',
+            getCountryName: () => '',
+            getCountryDetails: () => ({}),
+            getCountryPhone: () => '',
+            getCountriesData: (): any[] => [],
+            getMyLocation: () => Promise.resolve({})
+          }
         },
         {
-            provide: IonicStorage,
-            useValue: {
-                create: () => Promise.resolve({
-                    get: () => Promise.resolve(null),
-                    set: () => Promise.resolve(),
-                    remove: () => Promise.resolve(),
-                    clear: () => Promise.resolve()
-                })
-            }
+          provide: IonicStorage,
+          useValue: {
+            create: () =>
+              Promise.resolve({
+                get: () => Promise.resolve(null),
+                set: () => Promise.resolve(),
+                remove: () => Promise.resolve(),
+                clear: () => Promise.resolve()
+              })
+          }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(NewsPage);
     component = fixture.componentInstance;

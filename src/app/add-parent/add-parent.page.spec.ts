@@ -10,7 +10,7 @@ import { DummyRouteComponent } from '@app/testing/dummy-route.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { AddParentPage } from './add-parent.page';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('AddParentPage', () => {
   let component: AddParentPage;
@@ -18,30 +18,31 @@ describe('AddParentPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [
+      imports: [
         IonicModule.forRoot(),
         TranslateModule.forRoot(),
         RouterTestingModule.withRoutes([{ path: 'login', component: DummyRouteComponent }]),
         ReactiveFormsModule,
         AddParentPage
-    ],
-    providers: [
+      ],
+      providers: [
         { provide: AppRate, useValue: {} },
         {
-            provide: IonicStorage,
-            useValue: {
-                create: () => Promise.resolve({
-                    get: () => Promise.resolve(null),
-                    set: () => Promise.resolve(),
-                    remove: () => Promise.resolve(),
-                    clear: () => Promise.resolve()
-                })
-            }
+          provide: IonicStorage,
+          useValue: {
+            create: () =>
+              Promise.resolve({
+                get: () => Promise.resolve(null),
+                set: () => Promise.resolve(),
+                remove: () => Promise.resolve(),
+                clear: () => Promise.resolve()
+              })
+          }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AddParentPage);
     component = fixture.componentInstance;

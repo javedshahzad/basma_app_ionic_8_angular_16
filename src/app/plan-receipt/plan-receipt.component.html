@@ -95,7 +95,7 @@
       <div class="flex justify-between items-center py-3 mt-2 bg-slate-50 rounded-xl px-4 border border-slate-100">
         <span class="text-sm font-black text-slate-500">{{ 'plan.ammount' | translate }}</span>
         <span class="text-lg font-black text-indigo-600" dir="ltr">{{
-          selectedPlan?.total_price | currency: 'USD'
+          $safeNavigationMigration(selectedPlan?.total_price) | currency: 'USD'
         }}</span>
       </div>
     </div>

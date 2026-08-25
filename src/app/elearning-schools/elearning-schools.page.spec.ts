@@ -9,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ElearningSchoolsPage } from './elearning-schools.page';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('ElearningSchoolsPage', () => {
   let component: ElearningSchoolsPage;
@@ -17,38 +17,39 @@ describe('ElearningSchoolsPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, ElearningSchoolsPage],
-    providers: [
+      imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, ElearningSchoolsPage],
+      providers: [
         { provide: AppRate, useValue: {} },
         {
-            provide: GeoServiceProvider,
-            useValue: {
-                getAllCountries: (): any[] => [],
-                getEnCountries: (): any[] => [],
-                getArCountries: (): any[] => [],
-                get_country_name: () => '',
-                getCountryName: () => '',
-                getCountryDetails: () => ({}),
-                getCountryPhone: () => '',
-                getCountriesData: (): any[] => [],
-                getMyLocation: () => Promise.resolve({})
-            }
+          provide: GeoServiceProvider,
+          useValue: {
+            getAllCountries: (): any[] => [],
+            getEnCountries: (): any[] => [],
+            getArCountries: (): any[] => [],
+            get_country_name: () => '',
+            getCountryName: () => '',
+            getCountryDetails: () => ({}),
+            getCountryPhone: () => '',
+            getCountriesData: (): any[] => [],
+            getMyLocation: () => Promise.resolve({})
+          }
         },
         {
-            provide: IonicStorage,
-            useValue: {
-                create: () => Promise.resolve({
-                    get: () => Promise.resolve(null),
-                    set: () => Promise.resolve(),
-                    remove: () => Promise.resolve(),
-                    clear: () => Promise.resolve()
-                })
-            }
+          provide: IonicStorage,
+          useValue: {
+            create: () =>
+              Promise.resolve({
+                get: () => Promise.resolve(null),
+                set: () => Promise.resolve(),
+                remove: () => Promise.resolve(),
+                clear: () => Promise.resolve()
+              })
+          }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ElearningSchoolsPage);
     component = fixture.componentInstance;

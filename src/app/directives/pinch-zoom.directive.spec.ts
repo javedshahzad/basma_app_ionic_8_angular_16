@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PinchZoomDirective } from './pinch-zoom.directive';
 
 @Component({
   template: `<img appPinchZoom [maxZoom]="4" [minZoom]="1" style="width:200px;height:200px;" />`,
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [PinchZoomDirective]
 })
 class HostComponent {}
@@ -36,7 +37,15 @@ describe('PinchZoomDirective', () => {
     // unattached-to-viewport element; stub a real rect so pan-clamping math
     // (which divides by rect width/height) has something real to work with.
     spyOn(img, 'getBoundingClientRect').and.returnValue({
-      width: 200, height: 200, top: 0, left: 0, right: 200, bottom: 200, x: 0, y: 0, toJSON: () => ({})
+      width: 200,
+      height: 200,
+      top: 0,
+      left: 0,
+      right: 200,
+      bottom: 200,
+      x: 0,
+      y: 0,
+      toJSON: () => ({})
     } as DOMRect);
   });
 

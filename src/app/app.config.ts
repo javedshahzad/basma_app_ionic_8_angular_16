@@ -1,6 +1,12 @@
 import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, importProvidersFrom } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  provideHttpClient,
+  withInterceptorsFromDi,
+  withXhr
+} from '@angular/common/http';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage-angular';
@@ -58,7 +64,7 @@ export const appConfig: ApplicationConfig = {
     },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withXhr(), withInterceptorsFromDi()),
     SentryAngular.TraceService,
     {
       provide: APP_INITIALIZER,

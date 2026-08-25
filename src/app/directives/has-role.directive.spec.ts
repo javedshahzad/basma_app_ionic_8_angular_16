@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 
@@ -10,6 +10,7 @@ import { UserType } from '../constants/user-type';
 @Component({
   template: `<div *appHasRole="[UserType.Admin, UserType.Moderator]" class="guarded">secret</div>`,
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [HasRoleDirective]
 })
 class HostComponent {
