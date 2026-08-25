@@ -1,60 +1,24 @@
-﻿import { Injectable } from '@angular/core';
-import { HttpClient, HttpEventType } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { Observable, Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Platform, LoadingController, ModalController, NavController, PopoverController } from '@ionic/angular';
-//import { HttpParams, Http, Headers } from '@angular/common/http';
 import { Network } from '@capacitor/network';
 import { DatabaseService } from '../database/database.service';
-//import { TranslateService } from '@ngx-translate/core';
-// import { PhotoLibrary } from '@awesome-cordova-plugins/photo-library/ngx';
 import { TranslateService } from '@ngx-translate/core';
-//import { EditCalssPage } from '../../common-modal/edit-calss/edit-calss.page';
-// import { ViewClassNotesPage } from '../../common-modal/view-class-notes/view-class-notes.page';
 import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
-import { BehaviorSubject } from 'rxjs';
 
 import { StorageService } from '../storage.service';
-import { Filesystem, Directory } from '@capacitor/filesystem';
 import { OverlayService } from '../overlay/overlay.service';
 import { ApiClient } from '../api-client/api-client.service';
 import { ApiResponse } from '../../model/api-response.model';
-import { UserDetails } from '../../model/logged-in-user.model';
-
-// Selection payload broadcast by select-message-user.page.ts (recipients
-// picker) — user_no can be a string or number depending on the source list,
-// the display names are always strings.
-export interface SelectedUsersPayload {
-  selectedUsers: (string | number)[];
-  selectedUsersShow: string[];
-}
+import { AppStateService } from '../app-state/app-state.service';
+import { UtilService } from '../util/util.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  // نواقل بث عامة على مستوى التطبيق — Subject بدل EventEmitter لأنها ليست
-  // ربط @Output لمكوّن، بل قنوات بث يشترك بها عدة مستهلكين مستقلين
-  // events carries either an upload-progress percentage (getStatusMessage)
-  // or a user record (triggerUserSwitch, currently unused by any caller).
-  public events: Subject<number | UserDetails | 'add'>;
-  public language: Subject<string>;
-  public selectedUsers: Subject<SelectedUsersPayload>;
-
-  // قناة اتصال مخصصة لنقل الخبر المعدل أو الجديد
-  public newsUpdated = new Subject<Record<string, unknown>>();
-
-  // Declared but never assigned/read anywhere in the app today — kept as an
-  // honest unknown rather than inventing a shape for a dead field.
-  loader: unknown;
   lang: Record<string, string> = {};
-  mediaDirectory: string = '';
-  popOver: HTMLIonPopoverElement | null = null;
   img = '';
-  unread = false;
-  private_message = false;
-  deactivate_date: string = '';
-  public uploadProgress: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   /**
    * Represents a Data provider from API.
@@ -73,12 +37,11 @@ export class DataService {
     private appRate: AppRate,
     private storageSr: StorageService,
     private overlay: OverlayService,
-    private apiClient: ApiClient
+    private apiClient: ApiClient,
+    private appState: AppStateService,
+    private util: UtilService
     // public photoLibrary: PhotoLibrary
   ) {
-    this.events = new Subject();
-    this.language = new Subject();
-    this.selectedUsers = new Subject();
     this.platform.ready().then(() => {
       setTimeout(res => {
         this.translate.get('alertmessages').subscribe(res => {
@@ -86,9 +49,6 @@ export class DataService {
           // console.log(this.translate.instant('alertmessages'))
         });
       }, 2000);
-    });
-    this.language.subscribe(res => {
-      environment.lang_code = res;
     });
     Network.addListener('networkStatusChange', status => {
       if (status.connected) {
@@ -99,21 +59,29 @@ export class DataService {
     });
   }
 
-  // دالة مساعدة لاستقبال طلب التبديل من واجهة Lineone الجديدة
-  // No current callers anywhere in the app; param typed to match the
-  // 'userloggedin' storage contract (see UserDetails) this method writes to.
-  async triggerUserSwitch(user: 'add' | UserDetails) {
-    if (user === 'add') {
-      // التوجيه لصفحة تسجيل الدخول
-    } else {
-      // الحفظ الآمن وبدون JSON.stringify
-      await this.storageSr.set('userloggedin', user);
+  // --- Passthroughs to AppStateService (Subjects + shared mutable state) ---
+  // split out along with getStatusMessage since it only exists to push onto
+  // uploadProgress/events. Getters only for the Subjects — nothing in the
+  // app ever reassigns them, only .next()/.subscribe(). unread/
+  // private_message/deactivate_date are genuinely reassigned by consumers,
+  // so those need real get/set pairs.
+  get events() { return this.appState.events; }
+  get language() { return this.appState.language; }
+  get selectedUsers() { return this.appState.selectedUsers; }
+  get newsUpdated() { return this.appState.newsUpdated; }
+  get uploadProgress() { return this.appState.uploadProgress; }
 
-      if (this.events) {
-        this.events.next(user);
-      }
-      window.location.href = '/tabs';
-    }
+  get unread() { return this.appState.unread; }
+  set unread(value: boolean) { this.appState.unread = value; }
+
+  get private_message() { return this.appState.private_message; }
+  set private_message(value: boolean) { this.appState.private_message = value; }
+
+  get deactivate_date() { return this.appState.deactivate_date; }
+  set deactivate_date(value: string) { this.appState.deactivate_date = value; }
+
+  getStatusMessage(event) {
+    return this.appState.getStatusMessage(event);
   }
 
   async openAvatarModel(pic) {
@@ -126,75 +94,6 @@ export class DataService {
       componentProps: { pic: pic }
     });
     return await modal.present();
-  }
-
-  // Function to convert base64 string to blob
-  base64toBlob(base64Data: string, contentType: string): Blob {
-    const sliceSize = 512;
-    const byteCharacters = atob(base64Data);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-      const byteNumbers = new Array(slice.length);
-
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    return new Blob(byteArrays, { type: contentType });
-  }
-  dataURItoBlob(dataURI: string): Blob {
-    const byteString = atob(dataURI.split(',')[1]);
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([ab], { type: 'image/jpeg' });
-  }
-
-  generateRandomFileName(extension: string = ''): string {
-    const timestamp = new Date().getTime();
-    const randomString = Math.random().toString(36).substring(2);
-    const fileName = `file_${timestamp}_${randomString}${extension}`;
-    return fileName;
-  }
-
-  /**
-   * This is a user rating popup
-   * @return rating in int
-   * @param ev - event
-   */
-  // No current callers anywhere in the app; callback typed loosely since
-  // RateAppComponent's dismiss payload isn't constrained by any real caller.
-  async presentRatingPopover(lang, note, callback: (result: unknown) => void) {
-    // console.log('call');
-    const { RateAppComponent } = await import('../../components/rate-app/rate-app.component');
-    const popover = await this.popoverController.create({
-      component: RateAppComponent,
-      // event: ev,
-      translucent: false,
-      mode: 'ios',
-      cssClass: 'ratePopup',
-      backdropDismiss: false,
-      componentProps: { lang: lang, data: note }
-    });
-    await popover.present();
-    popover.onDidDismiss().then(response => {
-      // console.log('call',response);
-      if (response.data) {
-        callback(response.data);
-      } else {
-        callback(false);
-      }
-    });
   }
 
   showRatePrompt(lang) {
@@ -226,37 +125,16 @@ export class DataService {
     });
     await popover.present();
   }
-  /**
-   * This is a user defined loader
-   * @param ev - event
-   */
-  async presentPopover(ev: unknown) {
-    // 🔴 حماية إضافية: التأكد من إغلاق أي نافذة سابقة قبل فتح واحدة جديدة
-    if (this.popOver) {
-      this.closePopup();
-    }
 
-    this.popOver = await this.overlay.createLoader(true);
-  }
-
-  // 🔴 الكود الآمن لإغلاق النافذة
-  closePopup() {
-    if (this.popOver) {
-      this.overlay.dismissLoader(this.popOver);
-      this.popOver = null;
-    }
-  }
-
+  // --- Passthroughs to OverlayService (loader/toast/alert orchestration) ---
   /** Show Loading popup. */
   async showLoading() {
-    this.presentPopover('');
+    return this.overlay.showLoading();
   }
 
   /** Hide loading popup. */
   async hideLoading() {
-    setTimeout(() => {
-      this.closePopup();
-    }, 900);
+    return this.overlay.hideLoading();
   }
 
   /**
@@ -268,12 +146,7 @@ export class DataService {
    * show/hide duplication.
    */
   async run<T>(work: () => Promise<T>): Promise<T> {
-    this.showLoading();
-    try {
-      return await work();
-    } finally {
-      this.hideLoading();
-    }
+    return this.overlay.run(work);
   }
 
   /**
@@ -288,7 +161,7 @@ export class DataService {
    * @param {String} error - Error message to display
    */
   async errorALertMessage(error: string) {
-    await this.overlay.presentAlert('تحذير', this.removeUrlFromString(error), ['Ok'], undefined, false);
+    await this.overlay.errorAlert(error);
   }
 
   removeUrlFromString(inputString) {
@@ -299,22 +172,9 @@ export class DataService {
    * @param {String} msg - Error message to display
    */
   async msgALertMessage(msg: string) {
-    await this.overlay.presentAlert('معلومات', msg, ['Ok'], undefined, false);
+    await this.overlay.infoAlert(msg);
   }
 
-  getStatusMessage(event) {
-    let status;
-    switch (event.type) {
-      case HttpEventType.UploadProgress:
-        status = Math.round((100 * event.loaded) / event.total);
-        this.uploadProgress.next(status);
-        this.events.next(status);
-        return status;
-
-      case HttpEventType.Response:
-        return `Done`;
-    }
-  }
   /** Post request function.
    * @param {Object} data - contains the properties to post to API
    * @param {String} slug - contains the API method to call
@@ -334,63 +194,47 @@ export class DataService {
   }
 
   /**
-   * get date in yyyy-mm-dd
-   * @param date date object
-   */
-  getFormatedDate(date: Date) {
-    let m = date.getMonth() + 1;
-    return date.getFullYear() + '-' + m + '-' + date.getDate();
-  }
-
-  /**
    * Check whether network is available or not
    */
   getNetworkInformation(): Promise<boolean> {
     return this.apiClient.getNetworkInformation();
   }
 
+  // --- Passthroughs to UtilService (pure helper functions) ---
+  base64toBlob(base64Data: string, contentType: string): Blob {
+    return this.util.base64toBlob(base64Data, contentType);
+  }
+
+  dataURItoBlob(dataURI: string): Blob {
+    return this.util.dataURItoBlob(dataURI);
+  }
+
+  generateRandomFileName(extension: string = ''): string {
+    return this.util.generateRandomFileName(extension);
+  }
+
+  /**
+   * get date in yyyy-mm-dd
+   * @param date date object
+   */
+  getFormatedDate(date: Date) {
+    return this.util.getFormatedDate(date);
+  }
+
   /**
    * Download image
    * @param url image url
    */
-  /**
-   * Download image (Modern Capacitor Way)
-   * @param url image url
-   */
   downloadImage(url: string): Promise<boolean> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let n = new Date().valueOf();
-        let fileName = `Download_${n}.png`;
-
-        // استخدام تقنية كاباسيتور الحديثة للتحميل المباشر بدون مكتبات خارجية
-        const result = await Filesystem.downloadFile({
-          url: encodeURI(url),
-          path: fileName,
-          directory: Directory.Documents // حفظ آمن وموحد للاندرويد والايفون
-        });
-
-        console.log('تم التحميل بنجاح: ', result);
-        resolve(true);
-      } catch (error) {
-        console.error('خطأ في التحميل: ', error);
-        reject(this.lang?.usnexpectedError || 'حدث خطأ غير متوقع أثناء التحميل');
-      }
-    });
+    return this.util.downloadImage(url);
   }
+
   caclulateHours(start, end) {
-    var date1: Date = new Date(end);
-    var date2: Date = new Date(start);
-    var diffInSeconds = Math.abs(date1.getTime() - date2.getTime()) / 1000;
-    var days = Math.floor(diffInSeconds / 60 / 60 / 24);
-    var hours = Math.floor((diffInSeconds / 60 / 60) % 24);
-    var minutes = Math.floor((diffInSeconds / 60) % 60);
-    var seconds = Math.floor(diffInSeconds % 60);
-    var milliseconds = Math.round((diffInSeconds - Math.floor(diffInSeconds)) * 1000);
-    return `${hours}:${minutes}:${seconds}`;
+    return this.util.caclulateHours(start, end);
   }
+
   addHoursToDate(date: Date, hours: number): Date {
-    return new Date(new Date(date).setHours(date.getHours() + hours));
+    return this.util.addHoursToDate(date, hours);
   }
 }
 

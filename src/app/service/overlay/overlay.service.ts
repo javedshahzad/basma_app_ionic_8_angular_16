@@ -6,6 +6,7 @@ import { LoaderComponent } from '../../components/loader/loader.component';
   providedIn: 'root'
 })
 export class OverlayService {
+  private popOver: HTMLIonPopoverElement | null = null;
 
   constructor(
     private popoverController: PopoverController,
@@ -55,5 +56,57 @@ export class OverlayService {
       duration: 3000
     });
     await toast.present();
+  }
+
+  /** Shows the single-instance loading popover, split out of DataService.
+   * Dismisses any already-open one first so repeat calls can't stack loaders. */
+  async show(): Promise<void> {
+    if (this.popOver) {
+      this.hide();
+    }
+    this.popOver = await this.createLoader(true);
+  }
+
+  hide(): void {
+    if (this.popOver) {
+      this.dismissLoader(this.popOver);
+      this.popOver = null;
+    }
+  }
+
+  async showLoading(): Promise<void> {
+    await this.show();
+  }
+
+  /** Hide loading popup. */
+  async hideLoading(): Promise<void> {
+    setTimeout(() => {
+      this.hide();
+    }, 900);
+  }
+
+  /**
+   * Wraps an API call with showLoading()/hideLoading(), guaranteeing
+   * hideLoading() always fires even if the call throws — unlike the
+   * hand-written show/hide pairs scattered across pages, a missed
+   * catch branch here can't leave the spinner stuck. Success/error
+   * handling stays with the caller; this only removes the mechanical
+   * show/hide duplication.
+   */
+  async run<T>(work: () => Promise<T>): Promise<T> {
+    this.showLoading();
+    try {
+      return await work();
+    } finally {
+      this.hideLoading();
+    }
+  }
+
+  async errorAlert(error: string): Promise<void> {
+    await this.presentAlert('تحذير', this.removeUrlFromString(error), ['Ok'], undefined, false);
+  }
+
+  async infoAlert(msg: string): Promise<void> {
+    await this.presentAlert('معلومات', msg, ['Ok'], undefined, false);
   }
 }
