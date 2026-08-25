@@ -13,7 +13,8 @@ export const environment = {
 
 
     // serverURL: "https://basmapp.com/development/app_service_new/",
-    serverURL: "https://basmapp.com/BasmaCP/app_service_new/",
+    // serverURL: "https://basmapp.com/BasmaCP/app_service_new/",
+    serverURL: "https://staging.basmapp.com/api/v1/",
     lang_code: 'en',
     docUrl:"https://basmapp.com/BasmaCP/",
     ipinfoToken: "eebb6806073dbe",
