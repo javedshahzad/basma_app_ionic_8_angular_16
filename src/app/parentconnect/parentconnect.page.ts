@@ -22,7 +22,7 @@ import { UserType } from '../constants/user-type';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { DateFormatPipe } from '../pipes/date-format/date-format.pipe';
 import { HasRoleDirective } from '../directives/has-role.directive';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 
 @Component({
     selector: 'app-parentconnect',
@@ -49,6 +49,15 @@ export class ParentconnectPage {
 
   private destroyRef = inject(DestroyRef);
   private isInitialLoadDone = false;
+
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // ionViewWillEnter()/reloadData()'s `if (userLoggedIn && userLoggedIn.
+  // details)` guard has already populated it — the non-null assertion
+  // documents that invariant once instead of at every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -91,7 +100,7 @@ export class ParentconnectPage {
 
     if (userLoggedIn && userLoggedIn.details) {
       this.userDetails = userLoggedIn;
-      this.userType = this.userDetails.details.user_type;
+      this.userType = this.userInfo.user_type || '';
 
       // 🟢 تحديد مسار العودة الصحيح بناءً على نوع المستخدم
       if (this.userType == UserType.Admin) {
@@ -122,7 +131,7 @@ export class ParentconnectPage {
     let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn && userLoggedIn.details) {
       this.userDetails = userLoggedIn;
-      this.userType = this.userDetails.details.user_type;
+      this.userType = this.userInfo.user_type || '';
       this.getAllChats(false); // تحديث صامت
     } else {
       this.authProvider.flushLocalStorage();
@@ -133,10 +142,10 @@ export class ParentconnectPage {
 
   getAllChats(showLoader: boolean = true) {
     let data = {
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id,
-      user_type: this.userDetails.details.user_type
+      user_type: this.userInfo.user_type
     };
 
     if (showLoader) {
@@ -157,7 +166,7 @@ export class ParentconnectPage {
             this.noDataFound = this.lang.no_connect_msg || 'لا توجد محادثات';
           }
         } else {
-          this.dataProvider.errorALertMessage(response.message);
+          this.dataProvider.errorALertMessage(response.message || '');
           this.router.navigate(['login'], { replaceUrl: true });
         }
         this.cdr.markForCheck();
@@ -240,18 +249,18 @@ export class ParentconnectPage {
           cssClass: 'text-emerald-600 font-bold',
           handler: () => {
             let data = {
-              user_no: this.userDetails.details.user_no,
-              chat_list_id: chat.id,
-              session_id: this.userDetails.session_id
+              user_no: this.userInfo.user_no!,
+              chat_list_id: chat.id!,
+              session_id: this.userDetails.session_id!
             };
             this.dataProvider
               .run(() => this.parentConnectApi.closeParentConnectChat(data))
               .then((response) => {
                 if (response.session) {
                   chat.ticket_status = '1';
-                  this.dataProvider.showToast(response.message);
+                  this.dataProvider.showToast(response.message || '');
                 } else {
-                  this.dataProvider.errorALertMessage(response.message);
+                  this.dataProvider.errorALertMessage(response.message || '');
                 }
                 this.cdr.markForCheck();
               })
@@ -278,18 +287,18 @@ export class ParentconnectPage {
           cssClass: 'text-indigo-600 font-bold',
           handler: () => {
             let data = {
-              user_no: this.userDetails.details.user_no,
-              chat_list_id: chat.id,
-              session_id: this.userDetails.session_id
+              user_no: this.userInfo.user_no!,
+              chat_list_id: chat.id!,
+              session_id: this.userDetails.session_id!
             };
             this.dataProvider
               .run(() => this.parentConnectApi.reopenParentConnectChat(data))
               .then((response) => {
                 if (response.session) {
                   chat.ticket_status = '0';
-                  this.dataProvider.showToast(response.message);
+                  this.dataProvider.showToast(response.message || '');
                 } else {
-                  this.dataProvider.errorALertMessage(response.message);
+                  this.dataProvider.errorALertMessage(response.message || '');
                 }
                 this.cdr.markForCheck();
               })
