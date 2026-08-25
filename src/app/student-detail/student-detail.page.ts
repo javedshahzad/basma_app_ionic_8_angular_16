@@ -113,8 +113,8 @@ export class StudentDetailPage {
   student_detailse: Record<string, string>;
   student_points: number[] = [];
   id: string | number;
-  callOfStudentsReport = [];
-  AllStudentPledgesReports = [];
+  callOfStudentsReport: any[] = [];
+  AllStudentPledgesReports: any[] = [];
   AvailablePlan: UserPlan;
   editNoteData: StudentNote;
 
@@ -1154,7 +1154,7 @@ export class StudentDetailPage {
     }
   }
 
-  async openNoteModal(mode, note_mode, note, note_id) {
+  async openNoteModal(mode: string, note_mode: string, note: any, note_id: string | number | '') {
     if (mode === 'note') {
       if (note_mode === 'edit') {
         this.canAddStudentNote = true;
@@ -1233,7 +1233,7 @@ export class StudentDetailPage {
           text: this.planLang.cancel,
           role: 'cancel',
           cssClass: 'secondary',
-          handler: blah => {
+          handler: () => {
             console.log('Confirm Cancel: blah');
           }
         },
@@ -1311,7 +1311,7 @@ export class StudentDetailPage {
     }
   }
 
-  printReport(type) {
+  printReport(type: string) {
     let planData = {
       user_no: this.userDetails.details.user_no,
       report_type: type
@@ -1409,7 +1409,7 @@ export class StudentDetailPage {
         text: this.planLang.cancel,
         role: 'cancel',
         cssClass: 'secondary',
-        handler: blah => {
+        handler: () => {
           console.log('Confirm Cancel: blah');
         }
       },
@@ -1425,7 +1425,7 @@ export class StudentDetailPage {
         text: 'Ok',
         role: 'cancel',
         cssClass: 'secondary',
-        handler: blah => {
+        handler: () => {
           console.log('Confirm Cancel: blah');
         }
       }
@@ -1447,7 +1447,7 @@ export class StudentDetailPage {
         text: 'Ok',
         role: 'cancel',
         cssClass: 'secondary',
-        handler: blah => {
+        handler: () => {
           console.log('Confirm Cancel: blah');
         }
       }
@@ -1470,7 +1470,7 @@ export class StudentDetailPage {
     }
   }
 
-  getArabicDayName(dateString) {
+  getArabicDayName(dateString: string) {
     const [year, month, day] = dateString.split('-');
     const date = new Date(Number(year), Number(month) - 1, Number(day));
     const formatter = new Intl.DateTimeFormat('ar', { weekday: 'long' });
@@ -1507,7 +1507,7 @@ export class StudentDetailPage {
     }
   }
 
-  sendPushMessageToStudentParent(msg) {
+  sendPushMessageToStudentParent(msg: string) {
     let studentData = {
       student_id: this.userDetails.details.school_id,
       message: msg,
@@ -1561,7 +1561,7 @@ export class StudentDetailPage {
     );
   }
 
-  printReports(type) {
+  printReports(type: string) {
     if (type == 'pledges') {
       let data = {
         user_no: this.userDetails.details.user_no,

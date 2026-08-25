@@ -218,7 +218,7 @@ export class SendmessagePage {
     this.startUpload(this.ticketImage, data);
   }
 
-  uploadToServer(data, imgBlob?: any, fileName?: any) {
+  uploadToServer(data: any, imgBlob?: any, fileName?: any) {
     this.formdata = new FormData();
 
     this.formdata.append('user_no', data.user_no);
@@ -290,7 +290,7 @@ export class SendmessagePage {
     this.ticketImage = '';
   }
 
-  startUpload(imgEntry, data) {
+  startUpload(imgEntry: any, data: any) {
     if (imgEntry) {
       this.blob = this.dataProvider.base64toBlob(imgEntry, 'jpg');
       this.readFile('', data);
@@ -299,12 +299,12 @@ export class SendmessagePage {
     }
   }
 
-  readFile(file: any, data) {
+  readFile(file: any, data: any) {
     this.uploadToServer(data, this.blob, this.dataProvider.generateRandomFileName('jpg'));
   }
 
-  portChange(event) {
-    let send_to = {
+  portChange(event: any) {
+    let send_to: Record<string, boolean> = {
       parents: false,
       mod: false,
       tech: false,
@@ -313,7 +313,7 @@ export class SendmessagePage {
       viewer: false,
       students: false
     };
-    event.value.forEach(res => {
+    event.value.forEach((res: any) => {
       send_to[res.user_id] = true;
       this.mail.send_to = send_to;
     });

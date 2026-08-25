@@ -147,7 +147,7 @@ export class TasksCalendarPage implements OnInit {
             let i = 0;
             this.classes = courses;
 
-            this.classes.forEach(course => {
+            this.classes.forEach((course: any) => {
               course.backgroundColor = this.classBackgroundColor[i];
               i++;
               if (i == 9) i = 0;
@@ -195,15 +195,15 @@ export class TasksCalendarPage implements OnInit {
   }
 
   // دالة تحديد الصفوف (تبقى كما هي لأنها تعمل بشكل ممتاز)
-  selectUser(course, eve, id) {
+  selectUser(course: any, eve: any, id: any) {
     if (eve.detail.checked == true) {
       // التأكد من عدم إضافة نفس الصف مرتين
-      let exists = this.selectedClass.find(c => c.cid === course.cid);
+      let exists = this.selectedClass.find((c: any) => c.cid === course.cid);
       if (!exists) {
         this.selectedClass.push(course);
       }
     } else {
-      this.selectedClass.find((inc, ix) => {
+      this.selectedClass.find((inc: any, ix: any) => {
         if (inc.cid == course.cid) {
           this.selectedClass.splice(ix, 1);
         }

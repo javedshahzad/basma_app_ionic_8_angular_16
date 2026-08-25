@@ -106,7 +106,7 @@ export class ListStudentPage {
     canBackwardsSelected: true,
     from: 1,
     to: 0,
-    disableWeeks: [],
+    disableWeeks: <unknown[]>[],
     daysConfig: <unknown[]>[]
   };
   canAddStudent: boolean = false;
@@ -306,7 +306,7 @@ export class ListStudentPage {
     // إذا كانت الحصة مقفلة، نظهر تنبيه "للمعاينة فقط" ولكن لا نمنع الدخول
     if (isLocked && !canSplitTeacherEnter) {
       let semKey = 'sem-' + p;
-      let teacherName = this.attendanceResponse?.semteacher?.[semKey]?.teacher;
+      let teacherName = this.getSemTeacherEntry(semKey)?.teacher;
 
       if (teacherName) {
         this.dataProvider.showToast(`تم رصدها بواسطة: ${teacherName} (للمعاينة فقط)`);
@@ -421,6 +421,16 @@ export class ListStudentPage {
       });
   }
 
+  // semteacher's declared type is a union with unknown[] (the backend
+  // sends an empty array instead of an object when there's no data for
+  // this class yet) — narrow it here once instead of casting at every
+  // string-keyed access site.
+  private getSemTeacherEntry(semKey: string): { teacher?: string; user_no?: string | number } | undefined {
+    const semteacher = this.attendanceResponse?.semteacher;
+    if (!semteacher || Array.isArray(semteacher)) return undefined;
+    return semteacher[semKey];
+  }
+
   hasSubmittedTodayInThisClass(): boolean {
     if (!this.attendanceResponse?.students) return false;
     let myUserNo = String(this.userDetails.details.user_no);
@@ -429,8 +439,9 @@ export class ListStudentPage {
     if (this.attendanceResponse.semteacher) {
       for (let i = 1; i <= totalSem; i++) {
         let semKey = 'sem-' + i;
-        if (this.attendanceResponse.semteacher[semKey]) {
-          let recUserNo = this.attendanceResponse.semteacher[semKey].user_no;
+        let entry = this.getSemTeacherEntry(semKey);
+        if (entry) {
+          let recUserNo = entry.user_no;
           if (recUserNo != null && String(recUserNo) === myUserNo) return true;
         }
       }
@@ -837,8 +848,9 @@ export class ListStudentPage {
         }
       }
 
-      if (this.attendanceResponse.semteacher && this.attendanceResponse.semteacher[semKey]) {
-        let recUserNo = this.attendanceResponse.semteacher[semKey].user_no;
+      let semteacherEntry = this.getSemTeacherEntry(semKey);
+      if (semteacherEntry) {
+        let recUserNo = semteacherEntry.user_no;
         if (recUserNo && String(recUserNo) === myUserNo) {
           isMine = true;
         }
@@ -913,8 +925,9 @@ export class ListStudentPage {
           let isMineCheck = false;
           let semKey = 'sem-' + i;
 
-          if (this.attendanceResponse.semteacher && this.attendanceResponse.semteacher[semKey]) {
-            let rec = this.attendanceResponse.semteacher[semKey].user_no;
+          let semteacherEntry = this.getSemTeacherEntry(semKey);
+          if (semteacherEntry) {
+            let rec = semteacherEntry.user_no;
             if (rec && String(rec) === myUserNo) isMineCheck = true;
           }
 
@@ -1123,10 +1136,10 @@ export class ListStudentPage {
     }
 
     let semKey = 'sem-' + (sem + 1);
-    let isMarked = this.attendanceResponse?.semteacher && this.attendanceResponse.semteacher[semKey];
+    let semteacherEntry = this.getSemTeacherEntry(semKey);
 
-    if (isMarked && !this.editMode) {
-      this.dataProvider.showToast('تم الرصد بواسطة: ' + this.attendanceResponse.semteacher[semKey].teacher);
+    if (semteacherEntry && !this.editMode) {
+      this.dataProvider.showToast('تم الرصد بواسطة: ' + semteacherEntry.teacher);
       return;
     }
 
@@ -1417,7 +1430,7 @@ export class ListStudentPage {
       });
   }
 
-  addNewStudent(data, response) {
+  addNewStudent(data: any, response: any) {
     data.student_id = parseInt(data.student_id);
     if (Number.isInteger(data.student_id)) {
       this.dataProvider

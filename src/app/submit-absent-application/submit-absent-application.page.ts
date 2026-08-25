@@ -27,9 +27,9 @@ export class SubmitAbsentApplicationPage implements OnInit {
   UserData: any;
   absentDates: any;
   absentSeminars: any;
-  seminarsList = [];
+  seminarsList: any[] = [];
   selectedDate: any = '';
-  selectedSeminar = [];
+  selectedSeminar: any[] = [];
   notes: any = '';
   userDetails: any;
   lang: any;
@@ -94,7 +94,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
     this.cdr.markForCheck();
   }
 
-  OnchangeDate(event) {
+  OnchangeDate(event: any) {
     const value = event.detail.value;
     this.selectedDate = this.absentDates[value];
     this.seminarsList = this.absentSeminars[value];
@@ -103,11 +103,11 @@ export class SubmitAbsentApplicationPage implements OnInit {
     this.selectedSeminar = [];
   }
 
-  OnchangeSeminar(event) {
+  OnchangeSeminar(event: any) {
     const value = event.detail.value;
-    const semsList = [];
+    const semsList: any[] = [];
 
-    value.forEach(element => {
+    value.forEach((element: any) => {
       const numMatch = String(element).match(/\d+/);
       if (numMatch) {
         semsList.push(numMatch[0]);

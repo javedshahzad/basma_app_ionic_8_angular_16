@@ -57,7 +57,7 @@ export class StudentReportManagePage implements OnInit {
   userDetails: LoggedInUser = { details: {} };
 
   exitdays: ExitDayRecord[] = [];
-  callOfStudentsReport = [];
+  callOfStudentsReport: any[] = [];
   isExitToday: boolean = false;
   medical: LeaveRecord[] = [];
   suspend: LeaveRecord[] = [];
@@ -76,7 +76,7 @@ export class StudentReportManagePage implements OnInit {
     canBackwardsSelected: true,
     from: 1,
     to: 0,
-    disableWeeks: [],
+    disableWeeks: <unknown[]>[],
     daysConfig: <unknown[]>[]
   };
   currentEvents: unknown[] = [];
@@ -260,7 +260,7 @@ export class StudentReportManagePage implements OnInit {
     this.getStudentCallOfReports();
   }
 
-  changeReportType(event) {
+  changeReportType(event: any) {
     this.formData.reportType = event.detail.value;
     if (event.detail.value == 'suspend') {
       var tomorrow = new Date();
@@ -298,11 +298,11 @@ export class StudentReportManagePage implements OnInit {
       });
   }
 
-  OnselectDegree(event) {
+  OnselectDegree(event: any) {
     this.getAllActionsAndViolations(event.target.value);
   }
 
-  getAllActionsAndViolations(degreeId) {
+  getAllActionsAndViolations(degreeId: string) {
     let data = {
       degree_id: degreeId
     };
@@ -352,7 +352,7 @@ export class StudentReportManagePage implements OnInit {
     this.isActionModalOpen = false;
   }
 
-  deleteReport(rid, reportType) {
+  deleteReport(rid: string | number, reportType: string) {
     console.log(rid);
     let data = {
       id: rid,
@@ -379,7 +379,7 @@ export class StudentReportManagePage implements OnInit {
       });
   }
 
-  deleteCallOfParentReport(id) {
+  deleteCallOfParentReport(id: string | number) {
     let data = {
       id: id
     };
@@ -399,7 +399,7 @@ export class StudentReportManagePage implements OnInit {
       });
   }
 
-  deletePledgesReport(id) {
+  deletePledgesReport(id: string | number) {
     let data = {
       id: id
     };
@@ -464,7 +464,7 @@ export class StudentReportManagePage implements OnInit {
       });
   }
 
-  printReports(type) {
+  printReports(type: string) {
     if (type == 'pledges') {
       let data = {
         user_no: this.userDetails.details.user_no,
