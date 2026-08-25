@@ -21,7 +21,7 @@ import { ParentConnectApiService, ParentConnectChat, ChatMessage } from '../serv
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { LinkyPipe } from '../pipes/linky.pipe';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 
 @Component({
     selector: 'app-connect-chat',
@@ -51,6 +51,15 @@ export class ConnectChatPage implements OnDestroy {
   lang: Record<string, string> = {};
   image: string = '';
   navData: ParentConnectChat;
+
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // ionViewWillEnter()'s `if (userLoggedIn && userLoggedIn.details)` guard
+  // has already populated it — the non-null assertion documents that
+  // invariant once instead of at every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -105,7 +114,7 @@ export class ConnectChatPage implements OnDestroy {
         this.messages.push({
           datetime: this.chat.created,
           message: this.chat.message,
-          receiver: this.userDetails.details.user_type == UserType.Admin ? 'true' : 'false',
+          receiver: this.userInfo.user_type == UserType.Admin ? 'true' : 'false',
           msg_from: this.chat.parent_user_no,
           msg_to: this.chat.school_id,
           attachment_url: this.chat.message_image,
@@ -162,11 +171,11 @@ export class ConnectChatPage implements OnDestroy {
 
   getInitialChat() {
     let data = {
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
-      user_type: this.userDetails.details.user_type,
-      session_id: this.userDetails.session_id,
-      chat_id: this.chat.id,
+      user_no: this.userInfo.user_no!,
+      school_id: this.userInfo.school_id!,
+      user_type: this.userInfo.user_type || '',
+      session_id: this.userDetails.session_id!,
+      chat_id: this.chat.id!,
       last_msg_id: 0
     };
 
@@ -174,18 +183,19 @@ export class ConnectChatPage implements OnDestroy {
       .run(() => this.parentConnectApi.getParentConnectChatMessages(data))
       .then((response) => {
         if (response.session) {
-          let length = response.chat.length;
+          let chat = response.chat || [];
+          let length = chat.length;
           if (length > 0) {
-            response.chat.forEach((message) => {
+            chat.forEach((message) => {
               this.messages.push(message);
             });
             this.syncVisibleMessages();
-            this.lastMessageId = response.chat[length - 1].id as number;
+            this.lastMessageId = chat[length - 1].id as number;
             this.scrollToBottom();
           }
           this.cdr.markForCheck();
         } else {
-          this.dataProvider.errorALertMessage(response.message);
+          this.dataProvider.errorALertMessage(response.message || '');
           this.router.navigate(['login'], { replaceUrl: true });
         }
       })
@@ -194,11 +204,11 @@ export class ConnectChatPage implements OnDestroy {
 
   getChats(lastMessageId: number) {
     let data = {
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
-      user_type: this.userDetails.details.user_type,
-      session_id: this.userDetails.session_id,
-      chat_id: this.chat.id,
+      user_no: this.userInfo.user_no!,
+      school_id: this.userInfo.school_id!,
+      user_type: this.userInfo.user_type || '',
+      session_id: this.userDetails.session_id!,
+      chat_id: this.chat.id!,
       last_msg_id: lastMessageId
     };
 
@@ -206,11 +216,12 @@ export class ConnectChatPage implements OnDestroy {
       .getParentConnectChatMessages(data)
       .then((response) => {
         if (response.session) {
-          let length = response.chat.length;
+          let chat = response.chat || [];
+          let length = chat.length;
           if (length > 0) {
             let msgLength = this.messages.length;
-            response.chat.forEach((message) => {
-              if (msgLength > 0 && message.id < this.messages[msgLength - 1].id) {
+            chat.forEach((message) => {
+              if (msgLength > 0 && (message.id ?? 0) < (this.messages[msgLength - 1].id ?? 0)) {
                 this.messages.push(message);
               } else {
                 let msg = this.messages.filter((oldMsg) => oldMsg.id == message.id);
@@ -220,12 +231,12 @@ export class ConnectChatPage implements OnDestroy {
               }
             });
             this.syncVisibleMessages();
-            this.lastMessageId = response.chat[length - 1].id as number;
+            this.lastMessageId = chat[length - 1].id as number;
             this.scrollToBottom();
           }
           this.cdr.markForCheck();
         } else {
-          this.dataProvider.errorALertMessage(response.message);
+          this.dataProvider.errorALertMessage(response.message || '');
           if (this.chatInterval) clearInterval(this.chatInterval);
           this.router.navigate(['login'], { replaceUrl: true });
         }
@@ -258,31 +269,31 @@ export class ConnectChatPage implements OnDestroy {
 
         let data: Record<string, unknown> = {};
         if (
-          this.userDetails.details.user_type == UserType.Parent ||
-          this.userDetails.details.user_type == UserType.Student
+          this.userInfo.user_type == UserType.Parent ||
+          this.userInfo.user_type == UserType.Student
         ) {
           data = {
             session_id: this.userDetails.session_id,
-            user_no: this.userDetails.details.user_no,
-            user_type: this.userDetails.details.user_type,
+            user_no: this.userInfo.user_no,
+            user_type: this.userInfo.user_type,
             chat_msg: {
               connect_id: this.chat.id,
-              msg_from: this.userDetails.details.user_no,
-              msg_to: this.userDetails.details.school_id,
+              msg_from: this.userInfo.user_no,
+              msg_to: this.userInfo.school_id,
               message: this.message,
               attachment_url: this.attachment
             }
           };
-        } else if (this.userDetails.details.user_type == UserType.Admin) {
+        } else if (this.userInfo.user_type == UserType.Admin) {
           data = {
             session_id: this.userDetails.session_id,
-            user_no: this.userDetails.details.user_no,
-            user_type: this.userDetails.details.user_type,
+            user_no: this.userInfo.user_no,
+            user_type: this.userInfo.user_type,
             chat_msg: {
               connect_id: this.chat.id,
-              msg_from: this.userDetails.details.school_id,
+              msg_from: this.userInfo.school_id,
               msg_to: this.chat.parent_user_no,
-              admin_user_no: this.userDetails.details.user_no,
+              admin_user_no: this.userInfo.user_no,
               message: this.message,
               attachment_url: this.attachment
             }
@@ -297,7 +308,7 @@ export class ConnectChatPage implements OnDestroy {
           )
           .then((response) => {
             if (response.session) {
-              this.dataProvider.showToast(response.message);
+              this.dataProvider.showToast(response.message || '');
               if (this.lastMessageId < Number(response.msg_id)) {
                 if (response.attachment_url) {
                   this.messages.push({
@@ -319,7 +330,7 @@ export class ConnectChatPage implements OnDestroy {
               this.message = '';
               this.attachment = '';
             } else {
-              this.dataProvider.errorALertMessage(response.message);
+              this.dataProvider.errorALertMessage(response.message || '');
               this.router.navigate(['login'], { replaceUrl: true });
             }
             this.cdr.markForCheck();
