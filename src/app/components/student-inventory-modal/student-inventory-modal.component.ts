@@ -71,22 +71,22 @@ export class StudentInventoryModalComponent {
         .getStudentInventory(body)
         .then((res) => {
           if (res && res.success) {
-            this.studentWallet = res.wallet;
+            this.studentWallet = res.wallet || {};
             this.unlockedTitles = res.unlocked_titles || [];
             this.unlockedBadges = res.unlocked_badges || [];
 
             let rawActive = res.active_title;
             if (rawActive !== undefined && rawActive !== null && rawActive !== 'null' && rawActive !== '') {
               this.activeCraftedTitle =
-                typeof rawActive === 'object'
+                (typeof rawActive === 'object'
                   ? rawActive.title_ar || rawActive.title_name || rawActive.title
-                  : rawActive;
+                  : rawActive) || null;
               this.activeCraftedTitleChange.emit(this.activeCraftedTitle);
             }
 
             if (this.gamification) {
               this.studentTitleChange.emit(
-                this.gamification.getFinalStudentTitle(this.activeCraftedTitle, this.skillData, this.totalPoints)
+                this.gamification.getFinalStudentTitle(this.activeCraftedTitle || '', this.skillData, this.totalPoints)
               );
               this.processedTitles = this.gamification.processTitles(this.unlockedTitles);
               this.processedBadges = this.gamification.processBadges(this.unlockedBadges);
@@ -128,11 +128,11 @@ export class StudentInventoryModalComponent {
       const raw = await this.dataProvider.run(() => this.studentEngagement.craftSkillTitle(body));
       const res = raw as { success?: boolean; msg?: string };
       if (res.success) {
-        this.dataProvider.showToast(res.msg);
+        this.dataProvider.showToast(res.msg || '');
         await this.fetchInventory();
         this.skillsRefreshNeeded.emit();
       } else {
-        this.dataProvider.errorALertMessage(res.msg);
+        this.dataProvider.errorALertMessage(res.msg || '');
       }
     } catch (e) {}
   }
@@ -150,10 +150,10 @@ export class StudentInventoryModalComponent {
       if (res.success) {
         this.activeCraftedTitle = titleCode;
         this.activeCraftedTitleChange.emit(this.activeCraftedTitle);
-        this.dataProvider.showToast(res.msg);
+        this.dataProvider.showToast(res.msg || '');
 
         this.studentTitleChange.emit(
-          this.gamification.getFinalStudentTitle(titleCode, this.skillData, this.totalPoints)
+          this.gamification.getFinalStudentTitle(titleCode || '', this.skillData, this.totalPoints)
         );
         this.cdr.markForCheck();
       }

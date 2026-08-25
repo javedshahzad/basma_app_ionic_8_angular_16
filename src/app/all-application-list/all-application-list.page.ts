@@ -7,7 +7,7 @@ import { DatePipe, NgIf, NgFor, NgClass } from '@angular/common';
 import { AbsentApplicationApiService, AbsentApplication } from '../service/absent-application-api/absent-application-api.service';
 import { StorageService } from '../service/storage.service';
 import { TranslatePipe } from '@ngx-translate/core';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 
 @Component({
     selector: 'app-all-application-list',
@@ -31,6 +31,15 @@ export class AllApplicationListPage implements OnInit {
   private visibleCount = 0;
 
   calendarDate: string = '';
+
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // ngOnInit()'s `this.userDetails = await this.storageSr.get(...)` has
+  // already populated it — the non-null assertion documents that
+  // invariant once instead of at every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -65,15 +74,15 @@ export class AllApplicationListPage implements OnInit {
   async getAbsentApplication() {
     if (this.userDetails) {
       let data = {
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         session_id: this.userDetails.session_id,
-        school_id: this.userDetails.details.school_id,
+        school_id: this.userInfo.school_id,
         datetime: this.SelectedDate
       };
       try {
         const res = await this.dataProvider.run(() => this.absentApplicationApi.getAbsentApplication(data));
         console.log(res);
-        this.AllAvailableApplications = res.data;
+        this.AllAvailableApplications = res.data || [];
         this.resetVisibleApplications();
         this.cdr.markForCheck();
       } catch (error) {
@@ -98,9 +107,9 @@ export class AllApplicationListPage implements OnInit {
 
   submitApplication(application: AbsentApplication, status: string) {
     let data = {
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       session_id: this.userDetails.session_id,
-      school_id: this.userDetails.details.school_id,
+      school_id: this.userInfo.school_id,
       application_status: status, // 0 for pending, 1 for accept,2 for reject
       cid: application.cid,
       sid: application.sid,
@@ -113,7 +122,7 @@ export class AllApplicationListPage implements OnInit {
         if (res.success) {
           this.getAbsentApplication();
         } else {
-          this.dataProvider.showToast(res.msg);
+          this.dataProvider.showToast(res.msg || '');
         }
       },
       error => {

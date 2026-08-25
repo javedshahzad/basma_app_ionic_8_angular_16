@@ -244,7 +244,11 @@ public products_ios = [
            console.log('productId',productId);
           
     try {
-      let product = this.iap2.get(productId).getOffer().order().then((p) => {
+      // iap2/get()/getOffer() are only unset on platforms or for products
+      // where checkout() is never reachable (the store/register/initialize
+      // sequence above always runs first on native ios/android, and
+      // productId always comes from the products list registered there).
+      let product = this.iap2!.get(productId)!.getOffer()!.order().then((p) => {
         this.dataService.hideLoading();
       console.log('Purchase Succesful' + JSON.stringify(p));
     }).catch((e) => {
@@ -269,7 +273,7 @@ public products_ios = [
     }
   }
   registerHandlersForPurchase(productId: any, pData: any, PlanData?: any) {
-    this.iap2.when().approved((transaction) => {
+    this.iap2!.when().approved((transaction) => {
       console.log("transaction == ",transaction)
       if (transaction.products && transaction.products[0] && transaction.products[0].id === productId) {
           transaction.finish();
@@ -303,7 +307,7 @@ public products_ios = [
               this.paymentDone=true;
                 this.fcmService.getPlan.next(true);
               this.showreceiptModal(PlanData,receipt);
-              this.iap2.refresh();
+              this.iap2!.refresh();
 
           },e=>{
               this.dataService.showToast('Error in processing payment');
@@ -330,7 +334,7 @@ public products_ios = [
               this.dataService.showToast('Plan subscribed Successfully');
                 this.fcmService.getPlan.next(true);
               this.showreceiptModal(PlanData,receipt);
-              this.iap2.refresh();
+              this.iap2!.refresh();
            
 
           },e=>{
@@ -349,7 +353,7 @@ public products_ios = [
   //     productId = this.products[pid].googleProductId;
   //   }
     
-  //   this.iap2.refresh();
+  //   this.iap2!.refresh();
   //   callback(true);
   // }
 

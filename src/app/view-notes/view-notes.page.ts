@@ -69,10 +69,11 @@ export class ViewNotesPage implements OnInit {
     });
 
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-      if (this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras.state) {
-        if (!this.router.getCurrentNavigation().extras.state['isUpdated']) {
-          this.navData = this.router.getCurrentNavigation().extras.state['course'];
-          this.state = this.router.getCurrentNavigation().extras.state;
+      const navigationState = this.router.getCurrentNavigation()?.extras?.state;
+      if (navigationState) {
+        if (!navigationState['isUpdated']) {
+          this.navData = navigationState['course'];
+          this.state = navigationState;
         } else {
           // 🟢 3. استدعاء الدالة غير المتزامنة بشكل صحيح
           this.initializeData(false);
@@ -89,8 +90,9 @@ export class ViewNotesPage implements OnInit {
 
   // 🟢 5. جلب بيانات المستخدم بشكل آمن (بدون localStorage)
   async initializeData(loader: boolean = true) {
-    if (this.router.getCurrentNavigation()?.extras?.state) {
-      this.navData = this.router.getCurrentNavigation().extras.state['course'];
+    const navigationState = this.router.getCurrentNavigation()?.extras?.state;
+    if (navigationState) {
+      this.navData = navigationState['course'];
     }
 
     let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
