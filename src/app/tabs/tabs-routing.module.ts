@@ -12,7 +12,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../classlist/classlist.page').then(m => m.ClasslistPage)
+            loadComponent: () => import('../classlist/classlist.page').then(m => m.ClasslistPage),
+            data: { preload: true }
           }
         ]
       },
@@ -21,7 +22,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../delaylist/delaylist.page').then(m => m.DelaylistPage)
+            loadComponent: () => import('../delaylist/delaylist.page').then(m => m.DelaylistPage),
+            data: { preload: true }
           }
         ]
       },
@@ -30,7 +32,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../news/news.page').then(m => m.NewsPage)
+            loadComponent: () => import('../news/news.page').then(m => m.NewsPage),
+            data: { preload: true }
           }
         ]
       },
@@ -39,7 +42,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../messages/messages.page').then(m => m.MessagesPage)
+            loadComponent: () => import('../messages/messages.page').then(m => m.MessagesPage),
+            data: { preload: true }
           }
         ]
       },
@@ -48,7 +52,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../parentconnect/parentconnect.page').then(m => m.ParentconnectPage)
+            loadComponent: () => import('../parentconnect/parentconnect.page').then(m => m.ParentconnectPage),
+            data: { preload: true }
           }
         ]
       },
@@ -57,7 +62,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../children/children.page').then(m => m.ChildrenPage)
+            loadComponent: () => import('../children/children.page').then(m => m.ChildrenPage),
+            data: { preload: true }
           }
         ]
       },
@@ -66,7 +72,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../private-message/private-message.page').then(m => m.PrivateMessagePage)
+            loadComponent: () => import('../private-message/private-message.page').then(m => m.PrivateMessagePage),
+            data: { preload: true }
           }
         ]
       },
@@ -75,7 +82,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../student-notes/student-notes.page').then(m => m.StudentNotesPage)
+            loadComponent: () => import('../student-notes/student-notes.page').then(m => m.StudentNotesPage),
+            data: { preload: true }
           }
         ]
       },
@@ -84,7 +92,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../elearning-schools/elearning-schools.page').then(m => m.ElearningSchoolsPage)
+            loadComponent: () => import('../elearning-schools/elearning-schools.page').then(m => m.ElearningSchoolsPage),
+            data: { preload: true }
           }
         ]
       },
@@ -93,7 +102,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../warning-report/warning-report.page').then(m => m.WarningReportPage)
+            loadComponent: () => import('../warning-report/warning-report.page').then(m => m.WarningReportPage),
+            data: { preload: true }
           }
         ]
       },
@@ -102,14 +112,15 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../follow-up-student/follow-up-student.page').then(m => m.FollowUpStudentPage)
+            loadComponent: () => import('../follow-up-student/follow-up-student.page').then(m => m.FollowUpStudentPage),
+            data: { preload: true }
           }
         ]
       },
       {
         path: 'student-titles',
         children: [
-          { path: '', loadComponent: () => import('../student-titles/student-titles.page').then(m => m.StudentTitlesPage) }
+          { path: '', loadComponent: () => import('../student-titles/student-titles.page').then(m => m.StudentTitlesPage), data: { preload: true } }
         ]
       },
       {

@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
-import { NoPreloading, RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guard/auth.guard';
 import { RoleGuard } from './guard/role.guard';
 import { UserType } from './constants/user-type';
+import { SelectivePreloadingStrategyService } from './service/selective-preloading-strategy/selective-preloading-strategy.service';
 
 const routes: Routes = [
   {
@@ -295,7 +296,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: NoPreloading })
+    RouterModule.forRoot(routes, { preloadingStrategy: SelectivePreloadingStrategyService })
   ],
   exports: [RouterModule]
 })
