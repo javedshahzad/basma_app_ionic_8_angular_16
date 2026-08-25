@@ -12,5 +12,5 @@ export const environment = {
   docUrl: "https://basmapp.com/BasmaCP/",
   ipinfoToken: "eebb6806073dbe",
   // اتركه فارغاً في staging حتى لا تُرسَل أخطاء بيئة الاختبار إلى Sentry
-  sentryDsn: ""
+  sentryDsn: "https://559fc7bf2e03cf467e6fd52eb5c763a9@o4511849267855360.ingest.de.sentry.io/4511849284960336"
 };
