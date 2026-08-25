@@ -28,7 +28,7 @@ import { FormsModule } from '@angular/forms';
 import { SupervisorViewComponent } from '../components/supervisor-view/supervisor-view.component';
 import { TeacherViewComponent } from '../components/teacher-view/teacher-view.component';
 import { Student } from '../model/student.model';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { AttendanceResponse } from '../model/attendance-response.model';
 import { UserPlan } from '../service/plan-api/plan-api.service';
 import { Course } from '../service/courses-api/courses-api.service';
@@ -115,7 +115,7 @@ export class ListStudentPage {
   show_loading: boolean = false;
   student_detailse: Record<string, string>;
   student_points: number[] = [];
-  interval: ReturnType<typeof setInterval>;
+  interval: ReturnType<typeof setInterval> | null = null;
   AvailablePlan: UserPlan;
 
   totalRemaining: number = 0;
@@ -163,6 +163,15 @@ export class ListStudentPage {
   }
   get canAddStudentRole(): boolean {
     return this.isAdmin || this.canAddStudent;
+  }
+
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // onInitPage()'s `if (userLoggedIn)` guard has already populated it —
+  // the non-null assertion documents that invariant once instead of at
+  // 27 separate access sites.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
   }
 
   constructor(
@@ -245,14 +254,14 @@ export class ListStudentPage {
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      this.userRole = this.userDetails.details.user_type as UserRole;
-      this.teacherType = (this.userDetails.details.teacher_type as TeacherTypeEnum) || TeacherTypeEnum.Regular;
+      this.userRole = this.userInfo.user_type as UserRole;
+      this.teacherType = (this.userInfo.teacher_type as TeacherTypeEnum) || TeacherTypeEnum.Regular;
       this.isTeacher = this.isTeacherUser;
       this.cdr.markForCheck();
 
       let data = {
-        user_no: this.userDetails.details.user_no,
-        school_id: this.userDetails.details.school_id,
+        user_no: this.userInfo.user_no,
+        school_id: this.userInfo.school_id,
         session_id: this.userDetails.session_id
       };
 
@@ -260,7 +269,7 @@ export class ListStudentPage {
         .getHolidays(data)
         .then(response => {
           if (response && response.holidays && response.holidays.length > 0) {
-            this.holidayString = response.holiday_string;
+            this.holidayString = response.holiday_string || '';
 
             let day = this.dateSelected.getDate().toString().padStart(2, '0');
             let month = (this.dateSelected.getMonth() + 1).toString().padStart(2, '0');
@@ -298,7 +307,7 @@ export class ListStudentPage {
     let canSplitTeacherEnter = false;
     if (this.teacherType === TeacherTypeEnum.Split && this.attendanceResponse?.students) {
       canSplitTeacherEnter = this.attendanceResponse.students.some(student => {
-        let val = student.sheet['cem-' + p];
+        let val = student.sheet?.['cem-' + p];
         return val === undefined || val === null || String(val).trim() === '';
       });
     }
@@ -326,7 +335,7 @@ export class ListStudentPage {
 
   isAnyModifiedPeriodIncomplete(): boolean {
     return this.attendanceManager.isAnyModifiedPeriodIncomplete(
-      this.attendanceResponse.students,
+      this.attendanceResponse.students || [],
       this.attendanceSheet,
       this.totalSemArray.length
     );
@@ -339,36 +348,37 @@ export class ListStudentPage {
 
     let studentData = {
       date: this.dataProvider.getFormatedDate(this.dateSelected),
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       session_id: this.userDetails.session_id,
       course_id: course?.cid || '',
-      school_id: this.userDetails.details.school_id
+      school_id: this.userInfo.school_id
     };
 
     this.attendanceApi
       .getClassStudentList(studentData)
       .then(async res => {
         this.show_loading = false;
-        if (res.session) {
-          this.canAddStudent = this.userType == UserRole.Moderator && res.data.canAddStudent;
+        if (res.session && res.data) {
+          const data = res.data;
+          this.canAddStudent = this.userType == UserRole.Moderator && !!data.canAddStudent;
           this.attMarkBegin = false;
           this.canEdit = false;
           this.selectedSem = -1;
-          this.attendanceResponse = res.data;
+          this.attendanceResponse = data;
           this.attendanceSheet = {};
           this.removeSheet = {};
           this.attMarked = false;
           this.editMode = false;
-          this.lastSemAtt = parseInt(String(res.data.last_cem));
+          this.lastSemAtt = parseInt(String(data.last_cem));
 
           // 🟢 تخزين آمن لـ totalsems
-          if (res.data.totalsems) {
-            await this.storageSr.set('class_total_sem', res.data.totalsems);
-            this.totalSem = parseInt(res.data.totalsems);
+          if (data.totalsems) {
+            await this.storageSr.set('class_total_sem', data.totalsems);
+            this.totalSem = parseInt(data.totalsems);
           }
 
           setTimeout(() => {
-            this.students = JSON.parse(JSON.stringify(res.data.students || []));
+            this.students = JSON.parse(JSON.stringify(data.students || []));
             this.totalSemArray = new Array(this.totalSem);
 
             this.calculateAttendanceStats();
@@ -392,10 +402,11 @@ export class ListStudentPage {
                 this.lockedPeriods = []; // إفراغ الحصص للمشاهد
               }
 
-              if (this.teacherType === TeacherTypeEnum.Split && this.attendanceResponse?.students) {
+              const splitStudents = this.attendanceResponse?.students;
+              if (this.teacherType === TeacherTypeEnum.Split && splitStudents) {
                 this.lockedPeriods = this.lockedPeriods.filter(period => {
-                  return this.attendanceResponse.students.every(student => {
-                    let val = student.sheet['cem-' + period];
+                  return splitStudents.every(student => {
+                    let val = student.sheet?.['cem-' + period];
                     return val !== undefined && val !== null && String(val).trim() !== '';
                   });
                 });
@@ -410,7 +421,7 @@ export class ListStudentPage {
           this.cdr.markForCheck();
         } else {
           this.authProvider.flushLocalStorage();
-          this.dataProvider.errorALertMessage(res.message);
+          this.dataProvider.errorALertMessage(res.message || '');
           this.router.navigate(['login'], { replaceUrl: true });
           this.cdr.markForCheck();
         }
@@ -433,7 +444,7 @@ export class ListStudentPage {
 
   hasSubmittedTodayInThisClass(): boolean {
     if (!this.attendanceResponse?.students) return false;
-    let myUserNo = String(this.userDetails.details.user_no);
+    let myUserNo = String(this.userInfo.user_no);
     let totalSem = this.attendanceResponse.totalsems ? parseInt(this.attendanceResponse.totalsems) : 7;
 
     if (this.attendanceResponse.semteacher) {
@@ -449,7 +460,7 @@ export class ListStudentPage {
 
     for (let student of this.attendanceResponse.students) {
       for (let i = 1; i <= totalSem; i++) {
-        let enteredBy = student.sheet['entered_by-' + i];
+        let enteredBy = student.sheet?.['entered_by-' + i];
         if (enteredBy != null && String(enteredBy) === myUserNo) return true;
       }
     }
@@ -457,8 +468,9 @@ export class ListStudentPage {
   }
 
   getStudentPeriodLockStatus(student: Student, period: number): string {
-    let enteredBy = student.sheet['entered_by-' + period];
-    let val = student.sheet['cem-' + period];
+    const sheet = student.sheet || {};
+    let enteredBy = sheet['entered_by-' + period];
+    let val = sheet['cem-' + period];
     let currentStatus = String(val).trim();
     let semKey = 'cem-' + period;
 
@@ -466,7 +478,7 @@ export class ListStudentPage {
     let isPastDate = this.isTeacher && !this.checkCurrentDate(this.dateSelected);
 
     // 1. استثناء التأخير
-    let isDelayed = currentStatus === '3' || student.sheet.absentDueToDelay === '1';
+    let isDelayed = currentStatus === '3' || sheet.absentDueToDelay === '1';
     if (isDelayed) return 'delayed';
 
     // 2. الفحص السحري للتعديلات المحلية (يعمل فقط لليوم الحالي)
@@ -487,7 +499,7 @@ export class ListStudentPage {
     // 🔒 4. تفعيل وضع المعاينة الإجباري للأيام السابقة
     if (isPastDate) {
       // نعرضه كقالب مقفل (سواء رصدته أنت أم الإدارة أم كان فارغاً)
-      return String(enteredBy) === String(this.userDetails.details.user_no) ? 'locked_mine' : 'locked_other';
+      return String(enteredBy) === String(this.userInfo.user_no) ? 'locked_mine' : 'locked_other';
     }
 
     // 5. التحقق الفعلي من بصمة السيرفر لليوم الحالي
@@ -499,7 +511,7 @@ export class ListStudentPage {
       String(enteredBy) !== '';
 
     if (hasValidEnteredBy) {
-      if (String(enteredBy) === String(this.userDetails.details.user_no)) {
+      if (String(enteredBy) === String(this.userInfo.user_no)) {
         return this.canEdit ? 'open' : 'locked_mine';
       } else {
         return 'locked_other';
@@ -518,7 +530,7 @@ export class ListStudentPage {
 
   getStudentPoints() {
     this.gamificationApi.getPointsValue().then(res => {
-      this.student_points = res.points;
+      this.student_points = res.points || [];
       this.cdr.markForCheck();
     });
   }
@@ -555,12 +567,12 @@ export class ListStudentPage {
   checkTeacherEditPowers(): Promise<void> {
     return new Promise(resolve => {
       this.dataProvider
-        .postRequest<TeacherEditPowersResponse>({}, 'ManroxTeacherAllowedForEditChk/' + this.userDetails.details.user_no)
+        .postRequest<TeacherEditPowersResponse>({}, 'ManroxTeacherAllowedForEditChk/' + this.userInfo.user_no)
         .then(res => {
           // postRequest resolves `false` on an empty/no-record response;
           // treated as "no data" here exactly like `undefined` would be.
           const response = res as TeacherEditPowersResponse | undefined;
-          this.teacherType = response?.teacher_type;
+          this.teacherType = (response?.teacher_type as TeacherTypeEnum) || TeacherTypeEnum.Regular;
 
           this.clearTimerSafely(); // 🟢 استخدام الدالة الآمنة
           this.timeLeft = 0;
@@ -570,7 +582,7 @@ export class ListStudentPage {
             this.canEdit = true;
 
             if (response.isSubmitted && response.allotedtime != null) {
-              this.timeLeft = response.allotedtime - response.time_diffrence;
+              this.timeLeft = response.allotedtime - (response.time_diffrence || 0);
 
               if (this.timeLeft > 0) {
                 this.canEdit = true;
@@ -600,7 +612,7 @@ export class ListStudentPage {
   checkModeratorEditPowers(): Promise<void> {
     return new Promise(resolve => {
       this.dataProvider
-        .postRequest({}, 'ManroxModeratorAllowedForEditChk/' + this.userDetails.details.user_no)
+        .postRequest({}, 'ManroxModeratorAllowedForEditChk/' + this.userInfo.user_no)
         .then(response => {
           if (response) {
             let currentDate = new Date();
@@ -657,10 +669,10 @@ export class ListStudentPage {
   updateStudentLiveStats(student: Student) {
     let requestData = {
       date: this.dataProvider.getFormatedDate(this.dateSelected),
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       session_id: this.userDetails.session_id,
       course_id: this.navData?.cid || '',
-      school_id: this.userDetails.details.school_id
+      school_id: this.userInfo.school_id
     };
 
     this.followupFieldsApi
@@ -771,7 +783,7 @@ export class ListStudentPage {
     let totalCount = this.attendanceResponse.students.length;
 
     for (let i = 0; i < totalCount; i++) {
-      let status = String(this.attendanceResponse.students[i].sheet[semKey]).trim();
+      let status = String(this.attendanceResponse.students[i].sheet?.[semKey]).trim();
       if (status === '0' || status === '1' || status === '3') {
         markedCount++;
       }
@@ -792,7 +804,7 @@ export class ListStudentPage {
     let canEditToday = this.isTeacher && this.canEdit && this.checkCurrentDate(this.dateSelected);
     // 👈 معرفة ما إذا كنا في وضع التاريخ القديم
     let isPastDate = this.isTeacher && !this.checkCurrentDate(this.dateSelected);
-    let myUserNo = String(this.userDetails.details.user_no);
+    let myUserNo = String(this.userInfo.user_no);
 
     for (let i = 1; i <= totalSem; i++) {
       let status = this.getPeriodStatus(i);
@@ -812,11 +824,12 @@ export class ListStudentPage {
         let otherNonDelayRecordsCount = 0;
 
         for (let student of this.attendanceResponse.students) {
-          let val = student.sheet['cem-' + i];
-          let enteredBy = student.sheet['entered_by-' + i];
+          const sheet = student.sheet || {};
+          let val = sheet['cem-' + i];
+          let enteredBy = sheet['entered_by-' + i];
           let currentStatus = String(val).trim();
 
-          let isDelayed = currentStatus === '3' || student.sheet.absentDueToDelay === '1';
+          let isDelayed = currentStatus === '3' || sheet.absentDueToDelay === '1';
           let isUnmarked =
             val === undefined ||
             val === null ||
@@ -888,11 +901,12 @@ export class ListStudentPage {
         let hasActualOtherRecords = false;
 
         for (let student of this.attendanceResponse.students) {
-          let val = student.sheet['cem-' + i];
+          const sheet = student.sheet || {};
+          let val = sheet['cem-' + i];
           let currentStatus = String(val).trim();
-          let enteredBy = student.sheet['entered_by-' + i];
+          let enteredBy = sheet['entered_by-' + i];
 
-          let isDelayed = currentStatus === '3' || student.sheet.absentDueToDelay === '1';
+          let isDelayed = currentStatus === '3' || sheet.absentDueToDelay === '1';
           let isUnmarked =
             val == null || currentStatus === '' || currentStatus === 'undefined' || currentStatus === 'null';
 
@@ -933,7 +947,7 @@ export class ListStudentPage {
 
           if (!isMineCheck) {
             for (let student of this.attendanceResponse.students) {
-              if (String(student.sheet['entered_by-' + i]) === myUserNo) {
+              if (String(student.sheet?.['entered_by-' + i]) === myUserNo) {
                 isMineCheck = true;
                 break;
               }
@@ -960,16 +974,18 @@ export class ListStudentPage {
 
   setTeacherAttendance(student: Student, status: string) {
     if (this.lockedPeriods.includes(this.currentActivePeriod)) return;
+    if (!student.sheet) student.sheet = {};
+    const sheet = student.sheet;
 
-    let enteredBy = student.sheet['entered_by-' + this.currentActivePeriod];
-    let val = student.sheet['cem-' + this.currentActivePeriod];
+    let enteredBy = sheet['entered_by-' + this.currentActivePeriod];
+    let val = sheet['cem-' + this.currentActivePeriod];
     let currentStatus = String(val).trim();
     let isUnmarked = val == null || currentStatus === '' || currentStatus === 'undefined' || currentStatus === 'null';
 
     // يعتبر السجل محفوظاً في الداتابيز فقط إذا كان له مدخل (حضور أو غياب) وليس فارغاً
     let isSavedInDb = enteredBy && enteredBy !== 'null' && enteredBy !== '0' && !isUnmarked;
 
-    if (isSavedInDb && String(enteredBy) !== String(this.userDetails.details.user_no) && !this.canEdit) {
+    if (isSavedInDb && String(enteredBy) !== String(this.userInfo.user_no) && !this.canEdit) {
       this.dataProvider.showToast('عفواً، تم تسجيل هذا الطالب مسبقاً.');
       return;
     }
@@ -983,10 +999,10 @@ export class ListStudentPage {
     }
 
     if (status === '-1') {
-      student.sheet[semKey] = 'undefined';
+      sheet[semKey] = 'undefined';
       delete this.attendanceSheet[semKey]['sid-' + student.sid];
     } else {
-      student.sheet[semKey] = status;
+      sheet[semKey] = status;
       this.attendanceSheet[semKey]['sid-' + student.sid] = status;
     }
 
@@ -1004,23 +1020,26 @@ export class ListStudentPage {
       this.attMarkBegin = true;
     }
 
-    this.attendanceResponse.students.forEach((student: Student) => {
-      let enteredBy = student.sheet['entered_by-' + this.currentActivePeriod];
-      let val = student.sheet[semKey];
+    (this.attendanceResponse.students || []).forEach((student: Student) => {
+      if (!student.sheet) student.sheet = {};
+      const sheet = student.sheet;
+
+      let enteredBy = sheet['entered_by-' + this.currentActivePeriod];
+      let val = sheet[semKey];
       let currentStatus = String(val).trim();
 
-      let isDelayed = currentStatus === '3' || student.sheet.absentDueToDelay === '1';
+      let isDelayed = currentStatus === '3' || sheet.absentDueToDelay === '1';
       let isUnmarked = val == null || currentStatus === '' || currentStatus === 'undefined' || currentStatus === 'null';
 
       let isSavedInDb = enteredBy && enteredBy !== 'null' && enteredBy !== '0' && !isUnmarked;
-      let isMine = String(enteredBy) === String(this.userDetails.details.user_no);
+      let isMine = String(enteredBy) === String(this.userInfo.user_no);
 
       if (!isDelayed && (!isSavedInDb || isMine || this.canEdit)) {
         if (status === '-1') {
-          student.sheet[semKey] = 'undefined';
+          sheet[semKey] = 'undefined';
           delete this.attendanceSheet[semKey]['sid-' + student.sid];
         } else {
-          student.sheet[semKey] = status;
+          sheet[semKey] = status;
           this.attendanceSheet[semKey]['sid-' + student.sid] = status;
         }
       }
@@ -1040,9 +1059,12 @@ export class ListStudentPage {
       return;
     }
 
+    if (!student.sheet) student.sheet = {};
+    const sheet = student.sheet;
+
     // 🟢 السحر هنا: منع تعديل التأخير نهائياً لأي مستخدم!
-    let currentStatus = student.sheet['cem-' + (sem + 1)];
-    if (String(currentStatus) === '3' || student.sheet.absentDueToDelay === '1') {
+    let currentStatus = sheet['cem-' + (sem + 1)];
+    if (String(currentStatus) === '3' || sheet.absentDueToDelay === '1') {
       this.dataProvider.showToast('لا يمكن تعديل التأخير من هنا. يرجى تعديله من سجل التأخير.');
       return;
     }
@@ -1070,7 +1092,7 @@ export class ListStudentPage {
       return;
     }
 
-    if (this.isRestrictedModerator && student.sheet['entered_by-' + (sem + 1)]) {
+    if (this.isRestrictedModerator && sheet['entered_by-' + (sem + 1)]) {
       this.dataProvider.showToast('لا تملك صلاحية لتعديل غياب تم رصده مسبقاً');
       return;
     }
@@ -1084,11 +1106,11 @@ export class ListStudentPage {
     let newStatus =
       currentStatus == '1' ? '0' : currentStatus == '0' ? (this.isModeratorWithEdit ? '1' : 'undefined') : '1';
 
-    student.sheet['cem-' + (sem + 1)] = newStatus;
+    sheet['cem-' + (sem + 1)] = newStatus;
 
     if (newStatus === 'undefined') {
       delete this.attendanceSheet['cem-' + (sem + 1)]['sid-' + student.sid];
-      this.removeSheet[sem + 1 + '-' + student.sid] = { sid: student.sid, sem: sem + 1 };
+      this.removeSheet[sem + 1 + '-' + student.sid] = { sid: student.sid!, sem: sem + 1 };
     } else {
       this.attendanceSheet['cem-' + (sem + 1)]['sid-' + student.sid] = newStatus;
       if (this.removeSheet[sem + 1 + '-' + student.sid]) delete this.removeSheet[sem + 1 + '-' + student.sid];
@@ -1099,28 +1121,30 @@ export class ListStudentPage {
 
   changeStatusAllStudents(student: Student, sem: number, status: string) {
     if (this.isHoliday) return;
+    if (!student.sheet) student.sheet = {};
+    const sheet = student.sheet;
 
     // 🟢 السحر هنا: استثناء الطالب المتأخر من التغيير الجماعي
-    let currentStatus = student.sheet['cem-' + (sem + 1)];
-    if (String(currentStatus) === '3' || student.sheet.absentDueToDelay === '1') {
+    let currentStatus = sheet['cem-' + (sem + 1)];
+    if (String(currentStatus) === '3' || sheet.absentDueToDelay === '1') {
       return; // تجاهل هذا الطالب وابقه متأخراً
     }
 
     if (this.isRestrictedModerator && !this.checkCurrentDate(this.dateSelected)) return;
     if (this.isModeratorWithEdit && !this.isTodayOrYesterday(this.dateSelected)) return;
     if (!this.isTeacherUser && !this.editMode && !this.isRestrictedModerator) return;
-    if (this.isRestrictedModerator && student.sheet['entered_by-' + (sem + 1)]) return;
+    if (this.isRestrictedModerator && sheet['entered_by-' + (sem + 1)]) return;
 
     if (this.attendanceSheet['cem-' + (sem + 1)] == undefined) {
       this.attendanceSheet['cem-' + (sem + 1)] = {};
       this.attMarkBegin = true;
     }
 
-    student.sheet['cem-' + (sem + 1)] = status;
+    sheet['cem-' + (sem + 1)] = status;
 
     if (status === 'undefined') {
       delete this.attendanceSheet['cem-' + (sem + 1)]['sid-' + student.sid];
-      this.removeSheet[sem + 1 + '-' + student.sid] = { sid: student.sid, sem: sem + 1 };
+      this.removeSheet[sem + 1 + '-' + student.sid] = { sid: student.sid!, sem: sem + 1 };
     } else {
       this.attendanceSheet['cem-' + (sem + 1)]['sid-' + student.sid] = status;
       if (this.removeSheet[sem + 1 + '-' + student.sid]) delete this.removeSheet[sem + 1 + '-' + student.sid];
@@ -1193,7 +1217,7 @@ export class ListStudentPage {
       }
     }
 
-    this.attendanceResponse.students.forEach((student: Student) => {
+    (this.attendanceResponse.students || []).forEach((student: Student) => {
       this.changeStatusAllStudents(student, sem, status);
     });
   }
@@ -1207,10 +1231,11 @@ export class ListStudentPage {
     );
   }
 
-  async takePicture(event?: Event) {
+  async takePicture(event: Event) {
     const result = await this.studentEngagement.captureAvatarImage(event, this.lang);
     if (result.base64) {
-      this.zone.run(() => this.ChangeStudentProfileAvatar(result.base64));
+      const base64 = result.base64;
+      this.zone.run(() => this.ChangeStudentProfileAvatar(base64));
     } else if (result.action === 'avatar') {
       this.zone.run(() => this.OpenAvatarModel());
     }
@@ -1263,9 +1288,9 @@ export class ListStudentPage {
     try {
       const result = await this.dataProvider.run(() =>
         this.studentEngagement.uploadAvatar(base64Data, {
-          user_no: this.userDetails.details.user_no,
-          session_id: this.userDetails.session_id,
-          sid: this.student.sid
+          user_no: this.userInfo.user_no!,
+          session_id: this.userDetails.session_id!,
+          sid: this.student.sid!
         })
       );
 
@@ -1299,7 +1324,7 @@ export class ListStudentPage {
         this.dataProvider.showToast('تم تحديث الصورة بنجاح');
       } else {
         this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(result.message);
+        this.dataProvider.errorALertMessage(result.message || '');
       }
     } catch (error: unknown) {
       this.dataProvider.errorALertMessage((error as { message?: string })?.message || 'حدث خطأ في الاتصال بالخادم.');
@@ -1339,14 +1364,14 @@ export class ListStudentPage {
     this.dataProvider.showLoading();
     let data: AttendanceSubmitPayload = {
       sheet: this.attendanceSheet,
-      user_no: this.userDetails.details.user_no,
-      session_id: this.userDetails.session_id,
+      user_no: this.userInfo.user_no!,
+      session_id: this.userDetails.session_id!,
       cid: this.navData?.cid as string | number,
       date: this.dataProvider.getFormatedDate(this.dateSelected),
       removal_sheet: this.removeSheet,
-      school_id: this.userDetails.details.school_id,
-      user_type: String(this.userDetails.details.user_type || '1'),
-      username: this.userDetails.details.first_name || this.userDetails.details.username || 'الإدارة'
+      school_id: this.userInfo.school_id!,
+      user_type: String(this.userInfo.user_type || '1'),
+      username: this.userInfo.first_name || this.userInfo.username || 'الإدارة'
     };
 
     if (await this.isOnline()) {
@@ -1386,7 +1411,7 @@ export class ListStudentPage {
 
   checkAttendence(): boolean {
     return this.attendanceManager.isPeriodAttendanceComplete(
-      this.attendanceResponse.students,
+      this.attendanceResponse.students || [],
       this.currentActivePeriod,
       this.attendanceSheet
     );
@@ -1412,7 +1437,7 @@ export class ListStudentPage {
   }
 
   checkPlanAndRegister() {
-    let data = { school_id: this.userDetails.details.school_id };
+    let data = { school_id: this.userInfo.school_id };
 
     this.dataProvider
       .run(() => this.schoolDirectoryApi.getCountStudents(data))
@@ -1438,8 +1463,8 @@ export class ListStudentPage {
           this.registrationApi.registerStudent({
             name: data.student_name,
             student_id: data.student_id,
-            user_no: this.userDetails.details.user_no,
-            school_id: this.userDetails.details.school_id,
+            user_no: this.userInfo.user_no,
+            school_id: this.userInfo.school_id,
             course_id: this.courseInfo.cid
           })
         )
@@ -1448,7 +1473,7 @@ export class ListStudentPage {
             this.getStudents(false);
             this.dataProvider.showToast(this.lang.create_student_success_msg);
           } else {
-            this.dataProvider.showToast(res.message);
+            this.dataProvider.showToast(res.message || '');
           }
         })
         .catch(err => {
@@ -1478,7 +1503,7 @@ export class ListStudentPage {
   async awardSkillPoints(student: Student, skillType: string, point: number) {
     let body = {
       sid: String(student.sid),
-      userId: String(this.userDetails.details.user_no),
+      userId: String(this.userInfo.user_no),
       points: '+' + point,
       skill_type: skillType
     };
@@ -1516,7 +1541,7 @@ export class ListStudentPage {
     let data = {
       sid: student.sid,
       note: message,
-      user_id: this.userDetails.details.user_no,
+      user_id: this.userInfo.user_no,
       rating: 0,
       new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
       date: this.dataProvider.getFormatedDate(this.dateSelected),
@@ -1537,7 +1562,7 @@ export class ListStudentPage {
     let data = {
       sid: student.sid,
       note: message,
-      user_id: this.userDetails.details.user_no,
+      user_id: this.userInfo.user_no,
       rating: stars,
       new_rating: JSON.stringify(stars),
       date: this.dataProvider.getFormatedDate(this.dateSelected),
@@ -1630,7 +1655,7 @@ export class ListStudentPage {
       practical: Number(student?.practical || 0)
     };
     return this.gamification.getFinalStudentTitle(
-      student?.active_crafted_title || null,
+      student?.active_crafted_title || '',
       skillsData,
       Number(student?.student_points || 0)
     );
