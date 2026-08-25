@@ -15,6 +15,11 @@
       "@constants/*": ["./src/app/constants/*"]
     },
     "strict": false,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "useUnknownInCatchVariables": true,
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,

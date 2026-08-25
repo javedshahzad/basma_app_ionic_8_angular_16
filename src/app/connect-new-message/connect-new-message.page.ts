@@ -83,7 +83,7 @@ export class ConnectNewMessagePage {
           this.router.navigate(['login'], { replaceUrl: true });
         }
       } catch (error) {
-        this.dataProvider.errorALertMessage(error);
+        this.dataProvider.errorALertMessage(error instanceof Error ? error.message : String(error));
       }
     }
   }

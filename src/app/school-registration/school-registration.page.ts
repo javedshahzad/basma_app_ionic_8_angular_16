@@ -109,7 +109,7 @@ export class SchoolRegistrationPage implements OnInit {
         this.router.navigate(['login']);
       }, 2000);
     } catch (err) {
-      this.dataProvider.errorALertMessage(err);
+      this.dataProvider.errorALertMessage(err instanceof Error ? err.message : String(err));
     }
   }
 

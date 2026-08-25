@@ -90,7 +90,7 @@ export class PlayvideoPage {
         this.setupNativeVideoEvents();
       }, 500);
     } catch (err) {
-      this.dataProvider.errorALertMessage(err);
+      this.dataProvider.errorALertMessage(err instanceof Error ? err.message : String(err));
       this.cdr.markForCheck();
     }
   }

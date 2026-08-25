@@ -416,7 +416,7 @@ export class EditUserProfilePage {
         this.classes = response.data;
       }
     } catch (error) {
-      this.dataProvider.errorALertMessage(error);
+      this.dataProvider.errorALertMessage(error instanceof Error ? error.message : String(error));
     }
     this.cdr.markForCheck();
   }

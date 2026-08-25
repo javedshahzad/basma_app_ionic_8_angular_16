@@ -94,7 +94,7 @@ export class SearchStudentPage implements OnInit {
         }
       }
     } catch (error) {
-      this.dataProvider.showToast(error);
+      this.dataProvider.showToast(error instanceof Error ? error.message : String(error));
       console.log(error);
     }
     this.cdr.markForCheck();

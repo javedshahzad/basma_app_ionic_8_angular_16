@@ -119,7 +119,7 @@ export class ParentRegisterPage {
       this.user.password = this.parent.password;
       this.login(); // تسجيل الدخول مباشرة بعد نجاح التسجيل
     } catch (err) {
-      this.dataProvider.errorALertMessage(err);
+      this.dataProvider.errorALertMessage(err instanceof Error ? err.message : String(err));
     }
   }
 

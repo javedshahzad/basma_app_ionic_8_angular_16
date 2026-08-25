@@ -43,7 +43,7 @@ export class ContactUsPage {
       await this.dataProvider.run(() => this.contactApi.sendContact(this.user));
       contactForm.reset();
     } catch (error) {
-      this.dataProvider.errorALertMessage(error);
+      this.dataProvider.errorALertMessage(error instanceof Error ? error.message : String(error));
     }
   }
 

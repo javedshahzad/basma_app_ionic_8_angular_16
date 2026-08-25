@@ -81,7 +81,7 @@ export class SelectMessageUserPage implements OnInit {
         this.allUsers = this.allUsers.concat(this.users.splice(0, 20));
       }
     } catch (error) {
-      this.dataProvider.showToast(error);
+      this.dataProvider.showToast(error instanceof Error ? error.message : String(error));
       console.log(error);
     }
     this.cdr.markForCheck();

@@ -401,7 +401,7 @@ export class NewsPage implements OnInit {
       }
       this.cdr.markForCheck();
     } catch (error) {
-      this.dataProvider.errorALertMessage(error);
+      this.dataProvider.errorALertMessage(error instanceof Error ? error.message : String(error));
       this.closeDeleteModal();
       this.cdr.markForCheck();
     }
