@@ -88,7 +88,7 @@ export class UtilService {
     });
   }
 
-  caclulateHours(start, end) {
+  caclulateHours(start: string | Date, end: string | Date) {
     var date1: Date = new Date(end);
     var date2: Date = new Date(start);
     var diffInSeconds = Math.abs(date1.getTime() - date2.getTime()) / 1000;

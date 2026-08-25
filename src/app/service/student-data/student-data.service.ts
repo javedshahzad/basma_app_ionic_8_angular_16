@@ -16,7 +16,7 @@ export class StudentDataService {
               private storage: Storage) {
   }
 
-  async checkStudent(student) {
+  async checkStudent(student: any) {
     await this.platform.ready();
     const data = await this.storage.get('offlineStudent');
     this.studentList = data || [];
@@ -24,7 +24,7 @@ export class StudentDataService {
     await this.storage.set('offlineStudent', this.studentList);
   }
 
-  async checkStudentNotes(note, student_id) {
+  async checkStudentNotes(note: any, student_id: any) {
     await this.platform.ready();
     const data = await this.storage.get('offlineStudentNote');
     this.studentNote = data || [];
@@ -32,7 +32,7 @@ export class StudentDataService {
     await this.storage.set('offlineStudentNote', this.studentNote);
   }
 
-  async getStudent(student_id): Promise<any> {
+  async getStudent(student_id: any): Promise<any> {
     await this.platform.ready();
     const res = await this.storage.get('offlineStudent');
     if (res) {
@@ -46,7 +46,7 @@ export class StudentDataService {
     throw 'data';
   }
 
-  async getStudentNote(student_id): Promise<any> {
+  async getStudentNote(student_id: any): Promise<any> {
     await this.platform.ready();
     const res = await this.storage.get('offlineStudentNote');
     if (res) {
@@ -60,7 +60,7 @@ export class StudentDataService {
     throw 'data';
   }
 
-  async setStaticalData(user_ID, data) {
+  async setStaticalData(user_ID: any, data: any) {
     await this.platform.ready();
     const res = await this.storage.get('offlinestatical');
     this.staticalData = res || [];
@@ -68,7 +68,7 @@ export class StudentDataService {
     await this.storage.set('offlinestatical', this.staticalData);
   }
 
-  async getOfflineStatical(user_ID): Promise<any> {
+  async getOfflineStatical(user_ID: any): Promise<any> {
     await this.platform.ready();
     const res = await this.storage.get('offlinestatical');
     if (res) {

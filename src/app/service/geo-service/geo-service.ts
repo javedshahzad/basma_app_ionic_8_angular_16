@@ -11,7 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class GeoServiceProvider {
-  countries = {
+  countries: Record<string, string> = {
     '': 'Worldwide',
     AD: 'أندورا',
     AF: 'أفغانستان',
@@ -261,7 +261,7 @@ export class GeoServiceProvider {
     ZW: 'زيمبابوي'
   };
 
-  phones = {
+  phones: Record<string, string> = {
     AF: '+93',
     AL: '+355',
     DZ: '+213',
@@ -491,7 +491,7 @@ export class GeoServiceProvider {
     ZW: '+263'
   };
 
-  country_english = {
+  country_english: Record<string, string> = {
     '': 'Worldwide',
     AD: 'Andorra',
     AE: 'United Arab Emirates',
@@ -750,7 +750,7 @@ export class GeoServiceProvider {
    * @param {string} code ISO-2 code in uppercase
    * @returns {any}
    */
-  getCountryName(code) {
+  getCountryName(code: string) {
     return this.countries[('' + code).toUpperCase()];
   }
 
@@ -790,18 +790,18 @@ export class GeoServiceProvider {
       });
   }
 
-  getCountryPhone(code) {
+  getCountryPhone(code: string) {
     return this.phones[code];
   }
 
-  get_country_name(code) {
+  get_country_name(code: string) {
     return this.translate.getDefaultLang() === 'ar'
       ? this.getCountryDetails(code).country_ar_name
       : this.getCountryDetails(code).country_en_name;
   }
 
   getCountriesData(trans: any) {
-    let data = {};
+    let data: Record<string, { code: string; name: string; phone: string }> = {};
     for (let key in this.countries) {
       if (this.countries.hasOwnProperty(key)) {
         if (this.countries[key] && this.phones[key]) {
@@ -817,7 +817,7 @@ export class GeoServiceProvider {
   }
 
   getAllCountries() {
-    let data = [];
+    let data: { code: string; name: string }[] = [];
     let i = 0;
 
     Object.keys(this.countries).map(key => {
@@ -833,7 +833,7 @@ export class GeoServiceProvider {
     return data;
   }
   getArCountries() {
-    let data = [];
+    let data: { code: string; name: string }[] = [];
     let i = 0;
 
     Object.keys(this.countries).map(key => {
@@ -852,7 +852,7 @@ export class GeoServiceProvider {
   }
 
   getEnCountries() {
-    let data = [];
+    let data: { code: string; name: string }[] = [];
     let i = 0;
 
     Object.keys(this.country_english).map(key => {
@@ -868,7 +868,7 @@ export class GeoServiceProvider {
     data.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
     return data;
   }
-  getCountryDetails(code) {
+  getCountryDetails(code: string) {
     let data = {
       country_en_name: '',
       country_code: '',

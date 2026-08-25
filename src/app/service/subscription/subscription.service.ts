@@ -24,7 +24,7 @@ export class SubscriptionService {
     // DO NOT initialize to CdvPurchase.store here
     iap2?: CdvPurchase.Store;
          
-    public products_2 = [];
+    public products_2: any[] = [];
 public products_ios_2 = [
      
       // {
@@ -214,10 +214,10 @@ public products_ios = [
     }
   }
 
-  checkoutSSS(p,PlanData?) {
+  checkoutSSS(p: any, PlanData?: any) {
     this.fcmService.getPlan.next(true);
   }
-  checkout(p,PlanData?) {
+  checkout(p: any, PlanData?: any) {
       this.dataService.showLoading();
       let productId;
       let pData={};
@@ -268,7 +268,7 @@ public products_ios = [
         console.log('Error Ordering ' + JSON.stringify(err));
     }
   }
-  registerHandlersForPurchase(productId,pData,PlanData?) {
+  registerHandlersForPurchase(productId: any, pData: any, PlanData?: any) {
     this.iap2.when().approved((transaction) => {
       console.log("transaction == ",transaction)
       if (transaction.products && transaction.products[0] && transaction.products[0].id === productId) {
@@ -286,7 +286,7 @@ public products_ios = [
   }
 
   
-  subcribeToServer(subs,pData,PlanData){
+  subcribeToServer(subs: any, pData: any, PlanData: any){
        var receipt =JSON.parse(subs.transaction.receipt);
           let data={
               plan_id: PlanData.id,
@@ -311,7 +311,7 @@ public products_ios = [
 
   }
 
-    purchaseToServer(subs,pData,PlanData){
+    purchaseToServer(subs: any, pData: any, PlanData: any){
         var receipt = subs;
         console.log("receipt === ",receipt)
           let data={
@@ -357,7 +357,7 @@ public products_ios = [
 
 
 
-  async showreceiptModal(selectedPlan,receipt){
+  async showreceiptModal(selectedPlan: any, receipt: any){
     const modal = await this.modalController.create({
       component: PlanReceiptComponent, // Replace with your modal component
       mode:"ios",

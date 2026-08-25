@@ -41,27 +41,27 @@ export class AuthService {
     this.currentUuid = await this.storageSr.get("uuid");
   }
 
-  changeUser(peram) {
+  changeUser(peram: boolean) {
     let em = { changeUser: peram };
     this.event.next(em);
   }
 
-  publishEvent(peram) {
+  publishEvent(peram: boolean | Record<string, unknown>) {
     let em = { loggedin: peram };
     this.event.next(em);
   }
 
-  piblisEvenetActiveLink(param) {
+  piblisEvenetActiveLink(param: unknown) {
     let em = { activeLink: param };
     this.event.next(em);
   }
 
-  deleteNote(param) {
+  deleteNote(param: unknown) {
     let em = { deleteNote: param };
     this.event.next(em);
   }
 
-  async doLogin(user): Promise<any> {
+  async doLogin(user: any): Promise<any> {
     const isNetworkAvailable = await this.getNetworkInformation();
     if (!isNetworkAvailable) {
       throw "الرجاء التأكد من اتصالك بالإنترنت";
@@ -103,11 +103,11 @@ export class AuthService {
     }
   }
 
-  removeUrlFromString(inputString) {
+  removeUrlFromString(inputString: string) {
     return this.overlay.removeUrlFromString(inputString);
   }
 
-  async presentAlert(message) {
+  async presentAlert(message: string) {
     await this.overlay.presentAlert("تنبيه", this.removeUrlFromString(message), ["موافق"], "ios");
   }
 
@@ -237,12 +237,12 @@ export class AuthService {
   }
 
   // 🟢 دالة التبديل التلقائي بعد تسجيل الخروج
-  async logInOtherAccount(data) { 
-    let loggedinUser = await this.storageSr.get("earlyLogin"); 
+  async logInOtherAccount(data: { user_no?: string | number }) {
+    let loggedinUser = await this.storageSr.get("earlyLogin");
 
     if (loggedinUser) {
       // 1. إزالة الحساب الذي سجل خروجه
-      loggedinUser = loggedinUser.filter(u => u.user_no != data.user_no);
+      loggedinUser = loggedinUser.filter((u: { user_no?: string | number }) => u.user_no != data.user_no);
       await this.storageSr.set("earlyLogin", loggedinUser); 
 
       // 2. إذا تبقى حسابات، سجل دخول صامت للحساب التالي
@@ -259,7 +259,7 @@ export class AuthService {
   }
 
   // 🟢 دالة الدخول الصامتة المحسنة (تمت إزالة السطر المسبب لـ 404)
-  async logInOldUser(users) { 
+  async logInOldUser(users: Record<string, unknown>) {
     let data = users;
     
     // تأمين الهوية للمتصفح والأجهزة
@@ -287,10 +287,10 @@ export class AuthService {
       });
   }
 
-  makeObjectToUrlParams(data) {
+  makeObjectToUrlParams(data: Record<string, unknown>) {
     let body = new HttpParams();
     Object.keys(data).forEach(function (key) {
-      body = body.append(key, data[key]);
+      body = body.append(key, data[key] as string | number | boolean);
     });
     return body;
   }

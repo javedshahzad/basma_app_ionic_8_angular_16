@@ -43,7 +43,7 @@ export class DataService {
     // public photoLibrary: PhotoLibrary
   ) {
     this.platform.ready().then(() => {
-      setTimeout(res => {
+      setTimeout(() => {
         this.translate.get('alertmessages').subscribe(res => {
           this.lang = res;
           // console.log(this.translate.instant('alertmessages'))
@@ -80,11 +80,11 @@ export class DataService {
   get deactivate_date() { return this.appState.deactivate_date; }
   set deactivate_date(value: string) { this.appState.deactivate_date = value; }
 
-  getStatusMessage(event) {
+  getStatusMessage(event: any) {
     return this.appState.getStatusMessage(event);
   }
 
-  async openAvatarModel(pic) {
+  async openAvatarModel(pic: string) {
     this.img = pic;
     // 🟢 استيراد ديناميكي: يمنع دمج هذا المكوّن ضمن الحزمة الرئيسية (main.js)
     // التي تُحمَّل عند كل صفحة، طالما أن DataService يُحقَن مبكراً (root)
@@ -96,7 +96,7 @@ export class DataService {
     return await modal.present();
   }
 
-  showRatePrompt(lang) {
+  showRatePrompt(lang: unknown) {
     this.appRate.setPreferences({
       // ملاحظة: قمنا بمسح السطر (...this.appRate.preferences) لأنه لم يعد مطلوباً
       // ضع باقي إعداداتك الموجودة مسبقاً هنا كما هي، مثال:
@@ -113,7 +113,7 @@ export class DataService {
     this.appRate.promptForRating(true);
   }
 
-  async switchAccount(ev, lang) {
+  async switchAccount(ev: unknown, lang: any) {
     const { SwitchAccountComponent } = await import('../../components/switch-account/switch-account.component');
     const popover = await this.popoverController.create({
       component: SwitchAccountComponent,
@@ -164,7 +164,7 @@ export class DataService {
     await this.overlay.errorAlert(error);
   }
 
-  removeUrlFromString(inputString) {
+  removeUrlFromString(inputString: string) {
     return this.overlay.removeUrlFromString(inputString);
   }
 
@@ -229,7 +229,7 @@ export class DataService {
     return this.util.downloadImage(url);
   }
 
-  caclulateHours(start, end) {
+  caclulateHours(start: string | Date, end: string | Date) {
     return this.util.caclulateHours(start, end);
   }
 
