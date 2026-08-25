@@ -38,6 +38,16 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
+    // CI containers run as root with no sandbox namespace available, and
+    // often have a tiny /dev/shm — Chrome's default sandbox and shared-memory
+    // usage fail outright there. Named separately from ChromeHeadless so
+    // local `ng test --browsers=ChromeHeadless` runs keep the sandbox on.
+    customLaunchers: {
+      ChromeHeadlessCI: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
+      }
+    },
     singleRun: false,
     restartOnFileChange: true,
     // الافتراضي (30 ثانية) غير كافٍ: عدد كبير من الصفحات ينشئ setInterval حقيقياً

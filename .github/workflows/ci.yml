@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test -- --watch=false --browsers=ChromeHeadlessCI
+
+      # --configuration=production is the only build that runs Angular's AOT
+      # template type-checker (the default `ng build` does not — see
+      # angular.json's aot:false default). Template-only type errors that
+      # plain `tsc` and the staging build can't see only surface here.
+      - name: Production build (AOT)
+        run: npm run build -- --configuration=production

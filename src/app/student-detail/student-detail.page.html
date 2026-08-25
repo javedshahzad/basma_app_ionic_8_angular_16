@@ -407,7 +407,7 @@
               </button>
              </div>
              
-             <div class="flex mb-2 bg-slate-50 w-max px-2 py-1 rounded-lg border border-slate-100" *ngIf="note.selections != undefined">
+             <div class="flex mb-2 bg-slate-50 w-max px-2 py-1 rounded-lg border border-slate-100" *ngIf="note.selections !== undefined">
                 <span *ngFor="let star of getSelectedStars(); let si = index; trackBy: trackByIndex">
                   <ion-icon name="star" class="text-sm" [ngStyle]="{'color': note.selections[si]}"></ion-icon>
                 </span>
