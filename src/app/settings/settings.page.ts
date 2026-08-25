@@ -19,7 +19,7 @@ import { UserManagementApiService, SchoolRulesDetails } from '../service/user-ma
 import { UserType } from '../constants/user-type';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { HasRoleDirective } from '../directives/has-role.directive';
 import { PermissionService } from '../service/permission/permission.service';
 
@@ -86,6 +86,15 @@ export class SettingsPage {
   timerInterval: ReturnType<typeof setInterval>;
   remainingTime: { days: number; hours: number; minutes: number } = { days: 0, hours: 0, minutes: 0 };
 
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // ionViewWillEnter()'s `if (userLoggedIn)` guard has already populated
+  // it — the non-null assertion documents that invariant once instead of
+  // at every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
+
   constructor(
     public dataProvider: DataService,
     public authProvider: AuthService,
@@ -118,26 +127,26 @@ export class SettingsPage {
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
 
-      var last_name = this.userDetails.details.last_name ? this.userDetails.details.last_name : '';
-      this.user.name = this.userDetails.details.first_name + ' ' + last_name;
-      this.user.username = this.userDetails.details.username;
-      this.user.email_id = this.userDetails.details.email_id;
-      this.user.phone_no = this.userDetails.details.phone_no;
-      this.user.school_details = this.userDetails.details.school_details as string;
-      this.user.country = this.userDetails.details.country_ar_name;
-      this.selectedCountyCode = this.userDetails.details.country_code;
+      var last_name = this.userInfo.last_name ? this.userInfo.last_name : '';
+      this.user.name = (this.userInfo.first_name || '') + ' ' + last_name;
+      this.user.username = this.userInfo.username || '';
+      this.user.email_id = this.userInfo.email_id || '';
+      this.user.phone_no = this.userInfo.phone_no || '';
+      this.user.school_details = (this.userInfo.school_details as string) || '';
+      this.user.country = this.userInfo.country_ar_name || '';
+      this.selectedCountyCode = this.userInfo.country_code || '';
 
       if (this.selectedCountyCode) {
         this.assignCountry();
       }
 
-      if (this.userDetails.details.is_school_admin == 1) {
-        this.displayPic = this.userDetails.details.school_logo;
+      if (this.userInfo.is_school_admin == 1) {
+        this.displayPic = this.userInfo.school_logo || '';
       } else {
-        this.displayPic = this.userDetails.details.pic;
+        this.displayPic = this.userInfo.pic || '';
       }
-      this.userType = this.userDetails.details.user_type;
-      this.is_school_admin = this.userDetails.details.is_school_admin;
+      this.userType = this.userInfo.user_type || '';
+      this.is_school_admin = this.userInfo.is_school_admin || false;
 
       if (this.permissionService.hasRole(UserType.Admin)) {
         this.getAllRules();
@@ -177,8 +186,8 @@ export class SettingsPage {
 
   getAllRules() {
     let data = {
-      school_id: this.userDetails.details.school_id,
-      user_no: this.userDetails.details.user_no,
+      school_id: this.userInfo.school_id,
+      user_no: this.userInfo.user_no,
       // New API's getAllRules requires session_id (AuthorizeAdmin) — legacy
       // didn't validate it here, school was implicitly scoped by school_id alone.
       session_id: this.userDetails.session_id
@@ -187,23 +196,25 @@ export class SettingsPage {
       .getAllRules(data)
       .then(res => {
         if (res) {
-          this.schoolDetail = res.school_details;
-          if (res.user_details.teacher_register_link == '1') {
+          this.schoolDetail = res.school_details || {};
+          const schoolDetail = this.schoolDetail;
+          const userDetails = res.user_details || {};
+          if (userDetails.teacher_register_link == '1') {
             this.teacherLink = true;
           } else {
             this.teacherLink = false;
           }
-          if (res.user_details.parent_register_link == '1') {
+          if (userDetails.parent_register_link == '1') {
             this.parent_link = true;
           } else {
             this.parent_link = false;
           }
-          this.user.delay_rule = String(this.schoolDetail.delay_rule ?? '');
-          this.user.warning_report = String(this.schoolDetail.report_condition ?? '');
-          this.user.warning_report_second = String(this.schoolDetail.second_report_condition ?? '');
-          this.user.warning_report_third = String(this.schoolDetail.third_report_condition ?? '');
-          if (this.schoolDetail.deactivate_date) {
-            this.deactivate_date = this.schoolDetail.deactivate_date;
+          this.user.delay_rule = String(schoolDetail.delay_rule ?? '');
+          this.user.warning_report = String(schoolDetail.report_condition ?? '');
+          this.user.warning_report_second = String(schoolDetail.second_report_condition ?? '');
+          this.user.warning_report_third = String(schoolDetail.third_report_condition ?? '');
+          if (schoolDetail.deactivate_date) {
+            this.deactivate_date = schoolDetail.deactivate_date;
             this.startCountdownTimer();
             let addHourtodate = this.dataProvider.addHoursToDate(new Date(), 72);
             this.DateLeftTodeleteAccount = this.dataProvider.caclulateHours(this.deactivate_date, addHourtodate);
@@ -226,7 +237,7 @@ export class SettingsPage {
       let uuid = await this.storageSr.get('uuid'); // 👈 قراءة UUID بأمان
 
       let data: Record<string, unknown> & { users: Record<string, string> } = {
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         session_id: this.userDetails.session_id,
         users: {
           email_id: this.user.email_id,
@@ -245,30 +256,30 @@ export class SettingsPage {
       };
 
       if (this.selectedCountyCode) {
-        data.country_en_name = this.countryDetails.country_en_name || this.userDetails.details.country_en_name;
-        data.country_code = this.countryDetails.country_code || this.userDetails.details.country_code;
-        data.country_ar_name = this.countryDetails.country_ar_name || this.userDetails.details.country_ar_name;
+        data.country_en_name = this.countryDetails.country_en_name || this.userInfo.country_en_name;
+        data.country_code = this.countryDetails.country_code || this.userInfo.country_code;
+        data.country_ar_name = this.countryDetails.country_ar_name || this.userInfo.country_ar_name;
       }
 
       this.dataProvider
         .run(() => this.userManagementApi.updateUserSettings(data))
         .then(async response => {
           if (response.session) {
-            this.dataProvider.showToast(response.message);
+            this.dataProvider.showToast(response.message || '');
 
             if (this.selectedCountyCode) {
-              this.userDetails.details.country_en_name = this.countryDetails.country_en_name;
-              this.userDetails.details.country_code = this.countryDetails.country_code;
-              this.userDetails.details.country_ar_name = this.countryDetails.country_ar_name;
+              this.userInfo.country_en_name = this.countryDetails.country_en_name;
+              this.userInfo.country_code = this.countryDetails.country_code;
+              this.userInfo.country_ar_name = this.countryDetails.country_ar_name;
             }
-            this.userDetails.details.email_id = this.user.email_id;
-            this.userDetails.details.phone_no = this.user.phone_no;
+            this.userInfo.email_id = this.user.email_id;
+            this.userInfo.phone_no = this.user.phone_no;
 
-            if (this.userDetails.details.is_school_admin == 1) {
+            if (this.userInfo.is_school_admin == 1) {
               this.dataProvider.language.next('ar');
-              this.userDetails.details.school_logo = response.pic != '' ? response.pic : this.displayPic;
+              this.userInfo.school_logo = response.pic != '' ? response.pic : this.displayPic;
             } else {
-              this.userDetails.details.pic = response.pic != '' ? response.pic : this.displayPic;
+              this.userInfo.pic = response.pic != '' ? response.pic : this.displayPic;
             }
 
             // 👈 حفظ التغييرات في الجلسة الحالية بأمان
@@ -279,14 +290,14 @@ export class SettingsPage {
             if (earlyLoginData) {
               let loggedinUser = earlyLoginData;
               for (var i = 0; i < loggedinUser.length; i++) {
-                if (loggedinUser[i].name == this.userDetails.details.first_name) {
+                if (loggedinUser[i].name == this.userInfo.first_name) {
                   if (this.user.newpass != '') {
                     loggedinUser[i].password = this.user.newpass;
                   }
-                  if (this.userDetails.details.is_school_admin == 1) {
-                    loggedinUser[i].image = this.userDetails.details.school_logo;
+                  if (this.userInfo.is_school_admin == 1) {
+                    loggedinUser[i].image = this.userInfo.school_logo;
                   } else {
-                    loggedinUser[i].image = this.userDetails.details.pic;
+                    loggedinUser[i].image = this.userInfo.pic;
                   }
                 }
               }
@@ -300,7 +311,7 @@ export class SettingsPage {
             }
           } else {
             this.authProvider.flushLocalStorage();
-            this.dataProvider.errorALertMessage(response.message);
+            this.dataProvider.errorALertMessage(response.message || '');
             this.router.navigate(['login'], { replaceUrl: true });
           }
           this.cdr.markForCheck();
@@ -314,7 +325,7 @@ export class SettingsPage {
 
   logoutDeviceFromAll() {
     let data = {
-      user_no: this.userDetails.details.user_no
+      user_no: this.userInfo.user_no
     };
     this.dataProvider
       .run(() => this.deviceApi.LogOutAllDevice(data))
@@ -364,22 +375,22 @@ export class SettingsPage {
   async deleteSchool() {
     this.showDeleteAlert = false;
     let data = {
-      school_id: this.userDetails.details.school_id,
-      user_no: this.userDetails.details.user_no
+      school_id: this.userInfo.school_id,
+      user_no: this.userInfo.user_no
     };
     try {
       const response = await this.dataProvider.run(() =>
         this.userManagementApi.requestTodeleteSchoolAccount(data)
       );
       if (!response.response) {
-        this.dataProvider.errorALertMessage(response.msg);
+        this.dataProvider.errorALertMessage(response.msg || '');
       } else {
         var responseData = response;
         if (responseData.success) {
-          this.dataProvider.errorALertMessage(response.msg);
+          this.dataProvider.errorALertMessage(response.msg || '');
           const deactivateInfo = responseData.response as { deactivate_date?: string };
-          this.deactivate_date = deactivateInfo.deactivate_date;
-          this.dataProvider.deactivate_date = deactivateInfo.deactivate_date;
+          this.deactivate_date = deactivateInfo.deactivate_date || '';
+          this.dataProvider.deactivate_date = deactivateInfo.deactivate_date || '';
         }
       }
     } catch (error) {
@@ -390,13 +401,13 @@ export class SettingsPage {
 
   revertSchoolDeletion() {
     let data = {
-      school_id: this.userDetails.details.school_id,
-      user_no: this.userDetails.details.user_no
+      school_id: this.userInfo.school_id,
+      user_no: this.userInfo.user_no
     };
     this.dataProvider
       .run(() => this.userManagementApi.revertDeletedSchoolSettings(data))
       .then(response => {
-        this.dataProvider.errorALertMessage(response.message);
+        this.dataProvider.errorALertMessage(response.message || '');
         this.deactivate_date = '';
         this.dataProvider.deactivate_date = '';
         this.cdr.markForCheck();
