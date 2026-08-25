@@ -14,7 +14,7 @@ import { IonicSelectableComponent } from 'ionic-selectable';
 import dayjs from 'dayjs';
 import { StorageService } from '../service/storage.service';
 import { NotesApiService } from '../service/notes-api/notes-api.service';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { Student } from '../model/student.model';
 
 interface NoteFormData {
@@ -73,6 +73,15 @@ export class AddNotesPage {
   status = '';
   seminir_no: string | number = '';
 
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // ionViewWillEnter()'s `if (userData)` guard has already populated it —
+  // the non-null assertion documents that invariant once instead of at
+  // every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
+
   constructor(
     public navCtrl: NavController,
     public translate: TranslateService,
@@ -90,11 +99,12 @@ export class AddNotesPage {
     });
 
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-      if (this.router.getCurrentNavigation()?.extras?.state) {
-        this.class_id = this.router.getCurrentNavigation().extras.state.state.course_id;
-        this.students = this.router.getCurrentNavigation().extras.state.state.students;
-        this.state = this.router.getCurrentNavigation().extras.state.state;
-        this.data = this.router.getCurrentNavigation().extras.state.data;
+      const navigationState = this.router.getCurrentNavigation()?.extras?.state;
+      if (navigationState) {
+        this.class_id = navigationState.state.course_id;
+        this.students = navigationState.state.students;
+        this.state = navigationState.state;
+        this.data = navigationState.data;
       }
       this.cdr.markForCheck();
     });
@@ -133,8 +143,8 @@ export class AddNotesPage {
       }
 
       this.notes.classId = this.class_id;
-      this.notes.user_no = this.userDetails.details.user_no;
-      this.notes.school_id = this.userDetails.details.school_id;
+      this.notes.user_no = this.userInfo.user_no!;
+      this.notes.school_id = this.userInfo.school_id!;
 
       let media: string | File;
       if (this.notes.ticketImage && this.notes.ticketImage != '') {
@@ -204,8 +214,8 @@ export class AddNotesPage {
     this.notes.studentIds = [];
     this.studentsId = [];
     this.selectedStudent.forEach(res => {
-      this.notes.studentIds.push(res.sid);
-      this.studentsId.push(res.sid);
+      this.notes.studentIds.push(res.sid!);
+      this.studentsId.push(res.sid!);
     });
   }
 
@@ -236,9 +246,9 @@ export class AddNotesPage {
       this.formdata.append('ticketImage', this.notes.ticketImage);
     }
 
-    this.formdata.append('user_no', String(this.userDetails.details.user_no));
+    this.formdata.append('user_no', String(this.userInfo.user_no));
     this.formdata.append('classId', String(this.class_id));
-    this.formdata.append('school_id', String(this.userDetails.details.school_id));
+    this.formdata.append('school_id', String(this.userInfo.school_id));
     this.formdata.append('type', this.mediaType);
     this.formdata.append('examNoteDate', this.notes.examNoteDate);
     this.formdata.append('seminir_no', String(this.notes.seminir_no));
