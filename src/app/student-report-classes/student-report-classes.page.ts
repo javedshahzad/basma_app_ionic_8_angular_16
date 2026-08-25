@@ -12,14 +12,13 @@ import { LoaderComponent } from '../components/loader/loader.component';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { CoursesApiService } from '../service/courses-api/courses-api.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-student-report-classes',
-    templateUrl: './student-report-classes.page.html',
-    styleUrls: ['./student-report-classes.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-student-report-classes',
+  templateUrl: './student-report-classes.page.html',
+  styleUrls: ['./student-report-classes.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, TranslatePipe]
 })
 export class StudentReportClassesPage implements OnInit {
   trackByIndex(index: number): number {

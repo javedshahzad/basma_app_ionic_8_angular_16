@@ -7,14 +7,13 @@ import { Router, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-follow-up-student',
-    templateUrl: './follow-up-student.page.html',
-    styleUrls: ['./follow-up-student.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-follow-up-student',
+  templateUrl: './follow-up-student.page.html',
+  styleUrls: ['./follow-up-student.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, TranslatePipe]
 })
 export class FollowUpStudentPage {
   trackByIndex(index: number): number {
@@ -55,7 +54,6 @@ export class FollowUpStudentPage {
       this.cdr.markForCheck();
     });
   }
-
 
   // 🟢 استدعاء آمن ومتسلسل يضمن جلب بيانات المستخدم أولاً
   async ionViewWillEnter() {

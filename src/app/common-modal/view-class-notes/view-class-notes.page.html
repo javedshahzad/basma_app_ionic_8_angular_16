@@ -1,45 +1,75 @@
 ﻿<ion-header mode="md">
   <ion-toolbar>
-  	<ion-buttons slot="end">
-  		<ion-button class="small_btn_header"  small clear icon-only (click)="addNotes()">
-            <ion-icon name="add" class="add-circle" item-end color="icon-header"></ion-icon>
-        </ion-button>
-  		<ion-button icon-only (click)="cloeModal()">
-  			<ion-icon name="close-circle-outline"></ion-icon>
-  		</ion-button>
-  	</ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button class="small_btn_header" small clear icon-only (click)="addNotes()">
+        <ion-icon name="add" class="add-circle" item-end color="icon-header"></ion-icon>
+      </ion-button>
+      <ion-button icon-only (click)="cloeModal()">
+        <ion-icon name="close-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title>{{'student_notes.pagetitle' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content mode="md">
-    <div *ngIf="data">
-		<ion-card *ngFor=" let note of data; trackBy: trackByIndex">
-			<ion-card-header>
-				<span style="float: left;">{{note.datetime| dateFormat}}</span>
-				<ion-item style="width: 100%;" *ngIf="note.profile">
-					<ion-avatar slot="start"  (click)="dataProvider.openAvatarModel(note.profile.pic)">
-						<img loading="lazy" src="{{note.profile.pic}}" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';">
-					</ion-avatar>
-					<ion-label>
-						<h3>{{note.profile.first_name}}</h3>
-						<p>{{note.profile.email_id}}</p>
-					</ion-label>
-				</ion-item>
-			</ion-card-header>
-			<ion-card-content>
-				<p>
-					{{note.description}}
-				</p>
-				<div *ngIf="note.file_link" class="pdf-div" (click)="openPdf(note.file_link)">
-		          <img loading="lazy"  [src]="'bullet.documents.image'" onerror="this.onerror=null;this.src='assets/imgs/pdf.png';">
-		            <ion-icon name="document-attach-outline"></ion-icon>
-		        </div>
-				<!-- <a   href=""><ion-icon name="attach"></ion-icon></a> -->
-				<img loading="lazy" *ngIf="note.image_file" [src]="note.image_file" class="images" (click)="showPhoto(note.image_file)" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';">
-				<ion-icon class="trash" name="trash-outline" (click)="deleteNote(note)"></ion-icon>
-			</ion-card-content>
-		</ion-card>
-    </div>
-
+  @if (data) {
+  <div>
+    @for ( note of data; track trackByIndex($index)) {
+    <ion-card>
+      <ion-card-header>
+        <span style="float: left">{{note.datetime| dateFormat}}</span>
+        @if (note.profile) {
+        <ion-item style="width: 100%">
+          <ion-avatar slot="start" (click)="dataProvider.openAvatarModel(note.profile.pic)">
+            <img
+              loading="lazy"
+              src="{{note.profile.pic}}"
+              onerror="
+                this.onerror = null;
+                this.src = 'assets/imgs/default_avatar.png';
+              "
+            />
+          </ion-avatar>
+          <ion-label>
+            <h3>{{note.profile.first_name}}</h3>
+            <p>{{note.profile.email_id}}</p>
+          </ion-label>
+        </ion-item>
+        }
+      </ion-card-header>
+      <ion-card-content>
+        <p>{{note.description}}</p>
+        @if (note.file_link) {
+        <div class="pdf-div" (click)="openPdf(note.file_link)">
+          <img
+            loading="lazy"
+            [src]="'bullet.documents.image'"
+            onerror="
+              this.onerror = null;
+              this.src = 'assets/imgs/pdf.png';
+            "
+          />
+          <ion-icon name="document-attach-outline"></ion-icon>
+        </div>
+        }
+        <!-- <a   href=""><ion-icon name="attach"></ion-icon></a> -->
+        @if (note.image_file) {
+        <img
+          loading="lazy"
+          [src]="note.image_file"
+          class="images"
+          (click)="showPhoto(note.image_file)"
+          onerror="
+            this.onerror = null;
+            this.src = 'assets/imgs/default_avatar.png';
+          "
+        />
+        }
+        <ion-icon class="trash" name="trash-outline" (click)="deleteNote(note)"></ion-icon>
+      </ion-card-content>
+    </ion-card>
+    }
+  </div>
+  }
 </ion-content>

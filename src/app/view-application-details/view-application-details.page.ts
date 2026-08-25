@@ -7,14 +7,14 @@ import { DataService } from '../service/data/data.service';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { NgIf, NgClass, NgFor } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-view-application-details',
-    templateUrl: './view-application-details.page.html',
-    styleUrls: ['./view-application-details.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgClass, NgFor, TranslatePipe]
+  selector: 'app-view-application-details',
+  templateUrl: './view-application-details.page.html',
+  styleUrls: ['./view-application-details.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, TranslatePipe]
 })
 export class ViewApplicationDetailsPage implements OnInit {
   trackByIndex(index: number): number {

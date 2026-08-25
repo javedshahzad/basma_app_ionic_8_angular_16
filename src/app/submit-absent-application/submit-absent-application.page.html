@@ -1,88 +1,148 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc;" class="relative text-center border-b border-slate-100">
+  <ion-toolbar style="--background: #f8fafc" class="relative text-center border-b border-slate-100">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
-      <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+      <ion-back-button
+        defaultHref="/"
+        text=""
+        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+      ></ion-back-button>
     </ion-buttons>
-    
-    <ion-title class="font-extrabold text-slate-800 text-base w-full">{{'absent_students.submit_app' | translate}}</ion-title>
+
+    <ion-title class="font-extrabold text-slate-800 text-base w-full"
+      >{{'absent_students.submit_app' | translate}}</ion-title
+    >
   </ion-toolbar>
-  
+
   <div class="bg-[#f8fafc] px-4 pb-3 pt-2 text-center border-b border-slate-100">
-    <span class="inline-block bg-indigo-50 text-indigo-700 font-bold text-xs px-4 py-1.5 rounded-full border border-indigo-100 shadow-sm">{{UserData?.student_name}}</span>
+    <span
+      class="inline-block bg-indigo-50 text-indigo-700 font-bold text-xs px-4 py-1.5 rounded-full border border-indigo-100 shadow-sm"
+      >{{UserData?.student_name}}</span
+    >
   </div>
 </ion-header>
 
 <ion-content class="lineone-bg" mode="md" dir="rtl">
   <div class="px-4 py-6 max-w-lg mx-auto space-y-4">
-    
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-5">
-      
       <!-- اختيار التاريخ -->
       <div class="space-y-1.5">
-        <label class="block text-[11px] font-black text-slate-500 uppercase px-1">{{'absent_students.Date' | translate}}</label>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 flex items-center focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+        <label class="block text-[11px] font-black text-slate-500 uppercase px-1"
+          >{{'absent_students.Date' | translate}}</label
+        >
+        <div
+          class="bg-slate-50 border border-slate-200 rounded-xl px-3 flex items-center focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+        >
           <ion-icon name="calendar-outline" class="text-slate-400 text-lg ml-2"></ion-icon>
-          <ion-select mode="ios" interface="action-sheet" class="w-full font-bold text-sm text-slate-800 h-11" placeholder="اختر يوم الغياب" (ionChange)="OnchangeDate($event)">
-            <ion-select-option [value]="i" *ngFor="let date of absentDates; let i=index; trackBy: trackByIndex">{{date}}</ion-select-option>
+          <ion-select
+            mode="ios"
+            interface="action-sheet"
+            class="w-full font-bold text-sm text-slate-800 h-11"
+            placeholder="اختر يوم الغياب"
+            (ionChange)="OnchangeDate($event)"
+          >
+            @for (date of absentDates; track trackByIndex(i); let i = $index) {
+            <ion-select-option [value]="i">{{date}}</ion-select-option>
+            }
           </ion-select>
         </div>
       </div>
 
       <!-- اختيار الحصص -->
-      <div class="space-y-1.5" *ngIf="(seminarsList?.length || 0) > 0">
-        <label class="block text-[11px] font-black text-slate-500 uppercase px-1">{{'absent_students.Sems' | translate}}</label>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 flex items-center focus-within:ring-2 focus-within:ring-indigo-100 transition-all animate-fade-in">
+      @if ((seminarsList?.length || 0) > 0) {
+      <div class="space-y-1.5">
+        <label class="block text-[11px] font-black text-slate-500 uppercase px-1"
+          >{{'absent_students.Sems' | translate}}</label
+        >
+        <div
+          class="bg-slate-50 border border-slate-200 rounded-xl px-3 flex items-center focus-within:ring-2 focus-within:ring-indigo-100 transition-all animate-fade-in"
+        >
           <ion-icon name="time-outline" class="text-slate-400 text-lg ml-2"></ion-icon>
-          <ion-select mode="ios" interface="alert" [multiple]="true" class="w-full font-bold text-sm text-slate-800 h-11" placeholder="حدد الحصص المتغيب فيها" (ionChange)="OnchangeSeminar($event)">
-            <ion-select-option [value]="semi" *ngFor="let semi of seminarsList; trackBy: trackByIndex">{{semi}}</ion-select-option>
+          <ion-select
+            mode="ios"
+            interface="alert"
+            [multiple]="true"
+            class="w-full font-bold text-sm text-slate-800 h-11"
+            placeholder="حدد الحصص المتغيب فيها"
+            (ionChange)="OnchangeSeminar($event)"
+          >
+            @for (semi of seminarsList; track trackByIndex($index)) {
+            <ion-select-option [value]="semi">{{semi}}</ion-select-option>
+            }
           </ion-select>
         </div>
       </div>
+      }
 
       <!-- الملاحظات -->
       <div class="space-y-1.5">
-        <label class="block text-[11px] font-black text-slate-500 uppercase px-1">{{'absent_students.notes' | translate}}</label>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 flex items-start focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+        <label class="block text-[11px] font-black text-slate-500 uppercase px-1"
+          >{{'absent_students.notes' | translate}}</label
+        >
+        <div
+          class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 flex items-start focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+        >
           <ion-icon name="document-text-outline" class="text-slate-400 text-lg ml-2 mt-2.5"></ion-icon>
-          <ion-textarea class="font-bold text-sm text-slate-800 m-0" rows="3" [(ngModel)]="notes" placeholder="اكتب سبب الغياب هنا..."></ion-textarea>
+          <ion-textarea
+            class="font-bold text-sm text-slate-800 m-0"
+            rows="3"
+            [(ngModel)]="notes"
+            placeholder="اكتب سبب الغياب هنا..."
+          ></ion-textarea>
         </div>
       </div>
-
     </div>
 
     <!-- رفع المرفقات / الصور -->
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
       <h3 class="text-sm font-extrabold text-slate-800 mb-3 px-1">المرفقات (عذر طبي، رسالة...)</h3>
-      
+
       <!-- حالة عدم وجود صورة -->
-      <div *ngIf="!ImgData" (click)="takePicture()" class="border-2 border-dashed border-indigo-200 bg-indigo-50/50 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-indigo-50 transition-colors">
-        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-indigo-100 text-indigo-500 mb-3">
+      @if (!ImgData) {
+      <div
+        (click)="takePicture()"
+        class="border-2 border-dashed border-indigo-200 bg-indigo-50/50 rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-indigo-50 transition-colors"
+      >
+        <div
+          class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-indigo-100 text-indigo-500 mb-3"
+        >
           <ion-icon name="camera" class="text-2xl"></ion-icon>
         </div>
         <span class="text-sm font-bold text-indigo-600">{{'absent_students.image' | translate}}</span>
         <span class="text-[10px] text-indigo-400 mt-1">اضغط لالتقاط أو رفع صورة</span>
       </div>
+      }
 
       <!-- حالة وجود صورة -->
-      <div *ngIf="ImgData" class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm animate-fade-in group">
-        <img loading="lazy" [src]="ImgData" class="w-full h-48 object-cover">
-        
-        <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-          <button (click)="takePicture()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-indigo-600 shadow-lg hover:scale-110 transition-transform">
+      @if (ImgData) {
+      <div class="relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm animate-fade-in group">
+        <img loading="lazy" [src]="ImgData" class="w-full h-48 object-cover" />
+        <div
+          class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3"
+        >
+          <button
+            (click)="takePicture()"
+            class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-indigo-600 shadow-lg hover:scale-110 transition-transform"
+          >
             <ion-icon name="sync-outline" class="text-xl"></ion-icon>
           </button>
-          <button (click)="removeImage()" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-rose-500 shadow-lg hover:scale-110 transition-transform">
+          <button
+            (click)="removeImage()"
+            class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-rose-500 shadow-lg hover:scale-110 transition-transform"
+          >
             <ion-icon name="trash-outline" class="text-xl"></ion-icon>
           </button>
         </div>
       </div>
+      }
     </div>
 
     <!-- زر الإرسال -->
-    <button (click)="submitApplication()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-base font-black py-4 rounded-2xl shadow-md shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center gap-2 mt-4">
+    <button
+      (click)="submitApplication()"
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-base font-black py-4 rounded-2xl shadow-md shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center gap-2 mt-4"
+    >
       <ion-icon name="paper-plane" class="text-xl"></ion-icon>
       إرسال الطلب
     </button>
-
   </div>
 </ion-content>

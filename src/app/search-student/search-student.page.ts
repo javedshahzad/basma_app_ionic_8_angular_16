@@ -10,14 +10,13 @@ import { StorageService } from '../service/storage.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-search-student',
-    templateUrl: './search-student.page.html',
-    styleUrls: ['./search-student.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-search-student',
+  templateUrl: './search-student.page.html',
+  styleUrls: ['./search-student.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class SearchStudentPage implements OnInit {
   trackByIndex(index: number): number {

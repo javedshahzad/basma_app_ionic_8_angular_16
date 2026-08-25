@@ -11,16 +11,16 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { StorageService } from '../service/storage.service';
 import { BulletinsApiService } from '../service/bulletins-api/bulletins-api.service';
 import { UserType } from '../constants/user-type';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { DateFormatPipe } from '../pipes/date-format/date-format.pipe';
 import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
-    selector: 'app-bulletins',
-    templateUrl: './bulletins.page.html',
-    styleUrls: ['./bulletins.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, DateFormatPipe, TranslatePipe, HasRoleDirective]
+  selector: 'app-bulletins',
+  templateUrl: './bulletins.page.html',
+  styleUrls: ['./bulletins.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, DateFormatPipe, TranslatePipe, HasRoleDirective]
 })
 export class BulletinsPage {
   trackByIndex(index: number): number {
@@ -54,7 +54,6 @@ export class BulletinsPage {
       this.cdr.markForCheck();
     });
   }
-
 
   async ionViewWillEnter() {
     this.isLoading = true;

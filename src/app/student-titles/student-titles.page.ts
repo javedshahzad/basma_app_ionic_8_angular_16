@@ -5,12 +5,16 @@ import { DataService } from '../service/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
-import { GamificationEngineService, ProcessedTitle, ProcessedBadge } from '../service/gamification-engine/gamification-engine.service';
+import {
+  GamificationEngineService,
+  ProcessedTitle,
+  ProcessedBadge
+} from '../service/gamification-engine/gamification-engine.service';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { GamificationApiService, SkillData } from '../service/gamification-api/gamification-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { Student } from '../model/student.model';
 import { ApiResponse } from '../model/api-response.model';
@@ -20,11 +24,11 @@ interface AlchemyTitle extends ProcessedTitle {
 }
 
 @Component({
-    selector: 'app-student-titles',
-    templateUrl: './student-titles.page.html',
-    styleUrls: ['./student-titles.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass]
+  selector: 'app-student-titles',
+  templateUrl: './student-titles.page.html',
+  styleUrls: ['./student-titles.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass]
 })
 export class StudentTitlesPage {
   trackByIndex(index: number): number {
@@ -129,7 +133,6 @@ export class StudentTitlesPage {
     });
   }
 
-
   // 🟢 3. جعل الدالة async للتخلص من localStorage
   async ionViewWillEnter() {
     let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
@@ -163,7 +166,7 @@ export class StudentTitlesPage {
       };
       this.schoolDirectoryApi
         .getStudentDetails(data)
-        .then((res) => {
+        .then(res => {
           if (res && res.session && res.data) this.studentDetails = res.data;
           resolve();
         })
@@ -176,7 +179,7 @@ export class StudentTitlesPage {
       let body = { sid: String(sid) };
       this.gamificationApi
         .getStudentSkillTree(body)
-        .then((raw) => {
+        .then(raw => {
           const res = raw as { success?: boolean; total_points?: number; skills?: SkillData } | undefined;
           if (res && res.success) {
             this.studentTotalPoints = res.total_points || 0;
@@ -239,7 +242,7 @@ export class StudentTitlesPage {
       let body = { sid: String(sid), userId: String(this.userInfo.user_no) };
       this.gamificationApi
         .getStudentInventory(body)
-        .then((res) => {
+        .then(res => {
           if (res && res.success) {
             let rawWallet = res.wallet || {};
             this.studentWallet = Array.isArray(rawWallet) ? rawWallet[0] || {} : rawWallet;
@@ -252,7 +255,9 @@ export class StudentTitlesPage {
             let rawActive = res.active_title;
             if (rawActive !== undefined && rawActive !== null) {
               this.activeCraftedTitle =
-                (typeof rawActive === 'object' ? rawActive.title_ar || rawActive.title_name || rawActive.title : rawActive) || null;
+                (typeof rawActive === 'object'
+                  ? rawActive.title_ar || rawActive.title_name || rawActive.title
+                  : rawActive) || null;
             }
 
             this.alchemyTitlesList = this.gamification.processTitles(this.unlockedTitles);
@@ -343,7 +348,8 @@ export class StudentTitlesPage {
     };
 
     try {
-      const res = (await this.dataProvider.run(() => this.gamificationApi.craftSkillTitle(body))) as ApiResponse | undefined;
+      const res = (await this.dataProvider.run(() => this.gamificationApi.craftSkillTitle(body))) as
+        ApiResponse | undefined;
       if (res && res.success) {
         this.dataProvider.showToast(res.msg || '');
         await this.fetchInventory(sid);

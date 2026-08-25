@@ -1,14 +1,14 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { DataService } from '../../service/data/data.service';
-import { CommonModule } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-student-modal',
   templateUrl: './add-student-modal.component.html', // إضافة هذا السطر
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  imports: [IonicModule, TranslateModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddStudentModalComponent {

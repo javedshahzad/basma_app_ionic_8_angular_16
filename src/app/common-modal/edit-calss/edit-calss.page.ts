@@ -1,4 +1,12 @@
-﻿import { Component, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+﻿import {
+  Component,
+  Input,
+  NgZone,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  DestroyRef,
+  inject
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
@@ -10,14 +18,13 @@ import { CreateClassPage } from '../../create-class/create-class.page';
 import { SchoolDirectoryApiService } from '../../service/school-directory-api/school-directory-api.service';
 import { RegistrationApiService } from '../../service/registration-api/registration-api.service';
 import { CoursesApiService } from '../../service/courses-api/courses-api.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-edit-calss',
-    templateUrl: './edit-calss.page.html',
-    styleUrls: ['./edit-calss.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-edit-calss',
+  templateUrl: './edit-calss.page.html',
+  styleUrls: ['./edit-calss.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, TranslatePipe]
 })
 export class EditCalssPage {
   private destroyRef = inject(DestroyRef);

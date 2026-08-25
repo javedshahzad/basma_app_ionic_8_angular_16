@@ -7,15 +7,15 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين لحماية البيانات
 import { StorageService } from '../service/storage.service';
-import { NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-share-bulletins',
-    templateUrl: './share-bulletins.page.html',
-    styleUrls: ['./share-bulletins.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, FormsModule, TranslatePipe]
+  selector: 'app-share-bulletins',
+  templateUrl: './share-bulletins.page.html',
+  styleUrls: ['./share-bulletins.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class ShareBulletinsPage implements OnInit {
   lang: any = {};

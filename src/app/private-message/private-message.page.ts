@@ -1,11 +1,4 @@
-﻿import {
-  Component,
-  NgZone,
-  DestroyRef,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+﻿import { Component, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -16,14 +9,13 @@ import { Router } from '@angular/router';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { NotificationsApiService } from '../service/notifications-api/notifications-api.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-private-message',
-    templateUrl: './private-message.page.html',
-    styleUrls: ['./private-message.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-private-message',
+  templateUrl: './private-message.page.html',
+  styleUrls: ['./private-message.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, TranslatePipe]
 })
 export class PrivateMessagePage {
   trackByIndex(index: number): number {
@@ -61,7 +53,6 @@ export class PrivateMessagePage {
       }
     });
   }
-
 
   // 🟢 جعل الدالة async للتعامل الآمن مع الذاكرة
   async ionViewWillEnter() {

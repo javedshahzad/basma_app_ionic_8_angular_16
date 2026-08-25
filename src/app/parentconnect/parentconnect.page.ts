@@ -1,11 +1,4 @@
-﻿import {
-  Component,
-  NgZone,
-  DestroyRef,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+﻿import { Component, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -19,17 +12,17 @@ import { ConnectNewMessagePage } from '../connect-new-message/connect-new-messag
 import { StorageService } from '../service/storage.service';
 import { ParentConnectApiService, ParentConnectChat } from '../service/parent-connect-api/parent-connect-api.service';
 import { UserType } from '../constants/user-type';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { DateFormatPipe } from '../pipes/date-format/date-format.pipe';
 import { HasRoleDirective } from '../directives/has-role.directive';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 
 @Component({
-    selector: 'app-parentconnect',
-    templateUrl: './parentconnect.page.html',
-    styleUrls: ['./parentconnect.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, DateFormatPipe, TranslatePipe, HasRoleDirective]
+  selector: 'app-parentconnect',
+  templateUrl: './parentconnect.page.html',
+  styleUrls: ['./parentconnect.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, DateFormatPipe, TranslatePipe, HasRoleDirective]
 })
 export class ParentconnectPage {
   trackByIndex(index: number): number {
@@ -93,7 +86,6 @@ export class ParentconnectPage {
     });
   }
 
-
   // 🟢 جلب البيانات عند دخول الصفحة بشكل آمن وسريع
   async ionViewWillEnter() {
     let userLoggedIn = await this.storageSr.get('userloggedin');
@@ -154,7 +146,7 @@ export class ParentconnectPage {
 
     this.parentConnectApi
       .getConnectChatList(data)
-      .then((response) => {
+      .then(response => {
         if (showLoader) {
           this.dataProvider.hideLoading();
         }
@@ -255,7 +247,7 @@ export class ParentconnectPage {
             };
             this.dataProvider
               .run(() => this.parentConnectApi.closeParentConnectChat(data))
-              .then((response) => {
+              .then(response => {
                 if (response.session) {
                   chat.ticket_status = '1';
                   this.dataProvider.showToast(response.message || '');
@@ -293,7 +285,7 @@ export class ParentconnectPage {
             };
             this.dataProvider
               .run(() => this.parentConnectApi.reopenParentConnectChat(data))
-              .then((response) => {
+              .then(response => {
                 if (response.session) {
                   chat.ticket_status = '0';
                   this.dataProvider.showToast(response.message || '');

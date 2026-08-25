@@ -25,18 +25,18 @@ import { PlanApiService } from './service/plan-api/plan-api.service';
 import { ReportsApiService } from './service/reports-api/reports-api.service';
 import { Browser } from '@capacitor/browser';
 import { PushNotifications } from '@capacitor/push-notifications';
-import { NgIf, NgFor } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { PermissionService } from './service/permission/permission.service';
 
 declare var cordova: any;
 
 @Component({
-    selector: 'app-root',
-    templateUrl: 'app.component.html',
-    styleUrls: ['app.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
+  selector: 'app-root',
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class AppComponent {
   private destroyRef = inject(DestroyRef);
@@ -127,11 +127,14 @@ export class AppComponent {
       // `use()` was fired without waiting, which is exactly what caused the
       // "first click doesn't work, second click works" bug when switching
       // languages later in the app (see changeLanguage()).
-      this.translate.use(this.selectedLanguage).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-        this.dataProvider.language.next(this.selectedLanguage);
-        this.setAppDirection(this.selectedLanguage);
-        this.initializeApp();
-      });
+      this.translate
+        .use(this.selectedLanguage)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          this.dataProvider.language.next(this.selectedLanguage);
+          this.setAppDirection(this.selectedLanguage);
+          this.initializeApp();
+        });
     });
 
     this.auth.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async (status: any) => {
@@ -188,79 +191,96 @@ export class AppComponent {
       this.requestNotificationPermission();
       this.fcm.initPush();
 
-      this.translate.get(['sidemenu', 'alertmessages', 'app_rate', 'switch_account']).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(response => {
-        this.lang = response;
-        this.cdr.markForCheck();
-        this.dbProvider.openDataBase().then(async () => {
-          this.dbProvider.createTable();
+      this.translate
+        .get(['sidemenu', 'alertmessages', 'app_rate', 'switch_account'])
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(response => {
+          this.lang = response;
+          this.cdr.markForCheck();
+          this.dbProvider.openDataBase().then(async () => {
+            this.dbProvider.createTable();
 
-          const userLoggedIn = await this.storageSr.get('userloggedin');
+            const userLoggedIn = await this.storageSr.get('userloggedin');
 
-          if (userLoggedIn) {
-            this.loggedin = true;
-            await this.setUserdetails(true);
-            this.pages = [];
+            if (userLoggedIn) {
+              this.loggedin = true;
+              await this.setUserdetails(true);
+              this.pages = [];
 
-            if (!this.permissionService.hasRole(UserType.Student, UserType.Parent)) {
-              this.pages.push({ title: this.lang.sidemenu.class_list, component: 'tabs', icon: 'list' });
-            }
-
-            if (this.permissionService.hasRole(UserType.Moderator, UserType.Viewer)) {
-              this.pages.push({
-                title: this.lang.sidemenu.student_report,
-                component: 'student-report-classes',
-                icon: 'bar-chart'
-              });
-            }
-
-            if (this.permissionService.hasRole(UserType.Admin)) {
-              this.pages.push({
-                title: this.lang.sidemenu.student_report,
-                component: 'student-report-classes',
-                icon: 'bar-chart'
-              });
-              this.pages.push({ title: this.lang.sidemenu.users_list, component: 'users-list', icon: 'list' });
-              this.pages.push({ title: this.lang.sidemenu.manage_teacher, component: 'manage-teacher', icon: 'list' });
-              this.pages.push({ title: this.lang.sidemenu.manage_student, component: 'manage-student', icon: 'list' });
-              this.pages.push({ title: this.lang.sidemenu.new_parent, component: 'requested-parent', icon: 'list' });
-              this.pages.push({
-                title: this.lang.sidemenu.tasks_calendar,
-                component: 'tasks-calendar',
-                icon: 'calendar-outline'
-              });
-              this.pages.push({ title: this.lang.sidemenu.parent_connect, component: 'parentconnect', icon: 'list' });
-            }
-
-            if (this.permissionService.hasRole(UserType.Admin, UserType.Teacher, UserType.Moderator, UserType.Viewer)) {
-              if (!this.pages?.some(p => p.component === 'bulletins')) {
-                this.pages.push({ title: this.lang.sidemenu.billetins, component: 'bulletins', icon: 'list' });
+              if (!this.permissionService.hasRole(UserType.Student, UserType.Parent)) {
+                this.pages.push({ title: this.lang.sidemenu.class_list, component: 'tabs', icon: 'list' });
               }
-            }
 
-            this.rootPage = this.permissionService.hasRole(UserType.Parent) ? 'ChildrenPage' : 'tabs';
-
-            if (this.AvailablePlan && this.AvailablePlan.plan.slug != 'free' && this.AvailablePlan.isExpire == false) {
-              if (!this.pages.some(p => p.component === 'elearning-schools')) {
+              if (this.permissionService.hasRole(UserType.Moderator, UserType.Viewer)) {
                 this.pages.push({
-                  title: this.lang.sidemenu.e_learning,
-                  component: 'elearning-schools',
-                  icon: 'library-outline'
+                  title: this.lang.sidemenu.student_report,
+                  component: 'student-report-classes',
+                  icon: 'bar-chart'
                 });
               }
+
+              if (this.permissionService.hasRole(UserType.Admin)) {
+                this.pages.push({
+                  title: this.lang.sidemenu.student_report,
+                  component: 'student-report-classes',
+                  icon: 'bar-chart'
+                });
+                this.pages.push({ title: this.lang.sidemenu.users_list, component: 'users-list', icon: 'list' });
+                this.pages.push({
+                  title: this.lang.sidemenu.manage_teacher,
+                  component: 'manage-teacher',
+                  icon: 'list'
+                });
+                this.pages.push({
+                  title: this.lang.sidemenu.manage_student,
+                  component: 'manage-student',
+                  icon: 'list'
+                });
+                this.pages.push({ title: this.lang.sidemenu.new_parent, component: 'requested-parent', icon: 'list' });
+                this.pages.push({
+                  title: this.lang.sidemenu.tasks_calendar,
+                  component: 'tasks-calendar',
+                  icon: 'calendar-outline'
+                });
+                this.pages.push({ title: this.lang.sidemenu.parent_connect, component: 'parentconnect', icon: 'list' });
+              }
+
+              if (
+                this.permissionService.hasRole(UserType.Admin, UserType.Teacher, UserType.Moderator, UserType.Viewer)
+              ) {
+                if (!this.pages?.some(p => p.component === 'bulletins')) {
+                  this.pages.push({ title: this.lang.sidemenu.billetins, component: 'bulletins', icon: 'list' });
+                }
+              }
+
+              this.rootPage = this.permissionService.hasRole(UserType.Parent) ? 'ChildrenPage' : 'tabs';
+
+              if (
+                this.AvailablePlan &&
+                this.AvailablePlan.plan.slug != 'free' &&
+                this.AvailablePlan.isExpire == false
+              ) {
+                if (!this.pages.some(p => p.component === 'elearning-schools')) {
+                  this.pages.push({
+                    title: this.lang.sidemenu.e_learning,
+                    component: 'elearning-schools',
+                    icon: 'library-outline'
+                  });
+                }
+              }
+            } else {
+              await this.checkRoute();
+              this.pages = [
+                { title: this.lang.sidemenu.login, component: 'login', icon: 'log-in' },
+                { title: this.lang.sidemenu.news, component: 'news', icon: 'list' }
+              ];
+              this.rootPage = 'login';
             }
-          } else {
-            await this.checkRoute();
-            this.pages = [
-              { title: this.lang.sidemenu.login, component: 'login', icon: 'log-in' },
-              { title: this.lang.sidemenu.news, component: 'news', icon: 'list' }
-            ];
-            this.rootPage = 'login';
-          }
-          this.cdr.markForCheck();
-          this.initializeDeeppLink();
-          this.hideSplashScreen();
+            this.cdr.markForCheck();
+            this.initializeDeeppLink();
+            this.hideSplashScreen();
+          });
         });
-      });
 
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
         ScreenOrientation.lock({ orientation: 'portrait' })
@@ -542,7 +562,6 @@ export class AppComponent {
     await Browser.open({ url: 'https://basmapp.com/BasmaCP' });
   }
 
-
   // FIX: this was the root cause of the "first click doesn't work" bug.
   // translate.use() is asynchronous — it fetches/parses the language JSON
   // file. Calling translate.get() immediately afterwards (without waiting)
@@ -560,25 +579,31 @@ export class AppComponent {
 
     await this.storageSr.set('language', newLang);
 
-    this.translate.use(newLang).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => {
-        this.selectedLanguage = newLang;
-        this.changedLanguage = newLang === 'ar' ? 'العربية' : 'English';
-        this.translate.setDefaultLang(newLang);
-        this.setAppDirection(newLang);
-        this.dataProvider.language.next(newLang);
-        this.cdr.markForCheck();
-
-        this.translate.get(['sidemenu', 'alertmessages', 'app_rate']).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(response => {
-          this.lang = response;
-          this.updateMenuTranslations();
+    this.translate
+      .use(newLang)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.selectedLanguage = newLang;
+          this.changedLanguage = newLang === 'ar' ? 'العربية' : 'English';
+          this.translate.setDefaultLang(newLang);
+          this.setAppDirection(newLang);
+          this.dataProvider.language.next(newLang);
           this.cdr.markForCheck();
-        });
-      },
-      error: err => {
-        console.error('Failed to switch language:', err);
-      }
-    });
+
+          this.translate
+            .get(['sidemenu', 'alertmessages', 'app_rate'])
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(response => {
+              this.lang = response;
+              this.updateMenuTranslations();
+              this.cdr.markForCheck();
+            });
+        },
+        error: err => {
+          console.error('Failed to switch language:', err);
+        }
+      });
   }
 
   updateMenuTranslations() {

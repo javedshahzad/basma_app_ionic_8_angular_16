@@ -5,7 +5,7 @@ import { AuthService } from '@services/auth/auth.service';
 import { DatabaseService } from '@services/database/database.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { CommonModule } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '@services/storage.service';
@@ -14,7 +14,7 @@ import { StorageService } from '@services/storage.service';
   selector: 'app-edit-student-profile',
   templateUrl: './edit-student-profile.component.html',
   styleUrls: ['./edit-student-profile.component.scss'], // إضافة هذا السطر
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  imports: [IonicModule, TranslateModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditStudentProfileComponent implements OnInit {

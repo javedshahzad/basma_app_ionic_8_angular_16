@@ -1,12 +1,12 @@
 ﻿<ion-header class="ion-no-border">
   <ion-toolbar class="lineone-toolbar">
-    <ion-buttons slot="start">
-    </ion-buttons>
+    <ion-buttons slot="start"> </ion-buttons>
     <ion-buttons slot="end">
-      <ion-back-button 
-        defaultHref="/tabs" 
-        text="" 
-        class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors flex items-center justify-center">
+      <ion-back-button
+        defaultHref="/tabs"
+        text=""
+        class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors flex items-center justify-center"
+      >
       </ion-back-button>
     </ion-buttons>
     <ion-title class="lineone-title">{{'device.devices_all' | translate}}</ion-title>
@@ -15,120 +15,152 @@
 
 <ion-content class="lineone-content">
   <div class="main-container">
-    
-    <div class="page-header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div
+      class="page-header-section"
+      style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem"
+    >
       <div>
         <h1 class="page-main-title">{{'device.devices_all' | translate}}</h1>
       </div>
-      <button *ngIf="All_available_devices.length > 0" class="lineone-btn btn-danger" (click)="logoutDeviceFromAll()">
+      @if (All_available_devices.length > 0) {
+      <button class="lineone-btn btn-danger" (click)="logoutDeviceFromAll()">
         <ion-icon name="log-out-outline" slot="start"></ion-icon>
         {{'device.all_logout' | translate}}
       </button>
+      }
     </div>
 
-    <ng-container *ngIf="All_available_devices.length === 0">
-      <div style="text-align: center; padding: 3rem 0; color: var(--lineone-text-muted); font-weight: bold;">
-        <p>{{'device.no_device'|translate}}</p>
-      </div>
-    </ng-container>
-
-    <div class="device-grid" *ngIf="All_available_devices.length > 0">
-      <div *ngFor="let device of All_available_devices; let i=index; trackBy: trackByIndex" class="device-card lineone-card animate__animated animate__fadeInUp">
-        
+    @if (All_available_devices.length === 0) {
+    <div style="text-align: center; padding: 3rem 0; color: var(--lineone-text-muted); font-weight: bold">
+      <p>{{'device.no_device'|translate}}</p>
+    </div>
+    } @if (All_available_devices.length > 0) {
+    <div class="device-grid">
+      @for (device of All_available_devices; track trackByIndex(i); let i = $index) {
+      <div class="device-card lineone-card animate__animated animate__fadeInUp">
         <div class="card-header-area">
           <div class="device-icon-wrapper">
-            <ion-icon [name]="device.os_type === '1' ? 'logo-android' : (device.os_type === '2' ? 'logo-apple' : 'hardware-chip-outline')" class="device-main-icon"></ion-icon>
+            <ion-icon
+              [name]="device.os_type === '1' ? 'logo-android' : (device.os_type === '2' ? 'logo-apple' : 'hardware-chip-outline')"
+              class="device-main-icon"
+            ></ion-icon>
           </div>
-          
           <div class="device-info-text">
             <h3 class="device-name-text">
-              <span *ngIf="device.os_type === '1'">Android Device</span>
-              <span *ngIf="device.os_type === '2'">iOS Device</span>
-              <span *ngIf="device.os_type !== '1' && device.os_type !== '2'">Device #{{i+1}}</span>
+              @if (device.os_type === '1') {
+              <span>Android Device</span>
+              } @if (device.os_type === '2') {
+              <span>iOS Device</span>
+              } @if (device.os_type !== '1' && device.os_type !== '2') {
+              <span>Device #{{i+1}}</span>
+              }
             </h3>
             <p class="device-type-text">{{'device.device_id' | translate}}: {{device.device_id}}</p>
           </div>
         </div>
-
         <div class="card-body-area">
-          <div class="detail-item-row" style="display: flex; justify-content: space-between; width: 100%;">
+          <div class="detail-item-row" style="display: flex; justify-content: space-between; width: 100%">
             <span class="detail-label-text">الحالة:</span>
-            
-            <span *ngIf="device.device_id === deviceSr.uuid" class="status-badge online">
+            @if (device.device_id === deviceSr.uuid) {
+            <span class="status-badge online">
               <span class="status-dot"></span>
               {{'device.current_device' | translate}}
             </span>
-            
-            <span *ngIf="device.device_id !== deviceSr.uuid" class="status-badge" [ngClass]="device.is_logged_out === '1' ? 'offline' : 'online'">
+            } @if (device.device_id !== deviceSr.uuid) {
+            <span class="status-badge" [ngClass]="device.is_logged_out === '1' ? 'offline' : 'online'">
               <span class="status-dot"></span>
               {{device.is_logged_out === '1' ? ('device.logout' | translate) : ('device.active' | translate)}}
             </span>
+            }
           </div>
         </div>
-
         <div class="card-actions-area">
-          <button class="lineone-btn btn-secondary" style="width: 100%; color: #ef4444;" (click)="deletedDevice(device)">
+          <button class="lineone-btn btn-secondary" style="width: 100%; color: #ef4444" (click)="deletedDevice(device)">
             <ion-icon name="trash-outline" slot="start"></ion-icon>
             {{'device.delete' | translate}}
           </button>
         </div>
-
       </div>
+      }
     </div>
-
+    }
   </div>
 
-  <div *ngIf="showDeleteModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4 animate-fade-in" (click)="closeDeleteModal()">
-    <div class="bg-white rounded-[24px] w-full max-w-sm overflow-hidden shadow-2xl transform transition-all animate-scale-up" (click)="$event.stopPropagation()">
-      
+  @if (showDeleteModal) {
+  <div
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4 animate-fade-in"
+    (click)="closeDeleteModal()"
+  >
+    <div
+      class="bg-white rounded-[24px] w-full max-w-sm overflow-hidden shadow-2xl transform transition-all animate-scale-up"
+      (click)="$event.stopPropagation()"
+    >
       <div class="flex justify-center pt-8 pb-4">
-        <div class="w-20 h-20 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 shadow-inner border border-rose-100">
+        <div
+          class="w-20 h-20 rounded-full bg-rose-50 flex items-center justify-center text-rose-500 shadow-inner border border-rose-100"
+        >
           <ion-icon name="trash-bin-outline" class="text-4xl"></ion-icon>
         </div>
       </div>
-
       <div class="text-center px-6 pb-8">
         <h3 class="text-xl font-bold text-slate-800 mb-2">تأكيد الحذف</h3>
         <p class="text-sm text-slate-500 font-medium leading-relaxed">
           هل أنت متأكد من رغبتك في حذف هذا الجهاز وتسجيل الخروج منه نهائياً؟
         </p>
       </div>
-
       <div class="flex border-t border-slate-100 bg-slate-50 p-4 gap-3">
-        <button class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none" (click)="closeDeleteModal()">
+        <button
+          class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none"
+          (click)="closeDeleteModal()"
+        >
           إلغاء
         </button>
-        <button class="flex-1 py-3.5 rounded-xl font-bold text-white bg-rose-500 shadow-md shadow-rose-500/20 hover:bg-rose-600 active:scale-95 transition-all focus:outline-none" (click)="confirmDelete()">
+        <button
+          class="flex-1 py-3.5 rounded-xl font-bold text-white bg-rose-500 shadow-md shadow-rose-500/20 hover:bg-rose-600 active:scale-95 transition-all focus:outline-none"
+          (click)="confirmDelete()"
+        >
           نعم، احذف
         </button>
       </div>
     </div>
   </div>
-
-  <div *ngIf="showLogoutAllModal" class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4 animate-fade-in" (click)="closeLogoutAllModal()">
-    <div class="bg-white rounded-[24px] w-full max-w-sm overflow-hidden shadow-2xl transform transition-all animate-scale-up" (click)="$event.stopPropagation()">
-      
+  } @if (showLogoutAllModal) {
+  <div
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4 animate-fade-in"
+    (click)="closeLogoutAllModal()"
+  >
+    <div
+      class="bg-white rounded-[24px] w-full max-w-sm overflow-hidden shadow-2xl transform transition-all animate-scale-up"
+      (click)="$event.stopPropagation()"
+    >
       <div class="flex justify-center pt-8 pb-4">
-        <div class="w-20 h-20 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 shadow-inner border border-orange-100">
+        <div
+          class="w-20 h-20 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 shadow-inner border border-orange-100"
+        >
           <ion-icon name="warning-outline" class="text-4xl"></ion-icon>
         </div>
       </div>
-
       <div class="text-center px-6 pb-8">
         <h3 class="text-xl font-bold text-slate-800 mb-2">خروج من الجميع</h3>
         <p class="text-sm text-slate-500 font-medium leading-relaxed">
           سيتم تسجيل خروج حسابك من كافة الأجهزة المرتبطة به. هل تود الاستمرار؟
         </p>
       </div>
-
       <div class="flex border-t border-slate-100 bg-slate-50 p-4 gap-3">
-        <button class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none" (click)="closeLogoutAllModal()">
+        <button
+          class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none"
+          (click)="closeLogoutAllModal()"
+        >
           إلغاء
         </button>
-        <button class="flex-1 py-3.5 rounded-xl font-bold text-white bg-orange-500 shadow-md shadow-orange-500/20 hover:bg-orange-600 active:scale-95 transition-all focus:outline-none" (click)="confirmLogoutAll()">
+        <button
+          class="flex-1 py-3.5 rounded-xl font-bold text-white bg-orange-500 shadow-md shadow-orange-500/20 hover:bg-orange-600 active:scale-95 transition-all focus:outline-none"
+          (click)="confirmLogoutAll()"
+        >
           نعم، خروج
         </button>
       </div>
     </div>
   </div>
+  }
 </ion-content>

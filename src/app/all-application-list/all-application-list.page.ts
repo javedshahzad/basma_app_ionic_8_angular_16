@@ -1,20 +1,30 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { NavController, AlertController, PopoverController, ModalController, ActionSheetController, IonicModule } from '@ionic/angular';
+import {
+  NavController,
+  AlertController,
+  PopoverController,
+  ModalController,
+  ActionSheetController,
+  IonicModule
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { DatePipe, NgIf, NgFor, NgClass } from '@angular/common';
-import { AbsentApplicationApiService, AbsentApplication } from '../service/absent-application-api/absent-application-api.service';
+import { DatePipe, NgClass } from '@angular/common';
+import {
+  AbsentApplicationApiService,
+  AbsentApplication
+} from '../service/absent-application-api/absent-application-api.service';
 import { StorageService } from '../service/storage.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 
 @Component({
-    selector: 'app-all-application-list',
-    templateUrl: './all-application-list.page.html',
-    styleUrls: ['./all-application-list.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, DatePipe, TranslatePipe]
+  selector: 'app-all-application-list',
+  templateUrl: './all-application-list.page.html',
+  styleUrls: ['./all-application-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, DatePipe, TranslatePipe]
 })
 export class AllApplicationListPage implements OnInit {
   trackByIndex(index: number): number {

@@ -1,4 +1,4 @@
-import { enableProdMode } from '@angular/core';
+import { enableProdMode, provideZoneChangeDetection } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 
 import * as Sentry from '@sentry/capacitor';
@@ -49,7 +49,7 @@ if (environment.sentryDsn) {
           delete event.extra['httpError'];
         }
         return event;
-      },
+      }
     },
     SentryAngular.init
   );
@@ -69,4 +69,7 @@ if (environment.production) {
   console.debug = () => {};
 }
 
-bootstrapApplication(AppComponent, appConfig).catch(err => console.log(err));
+bootstrapApplication(AppComponent, {
+  ...appConfig,
+  providers: [provideZoneChangeDetection(), ...appConfig.providers]
+}).catch(err => console.log(err));

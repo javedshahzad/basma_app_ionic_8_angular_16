@@ -1,11 +1,4 @@
-import {
-  Component,
-  NgZone,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-  DestroyRef,
-  inject
-} from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, Platform, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -22,14 +15,13 @@ import { environment } from '../../environments/environment';
 // 🟢 استيراد كاميرا كاباسيتور الحديثة
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'app-post-news',
-    templateUrl: './post-news.page.html',
-    styleUrls: ['./post-news.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf]
+  selector: 'app-post-news',
+  templateUrl: './post-news.page.html',
+  styleUrls: ['./post-news.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule]
 })
 export class PostNewsPage {
   private destroyRef = inject(DestroyRef);
@@ -154,7 +146,6 @@ export class PostNewsPage {
       }
     });
   }
-
 
   async ionViewWillEnter() {
     let userLoggedIn = await this.storageSr.get('userloggedin');

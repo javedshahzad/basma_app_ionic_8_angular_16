@@ -1,11 +1,4 @@
-﻿import {
-  Component,
-  NgZone,
-  DestroyRef,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+﻿import { Component, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, NavParams, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -21,15 +14,15 @@ import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { IonicSelectableComponent } from 'ionic-selectable';
-import { NgIf } from '@angular/common';
+
 import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
-    selector: 'app-edit-teacher-profile',
-    templateUrl: './edit-teacher-profile.page.html',
-    styleUrls: ['./edit-teacher-profile.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, IonicSelectableComponent, NgIf, TranslatePipe, HasRoleDirective]
+  selector: 'app-edit-teacher-profile',
+  templateUrl: './edit-teacher-profile.page.html',
+  styleUrls: ['./edit-teacher-profile.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, IonicSelectableComponent, TranslatePipe, HasRoleDirective]
 })
 export class EditTeacherProfilePage {
   trackByIndex(index: number): number {
@@ -90,7 +83,6 @@ export class EditTeacherProfilePage {
       this.cdr.markForCheck();
     });
   }
-
 
   async ionViewWillEnter() {
     const userData = await this.storageSr.get('userloggedin');

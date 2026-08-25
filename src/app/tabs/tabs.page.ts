@@ -7,16 +7,16 @@ import { DataService } from '../service/data/data.service';
 import { Router } from '@angular/router';
 // 🟢 1. استيراد خدمة التخزين الجديدة
 import { StorageService } from '../service/storage.service';
-import { NgIf } from '@angular/common';
+
 import { PermissionService } from '../service/permission/permission.service';
 import { UserType } from '../constants/user-type';
 
 @Component({
-    selector: 'app-tabs',
-    templateUrl: './tabs.page.html',
-    styleUrls: ['./tabs.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf]
+  selector: 'app-tabs',
+  templateUrl: './tabs.page.html',
+  styleUrls: ['./tabs.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule]
 })
 export class TabsPage {
   private destroyRef = inject(DestroyRef);
@@ -94,5 +94,4 @@ export class TabsPage {
       }
     }
   }
-
 }

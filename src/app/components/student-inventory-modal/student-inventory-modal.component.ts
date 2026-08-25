@@ -1,9 +1,13 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { DataService } from '../../service/data/data.service';
 import { GamificationApiService, SkillData } from '../../service/gamification-api/gamification-api.service';
-import { GamificationEngineService, ProcessedTitle, ProcessedBadge } from '../../service/gamification-engine/gamification-engine.service';
+import {
+  GamificationEngineService,
+  ProcessedTitle,
+  ProcessedBadge
+} from '../../service/gamification-engine/gamification-engine.service';
 import { StudentEngagementService } from '../../service/student-engagement/student-engagement.service';
 
 /**
@@ -17,7 +21,7 @@ import { StudentEngagementService } from '../../service/student-engagement/stude
 @Component({
   selector: 'app-student-inventory-modal',
   templateUrl: './student-inventory-modal.component.html',
-  imports: [IonicModule, NgIf, NgFor, NgClass],
+  imports: [IonicModule, NgClass],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentInventoryModalComponent {
@@ -69,7 +73,7 @@ export class StudentInventoryModalComponent {
 
       this.gamificationApi
         .getStudentInventory(body)
-        .then((res) => {
+        .then(res => {
           if (res && res.success) {
             this.studentWallet = res.wallet || {};
             this.unlockedTitles = res.unlocked_titles || [];

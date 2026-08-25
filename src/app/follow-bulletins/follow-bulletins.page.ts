@@ -1,11 +1,4 @@
-import {
-  Component,
-  NgZone,
-  DestroyRef,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+import { Component, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -20,14 +13,13 @@ import { StorageService } from '../service/storage.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { BulletinsApiService } from '../service/bulletins-api/bulletins-api.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-follow-bulletins',
-    templateUrl: './follow-bulletins.page.html',
-    styleUrls: ['./follow-bulletins.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
+  selector: 'app-follow-bulletins',
+  templateUrl: './follow-bulletins.page.html',
+  styleUrls: ['./follow-bulletins.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class FollowBulletinsPage {
   trackByIndex(index: number): number {
@@ -103,7 +95,6 @@ export class FollowBulletinsPage {
       }
     }
   }
-
 
   // 🟢 استبدال localStorage وجعل الدالة آمنة
   async ionViewWillEnter() {

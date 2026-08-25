@@ -1,11 +1,4 @@
-﻿import {
-  Component,
-  NgZone,
-  DestroyRef,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+﻿import { Component, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -16,16 +9,16 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { GamificationEngineService } from '../service/gamification-engine/gamification-engine.service';
 import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
-import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
+import { NgStyle, NgClass } from '@angular/common';
 import { PermissionService } from '../service/permission/permission.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
-    selector: 'app-children',
-    templateUrl: './children.page.html',
-    styleUrls: ['./children.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgStyle, NgClass, TranslatePipe]
+  selector: 'app-children',
+  templateUrl: './children.page.html',
+  styleUrls: ['./children.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgStyle, NgClass, TranslatePipe]
 })
 export class ChildrenPage {
   trackByIndex(index: number): number {
@@ -207,7 +200,6 @@ export class ChildrenPage {
 
     this.router.navigate(['student-detail'], navigationExtras);
   }
-
 
   /**
    * 🟢 دالة جديدة: تجهيز بيانات الطالب وفتح نافذة ملخص الأداء

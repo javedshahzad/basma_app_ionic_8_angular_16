@@ -14,15 +14,15 @@ import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-parent-register',
-    templateUrl: './parent-register.page.html',
-    styleUrls: ['./parent-register.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
+  selector: 'app-parent-register',
+  templateUrl: './parent-register.page.html',
+  styleUrls: ['./parent-register.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class ParentRegisterPage {
   parent: any = {};
@@ -51,7 +51,6 @@ export class ParentRegisterPage {
       this.school_id = navigation.extras.state['id'];
     }
   }
-
 
   _keyPress(event: any) {
     var charCode = event.which ? event.which : event.keyCode;

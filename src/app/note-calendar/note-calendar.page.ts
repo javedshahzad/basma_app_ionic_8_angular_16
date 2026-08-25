@@ -8,14 +8,14 @@ import { NotesApiService } from '../service/notes-api/notes-api.service';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-note-calendar',
-    templateUrl: './note-calendar.page.html',
-    styleUrls: ['./note-calendar.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, DatePipe]
+  selector: 'app-note-calendar',
+  templateUrl: './note-calendar.page.html',
+  styleUrls: ['./note-calendar.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, DatePipe]
 })
 export class NoteCalendarPage implements OnInit {
   trackByIndex(index: number): number {

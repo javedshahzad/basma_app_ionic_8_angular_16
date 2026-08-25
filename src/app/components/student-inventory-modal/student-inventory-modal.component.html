@@ -1,102 +1,209 @@
-<ion-modal [isOpen]="isOpen" (didDismiss)="close()" [initialBreakpoint]="0.85" [breakpoints]="[0, 0.85, 1]" handleBehavior="cycle" class="lineone-modal">
+<ion-modal
+  [isOpen]="isOpen"
+  (didDismiss)="close()"
+  [initialBreakpoint]="0.85"
+  [breakpoints]="[0, 0.85, 1]"
+  handleBehavior="cycle"
+  class="lineone-modal"
+>
   <ng-template>
-
     <ion-header class="ion-no-border bg-white pt-2">
       <div class="flex flex-col px-4 pb-2 border-b border-slate-100">
         <div class="flex justify-between items-center mb-3">
           <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
             <ion-icon name="flask" class="text-indigo-500 text-xl"></ion-icon> خزانة الطالب
           </h3>
-          <button (click)="close()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center">
+          <button
+            (click)="close()"
+            class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center"
+          >
             <ion-icon name="close" class="text-xl"></ion-icon>
           </button>
         </div>
 
         <div class="flex bg-slate-100 p-1 rounded-xl">
-          <button class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all" [ngClass]="inventoryTab === 'titles' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'" (click)="inventoryTab = 'titles'">🧪 دمج الألقاب</button>
-          <button class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all" [ngClass]="inventoryTab === 'badges' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'" (click)="inventoryTab = 'badges'">🥷 الإنجازات السرية</button>
+          <button
+            class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all"
+            [ngClass]="inventoryTab === 'titles' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'"
+            (click)="inventoryTab = 'titles'"
+          >
+            🧪 دمج الألقاب
+          </button>
+          <button
+            class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all"
+            [ngClass]="inventoryTab === 'badges' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'"
+            (click)="inventoryTab = 'badges'"
+          >
+            🥷 الإنجازات السرية
+          </button>
         </div>
       </div>
     </ion-header>
 
     <ion-content class="bg-slate-50">
       <div class="p-4 space-y-4 pb-10" dir="rtl">
-
-        <div *ngIf="inventoryTab === 'titles'">
-
-          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between mb-4">
-            <div>
-              <h4 class="text-sm font-black text-slate-700 m-0">اللقب الديناميكي (التلقائي)</h4>
-              <p class="text-[10px] text-slate-400 m-0">يتغير تلقائياً حسب أعلى مهارة.</p>
+        @if (inventoryTab === 'titles') {
+          <div>
+            <div
+              class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between mb-4"
+            >
+              <div>
+                <h4 class="text-sm font-black text-slate-700 m-0">اللقب الديناميكي (التلقائي)</h4>
+                <p class="text-[10px] text-slate-400 m-0">يتغير تلقائياً حسب أعلى مهارة.</p>
+              </div>
+              @if (activeCraftedTitle !== null) {
+                <button
+                  (click)="toggleTitle(null)"
+                  class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg active:scale-95"
+                >
+                  تفعيل الافتراضي
+                </button>
+              }
+              @if (activeCraftedTitle === null) {
+                <span
+                  class="text-xs font-bold bg-emerald-50 text-emerald-600 px-3 py-1 border border-emerald-200 rounded-lg"
+                  >✅ مفعل حالياً</span
+                >
+              }
             </div>
-            <button *ngIf="activeCraftedTitle !== null" (click)="toggleTitle(null)" class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg active:scale-95">تفعيل الافتراضي</button>
-            <span *ngIf="activeCraftedTitle === null" class="text-xs font-bold bg-emerald-50 text-emerald-600 px-3 py-1 border border-emerald-200 rounded-lg">✅ مفعل حالياً</span>
-          </div>
-
-          <h3 class="text-xs font-bold text-slate-500 mb-3 px-1">الألقاب المتاحة للدمج (الوصفات)</h3>
-
-          <div class="grid grid-cols-1 gap-3">
-            <div *ngFor="let title of processedTitles; trackBy: trackByTitleCode" class="bg-white p-3 rounded-2xl shadow-sm border relative overflow-hidden transition-all" [ngClass]="title.isUnlocked ? title.border : 'border-slate-200 opacity-90'">
-
-              <div class="flex gap-3 relative z-10">
-                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0" [ngClass]="title.isUnlocked ? title.bg : 'bg-slate-100 grayscale'">
-                  {{title.icon}}
-                </div>
-                <div class="flex-1">
-                  <h4 class="text-sm font-black m-0 flex justify-between items-center" [ngClass]="title.isUnlocked ? title.color : 'text-slate-700'">
-                    {{title.name}}
-                    <span *ngIf="activeCraftedTitle === title.code" class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-200">مُفعل</span>
-                  </h4>
-                  <p class="text-[10px] text-slate-500 m-0 mt-0.5 leading-tight">{{title.desc}}</p>
-
-                  <div *ngIf="!title.isUnlocked" class="flex gap-1 mt-2 flex-wrap">
-                    <span *ngIf="title.cost.cognitive" class="text-[9px] font-bold bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded border border-amber-100"><ion-icon name="bulb"></ion-icon> {{studentWallet?.spendable_cognitive || 0}}/{{title.cost.cognitive}}</span>
-                    <span *ngIf="title.cost.practical" class="text-[9px] font-bold bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded border border-purple-100"><ion-icon name="laptop"></ion-icon> {{studentWallet?.spendable_practical || 0}}/{{title.cost.practical}}</span>
-                    <span *ngIf="title.cost.social" class="text-[9px] font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100"><ion-icon name="chatbubbles"></ion-icon> {{studentWallet?.spendable_social || 0}}/{{title.cost.social}}</span>
-                    <span *ngIf="title.cost.discipline" class="text-[9px] font-bold bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded border border-emerald-100"><ion-icon name="shield-checkmark"></ion-icon> {{studentWallet?.spendable_discipline || 0}}/{{title.cost.discipline}}</span>
-                    <span *ngIf="title.cost.emotional" class="text-[9px] font-bold bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded border border-rose-100"><ion-icon name="heart"></ion-icon> {{studentWallet?.spendable_emotional || 0}}/{{title.cost.emotional}}</span>
+            <h3 class="text-xs font-bold text-slate-500 mb-3 px-1">الألقاب المتاحة للدمج (الوصفات)</h3>
+            <div class="grid grid-cols-1 gap-3">
+              @for (title of processedTitles; track trackByTitleCode($index, title)) {
+                <div
+                  class="bg-white p-3 rounded-2xl shadow-sm border relative overflow-hidden transition-all"
+                  [ngClass]="title.isUnlocked ? title.border : 'border-slate-200 opacity-90'"
+                >
+                  <div class="flex gap-3 relative z-10">
+                    <div
+                      class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shrink-0"
+                      [ngClass]="title.isUnlocked ? title.bg : 'bg-slate-100 grayscale'"
+                    >
+                      {{ title.icon }}
+                    </div>
+                    <div class="flex-1">
+                      <h4
+                        class="text-sm font-black m-0 flex justify-between items-center"
+                        [ngClass]="title.isUnlocked ? title.color : 'text-slate-700'"
+                      >
+                        {{ title.name }}
+                        @if (activeCraftedTitle === title.code) {
+                          <span
+                            class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-200"
+                            >مُفعل</span
+                          >
+                        }
+                      </h4>
+                      <p class="text-[10px] text-slate-500 m-0 mt-0.5 leading-tight">{{ title.desc }}</p>
+                      @if (!title.isUnlocked) {
+                        <div class="flex gap-1 mt-2 flex-wrap">
+                          @if (title.cost.cognitive) {
+                            <span
+                              class="text-[9px] font-bold bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded border border-amber-100"
+                              ><ion-icon name="bulb"></ion-icon> {{ studentWallet?.spendable_cognitive || 0 }}/{{
+                                title.cost.cognitive
+                              }}</span
+                            >
+                          }
+                          @if (title.cost.practical) {
+                            <span
+                              class="text-[9px] font-bold bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded border border-purple-100"
+                              ><ion-icon name="laptop"></ion-icon> {{ studentWallet?.spendable_practical || 0 }}/{{
+                                title.cost.practical
+                              }}</span
+                            >
+                          }
+                          @if (title.cost.social) {
+                            <span
+                              class="text-[9px] font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100"
+                              ><ion-icon name="chatbubbles"></ion-icon> {{ studentWallet?.spendable_social || 0 }}/{{
+                                title.cost.social
+                              }}</span
+                            >
+                          }
+                          @if (title.cost.discipline) {
+                            <span
+                              class="text-[9px] font-bold bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded border border-emerald-100"
+                              ><ion-icon name="shield-checkmark"></ion-icon>
+                              {{ studentWallet?.spendable_discipline || 0 }}/{{ title.cost.discipline }}</span
+                            >
+                          }
+                          @if (title.cost.emotional) {
+                            <span
+                              class="text-[9px] font-bold bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded border border-rose-100"
+                              ><ion-icon name="heart"></ion-icon> {{ studentWallet?.spendable_emotional || 0 }}/{{
+                                title.cost.emotional
+                              }}</span
+                            >
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <div class="mt-3 flex justify-end relative z-10 border-t border-slate-50 pt-2">
+                    @if (title.isUnlocked && activeCraftedTitle !== title.code) {
+                      <button
+                        (click)="toggleTitle(title.code)"
+                        class="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-lg active:scale-95"
+                      >
+                        تفعيل اللقب
+                      </button>
+                    }
+                    @if (!title.isUnlocked) {
+                      <button
+                        (click)="craftTitle(title)"
+                        class="text-xs font-bold px-4 py-1.5 rounded-lg active:scale-95 transition-all"
+                        [ngClass]="
+                          canCraft(title.cost)
+                            ? 'bg-indigo-600 text-white shadow-md'
+                            : 'bg-slate-100 text-slate-400 pointer-events-none'
+                        "
+                      >
+                        <ion-icon name="color-wand" class="mr-1"></ion-icon> دمج اللقب
+                      </button>
+                    }
                   </div>
                 </div>
-              </div>
-
-              <div class="mt-3 flex justify-end relative z-10 border-t border-slate-50 pt-2">
-
-                <button *ngIf="title.isUnlocked && activeCraftedTitle !== title.code" (click)="toggleTitle(title.code)" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-lg active:scale-95">
-                  تفعيل اللقب
-                </button>
-
-                <button *ngIf="!title.isUnlocked" (click)="craftTitle(title)" class="text-xs font-bold px-4 py-1.5 rounded-lg active:scale-95 transition-all" [ngClass]="canCraft(title.cost) ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-100 text-slate-400 pointer-events-none'">
-                  <ion-icon name="color-wand" class="mr-1"></ion-icon> دمج اللقب
-                </button>
-
-              </div>
+              }
             </div>
           </div>
-        </div>
+        }
 
-        <div *ngIf="inventoryTab === 'badges'">
-          <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl mb-4 text-center">
-            <p class="text-[11px] text-indigo-600 font-bold m-0">اكتشف الأسرار المخفية! قم بأفعال مميزة داخل المدرسة لفك شفرة هذه الأوسمة النادرة.</p>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div *ngFor="let badge of processedBadges; trackBy: trackByBadgeCode" class="bg-white p-3 rounded-2xl border text-center relative" [ngClass]="badge.isUnlocked ? 'border-amber-300 shadow-md' : 'border-slate-200 border-dashed'">
-
-              <div *ngIf="!badge.isUnlocked" class="opacity-40 grayscale flex flex-col items-center justify-center h-full">
-                <div class="text-4xl mb-1">❓</div>
-                <h4 class="text-xs font-black text-slate-800 m-0 mb-1">وسام سري</h4>
-                <p class="text-[9px] text-slate-500 m-0 italic whitespace-normal break-words leading-relaxed">"{{badge.hint}}"</p>
-              </div>
-
-              <div *ngIf="badge.isUnlocked" class="animate-fade-in-up flex flex-col items-center justify-center h-full">
-                <div class="text-4xl mb-1 drop-shadow-md">{{badge.icon}}</div>
-                <h4 class="text-xs font-black text-amber-600 m-0 mb-1">{{badge.name}}</h4>
-                <p class="text-[9px] text-slate-600 m-0 leading-relaxed whitespace-normal break-words">{{badge.unlockedDesc}}</p>
-              </div>
+        @if (inventoryTab === 'badges') {
+          <div>
+            <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl mb-4 text-center">
+              <p class="text-[11px] text-indigo-600 font-bold m-0">
+                اكتشف الأسرار المخفية! قم بأفعال مميزة داخل المدرسة لفك شفرة هذه الأوسمة النادرة.
+              </p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              @for (badge of processedBadges; track trackByBadgeCode($index, badge)) {
+                <div
+                  class="bg-white p-3 rounded-2xl border text-center relative"
+                  [ngClass]="badge.isUnlocked ? 'border-amber-300 shadow-md' : 'border-slate-200 border-dashed'"
+                >
+                  @if (!badge.isUnlocked) {
+                    <div class="opacity-40 grayscale flex flex-col items-center justify-center h-full">
+                      <div class="text-4xl mb-1">❓</div>
+                      <h4 class="text-xs font-black text-slate-800 m-0 mb-1">وسام سري</h4>
+                      <p class="text-[9px] text-slate-500 m-0 italic whitespace-normal break-words leading-relaxed">
+                        "{{ badge.hint }}"
+                      </p>
+                    </div>
+                  }
+                  @if (badge.isUnlocked) {
+                    <div class="animate-fade-in-up flex flex-col items-center justify-center h-full">
+                      <div class="text-4xl mb-1 drop-shadow-md">{{ badge.icon }}</div>
+                      <h4 class="text-xs font-black text-amber-600 m-0 mb-1">{{ badge.name }}</h4>
+                      <p class="text-[9px] text-slate-600 m-0 leading-relaxed whitespace-normal break-words">
+                        {{ badge.unlockedDesc }}
+                      </p>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
-        </div>
-
+        }
       </div>
     </ion-content>
   </ng-template>

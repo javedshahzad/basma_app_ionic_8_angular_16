@@ -1,14 +1,18 @@
-﻿<div class="h-full flex flex-col min-h-0" *ngIf="attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0">
+@if (attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0) {
+<div class="h-full flex flex-col min-h-0">
 
-  <div *ngIf="canEdit && timeLeft > 0 && isToday && hasSubmitted" class="bg-amber-500 text-white px-4 py-2.5 flex justify-between items-center shadow-md mb-4 rounded-2xl mx-1 flex-shrink-0" dir="rtl">
+  @if (canEdit && timeLeft > 0 && isToday && hasSubmitted) {
+  <div class="bg-amber-500 text-white px-4 py-2.5 flex justify-between items-center shadow-md mb-4 rounded-2xl mx-1 flex-shrink-0" dir="rtl">
     <div class="flex items-center gap-2">
       <ion-icon name="time-outline" class="text-2xl animate-pulse"></ion-icon>
       <span class="font-bold text-sm">متبقي لتعديل غيابك:</span>
     </div>
     <div class="font-bold text-lg tracking-widest bg-black/20 px-3 py-1 rounded-lg dir-ltr">{{ formattedTimeLeft }}</div>
   </div>
+  }
 
-  <div class="bg-indigo-50 rounded-2xl p-4 mb-5 shadow-sm border border-indigo-100 flex-shrink-0" *ngIf="currentActivePeriod">
+  @if (currentActivePeriod) {
+  <div class="bg-indigo-50 rounded-2xl p-4 mb-5 shadow-sm border border-indigo-100 flex-shrink-0">
 
     <div class="flex items-center justify-between  rounded-xl border border-indigo-100/50 mb-3" dir="rtl">
       <div class="flex items-center gap-2.5">
@@ -20,12 +24,13 @@
         </div>
       </div>
     </div>
-    
+
     <p class="text-indigo-800 font-bold mb-3 text-sm flex items-center gap-2" dir="rtl">
-      <ion-icon name="create-outline" class="text-lg"></ion-icon> 
+      <ion-icon name="create-outline" class="text-lg"></ion-icon>
       تسجيل حضور صف {{ courseInfo?.name }} - الحصة ({{ currentActivePeriod }})
     </p>
-    <div *ngIf="!lockedPeriods.includes(currentActivePeriod)" class="flex justify-between items-center gap-2" dir="rtl">
+    @if (!lockedPeriods.includes(currentActivePeriod)) {
+    <div class="flex justify-between items-center gap-2" dir="rtl">
   <button class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 flex justify-center items-center gap-1" (click)="setAllStatus.emit('1')">
     <ion-icon name="checkmark-circle"></ion-icon> الكل حاضر
   </button>
@@ -36,14 +41,17 @@
     <ion-icon name="refresh"></ion-icon>
   </button>
 </div>
-<div class="bg-slate-100 rounded-2xl p-3 mb-1 border border-slate-200 flex items-center gap-1 justify-center" 
-     *ngIf="currentActivePeriod && lockedPeriods.includes(currentActivePeriod)">
+    }
+@if (currentActivePeriod && lockedPeriods.includes(currentActivePeriod)) {
+<div class="bg-slate-100 rounded-2xl p-3 mb-1 border border-slate-200 flex items-center gap-1 justify-center">
     <ion-icon name="eye-outline" class="text-slate-500 text-lg"></ion-icon>
     <span class="text-slate-600 font-bold text-xs">أنت الآن في وضع المعاينة للحصة ({{ currentActivePeriod }})</span>
 </div>
+}
   </div>
+  }
 
-  
+
 
   <!-- 🟢 Virtual scroll: يعرض فقط الصفوف الظاهرة على الشاشة بدل رسم القائمة كاملة دفعة واحدة،
        مهم لصفوف بها 30+ طالب. itemSize يطابق ارتفاع الصف الفعلي (padding + قسم الاسم + صف أزرار الحضور + الهامش). -->
@@ -51,74 +59,86 @@
     <div class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-slate-100 flex flex-col transition-all hover:shadow-md" *cdkVirtualFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-4 w-full cursor-pointer" (click)="studentClick.emit(student.sid)">
-          
+
           <div class="relative" (click)="$event.stopPropagation(); imageClick.emit(student)">
             <img [src]="student.pic ? student.pic : 'assets/imgs/user-avatar.png'" loading="lazy" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 shadow-sm">
-            <div class="absolute bottom-0 right-0 bg-rose-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white" *ngIf="student.student_data?.medical_condition">M</div>
+            @if (student.student_data?.medical_condition) {
+            <div class="absolute bottom-0 right-0 bg-rose-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white">M</div>
+            }
             <!-- <img loading="lazy" class="absolute -top-1 -left-1 w-5 h-5" [src]="student.computedIcon" *ngIf="student.agg_ranking > 0" /> -->
           </div>
-          
+
           <div class="flex-1">
             <div class="flex items-center gap-2">
               <h3 class="text-sm font-bold text-slate-800 m-0 truncate"><span class="text-slate-400 text-sm">{{i+1}}.</span> {{student.name}} </h3>
-              <span *ngIf="student.current_streak >= 10" class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
-              <span *ngIf="student.current_streak >= 5 && student.current_streak < 10" class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
-              <span *ngIf="student.isFrozen" class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"><ion-icon name="snow"></ion-icon> مجمد</span>
+              @if (student.current_streak >= 10) {
+              <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
+              }
+              @if (student.current_streak >= 5 && student.current_streak < 10) {
+              <span class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
+              }
+              @if (student.isFrozen) {
+              <span class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"><ion-icon name="snow"></ion-icon> مجمد</span>
+              }
               </div>
-              
+
             <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1 font-medium">
-              <ion-icon 
-                [name]="gamification.getBehaviourIcon(student)" 
+              <ion-icon
+                [name]="gamification.getBehaviourIcon(student)"
                 class="text-base {{ gamification.getBehaviourColorClass(student) }}">
               </ion-icon>
-              
+
               <span class="font-bold {{ gamification.getBehaviourColorClass(student) }}">
                 {{ gamification.getStudentBehaviourText(student) }}
               </span>
             </p>
             <div class="flex items-center gap-1.5 mt-1">
-               <span *ngIf="student.computedTitle" class="text-[9px] font-black bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded-md flex items-center truncate max-w-[60%] shadow-sm">{{ student.computedTitle }}</span>
+               @if (student.computedTitle) {
+               <span class="text-[9px] font-black bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded-md flex items-center truncate max-w-[60%] shadow-sm">{{ student.computedTitle }}</span>
+               }
                <p class="text-[10px] font-bold text-slate-400 m-0 truncate" [ngClass]="student.computedTitle ? 'mt-0' : 'mt-0.5'">{{student?.student_no}}</p>
             </div>
           </div>
         </div>
-        
+
         <button class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center hover:bg-indigo-100 transition-colors flex-shrink-0" (click)="noteClick.emit({event: $event, student: student})">
           <ion-icon name="add" class="text-xl"></ion-icon>
         </button>
       </div>
-      
-      <div class="flex gap-3 w-full pt-4 border-t border-slate-50" *ngIf="currentActivePeriod">
-        <ng-container [ngSwitch]="student.currentLockStatus">
-           <div *ngSwitchCase="'locked_mine'" class="flex gap-2 w-full">
-              <ng-container *ngTemplateOutlet="readOnlyStatus"></ng-container>
-           </div>
-           
-           <div *ngSwitchCase="'locked_other'" class="flex gap-2 w-full">
-              <ng-container *ngTemplateOutlet="readOnlyStatus"></ng-container>
-           </div>
 
-           <ng-template #readOnlyStatus>
-              <div *ngIf="student.sheet['cem-' + currentActivePeriod] === '1'" class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-600 opacity-80 cursor-not-allowed">
+      @if (currentActivePeriod) {
+      <div class="flex gap-3 w-full pt-4 border-t border-slate-50">
+        <!-- 'locked_mine'/'locked_other' both render the same read-only
+             summary — expressed here as one @if with an || condition
+             instead of two @switch cases pointing at a shared ng-template,
+             since @switch only permits @case/@default as direct children. -->
+        @if (student.currentLockStatus === 'locked_mine' || student.currentLockStatus === 'locked_other') {
+           @if (student.sheet['cem-' + currentActivePeriod] === '1') {
+              <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-600 opacity-80 cursor-not-allowed">
                 <ion-icon name="checkmark-circle" class="text-xl"></ion-icon> حاضر (محفوظ)
               </div>
-              
-              <div *ngIf="student.sheet['cem-' + currentActivePeriod] === '0'" class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-rose-50 border border-rose-200 text-rose-600 opacity-80 cursor-not-allowed">
+              }
+              @if (student.sheet['cem-' + currentActivePeriod] === '0') {
+              <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-rose-50 border border-rose-200 text-rose-600 opacity-80 cursor-not-allowed">
                 <ion-icon name="close-circle" class="text-xl"></ion-icon> غائب (محفوظ)
               </div>
-
-              <div *ngIf="student.sheet['cem-' + currentActivePeriod] === '3' || student.sheet.absentDueToDelay === '1'" class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-amber-50 border border-amber-200 text-amber-600 opacity-80 cursor-not-allowed">
+              }
+              @if (student.sheet['cem-' + currentActivePeriod] === '3' || student.sheet.absentDueToDelay === '1') {
+              <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-amber-50 border border-amber-200 text-amber-600 opacity-80 cursor-not-allowed">
                 <ion-icon name="time" class="text-xl"></ion-icon> متأخر (محفوظ)
               </div>
-
-              <div *ngIf="!student.sheet['cem-' + currentActivePeriod] || student.sheet['cem-' + currentActivePeriod] === 'undefined' || student.sheet['cem-' + currentActivePeriod] === 'null'" class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-slate-100 border border-slate-200 text-slate-400 opacity-80 cursor-not-allowed">
+              }
+              @if (!student.sheet['cem-' + currentActivePeriod] || student.sheet['cem-' + currentActivePeriod] === 'undefined' || student.sheet['cem-' + currentActivePeriod] === 'null') {
+              <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-slate-100 border border-slate-200 text-slate-400 opacity-80 cursor-not-allowed">
                 <ion-icon name="remove-circle-outline" class="text-xl"></ion-icon> لم يُرصد
               </div>
-           </ng-template>
-           <div *ngSwitchCase="'delayed'" class="w-full bg-orange-100 text-orange-600 py-2.5 rounded-xl text-center text-sm font-bold flex justify-center items-center gap-2">
+              }
+        } @else if (student.currentLockStatus === 'delayed') {
+           <div class="w-full bg-orange-100 text-orange-600 py-2.5 rounded-xl text-center text-sm font-bold flex justify-center items-center gap-2">
                <ion-icon name="time" class="text-lg"></ion-icon> مسجل تأخير
            </div>
-           <div *ngSwitchCase="'open'" class="flex gap-2 w-full">
+        } @else if (student.currentLockStatus === 'open') {
+           <div class="flex gap-2 w-full">
               <button class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all" [ngClass]="(student.sheet && student.sheet['cem-' + currentActivePeriod] === '1') ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200 scale-[1.02]' : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'" (click)="setStudentStatus.emit({student: student, status: '1'})">
                 <ion-icon [name]="(student.sheet && student.sheet['cem-' + currentActivePeriod] === '1') ? 'checkmark-circle' : 'checkmark-circle-outline'" class="text-xl"></ion-icon> حاضر
               </button>
@@ -126,8 +146,10 @@
                 <ion-icon [name]="(student.sheet && student.sheet['cem-' + currentActivePeriod] === '0') ? 'close-circle' : 'close-circle-outline'" class="text-xl"></ion-icon> غائب
               </button>
            </div>
-        </ng-container>
+        }
       </div>
+      }
     </div>
   </cdk-virtual-scroll-viewport>
 </div>
+}

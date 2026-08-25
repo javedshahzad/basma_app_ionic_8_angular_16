@@ -6,7 +6,7 @@ import { AuthService } from '../../service/auth/auth.service';
 import { DataService } from '../../service/data/data.service';
 import { DatabaseService } from '../../service/database/database.service';
 import { Browser } from '@capacitor/browser';
-import { CommonModule } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { StorageService } from '../../service/storage.service';
@@ -16,7 +16,7 @@ import { PlanApiService } from '../../service/plan-api/plan-api.service';
   selector: 'app-subscribe-plan',
   templateUrl: './subscribe-plan.component.html',
   styleUrls: ['./subscribe-plan.component.scss'],
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  imports: [IonicModule, TranslateModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SubscribePlanComponent implements OnInit {

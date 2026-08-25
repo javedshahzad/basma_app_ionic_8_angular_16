@@ -1,48 +1,73 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc;" class="relative text-center border-b border-slate-100">
+  <ion-toolbar style="--background: #f8fafc" class="relative text-center border-b border-slate-100">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
-      <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+      <ion-back-button
+        defaultHref="/"
+        text=""
+        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+      ></ion-back-button>
     </ion-buttons>
-    
-    <ion-title class="font-extrabold text-slate-800 text-base w-full">{{ 'sidemenu.student_list'| translate }}</ion-title>
+
+    <ion-title class="font-extrabold text-slate-800 text-base w-full"
+      >{{ 'sidemenu.student_list'| translate }}</ion-title
+    >
   </ion-toolbar>
-  
+
   <div class="bg-[#f8fafc] px-4 pb-3 pt-2 text-center border-b border-slate-100">
-    <span class="inline-block bg-indigo-50 text-indigo-700 font-bold text-xs px-4 py-1.5 rounded-full border border-indigo-100 shadow-sm">{{courseInfo.name}}</span>
+    <span
+      class="inline-block bg-indigo-50 text-indigo-700 font-bold text-xs px-4 py-1.5 rounded-full border border-indigo-100 shadow-sm"
+      >{{courseInfo.name}}</span
+    >
   </div>
 </ion-header>
 
 <ion-content class="lineone-bg" mode="md" dir="rtl">
   <div class="px-4 py-6 max-w-3xl mx-auto space-y-3">
-    
-    <div *ngIf="attendanceResponse.students?.length > 0" class="space-y-3 mt-2">
-      <div *ngFor="let student of attendanceResponse.students; let sno = index;; trackBy: trackByIndex"
-           class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-3.5 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md"
-           (click)="openStudentDetail(student.sid)">
-
+    @if (attendanceResponse.students?.length > 0) {
+    <div class="space-y-3 mt-2">
+      @for (student of attendanceResponse.students; track student; let sno = $index) {
+      <div
+        class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-3.5 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md"
+        (click)="openStudentDetail(student.sid)"
+      >
         <div class="shrink-0 relative">
-          <img loading="lazy" *ngIf="student.pic" [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/user-icon.PNG';" class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 shadow-sm">
-          <div *ngIf="!student.pic" class="w-12 h-12 rounded-full bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center text-indigo-400 shadow-sm">
+          @if (student.pic) {
+          <img
+            loading="lazy"
+            [src]="student.pic"
+            onerror="
+              this.onerror = null;
+              this.src = 'assets/imgs/user-icon.PNG';
+            "
+            class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 shadow-sm"
+          />
+          } @if (!student.pic) {
+          <div
+            class="w-12 h-12 rounded-full bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center text-indigo-400 shadow-sm"
+          >
             <ion-icon name="person" class="text-xl"></ion-icon>
           </div>
+          }
         </div>
-
         <div class="flex-1">
           <h4 class="font-bold text-sm text-slate-800 m-0 flex items-center gap-1.5">
             <span class="text-slate-400 text-xs">{{sno+1}}.</span> {{student.name}}
           </h4>
-          <p class="text-[11px] font-bold text-slate-500 mt-1 mb-0" *ngIf="student.studentBehaviour !== ''">{{student.studentBehaviour}}</p>
+          @if (student.studentBehaviour !== '') {
+          <p class="text-[11px] font-bold text-slate-500 mt-1 mb-0">{{student.studentBehaviour}}</p>
+          }
         </div>
-
         <ion-icon name="chevron-back-outline" class="text-slate-300 text-lg shrink-0"></ion-icon>
-
       </div>
+      }
     </div>
-
-    <div class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white mt-4 shadow-sm" *ngIf="attendanceResponse.students?.length === 0">
+    } @if (attendanceResponse.students?.length === 0) {
+    <div
+      class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white mt-4 shadow-sm"
+    >
       <ion-icon name="folder-open-outline" class="text-5xl text-slate-300 mb-3"></ion-icon>
       <h4 class="text-slate-500 font-bold text-sm m-0">{{noDataFound || 'لا يوجد طلاب مسجلين'}}</h4>
     </div>
-
+    }
   </div>
 </ion-content>

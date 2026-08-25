@@ -15,9 +15,12 @@ import dayjs from 'dayjs';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
-import { UserManagementApiService, SchoolRulesDetails } from '../service/user-management-api/user-management-api.service';
+import {
+  UserManagementApiService,
+  SchoolRulesDetails
+} from '../service/user-management-api/user-management-api.service';
 import { UserType } from '../constants/user-type';
-import { NgIf, NgFor } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { HasRoleDirective } from '../directives/has-role.directive';
@@ -29,11 +32,11 @@ interface SettingsCountry {
 }
 
 @Component({
-    selector: 'app-settings',
-    templateUrl: './settings.page.html',
-    styleUrls: ['./settings.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe, HasRoleDirective]
+  selector: 'app-settings',
+  templateUrl: './settings.page.html',
+  styleUrls: ['./settings.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe, HasRoleDirective]
 })
 export class SettingsPage {
   trackByIndex(index: number): number {
@@ -379,9 +382,7 @@ export class SettingsPage {
       user_no: this.userInfo.user_no
     };
     try {
-      const response = await this.dataProvider.run(() =>
-        this.userManagementApi.requestTodeleteSchoolAccount(data)
-      );
+      const response = await this.dataProvider.run(() => this.userManagementApi.requestTodeleteSchoolAccount(data));
       if (!response.response) {
         this.dataProvider.errorALertMessage(response.msg || '');
       } else {
@@ -469,7 +470,6 @@ export class SettingsPage {
       this.cdr.markForCheck();
     });
   }
-
 
   // 🟢 استبدال moment بـ dayjs بشكل مباشر
   calculateRemainingTime() {

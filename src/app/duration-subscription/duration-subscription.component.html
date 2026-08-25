@@ -5,65 +5,72 @@
         <ion-icon name="close-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title *ngIf="subscriptionName  === 'Standard' "> {{'subscription_duration.Standard' | translate}}</ion-title>
-    <ion-title *ngIf="subscriptionName  === 'Premium' "> {{'subscription_duration.Premium' | translate}}</ion-title>
+    @if (subscriptionName === 'Standard') {
+      <ion-title> {{ 'subscription_duration.Standard' | translate }}</ion-title>
+    }
+    @if (subscriptionName === 'Premium') {
+      <ion-title> {{ 'subscription_duration.Premium' | translate }}</ion-title>
+    }
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding" color="light">
-  <ng-container *ngIf="subscriptionPlan.length > 0; else noData">
-  <div   class="plan-option">
-    <div class="plan-item">
-      <ion-radio-group (ionChange)="onRadioChange($event)">
-         <!-- 1 Month Plan -->
-         <div class="plan-item-container">
-          <!-- <div class="discount-badge">-22%</div> -->
-          <ion-item lines="none">
-            <ion-radio slot="start" value="1"></ion-radio>
-            <ion-label>
-              <h3>1 {{'subscription_duration.month' | translate}}</h3>
-            </ion-label>
-            <div class="price">
-              <h3 class="discount-price">${{choosePlan.amount}}</h3>
-            </div>
-          </ion-item>
-        </div>
-
-        <!-- 12 Month Plan -->
-        <div class="plan-item-container">
-          <!-- <div class="discount-badge">-22%</div> -->
-          <ion-item lines="none">
-            <ion-radio slot="start" value="12"></ion-radio>
-            <ion-label>
-              <h3>12 {{'subscription_duration.months' | translate}}</h3>
-            </ion-label>
-            <div class="price">
-              <span style="display: flex;">
-                <h3 class="discount-price">${{choosePlan.discounted_price}}</h3>
-                <!-- <p class="original-price">${{choosePlan.original}}</p> -->
-              </span>
-              <span  dir="ltr" *ngIf="subscriptionName  === 'Standard' " class="monthly-price">$7.92/mo </span>
-              <span  dir="ltr" *ngIf="subscriptionName  === 'Premium' " class="monthly-price">$11.67/mo </span>
-            </div>
-          </ion-item>
-        </div>
-        
-      </ion-radio-group>
+  @if (subscriptionPlan.length > 0) {
+    <div class="plan-option">
+      <div class="plan-item">
+        <ion-radio-group (ionChange)="onRadioChange($event)">
+          <!-- 1 Month Plan -->
+          <div class="plan-item-container">
+            <!-- <div class="discount-badge">-22%</div> -->
+            <ion-item lines="none">
+              <ion-radio slot="start" value="1"></ion-radio>
+              <ion-label>
+                <h3>1 {{ 'subscription_duration.month' | translate }}</h3>
+              </ion-label>
+              <div class="price">
+                <h3 class="discount-price">${{ choosePlan.amount }}</h3>
+              </div>
+            </ion-item>
+          </div>
+          <!-- 12 Month Plan -->
+          <div class="plan-item-container">
+            <!-- <div class="discount-badge">-22%</div> -->
+            <ion-item lines="none">
+              <ion-radio slot="start" value="12"></ion-radio>
+              <ion-label>
+                <h3>12 {{ 'subscription_duration.months' | translate }}</h3>
+              </ion-label>
+              <div class="price">
+                <span style="display: flex">
+                  <h3 class="discount-price">${{ choosePlan.discounted_price }}</h3>
+                  <!-- <p class="original-price">${{choosePlan.original}}</p> -->
+                </span>
+                @if (subscriptionName === 'Standard') {
+                  <span dir="ltr" class="monthly-price">$7.92/mo </span>
+                }
+                @if (subscriptionName === 'Premium') {
+                  <span dir="ltr" class="monthly-price">$11.67/mo </span>
+                }
+              </div>
+            </ion-item>
+          </div>
+        </ion-radio-group>
+      </div>
     </div>
-  </div>
-
-  <!-- Continue Button -->
-  <ion-button (click)="chooseSubscription()" shape="round" expand="block"  class="continue-button">{{'subscription_duration.continue' | translate}}</ion-button>
-
-  <!-- Terms and Conditions -->
-  <p class="terms">
-    {{'subscription_duration.by_subscription' | translate}} <a   (click)="openUrl('https://basmapp.com/tOs.html')">{{'subscription_duration.tos' | translate}}</a>.
-  </p>
-</ng-container>
-  <ng-template #noData>
+    <!-- Continue Button -->
+    <ion-button (click)="chooseSubscription()" shape="round" expand="block" class="continue-button">{{
+      'subscription_duration.continue' | translate
+    }}</ion-button>
+    <!-- Terms and Conditions -->
+    <p class="terms">
+      {{ 'subscription_duration.by_subscription' | translate }}
+      <a (click)="openUrl('https://basmapp.com/tOs.html')">{{ 'subscription_duration.tos' | translate }}</a
+      >.
+    </p>
+  } @else {
     <!-- spinner icon -->
     <ion-card class="cCard cCard--alert ion-text-center">
-      <h3>{{'No_Data_available'}}</h3>
+      <h3>{{ 'No_Data_available' }}</h3>
     </ion-card>
-  </ng-template>
+  }
 </ion-content>

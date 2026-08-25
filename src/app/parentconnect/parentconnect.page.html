@@ -1,14 +1,18 @@
 ﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
     <ion-buttons slot="start" class="mr-2">
-      <button *appHasRole="[UserType.Student]"
-              class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center active:scale-95 transition-all"
-              (click)="createChatMessage()">
+      <button
+        *appHasRole="[UserType.Student]"
+        class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center active:scale-95 transition-all"
+        (click)="createChatMessage()"
+      >
         <ion-icon name="add-outline" class="text-xl"></ion-icon>
       </button>
 
       <ion-menu-toggle *appHasRole="[UserType.Parent]" auto-hide="false">
-        <button class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-700 shadow-sm flex items-center justify-center">
+        <button
+          class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-700 shadow-sm flex items-center justify-center"
+        >
           <ion-icon name="menu-outline" class="text-xl"></ion-icon>
         </button>
       </ion-menu-toggle>
@@ -16,15 +20,21 @@
 
     <ion-title class="ion-text-center fw-bold text-dark">
       <span *appHasRole="[UserType.Student]">{{'parentconnect.pagetitlestudent' | translate}}</span>
-      <span *ngIf="userType !== UserType.Student">{{'parentconnect.pagetitle' | translate}}</span>
+      @if (userType !== UserType.Student) {
+      <span>{{'parentconnect.pagetitle' | translate}}</span>
+      }
     </ion-title>
 
     <ion-buttons slot="end" class="ml-2">
-      <ion-back-button *ngIf="userType !== UserType.Parent" [defaultHref]="backHref" class="text-slate-600"></ion-back-button>
+      @if (userType !== UserType.Parent) {
+      <ion-back-button [defaultHref]="backHref" class="text-slate-600"></ion-back-button>
+      }
 
-      <button *appHasRole="[UserType.Parent]"
-              class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center active:scale-95 transition-all"
-              (click)="createChatMessage()">
+      <button
+        *appHasRole="[UserType.Parent]"
+        class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center active:scale-95 transition-all"
+        (click)="createChatMessage()"
+      >
         <ion-icon name="add-outline" class="text-xl"></ion-icon>
       </button>
     </ion-buttons>
@@ -33,66 +43,89 @@
 
 <ion-content class="bg-[#f8fafc]" mode="md">
   <div class="p-4 max-w-2xl mx-auto space-y-4 pb-8" dir="rtl">
-    
-    <div *ngIf="(chats?.length || 0) > 0" class="space-y-4">
-      <div class="bg-white rounded-3xl p-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 transition-all hover:shadow-md cursor-pointer relative overflow-hidden" 
-           *ngFor="let chatuser of chats; trackBy: trackByIndex" 
-           (click)="openChat(chatuser)">
-        
+    @if ((chats?.length || 0) > 0) {
+    <div class="space-y-4">
+      @for (chatuser of chats; track trackByIndex($index)) {
+      <div
+        class="bg-white rounded-3xl p-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 transition-all hover:shadow-md cursor-pointer relative overflow-hidden"
+        (click)="openChat(chatuser)"
+      >
         <div class="flex items-start gap-4">
-          
           <div class="relative shrink-0">
-            <img loading="lazy" [src]="chatuser.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" 
-                 class="w-14 h-14 rounded-2xl object-cover border border-slate-200 shadow-sm bg-slate-50">
-            <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white" 
-                  [ngClass]="chatuser.ticket_status === '0' ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+            <img
+              loading="lazy"
+              [src]="chatuser.pic"
+              onerror="
+                this.onerror = null;
+                this.src = 'assets/imgs/default_avatar.png';
+              "
+              class="w-14 h-14 rounded-2xl object-cover border border-slate-200 shadow-sm bg-slate-50"
+            />
+            <span
+              class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white"
+              [ngClass]="chatuser.ticket_status === '0' ? 'bg-emerald-500' : 'bg-rose-500'"
+            ></span>
           </div>
-          
           <div class="flex-1 overflow-hidden pt-1">
             <div class="flex items-center justify-between mb-1">
               <h3 class="text-sm font-bold text-slate-800 m-0 truncate pr-1">{{chatuser.name}}</h3>
-              <span class="text-[11px] font-bold text-slate-400 whitespace-nowrap" dir="ltr">{{(chatuser.updated_time || '') | dateFormat}}</span>
+              <span class="text-[11px] font-bold text-slate-400 whitespace-nowrap" dir="ltr"
+                >{{(chatuser.updated_time || '') | dateFormat}}</span
+              >
             </div>
             <p class="text-xs font-medium text-slate-500 m-0 truncate leading-relaxed mb-3 pr-1">{{chatuser.title}}</p>
-            
-            <button *ngIf="chatuser.message_image" 
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 text-[11px] font-bold transition-colors hover:bg-indigo-100 border border-indigo-100" 
-                    (click)="$event.stopPropagation(); openImageContainer(chatuser.message_image)">
+            @if (chatuser.message_image) {
+            <button
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 text-[11px] font-bold transition-colors hover:bg-indigo-100 border border-indigo-100"
+              (click)="$event.stopPropagation(); openImageContainer(chatuser.message_image)"
+            >
               <ion-icon name="image-outline" class="text-sm"></ion-icon> عرض المرفق
             </button>
+            }
           </div>
-
           <div class="shrink-0 flex flex-col items-center gap-2 ml-1" (click)="$event.stopPropagation()">
             <ng-container *appHasRole="[UserType.Admin]">
-              <button *ngIf="chatuser.ticket_status === '0'" 
-                      class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 hover:bg-emerald-100 transition-colors active:scale-95 shadow-sm" 
-                      (click)="closeTicket(chatuser)">
+              @if (chatuser.ticket_status === '0') {
+              <button
+                class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 hover:bg-emerald-100 transition-colors active:scale-95 shadow-sm"
+                (click)="closeTicket(chatuser)"
+              >
                 <ion-icon name="lock-open-outline" class="text-xl"></ion-icon>
               </button>
-              <button *ngIf="chatuser.ticket_status !== '0'" 
-                      class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 hover:bg-rose-100 transition-colors active:scale-95 shadow-sm" 
-                      (click)="reopenTicket(chatuser)">
+              } @if (chatuser.ticket_status !== '0') {
+              <button
+                class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 hover:bg-rose-100 transition-colors active:scale-95 shadow-sm"
+                (click)="reopenTicket(chatuser)"
+              >
                 <ion-icon name="lock-closed-outline" class="text-xl"></ion-icon>
               </button>
+              }
             </ng-container>
-
             <ng-container *appHasRole="[UserType.Parent]">
-              <div *ngIf="chatuser.ticket_status === '0'" 
-                   class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-sm">
+              @if (chatuser.ticket_status === '0') {
+              <div
+                class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-sm"
+              >
                 <ion-icon name="lock-open-outline" class="text-xl"></ion-icon>
               </div>
-              <div *ngIf="chatuser.ticket_status !== '0'" 
-                   class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 shadow-sm">
+              } @if (chatuser.ticket_status !== '0') {
+              <div
+                class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 shadow-sm"
+              >
                 <ion-icon name="lock-closed-outline" class="text-xl"></ion-icon>
               </div>
+              }
             </ng-container>
           </div>
         </div>
       </div>
+      }
     </div>
-
-    <div class="flex flex-col items-center justify-center py-20 animate-fade-in-up" *ngIf="chats?.length === 0">
-      <div class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center text-slate-400 mb-5 shadow-sm">
+    } @if (chats?.length === 0) {
+    <div class="flex flex-col items-center justify-center py-20 animate-fade-in-up">
+      <div
+        class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center text-slate-400 mb-5 shadow-sm"
+      >
         <ion-icon name="chatbubbles-outline" class="text-5xl"></ion-icon>
       </div>
       <h3 class="text-lg font-bold text-slate-800 mb-2">لا توجد رسائل</h3>
@@ -100,43 +133,77 @@
         {{noDataFound || 'لا يوجد أي تواصل أو استفسارات مسجلة حتى الآن.'}}
       </p>
     </div>
-
+    }
   </div>
 </ion-content>
 
-<div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300" *ngIf="imageModal" (click)="closeImageModal()">
-  <button class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95" (click)="closeImageModal()">
+@if (imageModal) {
+<div
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300"
+  (click)="closeImageModal()"
+>
+  <button
+    class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95"
+    (click)="closeImageModal()"
+  >
     <ion-icon name="close" class="text-xl"></ion-icon>
   </button>
-  
-  <button class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-200 transition-all active:scale-95" (click)="$event.stopPropagation(); downloadImage(imageUrl)">
+  <button
+    class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-200 transition-all active:scale-95"
+    (click)="$event.stopPropagation(); downloadImage(imageUrl)"
+  >
     <ion-icon name="download-outline" class="text-xl"></ion-icon> تحميل المرفق
   </button>
-  
-  <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
-    <img loading="lazy" [src]="imageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+  <div
+    class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto"
+    style="touch-action: pan-x pan-y pinch-zoom"
+    (click)="$event.stopPropagation()"
+  >
+    <img
+      loading="lazy"
+      [src]="imageUrl"
+      class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300"
+    />
   </div>
 </div>
-
-<div *ngIf="showWarningModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-all duration-300" (click)="closeWarningModal()" dir="rtl">
-  <div class="relative w-11/12 max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all scale-100 opacity-100" (click)="$event.stopPropagation()">
-      <div class="flex justify-center pt-8 pb-4">
-          <div class="w-20 h-20 rounded-full bg-amber-50 flex items-center justify-center text-amber-500 shadow-inner border border-amber-100">
-              <ion-icon name="warning-outline" class="text-4xl"></ion-icon>
-          </div>
+} @if (showWarningModal) {
+<div
+  class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm transition-all duration-300"
+  (click)="closeWarningModal()"
+  dir="rtl"
+>
+  <div
+    class="relative w-11/12 max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all scale-100 opacity-100"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex justify-center pt-8 pb-4">
+      <div
+        class="w-20 h-20 rounded-full bg-amber-50 flex items-center justify-center text-amber-500 shadow-inner border border-amber-100"
+      >
+        <ion-icon name="warning-outline" class="text-4xl"></ion-icon>
       </div>
-      <div class="text-center px-6 pb-8">
-          <h3 class="text-xl font-bold text-slate-800 mb-2" [innerHTML]="lang.messageWarningHeader || 'تنبيه'"></h3>
-          <p class="text-sm text-slate-500 font-medium leading-relaxed" [innerHTML]="lang.messageWarningbody || 'تعليمات هامة قبل إرسال الرسالة، يرجى قراءتها بدقة للمتابعة.'">
-          </p>
-      </div>
-      <div class="flex border-t border-slate-100 bg-slate-50 p-4 gap-3">
-          <button class="flex-1 py-3 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none" (click)="closeWarningModal()">
-              {{lang.alert_btn_cancel_text || 'إلغاء'}}
-          </button>
-          <button class="flex-1 py-3 rounded-xl font-bold text-white bg-indigo-600 shadow-md shadow-indigo-200 hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center gap-2 focus:outline-none" (click)="acceptWarningAndCreate()">
-              <ion-icon name="checkmark-circle-outline" class="text-xl"></ion-icon> {{lang.alert_btn_accept_text || 'موافق'}}
-          </button>
-      </div>
+    </div>
+    <div class="text-center px-6 pb-8">
+      <h3 class="text-xl font-bold text-slate-800 mb-2" [innerHTML]="lang.messageWarningHeader || 'تنبيه'"></h3>
+      <p
+        class="text-sm text-slate-500 font-medium leading-relaxed"
+        [innerHTML]="lang.messageWarningbody || 'تعليمات هامة قبل إرسال الرسالة، يرجى قراءتها بدقة للمتابعة.'"
+      ></p>
+    </div>
+    <div class="flex border-t border-slate-100 bg-slate-50 p-4 gap-3">
+      <button
+        class="flex-1 py-3 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none"
+        (click)="closeWarningModal()"
+      >
+        {{lang.alert_btn_cancel_text || 'إلغاء'}}
+      </button>
+      <button
+        class="flex-1 py-3 rounded-xl font-bold text-white bg-indigo-600 shadow-md shadow-indigo-200 hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center gap-2 focus:outline-none"
+        (click)="acceptWarningAndCreate()"
+      >
+        <ion-icon name="checkmark-circle-outline" class="text-xl"></ion-icon> {{lang.alert_btn_accept_text || 'موافق'}}
+      </button>
+    </div>
   </div>
 </div>
+}

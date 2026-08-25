@@ -24,7 +24,7 @@ import { GeoServiceProvider } from '../service/geo-service/geo-service';
 import { StorageService } from '../service/storage.service';
 import { NewsApiService, News } from '../service/news-api/news-api.service';
 import { UserType } from '../constants/user-type';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoggedInUser } from '../model/logged-in-user.model';
 
@@ -36,11 +36,11 @@ interface Country {
 }
 
 @Component({
-    selector: 'app-news',
-    templateUrl: './news.page.html',
-    styleUrls: ['./news.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, FormsModule, TranslatePipe]
+  selector: 'app-news',
+  templateUrl: './news.page.html',
+  styleUrls: ['./news.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, FormsModule, TranslatePipe]
 })
 export class NewsPage implements OnInit {
   trackByIndex(index: number): number {
@@ -116,8 +116,13 @@ export class NewsPage implements OnInit {
 
     // رادار التحديث المباشر للأخبار
     if (this.dataProvider.newsUpdated) {
-      this.dataProvider.newsUpdated.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((updatedNewsRaw) => {
-        const updatedNews = updatedNewsRaw as { id?: string | number; news_id?: string | number; title?: string; news_description?: string };
+      this.dataProvider.newsUpdated.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(updatedNewsRaw => {
+        const updatedNews = updatedNewsRaw as {
+          id?: string | number;
+          news_id?: string | number;
+          title?: string;
+          news_description?: string;
+        };
         if (this.allNews && this.allNews.length > 0) {
           let index = this.allNews.findIndex(news => news.id === updatedNews.id || news.id === updatedNews.news_id);
 

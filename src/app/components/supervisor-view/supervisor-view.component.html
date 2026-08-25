@@ -1,88 +1,206 @@
-﻿<div class="h-full flex flex-col min-h-0" *ngIf="attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0">
-
-  <ng-container *appHasRole="[UserType.Admin, UserType.Moderator, UserType.Viewer]">
-  <div class="bg-indigo-50 rounded-2xl p-4 mb-4 shadow-sm border border-indigo-100 flex-shrink-0" *ngIf="showAll">
-
-    <div class="flex items-center justify-between  rounded-xl border border-indigo-100/50 mb-3" dir="rtl">
-      <div class="flex items-center gap-2.5">
-        <div class="bg-amber-100 w-6 h-6 flex justify-center items-center rounded-lg border border-amber-200 text-amber-500 shadow-sm shrink-0">
-          <ion-icon name="star" class="text-xl"></ion-icon>
-        </div>
-        <div class="flex flex-col">
-          <span class="text-sm text-slate-500 font-bold uppercase tracking-wider">قوة الصف التراكمية <span class="text-sm font-black text-indigo-800">{{ getTotalPoints() | number }} <span class="text-xs font-bold text-slate-500">نقطة</span></span></span>
-        </div>
-      </div>
-    </div>
-
-    <p class="text-indigo-800 font-bold mb-3 text-sm flex items-center gap-2" dir="rtl">
-      <ion-icon name="layers-outline" class="text-lg"></ion-icon> تحديد الكل
-    </p>
-    <div class="flex justify-between items-center" dir="rtl">
-      <div *ngFor="let sem of totalSemArray; let i = index; trackBy: trackByPeriod" (click)="changeAttendanceStatusAll.emit(i)" class="w-10 h-10 flex items-center justify-center rounded-xl cursor-pointer shadow-sm transition-all relative overflow-hidden" [ngClass]="{'bg-slate-200 text-slate-500 border border-slate-300 hover:bg-slate-300': !editMode && attendanceResponse?.semteacher?.['sem-'+(i+1)], 'bg-emerald-500 text-white shadow-emerald-200': classAll[i]==='present' && (editMode || !attendanceResponse?.semteacher?.['sem-'+(i+1)]), 'bg-rose-500 text-white shadow-rose-200': classAll[i]==='absent' && (editMode || !attendanceResponse?.semteacher?.['sem-'+(i+1)]), 'bg-orange-500 text-white shadow-orange-200': classAll[i]==='delay' && (editMode || !attendanceResponse?.semteacher?.['sem-'+(i+1)]), 'bg-white border border-slate-200 text-slate-400': (!classAll[i] || classAll[i]==='') && (editMode || !attendanceResponse?.semteacher?.['sem-'+(i+1)])}">
-        <ng-container *ngIf="!editMode && attendanceResponse?.semteacher?.['sem-'+(i+1)]; else normalMarking">
-          <ion-icon name="information-circle" class="text-xl"></ion-icon>
-        </ng-container>
-        <ng-template #normalMarking>
-          <ion-icon name="checkmark" *ngIf="classAll[i]==='present'" class="text-xl"></ion-icon>
-          <ion-icon name="close" *ngIf="classAll[i]==='absent'" class="text-xl"></ion-icon>
-          <ion-icon name="remove" *ngIf="classAll[i]==='delay'" class="text-xl"></ion-icon>
-          <span *ngIf="!classAll[i] || classAll[i]===''" class="text-sm">{{i+1}}</span>
-        </ng-template>
-      </div>
-    </div>
-  </div>
-  </ng-container>
-
-  <!-- 🟢 Virtual scroll: يعرض فقط الصفوف الظاهرة على الشاشة بدل رسم القائمة كاملة دفعة واحدة،
-       مهم لصفوف بها 30+ طالب. itemSize يطابق ارتفاع الصف الفعلي (padding + قسم الاسم + صف أزرار الحصص + الهامش). -->
-  <cdk-virtual-scroll-viewport itemSize="172" class="flex-1 min-h-0">
-    <div class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all" *cdkVirtualFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent">
-    <div class="flex items-center justify-between mb-3">
-      <div class="flex items-center gap-4 w-full cursor-pointer" (click)="studentClick.emit(student.sid)">
-        <div class="relative" (click)="$event.stopPropagation(); imageClick.emit(student)">
-          <img [src]="student.pic ? student.pic : 'assets/imgs/user-avatar.png'" loading="lazy" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 shadow-sm">
-          <div class="absolute bottom-0 right-0 bg-rose-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white" *ngIf="student.student_data?.medical_condition">M</div>
-          <!--<img loading="lazy" class="absolute -top-1 -left-1 w-4 h-4" [src]="student.computedIcon" *ngIf="student.agg_ranking > 0" />-->
-        </div>
-        <div class="flex-1">
-          <div class="flex items-center gap-2">
-            <h3 class="text-sm font-bold text-slate-800 m-0 truncate"><span class="text-slate-400 text-sm">{{i+1}}.</span> {{student.name}}</h3>
-            <span *ngIf="student.current_streak >= 10" class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
-            <span *ngIf="student.current_streak >= 5 && student.current_streak < 10" class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
-            <span *ngIf="student.isFrozen" class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"><ion-icon name="snow"></ion-icon> مجمد</span>
+﻿@if (attendanceResponse && attendanceResponse.students && attendanceResponse.students.length > 0) {
+  <div class="h-full flex flex-col min-h-0">
+    <ng-container *appHasRole="[UserType.Admin, UserType.Moderator, UserType.Viewer]">
+      @if (showAll) {
+        <div class="bg-indigo-50 rounded-2xl p-4 mb-4 shadow-sm border border-indigo-100 flex-shrink-0">
+          <div class="flex items-center justify-between rounded-xl border border-indigo-100/50 mb-3" dir="rtl">
+            <div class="flex items-center gap-2.5">
+              <div
+                class="bg-amber-100 w-6 h-6 flex justify-center items-center rounded-lg border border-amber-200 text-amber-500 shadow-sm shrink-0"
+              >
+                <ion-icon name="star" class="text-xl"></ion-icon>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm text-slate-500 font-bold uppercase tracking-wider"
+                  >قوة الصف التراكمية
+                  <span class="text-sm font-black text-indigo-800"
+                    >{{ getTotalPoints() | number }} <span class="text-xs font-bold text-slate-500">نقطة</span></span
+                  ></span
+                >
+              </div>
+            </div>
           </div>
-          
-          <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1 font-medium">
-              <ion-icon 
-                [name]="gamification.getBehaviourIcon(student)" 
-                class="text-base {{ gamification.getBehaviourColorClass(student) }}">
-              </ion-icon>
-              
-              <span class="font-bold {{ gamification.getBehaviourColorClass(student) }}">
-                {{ gamification.getStudentBehaviourText(student) }}
-              </span>
-            </p>
-          <div class="flex items-center gap-1.5 mt-1">
-             <span *ngIf="student.computedTitle" class="text-[9px] font-black bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded-md flex items-center truncate max-w-[60%] shadow-sm">{{ student.computedTitle }}</span>
-             <p class="text-[10px] font-bold text-slate-400 m-0 truncate" [ngClass]="student.computedTitle ? 'mt-0' : 'mt-0.5'">{{student?.student_no}}</p>
+          <p class="text-indigo-800 font-bold mb-3 text-sm flex items-center gap-2" dir="rtl">
+            <ion-icon name="layers-outline" class="text-lg"></ion-icon> تحديد الكل
+          </p>
+          <div class="flex justify-between items-center" dir="rtl">
+            @for (sem of totalSemArray; track trackByPeriod(i, sem); let i = $index) {
+              <div
+                (click)="changeAttendanceStatusAll.emit(i)"
+                class="w-10 h-10 flex items-center justify-center rounded-xl cursor-pointer shadow-sm transition-all relative overflow-hidden"
+                [ngClass]="{
+                  'bg-slate-200 text-slate-500 border border-slate-300 hover:bg-slate-300':
+                    !editMode && attendanceResponse?.semteacher?.['sem-' + (i + 1)],
+                  'bg-emerald-500 text-white shadow-emerald-200':
+                    classAll[i] === 'present' && (editMode || !attendanceResponse?.semteacher?.['sem-' + (i + 1)]),
+                  'bg-rose-500 text-white shadow-rose-200':
+                    classAll[i] === 'absent' && (editMode || !attendanceResponse?.semteacher?.['sem-' + (i + 1)]),
+                  'bg-orange-500 text-white shadow-orange-200':
+                    classAll[i] === 'delay' && (editMode || !attendanceResponse?.semteacher?.['sem-' + (i + 1)]),
+                  'bg-white border border-slate-200 text-slate-400':
+                    (!classAll[i] || classAll[i] === '') &&
+                    (editMode || !attendanceResponse?.semteacher?.['sem-' + (i + 1)])
+                }"
+              >
+                @if (!editMode && attendanceResponse?.semteacher?.['sem-' + (i + 1)]) {
+                  <ion-icon name="information-circle" class="text-xl"></ion-icon>
+                } @else {
+                  @if (classAll[i] === 'present') {
+                    <ion-icon name="checkmark" class="text-xl"></ion-icon>
+                  }
+                  @if (classAll[i] === 'absent') {
+                    <ion-icon name="close" class="text-xl"></ion-icon>
+                  }
+                  @if (classAll[i] === 'delay') {
+                    <ion-icon name="remove" class="text-xl"></ion-icon>
+                  }
+                  @if (!classAll[i] || classAll[i] === '') {
+                    <span class="text-sm">{{ i + 1 }}</span>
+                  }
+                }
+              </div>
+            }
           </div>
         </div>
-      </div>
-      <button class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center hover:bg-indigo-100 transition-colors flex-shrink-0" (click)="noteClick.emit({event: $event, student: student})">
-        <ion-icon name="add" class="text-xl"></ion-icon>
-      </button>
-    </div>
-    <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100" dir="rtl">
-      <div *ngFor="let sem of totalSemArray; let i = index; trackBy: trackByPeriod" (click)="changeAttendanceStatus.emit({student: student, sem: i, index: student.sno})" class="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-lg sm:rounded-xl cursor-pointer shadow-sm transition-all text-xs sm:text-base relative" [ngClass]="{'pointer-events-none opacity-50': userType === UserType.Moderator && !canEdit && student.sheet && student.sheet['entered_by-'+(i+1)], 'bg-emerald-500 text-white shadow-emerald-100 scale-105': student.sheet && student.sheet['cem-'+ (i+1)] === '1', 'bg-rose-500 text-white shadow-rose-100 scale-105': student.sheet && student.sheet['cem-'+ (i+1)] === '0', 'bg-orange-500 text-white shadow-orange-100 scale-105': student.sheet && student.sheet['cem-'+ (i+1)] === '3', 'bg-white border border-slate-200 text-slate-400 hover:bg-slate-100': !student.sheet || student.sheet['cem-'+ (i+1)] === 'undefined' || !student.sheet['cem-'+ (i+1)]}">
-        <div class="absolute -top-1.5 -right-1.5 bg-slate-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-sm" *ngIf="userType === UserType.Moderator && !canEdit && student.sheet && student.sheet['entered_by-'+(i+1)]">
-          <ion-icon name="lock-closed" class="text-[9px]"></ion-icon>
+      }
+    </ng-container>
+    <!-- 🟢 Virtual scroll: يعرض فقط الصفوف الظاهرة على الشاشة بدل رسم القائمة كاملة دفعة واحدة،
+    مهم لصفوف بها 30+ طالب. itemSize يطابق ارتفاع الصف الفعلي (padding + قسم الاسم + صف أزرار الحصص + الهامش). -->
+    <cdk-virtual-scroll-viewport itemSize="172" class="flex-1 min-h-0">
+      <div
+        class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all"
+        *cdkVirtualFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-4 w-full cursor-pointer" (click)="studentClick.emit(student.sid)">
+            <div class="relative" (click)="$event.stopPropagation(); imageClick.emit(student)">
+              <img
+                [src]="student.pic ? student.pic : 'assets/imgs/user-avatar.png'"
+                loading="lazy"
+                onerror="
+                  this.onerror = null;
+                  this.src = 'assets/imgs/default_avatar.png';
+                "
+                class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 shadow-sm"
+              />
+              @if (student.student_data?.medical_condition) {
+                <div
+                  class="absolute bottom-0 right-0 bg-rose-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white"
+                >
+                  M
+                </div>
+              }
+              <!--<img loading="lazy" class="absolute -top-1 -left-1 w-4 h-4" [src]="student.computedIcon" *ngIf="student.agg_ranking > 0" />-->
+            </div>
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-bold text-slate-800 m-0 truncate">
+                  <span class="text-slate-400 text-sm">{{ i + 1 }}.</span> {{ student.name }}
+                </h3>
+                @if (student.current_streak >= 10) {
+                  <span
+                    class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse"
+                    title="أسطورة الالتزام"
+                    ><ion-icon name="flame"></ion-icon
+                    ><span class="text-[9px] font-bold">{{ student.current_streak }}</span></span
+                  >
+                }
+                @if (student.current_streak >= 5 && student.current_streak < 10) {
+                  <span
+                    class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0"
+                    title="مشتعل"
+                    ><ion-icon name="flame"></ion-icon
+                    ><span class="text-[9px] font-bold">{{ student.current_streak }}</span></span
+                  >
+                }
+                @if (student.isFrozen) {
+                  <span
+                    class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
+                    ><ion-icon name="snow"></ion-icon> مجمد</span
+                  >
+                }
+              </div>
+              <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1 font-medium">
+                <ion-icon
+                  [name]="gamification.getBehaviourIcon(student)"
+                  class="text-base {{ gamification.getBehaviourColorClass(student) }}"
+                >
+                </ion-icon>
+                <span class="font-bold {{ gamification.getBehaviourColorClass(student) }}">
+                  {{ gamification.getStudentBehaviourText(student) }}
+                </span>
+              </p>
+              <div class="flex items-center gap-1.5 mt-1">
+                @if (student.computedTitle) {
+                  <span
+                    class="text-[9px] font-black bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded-md flex items-center truncate max-w-[60%] shadow-sm"
+                    >{{ student.computedTitle }}</span
+                  >
+                }
+                <p
+                  class="text-[10px] font-bold text-slate-400 m-0 truncate"
+                  [ngClass]="student.computedTitle ? 'mt-0' : 'mt-0.5'"
+                >
+                  {{ student?.student_no }}
+                </p>
+              </div>
+            </div>
+          </div>
+          <button
+            class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center hover:bg-indigo-100 transition-colors flex-shrink-0"
+            (click)="noteClick.emit({ event: $event, student: student })"
+          >
+            <ion-icon name="add" class="text-xl"></ion-icon>
+          </button>
         </div>
-        <ion-icon name="checkmark" *ngIf="student.sheet && student.sheet['cem-'+ (i+1)] === '1'" class="text-lg"></ion-icon>
-        <ion-icon name="close" *ngIf="student.sheet && student.sheet['cem-'+ (i+1)] === '0'" class="text-lg"></ion-icon>
-        <ion-icon name="remove" *ngIf="student.sheet && student.sheet['cem-'+ (i+1)] === '3'" class="text-lg"></ion-icon>
-        <span *ngIf="!student.sheet || student.sheet['cem-'+ (i+1)] === 'undefined' || !student.sheet['cem-'+ (i+1)]" class="text-xs">{{i+1}}</span>
+        <div class="flex justify-between items-center bg-slate-50 p-2 rounded-xl border border-slate-100" dir="rtl">
+          @for (sem of totalSemArray; track trackByPeriod(i, sem); let i = $index) {
+            <div
+              (click)="changeAttendanceStatus.emit({ student: student, sem: i, index: student.sno })"
+              class="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 flex items-center justify-center rounded-lg sm:rounded-xl cursor-pointer shadow-sm transition-all text-xs sm:text-base relative"
+              [ngClass]="{
+                'pointer-events-none opacity-50':
+                  userType === UserType.Moderator &&
+                  !canEdit &&
+                  student.sheet &&
+                  student.sheet['entered_by-' + (i + 1)],
+                'bg-emerald-500 text-white shadow-emerald-100 scale-105':
+                  student.sheet && student.sheet['cem-' + (i + 1)] === '1',
+                'bg-rose-500 text-white shadow-rose-100 scale-105':
+                  student.sheet && student.sheet['cem-' + (i + 1)] === '0',
+                'bg-orange-500 text-white shadow-orange-100 scale-105':
+                  student.sheet && student.sheet['cem-' + (i + 1)] === '3',
+                'bg-white border border-slate-200 text-slate-400 hover:bg-slate-100':
+                  !student.sheet || student.sheet['cem-' + (i + 1)] === 'undefined' || !student.sheet['cem-' + (i + 1)]
+              }"
+            >
+              @if (
+                userType === UserType.Moderator && !canEdit && student.sheet && student.sheet['entered_by-' + (i + 1)]
+              ) {
+                <div
+                  class="absolute -top-1.5 -right-1.5 bg-slate-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-sm"
+                >
+                  <ion-icon name="lock-closed" class="text-[9px]"></ion-icon>
+                </div>
+              }
+              @if (student.sheet && student.sheet['cem-' + (i + 1)] === '1') {
+                <ion-icon name="checkmark" class="text-lg"></ion-icon>
+              }
+              @if (student.sheet && student.sheet['cem-' + (i + 1)] === '0') {
+                <ion-icon name="close" class="text-lg"></ion-icon>
+              }
+              @if (student.sheet && student.sheet['cem-' + (i + 1)] === '3') {
+                <ion-icon name="remove" class="text-lg"></ion-icon>
+              }
+              @if (
+                !student.sheet || student.sheet['cem-' + (i + 1)] === 'undefined' || !student.sheet['cem-' + (i + 1)]
+              ) {
+                <span class="text-xs">{{ i + 1 }}</span>
+              }
+            </div>
+          }
+        </div>
       </div>
-    </div>
+    </cdk-virtual-scroll-viewport>
   </div>
-  </cdk-virtual-scroll-viewport>
-</div>
+}

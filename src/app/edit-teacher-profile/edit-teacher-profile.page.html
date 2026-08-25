@@ -1,229 +1,291 @@
 ﻿<ion-header mode="md">
   <ion-toolbar>
-  	<ion-buttons slot="start">
-  		<!-- <ion-menu-button>
-  		</ion-menu-button> -->
-  	</ion-buttons>
-  	<ion-buttons slot="end">
-  		<ion-back-button>
-  		</ion-back-button>
-  	</ion-buttons>
+    <ion-buttons slot="start">
+      <!-- <ion-menu-button>
+    </ion-menu-button> -->
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-back-button> </ion-back-button>
+    </ion-buttons>
     <ion-title>{{'teacher_profile.title'| translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content mode="md">
-	<ion-list lines="none" class="list">
+  <ion-list lines="none" class="list">
+    <ion-item lines="none" class="item">
+      <ion-label position="floating">{{'teacher_profile.email'| translate}}</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="teacher.email"
+        placeholder="{{'teacher_profile.email'| translate}}"
+        [disabled]="teacher.status === '0' ? true : false"
+      ></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="item">
+      <ion-label position="floating">{{'teacher_profile.name'| translate}}</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="teacher.name"
+        placeholder="{{'teacher_profile.name'| translate}}"
+        [disabled]="teacher.status === '0' ? true : false"
+      ></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="item">
+      <ion-label position="floating">{{'teacher_profile.user_id'| translate}}</ion-label>
+      <ion-input
+        type="text"
+        [(ngModel)]="teacher.user_id"
+        placeholder="{{'teacher_profile.user_id'| translate}}"
+        readonly="true"
+      ></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="item">
+      <ion-label position="floating">{{'teacher_profile.password'| translate}}</ion-label>
+      <ion-input
+        type="password"
+        [(ngModel)]="teacher.password"
+        placeholder="{{'teacher_profile.password'| translate}}"
+        [disabled]="teacher.status === '0' ? true : false"
+      ></ion-input>
+    </ion-item>
+    <ion-item lines="none" class="item">
+      <ion-label position="floating">{{'teacher_profile.c_pass'| translate}}</ion-label>
+      <ion-input
+        type="password"
+        [(ngModel)]="teacher.c_pass"
+        placeholder="{{'teacher_profile.c_pass'| translate}}"
+        [disabled]="teacher.status === '0' ? true : false"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>{{'teacher_profile.user_type' | translate}}</ion-label>
+      <ion-select
+        interface="action-sheet"
+        mode="ios"
+        [(ngModel)]="teacher.user_type"
+        [value]="teacher.user_type"
+        [disabled]="teacher.status === '0' ? true : false"
+      >
+        <ion-select-option value="3">{{'user_profile.Moderator'| translate}}</ion-select-option>
+        <ion-select-option value="1">{{'user_profile.Admin'| translate}}</ion-select-option>
+        <ion-select-option value="2">{{'user_profile.Teacher'| translate}}</ion-select-option>
+        <ion-select-option value="4">{{'user_profile.Parent'| translate}}</ion-select-option>
+        <ion-select-option value="5">{{'user_profile.Register'| translate}}</ion-select-option>
+        <ion-select-option value="6">{{'user_profile.Medical'| translate}}</ion-select-option>
+        <ion-select-option value="7">{{'user_profile.Viewer'| translate}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <!-- <div class="radio-div">
+  <ion-radio-group [(ngModel)]="teacher.user_type" [value]="teacher.user_type">
+    <h3 class="radio-head">{{'teacher_profile.user_type'| translate}}</h3>
+    <ion-row class="user_type">
+      <ion-col size="4" >
+        <ion-radio value="2"></ion-radio>
+        <div>
+          <ion-label>{{'teacher_profile.Teacher'| translate}}</ion-label>
+        </div>
+      </ion-col>
+      <ion-col size="4" >
+        <ion-radio value="3"></ion-radio>
+        <div>
+          <ion-label>{{'teacher_profile.Moderator'| translate}}</ion-label>
+        </div>
+      </ion-col>
+      <ion-col size="4" >
+        <ion-radio value="1"></ion-radio>
+        <div>
+          <ion-label>{{'teacher_profile.Admin'| translate}}</ion-label>
+        </div>
+      </ion-col>
+      <ion-col size="4" >
+        <ion-radio value="4"></ion-radio>
+        <div>
+          <ion-label>{{'teacher_profile.Parent'| translate}}</ion-label>
+        </div>
+      </ion-col>
+      <ion-col size="4" >
+        <ion-radio value="5"></ion-radio>
+        <div>
+          <ion-label>{{'teacher_profile.Register'| translate}}</ion-label>
+        </div>
+      </ion-col>
+      <ion-col size="4" >
+        <ion-radio value="6"></ion-radio>
+        <div>
+          <ion-label>{{'teacher_profile.Medical'| translate}}</ion-label>
+        </div>
+      </ion-col>
+      <ion-col size="4" >
+        <ion-radio value="7"></ion-radio>
+        <div>
+          <ion-label>{{'teacher_profile.Viewer'| translate}}</ion-label>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-radio-group>
+</div> -->
 
-		<ion-item lines="none" class="item">
-			<ion-label position="floating">{{'teacher_profile.email'| translate}}</ion-label>
-			<ion-input type="text" [(ngModel)]="teacher.email" placeholder="{{'teacher_profile.email'| translate}}" [disabled]="teacher.status === '0' ? true : false"></ion-input>
-		</ion-item>
-		<ion-item lines="none" class="item">
-			<ion-label position="floating">{{'teacher_profile.name'| translate}}</ion-label>
-			<ion-input type="text" [(ngModel)]="teacher.name" placeholder="{{'teacher_profile.name'| translate}}" [disabled]="teacher.status === '0' ? true : false"></ion-input>
-		</ion-item>
-		<ion-item lines="none" class="item">
-			<ion-label position="floating">{{'teacher_profile.user_id'| translate}}</ion-label>
-			<ion-input type="text" [(ngModel)]="teacher.user_id" placeholder="{{'teacher_profile.user_id'| translate}}" readonly="true"></ion-input>
-		</ion-item>
-		<ion-item lines="none" class="item">
-			<ion-label position="floating">{{'teacher_profile.password'| translate}}</ion-label>
-			<ion-input type="password" [(ngModel)]="teacher.password" placeholder="{{'teacher_profile.password'| translate}}" [disabled]="teacher.status === '0' ? true : false"></ion-input>
-		</ion-item>
-		<ion-item lines="none" class="item">
-			<ion-label position="floating">{{'teacher_profile.c_pass'| translate}}</ion-label>
-			<ion-input type="password" [(ngModel)]="teacher.c_pass" placeholder="{{'teacher_profile.c_pass'| translate}}" [disabled]="teacher.status === '0' ? true : false"></ion-input>
-		</ion-item>
-		<ion-item>
-			<ion-label>{{'teacher_profile.user_type' | translate}}</ion-label>
-			<ion-select interface="action-sheet" mode="ios" [(ngModel)]="teacher.user_type" [value]="teacher.user_type" [disabled]="teacher.status === '0' ? true : false">
-			  <ion-select-option value="3">{{'user_profile.Moderator'| translate}}</ion-select-option>
-			  <ion-select-option value="1">{{'user_profile.Admin'| translate}}</ion-select-option>
-			  <ion-select-option value="2">{{'user_profile.Teacher'| translate}}</ion-select-option>
-			  <ion-select-option value="4">{{'user_profile.Parent'| translate}}</ion-select-option>
-			  <ion-select-option value="5">{{'user_profile.Register'| translate}}</ion-select-option>
-			  <ion-select-option value="6">{{'user_profile.Medical'| translate}}</ion-select-option>
-			  <ion-select-option value="7">{{'user_profile.Viewer'| translate}}</ion-select-option>
-			</ion-select>
-		  </ion-item>
-	</ion-list>
-	<!-- <div class="radio-div">
-		<ion-radio-group [(ngModel)]="teacher.user_type" [value]="teacher.user_type">
-				<h3 class="radio-head">{{'teacher_profile.user_type'| translate}}</h3>
-			<ion-row class="user_type">
-				<ion-col size="4" >
-					      <ion-radio value="2"></ion-radio>
-					      <div>	
-					      	<ion-label>{{'teacher_profile.Teacher'| translate}}</ion-label>
-					      </div>
-				</ion-col>
-				<ion-col size="4" >
-					      <ion-radio value="3"></ion-radio>
-					      <div>	
-					      	<ion-label>{{'teacher_profile.Moderator'| translate}}</ion-label>
-					      </div>
-				</ion-col>
-				<ion-col size="4" >
-					      <ion-radio value="1"></ion-radio>
-					      <div>	
-					      	<ion-label>{{'teacher_profile.Admin'| translate}}</ion-label>
-					      </div>
-				</ion-col>
-				<ion-col size="4" >
-					      <ion-radio value="4"></ion-radio>
-					      <div>	
-					      	<ion-label>{{'teacher_profile.Parent'| translate}}</ion-label>
-					      </div>
-				</ion-col>
-				<ion-col size="4" >
-					      <ion-radio value="5"></ion-radio>
-					      <div>	
-					      	<ion-label>{{'teacher_profile.Register'| translate}}</ion-label>
-					      </div>
-				</ion-col>
-				<ion-col size="4" >
-					      <ion-radio value="6"></ion-radio>
-					      <div>	
-					      	<ion-label>{{'teacher_profile.Medical'| translate}}</ion-label>
-					      </div>
-				</ion-col>
-				<ion-col size="4" >
-					      <ion-radio value="7"></ion-radio>
-					      <div>	
-					      	<ion-label>{{'teacher_profile.Viewer'| translate}}</ion-label>
-					      </div>
-				</ion-col>
-			</ion-row>
-		</ion-radio-group>
-	</div> -->
+  <ion-row class="time-row">
+    <ion-item>
+      <ion-toggle
+        color="primary"
+        slot="end"
+        (ionChange)="check()"
+        [(ngModel)]="teacher.attendence_permit"
+        [disabled]="teacher.status === '0' ? true : false"
+      ></ion-toggle>
+      <h3>{{'teacher_profile.edit_permission'| translate}}</h3>
+    </ion-item>
+    <ion-item class="input-item">
+      <div>
+        <ion-input
+          [(ngModel)]="teacher.time"
+          type="number"
+          placeholder="{{'teacher_profile.time'|translate}}"
+          [disabled]="teacher.status === '0' ? true : false"
+        ></ion-input>
+        <span>{{'teacher_profile.note'| translate}}: {{'teacher_profile.input_time_type'| translate}} </span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label>{{'teacher_profile.class'| translate}}</ion-label>
+      <ionic-selectable
+        style="height: 6vh; margin-top: -2px; overflow: hidden"
+        [disabled]="teacher.status === '0' ? true : false"
+        [(ngModel)]="teacher.class"
+        [isMultiple]="true"
+        [items]="classes"
+        itemValueField="cid"
+        itemTextField="name"
+        (onChange)="portChange($event)"
+        [canSearch]="true"
+      >
+      </ionic-selectable>
+    </ion-item>
+    <!-- <ion-item class="input-item">
+  <ion-label>{{'teacher_profile.class'| translate}}</ion-label>
+  <ion-select multiple="true" mode="ios" [(ngModel)]="teacher.class" id="select">
+    <ion-select-option (ionChange)="selectAll()">Select All</ion-select-option>
+    <ion-select-option *ngFor="let c of classes; trackBy: trackByIndex" [value]="c.cid">{{c.name}}</ion-select-option>
+  </ion-select>
+  <ion-input [(ngModel)]="teacher.class" type="number" placeholder="{{'teacher_profile.class'|translate}}" ></ion-input>
+  <span>{{'teacher_profile.note'| translate}}: {{'teacher_profile.input_time_type'| translate}}
+  </span>
+</ion-item> -->
+  </ion-row>
 
-	<ion-row class="time-row">
-		<ion-item>
-			<ion-toggle color="primary" slot="end" (ionChange)="check()" [(ngModel)]="teacher.attendence_permit" [disabled]="teacher.status === '0' ? true : false"></ion-toggle>
-			<h3>{{'teacher_profile.edit_permission'| translate}}</h3>
-		</ion-item>
-		<ion-item class="input-item">
-			<div>
-				<ion-input [(ngModel)]="teacher.time" type="number" placeholder="{{'teacher_profile.time'|translate}}" [disabled]="teacher.status === '0' ? true : false"></ion-input>
-				<span>{{'teacher_profile.note'| translate}}: {{'teacher_profile.input_time_type'| translate}}
-				</span>
-			</div>
-		</ion-item>
-	      <ion-item>
-	        <ion-label>{{'teacher_profile.class'| translate}}</ion-label>
-	        <ionic-selectable style="height: 6vh; margin-top: -2px;overflow: hidden;"[disabled]="teacher.status === '0' ? true : false" 
-	          [(ngModel)]="teacher.class"
-	          [isMultiple]="true"
-	          [items]="classes"
-	          itemValueField="cid"
-	          itemTextField="name"
-	          (onChange)="portChange($event)"
-	          [canSearch]="true">
-	        </ionic-selectable>
-	      </ion-item>
-		<!-- <ion-item class="input-item">
-				<ion-label>{{'teacher_profile.class'| translate}}</ion-label>
-				<ion-select multiple="true" mode="ios" [(ngModel)]="teacher.class" id="select">
-					<ion-select-option (ionChange)="selectAll()">Select All</ion-select-option>
-					<ion-select-option *ngFor="let c of classes; trackBy: trackByIndex" [value]="c.cid">{{c.name}}</ion-select-option>
-				</ion-select>
-				<ion-input [(ngModel)]="teacher.class" type="number" placeholder="{{'teacher_profile.class'|translate}}" ></ion-input>
-				<span>{{'teacher_profile.note'| translate}}: {{'teacher_profile.input_time_type'| translate}}
-				</span>
-		</ion-item> -->
-	</ion-row>
+  <ion-list class="option-list">
+    <ion-radio-group [value]="teacher.teacher_type" [(ngModel)]="teacher.teacher_type">
+      <ion-list-header>
+        <h3>{{'teacher_profile.teacher_type'| translate}}</h3>
+      </ion-list-header>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label>{{'teacher_profile.regular'| translate}}</ion-label>
+            <ion-radio slot="start" value="regular" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label>{{'teacher_profile.split'| translate}}</ion-label>
+            <ion-radio slot="start" value="split" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-radio-group>
+  </ion-list>
+  <ion-list>
+    <ion-radio-group [value]="teacher.action" [(ngModel)]="teacher.action">
+      <ion-list-header>
+        <h3>{{'teacher_profile.action'| translate}}</h3>
+      </ion-list-header>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label>{{'teacher_profile.active'| translate}}</ion-label>
+            <ion-radio slot="start" value="active" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label>{{'teacher_profile.inactive'| translate}}</ion-label>
+            <ion-radio slot="start" value="inactive" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-radio-group>
+  </ion-list>
 
-	<ion-list class="option-list">
-	  <ion-radio-group [value]="teacher.teacher_type" [(ngModel)]="teacher.teacher_type">
-	    <ion-list-header>
-	      <h3>{{'teacher_profile.teacher_type'| translate}}</h3>
-	    </ion-list-header>
-	    <ion-row>
-	    	<ion-col size="6">
-			    <ion-item>
-			      <ion-label>{{'teacher_profile.regular'| translate}}</ion-label>
-			      <ion-radio slot="start" value="regular" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
-			    </ion-item>
-	    	</ion-col>
-	    	<ion-col size="6">
-			    <ion-item>
-			      <ion-label>{{'teacher_profile.split'| translate}}</ion-label>
-			      <ion-radio slot="start" value="split" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
-			    </ion-item>
-	    	</ion-col>
-	    </ion-row>	
-	  </ion-radio-group>
-	</ion-list>
-	<ion-list >
-		<ion-radio-group [value]="teacher.action" [(ngModel)]="teacher.action" >
-		  <ion-list-header>
-			<h3>{{'teacher_profile.action'| translate}}</h3>
-		  </ion-list-header>
-		  <ion-row>
-			
-			  <ion-col size="6">
-				  <ion-item>
-					<ion-label>{{'teacher_profile.active'| translate}}</ion-label>
-					<ion-radio slot="start" value="active" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
-				  </ion-item>
-			  </ion-col>
-			  <ion-col size="6">
-				<ion-item>
-				  <ion-label>{{'teacher_profile.inactive'| translate}}</ion-label>
-				  <ion-radio slot="start" value="inactive" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
-				</ion-item>
-			</ion-col>
-		  </ion-row>
-		</ion-radio-group>
-	  </ion-list>
-
-	  <ion-list *appHasRole="[UserType.Admin]">
-		<ion-radio-group [value]="teacher.is_show_absent_students" [(ngModel)]="teacher.is_show_absent_students" >
-		  <ion-list-header>
-			<h3>{{'teacher_profile.absent_students'| translate}}</h3>
-		  </ion-list-header>
-		  <ion-row>
-			  <ion-col size="6">
-				  <ion-item>
-					<ion-label>{{'teacher_profile.show'| translate}}</ion-label>
-					<ion-radio slot="start" value="1" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
-				  </ion-item>
-			  </ion-col>
-			  <ion-col size="6">
-				  <ion-item>
-					<ion-label>{{'teacher_profile.hide'| translate}}</ion-label>
-					<ion-radio slot="start" value="0" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
-				  </ion-item>
-			  </ion-col>
-		  </ion-row>
-		</ion-radio-group>
-	  </ion-list>
-	  <ion-list *ngIf="teacher.is_show_absent_students === '1'">
-		<ion-radio-group [value]="teacher.is_show_absent_application_list" [(ngModel)]="teacher.is_show_absent_application_list" >
-		  <ion-list-header>
-			<h3>{{'teacher_profile.application_list'| translate}}</h3>
-		  </ion-list-header>
-		  <ion-row>
-			  <ion-col size="6">
-				  <ion-item>
-					<ion-label>{{'teacher_profile.show'| translate}}</ion-label>
-					<ion-radio slot="start" value="1" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
-				  </ion-item>
-			  </ion-col>
-			  <ion-col size="6">
-				  <ion-item>
-					<ion-label>{{'teacher_profile.hide'| translate}}</ion-label>
-					<ion-radio slot="start" value="0" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
-				  </ion-item>
-			  </ion-col>
-		  </ion-row>
-		</ion-radio-group>
-	  </ion-list>
-
+  <ion-list *appHasRole="[UserType.Admin]">
+    <ion-radio-group [value]="teacher.is_show_absent_students" [(ngModel)]="teacher.is_show_absent_students">
+      <ion-list-header>
+        <h3>{{'teacher_profile.absent_students'| translate}}</h3>
+      </ion-list-header>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label>{{'teacher_profile.show'| translate}}</ion-label>
+            <ion-radio slot="start" value="1" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label>{{'teacher_profile.hide'| translate}}</ion-label>
+            <ion-radio slot="start" value="0" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-radio-group>
+  </ion-list>
+  @if (teacher.is_show_absent_students === '1') {
+  <ion-list>
+    <ion-radio-group
+      [value]="teacher.is_show_absent_application_list"
+      [(ngModel)]="teacher.is_show_absent_application_list"
+    >
+      <ion-list-header>
+        <h3>{{'teacher_profile.application_list'| translate}}</h3>
+      </ion-list-header>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label>{{'teacher_profile.show'| translate}}</ion-label>
+            <ion-radio slot="start" value="1" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label>{{'teacher_profile.hide'| translate}}</ion-label>
+            <ion-radio slot="start" value="0" [disabled]="teacher.status === '0' ? true : false"></ion-radio>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-radio-group>
+  </ion-list>
+  }
 </ion-content>
-<ion-footer style="background: #fff;">
-	<ion-button style="width: 99%;"  expand="block" class="btn-primary" shape="round" color="primary" (click)="saveTeacherProfile()" [disabled]="teacher.status === '0' ? true : false">{{'teacher_profile.save' | translate}}</ion-button>
+<ion-footer style="background: #fff">
+  <ion-button
+    style="width: 99%"
+    expand="block"
+    class="btn-primary"
+    shape="round"
+    color="primary"
+    (click)="saveTeacherProfile()"
+    [disabled]="teacher.status === '0' ? true : false"
+    >{{'teacher_profile.save' | translate}}</ion-button
+  >
 
-	<ion-button style="width: 99%;"   expand="block" class="btn-primary" shape="round" color="danger" (click)="deleteTeacher()">{{'teacher_profile.delete' | translate}}</ion-button>
+  <ion-button
+    style="width: 99%"
+    expand="block"
+    class="btn-primary"
+    shape="round"
+    color="danger"
+    (click)="deleteTeacher()"
+    >{{'teacher_profile.delete' | translate}}</ion-button
+  >
 </ion-footer>

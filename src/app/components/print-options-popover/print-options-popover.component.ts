@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { PopoverController, IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
@@ -8,12 +8,11 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-print-options-popover',
   templateUrl: './print-options-popover.component.html',
   styleUrls: ['./print-options-popover.component.scss'],
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  imports: [IonicModule, TranslateModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PrintOptionsPopoverComponent {
   constructor(private popoverController: PopoverController) {}
-
 
   // دالة إغلاق النافذة مع إرسال القيمة المختارة
   close(type: string) {

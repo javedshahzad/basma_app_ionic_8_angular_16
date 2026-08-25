@@ -1,4 +1,13 @@
-﻿import { Component, OnInit, Input, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+﻿import {
+  Component,
+  OnInit,
+  Input,
+  NgZone,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  DestroyRef,
+  inject
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
@@ -11,14 +20,14 @@ import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { DocumentService } from '../../service/document/document.service';
 import { NotesApiService } from '../../service/notes-api/notes-api.service';
 import { StorageService } from '../../service/storage.service';
-import { NgIf, NgFor } from '@angular/common';
+
 import { DateFormatPipe } from '../../pipes/date-format/date-format.pipe';
 @Component({
-    selector: 'app-view-class-notes',
-    templateUrl: './view-class-notes.page.html',
-    styleUrls: ['./view-class-notes.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, DateFormatPipe, TranslatePipe]
+  selector: 'app-view-class-notes',
+  templateUrl: './view-class-notes.page.html',
+  styleUrls: ['./view-class-notes.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, DateFormatPipe, TranslatePipe]
 })
 export class ViewClassNotesPage implements OnInit {
   private destroyRef = inject(DestroyRef);

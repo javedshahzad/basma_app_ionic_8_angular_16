@@ -10,15 +10,15 @@ import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor
 import { ParentConnectApiService } from '../service/parent-connect-api/parent-connect-api.service';
 import { StorageService } from '../service/storage.service';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+
 import { LoggedInUser } from '../model/logged-in-user.model';
 
 @Component({
-    selector: 'app-connect-new-message',
-    templateUrl: './connect-new-message.page.html',
-    styleUrls: ['./connect-new-message.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
+  selector: 'app-connect-new-message',
+  templateUrl: './connect-new-message.page.html',
+  styleUrls: ['./connect-new-message.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class ConnectNewMessagePage {
   userDetails: LoggedInUser = {};
@@ -161,5 +161,4 @@ export class ConnectNewMessagePage {
     this.message.ticketImage = '';
     this.ticketImage = '';
   }
-
 }

@@ -1,227 +1,289 @@
 ﻿<ion-header class="ion-no-border bg-slate-50">
   <ion-toolbar class="--bg-transparent">
-    
     <ion-buttons slot="end" class="mr-2">
-      <ion-back-button [disabled]="editMode" [ngClass]="editMode ? 'opacity-40 pointer-events-none' : ''" defaultHref="/tabs" text="" class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+      <ion-back-button
+        [disabled]="editMode"
+        [ngClass]="editMode ? 'opacity-40 pointer-events-none' : ''"
+        defaultHref="/tabs"
+        text=""
+        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+      ></ion-back-button>
     </ion-buttons>
-    
+
     <ion-title class="text-slate-800 font-bold text-sm px-0">
-      
-      <div class="flex items-center justify-center bg-slate-100/80 backdrop-blur-sm border border-slate-200 rounded-full p-1 mx-auto max-w-[250px] shadow-sm">
-        
-        <div class="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-full transition-all" 
-            [ngClass]="editMode ? 'opacity-50 pointer-events-none' : 'hover:bg-white hover:shadow-sm cursor-pointer'" 
-             (click)="!editMode && openCalenderModal()">
+      <div
+        class="flex items-center justify-center bg-slate-100/80 backdrop-blur-sm border border-slate-200 rounded-full p-1 mx-auto max-w-[250px] shadow-sm"
+      >
+        <div
+          class="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-full transition-all"
+          [ngClass]="editMode ? 'opacity-50 pointer-events-none' : 'hover:bg-white hover:shadow-sm cursor-pointer'"
+          (click)="!editMode && openCalenderModal()"
+        >
           <ion-icon name="calendar-outline" class="text-indigo-600 text-base"></ion-icon>
           <span class="text-xs font-bold text-slate-700 mt-0.5" dir="ltr">{{dateSelected | date: 'dd/MM'}}</span>
         </div>
 
-        <div class="w-px h-5 bg-slate-300 mx-1 rounded-full" *ngIf="isTeacherUser && (totalSemArray?.length || 0) > 0"></div>
-
-        <div *ngIf="isTeacherUser && (totalSemArray?.length || 0) > 0" 
-             class="flex-1 relative flex items-center justify-center gap-1 py-1.5 px-2 rounded-full transition-all hover:bg-white hover:shadow-sm cursor-pointer">
-          
+        @if (isTeacherUser && (totalSemArray?.length || 0) > 0) {
+        <div class="w-px h-5 bg-slate-300 mx-1 rounded-full"></div>
+        } @if (isTeacherUser && (totalSemArray?.length || 0) > 0) {
+        <div
+          class="flex-1 relative flex items-center justify-center gap-1 py-1.5 px-2 rounded-full transition-all hover:bg-white hover:shadow-sm cursor-pointer"
+        >
           <span class="text-xs font-bold text-indigo-700 mt-0.5 pointer-events-none w-full text-center truncate">
             الحصة ({{ currentActivePeriod }})
           </span>
           <ion-icon name="chevron-down" class="text-slate-400 text-[10px] pointer-events-none"></ion-icon>
-          
           <ion-select
-           [(ngModel)]="currentActivePeriod"
+            [(ngModel)]="currentActivePeriod"
             (ionChange)="selectPeriod($event.detail.value)"
             interface="popover"
             mode="ios"
             class="absolute inset-0 w-full h-full opacity-0 z-10 m-0 p-0 cursor-pointer"
-            style="--padding-start: 0; --padding-end: 0; --padding-top: 0; --padding-bottom: 0;"
+            style="--padding-start: 0; --padding-end: 0; --padding-top: 0; --padding-bottom: 0"
           >
-            <ion-select-option
-              *ngFor="let dummy of totalSemArray; let i = index; trackBy: trackByIndex"
-             [value]="i + 1"
-            >
-              الحصة {{ i + 1 }} {{ lockedPeriods.includes(i + 1) && currentActivePeriod !== (i + 1) ? '(للمعاينة 👁️)' : '' }}
+            @for (dummy of totalSemArray; track trackByIndex(i); let i = $index) {
+            <ion-select-option [value]="i + 1">
+              الحصة {{ i + 1 }} {{ lockedPeriods.includes(i + 1) && currentActivePeriod !== (i + 1) ? '(للمعاينة 👁️)' :
+              '' }}
             </ion-select-option>
+            }
           </ion-select>
         </div>
-
+        }
       </div>
-
     </ion-title>
 
     <ion-buttons slot="start" class="ml-2 gap-2">
-      
-      <button class="w-10 h-10 rounded-full border border-indigo-100 text-indigo-600 flex items-center justify-center transition-all shadow-sm active:scale-95" 
-              [disabled]="editMode" 
-              [ngClass]="editMode ? 'opacity-40 cursor-not-allowed bg-slate-100 border-slate-200 text-slate-400' : 'bg-indigo-50 hover:bg-indigo-100'" 
-              (click)="viewNote()" 
-              *ngIf="isAdmin || isTeacherUser || isModerator || isViewer">
+      @if (isAdmin || isTeacherUser || isModerator || isViewer) {
+      <button
+        class="w-10 h-10 rounded-full border border-indigo-100 text-indigo-600 flex items-center justify-center transition-all shadow-sm active:scale-95"
+        [disabled]="editMode"
+        [ngClass]="editMode ? 'opacity-40 cursor-not-allowed bg-slate-100 border-slate-200 text-slate-400' : 'bg-indigo-50 hover:bg-indigo-100'"
+        (click)="viewNote()"
+      >
         <ion-icon name="document-text-outline" class="text-xl"></ion-icon>
       </button>
-
-      <button class="w-10 h-10 rounded-full border border-indigo-700 text-white flex items-center justify-center transition-all shadow-sm active:scale-95" 
-              [disabled]="editMode" 
-              [ngClass]="editMode ? 'opacity-40 cursor-not-allowed bg-slate-400 border-slate-400' : 'bg-indigo-600 hover:bg-indigo-700'" 
-              (click)="registerNewStudent()" 
-              *ngIf="canAddStudentRole">
+      } @if (canAddStudentRole) {
+      <button
+        class="w-10 h-10 rounded-full border border-indigo-700 text-white flex items-center justify-center transition-all shadow-sm active:scale-95"
+        [disabled]="editMode"
+        [ngClass]="editMode ? 'opacity-40 cursor-not-allowed bg-slate-400 border-slate-400' : 'bg-indigo-600 hover:bg-indigo-700'"
+        (click)="registerNewStudent()"
+      >
         <ion-icon name="person-add" class="text-xl"></ion-icon>
       </button>
-
+      }
     </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
-<div *ngIf="editMode" class="bg-rose-500 text-white px-4 py-3 flex justify-between items-center shadow-md animate-pulse sticky top-0 z-50" dir="rtl">
+@if (editMode) {
+<div
+  class="bg-rose-500 text-white px-4 py-3 flex justify-between items-center shadow-md animate-pulse sticky top-0 z-50"
+  dir="rtl"
+>
   <div class="flex items-center gap-2">
     <ion-icon name="checkmark-done-circle-outline" class="text-2xl"></ion-icon>
     <div class="flex flex-col">
       <span class="font-bold text-sm">أنت الآن في وضع تسجيل الحضور والغياب</span>
     </div>
   </div>
-  <button (click)="toggleEditMode()" class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm">إلغاء التعديل</button>
+  <button
+    (click)="toggleEditMode()"
+    class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm"
+  >
+    إلغاء التعديل
+  </button>
 </div>
+}
 
 <ion-content class="bg-slate-50" mode="md" [scrollY]="!((students?.length || 0) > 0)">
-
-  <div *ngIf="show_loading" class="p-4 space-y-4">
-    <div *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex" class="h-20 bg-slate-200 rounded-2xl animate-pulse"></div>
+  @if (show_loading) {
+  <div class="p-4 space-y-4">
+    @for (dummy of [1,2,3,4,5]; track trackByIndex($index)) {
+    <div class="h-20 bg-slate-200 rounded-2xl animate-pulse"></div>
+    }
   </div>
-
-  <div *ngIf="!show_loading" class="h-full flex flex-col min-h-0">
-
-    <div *ngIf="students?.length === 0" class="empty-state text-center p-10">
+  } @if (!show_loading) {
+  <div class="h-full flex flex-col min-h-0">
+    @if (students?.length === 0) {
+    <div class="empty-state text-center p-10">
       <p>{{ noDataFound }}</p>
     </div>
-
-    <ng-container *ngIf="(students?.length || 0) > 0">
-
-      <app-supervisor-view
-        class="flex-1 min-h-0"
-        *ngIf="isAdmin || isModerator || isViewer"
-        [attendanceResponse]="attendanceResponse"
-        [showAll]="showAll"
-        [userType]="userType"
-        [totalSemArray]="totalSemArray"
-        [classAll]="classAll"
-        [editMode]="editMode"
-        [canEdit]="canEdit"
-        (changeAttendanceStatusAll)="changeAttendanceStatusAll($event)"
-        (studentClick)="openStudentDetail($event)"
-        (imageClick)="openUserImageModal($event)"
-        (noteClick)="presentNoteActionSheet($event.event, $event.student)"
-        (changeAttendanceStatus)="changeAttendanceStatus($event.student, $event.sem, $event.index)">
-      </app-supervisor-view>
-
-      <app-teacher-view
-        class="flex-1 min-h-0"
-        *ngIf="isTeacherUser"
-        [attendanceResponse]="attendanceResponse"
-        [currentActivePeriod]="currentActivePeriod"
-        [lockedPeriods]="lockedPeriods"
-        [courseInfo]="courseInfo"
-        [canEdit]="canEdit"
-        [timeLeft]="timeLeft"
-        [formattedTimeLeft]="formattedTimeLeft"
-        [isToday]="checkCurrentDate(dateSelected)"
-        [hasSubmitted]="hasSubmittedTodayInThisClass()"
-        [totalSemArray]="totalSemArray"
-        (periodSelect)="selectPeriod($event)"
-        (setAllStatus)="setAllStudentsStatusForTeacher($event)"
-        (studentClick)="openStudentDetail($event)"
-        (imageClick)="openUserImageModal($event)"
-        (noteClick)="presentNoteActionSheet($event.event, $event.student)"
-        (setStudentStatus)="setTeacherAttendance($event.student, $event.status)">
-      </app-teacher-view>
-
-    </ng-container>
-
+    } @if ((students?.length || 0) > 0) { @if (isAdmin || isModerator || isViewer) {
+    <app-supervisor-view
+      class="flex-1 min-h-0"
+      [attendanceResponse]="attendanceResponse"
+      [showAll]="showAll"
+      [userType]="userType"
+      [totalSemArray]="totalSemArray"
+      [classAll]="classAll"
+      [editMode]="editMode"
+      [canEdit]="canEdit"
+      (changeAttendanceStatusAll)="changeAttendanceStatusAll($event)"
+      (studentClick)="openStudentDetail($event)"
+      (imageClick)="openUserImageModal($event)"
+      (noteClick)="presentNoteActionSheet($event.event, $event.student)"
+      (changeAttendanceStatus)="changeAttendanceStatus($event.student, $event.sem, $event.index)"
+    >
+    </app-supervisor-view>
+    } @if (isTeacherUser) {
+    <app-teacher-view
+      class="flex-1 min-h-0"
+      [attendanceResponse]="attendanceResponse"
+      [currentActivePeriod]="currentActivePeriod"
+      [lockedPeriods]="lockedPeriods"
+      [courseInfo]="courseInfo"
+      [canEdit]="canEdit"
+      [timeLeft]="timeLeft"
+      [formattedTimeLeft]="formattedTimeLeft"
+      [isToday]="checkCurrentDate(dateSelected)"
+      [hasSubmitted]="hasSubmittedTodayInThisClass()"
+      [totalSemArray]="totalSemArray"
+      (periodSelect)="selectPeriod($event)"
+      (setAllStatus)="setAllStudentsStatusForTeacher($event)"
+      (studentClick)="openStudentDetail($event)"
+      (imageClick)="openUserImageModal($event)"
+      (noteClick)="presentNoteActionSheet($event.event, $event.student)"
+      (setStudentStatus)="setTeacherAttendance($event.student, $event.status)"
+    >
+    </app-teacher-view>
+    } }
   </div>
+  }
 </ion-content>
 
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="shouldShowFooter()">
+@if (shouldShowFooter()) {
+<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl">
   <div class="p-5 max-w-6xl mx-auto transition-all duration-300">
-    
-    <div class="flex justify-between items-center mb-4 px-2" *ngIf="isTeacherUser || editMode || isRestrictedModerator">
+    @if (isTeacherUser || editMode || isRestrictedModerator) {
+    <div class="flex justify-between items-center mb-4 px-2">
       <p class="text-slate-500 text-sm font-bold">
-        تم تسجيل <span class="text-indigo-600 text-lg">{{ totalPresent + totalAbsent }}</span> من <span class="text-slate-800 text-lg">{{ attendanceResponse.students?.length }}</span>
+        تم تسجيل <span class="text-indigo-600 text-lg">{{ totalPresent + totalAbsent }}</span> من
+        <span class="text-slate-800 text-lg">{{ attendanceResponse.students?.length }}</span>
       </p>
       <div class="flex gap-2">
-        <div class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-sm" *ngIf="totalRemaining > 0">{{ totalRemaining }}</div>
-        <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm" *ngIf="totalPresent > 0">{{ totalPresent }}</div>
-        <div class="w-9 h-9 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-sm" *ngIf="totalAbsent > 0">{{ totalAbsent }}</div>
+        @if (totalRemaining > 0) {
+        <div
+          class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-sm"
+        >
+          {{ totalRemaining }}
+        </div>
+        } @if (totalPresent > 0) {
+        <div
+          class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm"
+        >
+          {{ totalPresent }}
+        </div>
+        } @if (totalAbsent > 0) {
+        <div class="w-9 h-9 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-sm">
+          {{ totalAbsent }}
+        </div>
+        }
       </div>
     </div>
-
-    <button *ngIf="isTeacherUser" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all disabled:opacity-50 flex justify-center items-center gap-2" (click)="submitAttendance()" [disabled]="teacherType === 'regular' ? totalRemaining > 0 : !hasMadeChanges()">
+    } @if (isTeacherUser) {
+    <button
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all disabled:opacity-50 flex justify-center items-center gap-2"
+      (click)="submitAttendance()"
+      [disabled]="teacherType === 'regular' ? totalRemaining > 0 : !hasMadeChanges()"
+    >
       <ion-icon name="cloud-upload-outline" class="text-xl"></ion-icon>
       {{'list-student.submitbtn' | translate}}
     </button>
-
-    <ng-container *ngIf="isAdmin || isModerator || !isViewer">
-      
-      <button *ngIf="!editMode && (isAdmin || canEdit)" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex justify-center items-center gap-2" (click)="toggleEditModeWithValidation()">
-        <ion-icon name="create-outline" class="text-xl"></ion-icon>
-        تعديل الغياب
-      </button>
-
-      <button *ngIf="editMode || isRestrictedModerator" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-emerald-200 transition-all active:scale-95 flex justify-center items-center gap-2" (click)="submitAttendance()" [disabled]="isRestrictedModerator ? (!hasMadeChanges() || isAnyModifiedPeriodIncomplete()) : false">
-        <ion-icon name="save-outline" class="text-xl"></ion-icon>
-        حفظ الغياب
-      </button>
-
-    </ng-container>
-
+    } @if (isAdmin || isModerator || !isViewer) { @if (!editMode && (isAdmin || canEdit)) {
+    <button
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex justify-center items-center gap-2"
+      (click)="toggleEditModeWithValidation()"
+    >
+      <ion-icon name="create-outline" class="text-xl"></ion-icon>
+      تعديل الغياب
+    </button>
+    } @if (editMode || isRestrictedModerator) {
+    <button
+      class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-emerald-200 transition-all active:scale-95 flex justify-center items-center gap-2"
+      (click)="submitAttendance()"
+      [disabled]="isRestrictedModerator ? (!hasMadeChanges() || isAnyModifiedPeriodIncomplete()) : false"
+    >
+      <ion-icon name="save-outline" class="text-xl"></ion-icon>
+      حفظ الغياب
+    </button>
+    } }
   </div>
 </ion-footer>
+}
 
 <ion-modal [isOpen]="showImageViewer" (didDismiss)="closeFullscreenImage()" class="fullscreen-image-modal">
   <ng-template>
-    <div class="w-full h-full flex items-center justify-center bg-slate-900/90 backdrop-blur-md" (click)="closeFullscreenImage()">
-      
-      <button class="absolute top-6 right-6 z-20 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95" (click)="closeFullscreenImage()">
+    <div
+      class="w-full h-full flex items-center justify-center bg-slate-900/90 backdrop-blur-md"
+      (click)="closeFullscreenImage()"
+    >
+      <button
+        class="absolute top-6 right-6 z-20 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95"
+        (click)="closeFullscreenImage()"
+      >
         <ion-icon name="close" class="text-xl"></ion-icon>
       </button>
 
-      <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
-        <img loading="lazy" [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+      <div
+        class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto"
+        style="touch-action: pan-x pan-y pinch-zoom"
+        (click)="$event.stopPropagation()"
+      >
+        <img
+          loading="lazy"
+          [src]="viewImageUrl"
+          class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300"
+        />
       </div>
-
     </div>
   </ng-template>
 </ion-modal>
 
-
-<div class="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity" *ngIf="showWarningPopup" (click)="closeWarningPopup()">
-  <div class="bg-white rounded-[24px] w-10/12 max-w-sm p-6 flex flex-col items-center justify-center shadow-2xl animate-fade-in-up border border-slate-100 mx-auto" (click)="$event.stopPropagation()">
-    
-    <ng-container *ngIf="warningType === 'frozen'">
-      <div class="w-16 h-16 rounded-full bg-cyan-50 flex items-center justify-center mb-4 border border-cyan-100 shadow-inner">
-        <ion-icon name="snow" class="text-3xl text-cyan-500 animate-pulse"></ion-icon>
-      </div>
-      <h3 class="text-lg font-black text-slate-800 mb-2 text-center">طالب مجمد ❄️</h3>
-    </ng-container>
-
-    <ng-container *ngIf="warningType === 'warning'">
-      <div class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-4 border border-amber-100 shadow-inner">
-        <ion-icon name="warning-outline" class="text-3xl text-amber-500 animate-pulse"></ion-icon>
-      </div>
-      <h3 class="text-lg font-black text-slate-800 mb-2 text-center">مهلاً!</h3>
-    </ng-container>
-    
-    <p class="text-sm text-slate-500 text-center font-medium leading-relaxed mb-6">
-      {{ warningMessage }}
-    </p>
-    
-    <button (click)="closeWarningPopup()" 
-            [ngClass]="warningType === 'frozen' ? 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
-            class="w-full py-3 rounded-xl font-bold transition-colors">
+@if (showWarningPopup) {
+<div
+  class="fixed inset-0 z-[99999] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity"
+  (click)="closeWarningPopup()"
+>
+  <div
+    class="bg-white rounded-[24px] w-10/12 max-w-sm p-6 flex flex-col items-center justify-center shadow-2xl animate-fade-in-up border border-slate-100 mx-auto"
+    (click)="$event.stopPropagation()"
+  >
+    @if (warningType === 'frozen') {
+    <div
+      class="w-16 h-16 rounded-full bg-cyan-50 flex items-center justify-center mb-4 border border-cyan-100 shadow-inner"
+    >
+      <ion-icon name="snow" class="text-3xl text-cyan-500 animate-pulse"></ion-icon>
+    </div>
+    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">طالب مجمد ❄️</h3>
+    } @if (warningType === 'warning') {
+    <div
+      class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-4 border border-amber-100 shadow-inner"
+    >
+      <ion-icon name="warning-outline" class="text-3xl text-amber-500 animate-pulse"></ion-icon>
+    </div>
+    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">مهلاً!</h3>
+    }
+    <p class="text-sm text-slate-500 text-center font-medium leading-relaxed mb-6">{{ warningMessage }}</p>
+    <button
+      (click)="closeWarningPopup()"
+      [ngClass]="warningType === 'frozen' ? 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+      class="w-full py-3 rounded-xl font-bold transition-colors"
+    >
       حسناً، فهمت
     </button>
   </div>
 </div>
+}
 
-
-
-<ion-modal [isOpen]="showCalenderModal" (didDismiss)="hideCalenderModal()" class="calendar-modal" [breakpoints]="[0, 0.5, 0.75]" [initialBreakpoint]="0.5">
+<ion-modal
+  [isOpen]="showCalenderModal"
+  (didDismiss)="hideCalenderModal()"
+  class="calendar-modal"
+  [breakpoints]="[0, 0.5, 0.75]"
+  [initialBreakpoint]="0.5"
+>
   <ng-template>
     <ion-header>
       <ion-toolbar>
@@ -232,12 +294,13 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding flex justify-center">
-      <ion-datetime 
-        presentation="date" 
-        [value]="dateSelected.toISOString()" 
+      <ion-datetime
+        presentation="date"
+        [value]="dateSelected.toISOString()"
         (ionChange)="onDaySelect($event)"
         locale="ar-KW"
-        firstDayOfWeek="0">
+        firstDayOfWeek="0"
+      >
       </ion-datetime>
     </ion-content>
   </ng-template>

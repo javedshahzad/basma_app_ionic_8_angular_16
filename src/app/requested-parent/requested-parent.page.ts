@@ -12,15 +12,15 @@ import { SearchApiService } from '../service/search-api/search-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
 import { UserType } from '../constants/user-type';
-import { NgIf, NgClass, NgFor } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
-    selector: 'app-requested-parent',
-    templateUrl: './requested-parent.page.html',
-    styleUrls: ['./requested-parent.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, RouterLink, NgClass, NgFor, TranslatePipe, HasRoleDirective]
+  selector: 'app-requested-parent',
+  templateUrl: './requested-parent.page.html',
+  styleUrls: ['./requested-parent.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, RouterLink, NgClass, TranslatePipe, HasRoleDirective]
 })
 export class RequestedParentPage implements OnInit {
   trackByIndex(index: number): number {

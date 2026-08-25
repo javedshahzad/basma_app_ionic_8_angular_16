@@ -1,5 +1,14 @@
 import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild } from '@angular/core';
-import { NavController, NavParams, AlertController, PopoverController, Platform, ModalController, ActionSheetController, IonicModule } from '@ionic/angular';
+import {
+  NavController,
+  NavParams,
+  AlertController,
+  PopoverController,
+  Platform,
+  ModalController,
+  ActionSheetController,
+  IonicModule
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -32,13 +41,17 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
 import { StorageService } from '../service/storage.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { UserType } from '../constants/user-type';
-import { NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, DecimalPipe, DatePipe } from '@angular/common';
+import { NgClass, NgStyle, DecimalPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Student } from '../model/student.model';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { PlanApiService, UserPlan } from '../service/plan-api/plan-api.service';
 import { StudentNote, StudentNotesResponse } from '../service/notes-api/notes-api.service';
-import { StudentProfileDashboard, StudentInventory, SkillData } from '../service/gamification-api/gamification-api.service';
+import {
+  StudentProfileDashboard,
+  StudentInventory,
+  SkillData
+} from '../service/gamification-api/gamification-api.service';
 import { StudentInventoryModalComponent } from '../components/student-inventory-modal/student-inventory-modal.component';
 import { HasRoleDirective } from '../directives/has-role.directive';
 
@@ -58,11 +71,21 @@ interface AbsenceNote {
 }
 
 @Component({
-    selector: 'app-student-detail',
-    templateUrl: './student-detail.page.html',
-    styleUrls: ['./student-detail.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgClass, NgSwitch, NgSwitchCase, NgFor, NgStyle, FormsModule, DecimalPipe, DatePipe, TranslatePipe, StudentInventoryModalComponent, HasRoleDirective]
+  selector: 'app-student-detail',
+  templateUrl: './student-detail.page.html',
+  styleUrls: ['./student-detail.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    IonicModule,
+    NgClass,
+    NgStyle,
+    FormsModule,
+    DecimalPipe,
+    DatePipe,
+    TranslatePipe,
+    StudentInventoryModalComponent,
+    HasRoleDirective
+  ]
 })
 export class StudentDetailPage {
   readonly UserType = UserType;
@@ -270,7 +293,8 @@ export class StudentDetailPage {
     } catch (err: unknown) {
       this.zone.run(() => {
         setTimeout(() => {
-          let errorDetails = typeof err === 'string' ? err : (err as { message?: string })?.message || JSON.stringify(err);
+          let errorDetails =
+            typeof err === 'string' ? err : (err as { message?: string })?.message || JSON.stringify(err);
           let msg = `خطأ: ${errorDetails}`;
 
           this.warningType = this.isFrozen || msg.includes('مجم') || msg.includes('تجميد') ? 'frozen' : 'warning';
@@ -296,7 +320,7 @@ export class StudentDetailPage {
 
     this.gamificationApi
       .getStudentSkillTree(body)
-      .then((raw) => {
+      .then(raw => {
         const res = raw as { success?: boolean; total_points?: number; skills?: SkillData } | undefined;
         this.isLoadingSkills = false;
         if (res && res.success) {
@@ -527,7 +551,8 @@ export class StudentDetailPage {
               userId: String(this.userInfo.user_no)
             };
 
-            const dashRes: StudentProfileDashboard | false = await this.gamificationApi.getStudentProfileDashboard(dashboardData);
+            const dashRes: StudentProfileDashboard | false =
+              await this.gamificationApi.getStudentProfileDashboard(dashboardData);
 
             if (dashRes && dashRes.success) {
               let rawTitle = dashRes.inventory?.active_title;
@@ -1261,7 +1286,6 @@ export class StudentDetailPage {
     await alert.present();
   }
 
-
   async presentPrintOption(event: Event) {
     // if(this.AvailablePlan?.plan?.slug == 'free' || this.AvailablePlan?.isExpire == true){
     //   this.presentAlertPlanConfirm();
@@ -1345,7 +1369,7 @@ export class StudentDetailPage {
 
           this.reportsApi
             .openStudentReport(url)
-            .then(async (res) => {
+            .then(async res => {
               this.dataProvider.hideLoading();
 
               if (res && res.data) {
@@ -1357,7 +1381,7 @@ export class StudentDetailPage {
                     () => {
                       console.log('تم فتح نافذة الطباعة بنجاح');
                     },
-                    (e) => {
+                    e => {
                       console.log('تعذرت الطباعة، سيتم الفتح في المتصفح', e);
                       this.openHtmlInBrowser(htmlContent);
                     }
@@ -1375,7 +1399,7 @@ export class StudentDetailPage {
             });
         } else {
           this.reportsApi.getStudentReport(studentData).then(
-            async (res) => {
+            async res => {
               this.dataProvider.hideLoading();
               if (res && res.data) {
                 let splitUrl = String(res.data).split('/');
@@ -1444,8 +1468,7 @@ export class StudentDetailPage {
     ];
 
     const alert = await this.alertCtrl.create({
-      header:
-        this.userInfo.is_school_admin == 1 ? this.planLang.not_valid : this.planLang.not_valid_for_others,
+      header: this.userInfo.is_school_admin == 1 ? this.planLang.not_valid : this.planLang.not_valid_for_others,
       mode: 'ios',
       buttons: this.userInfo.is_school_admin == 1 ? buttonsAdmin : button
     });
@@ -1589,7 +1612,7 @@ export class StudentDetailPage {
             let options: PrintOptions = { orientation: 'portrait' };
             this.printer.print(data.replace(/(\r\n|\n|\r)/gm, '')).then(
               () => {},
-              (e) => {
+              e => {
                 this.dataProvider.showToast(this.lang.report_error);
               }
             );
@@ -1614,7 +1637,7 @@ export class StudentDetailPage {
             let options: PrintOptions = { orientation: 'portrait' };
             this.printer.print(data.replace(/(\r\n|\n|\r)/gm, '')).then(
               () => {},
-              (e) => {
+              e => {
                 this.dataProvider.showToast(this.lang.report_error);
               }
             );
@@ -1676,7 +1699,7 @@ export class StudentDetailPage {
         await this.dataProvider.run(async () => {
           const followUpRes = await this.followupFieldsApi.getFollowUpStudentList(followUpData);
           if (followUpRes && followUpRes.data && followUpRes.data.students) {
-            let matched = followUpRes.data.students.find((s) => s.sid === this.navData.student_id);
+            let matched = followUpRes.data.students.find(s => s.sid === this.navData.student_id);
             if (matched) {
               this.zone.run(() => {
                 this.studentDetails.unacceptable_absent_days =

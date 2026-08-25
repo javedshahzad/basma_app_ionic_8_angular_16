@@ -8,15 +8,15 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-followup-add-fields',
-    templateUrl: './followup-add-fields.page.html',
-    styleUrls: ['./followup-add-fields.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, FormsModule, TranslatePipe]
+  selector: 'app-followup-add-fields',
+  templateUrl: './followup-add-fields.page.html',
+  styleUrls: ['./followup-add-fields.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, FormsModule, TranslatePipe]
 })
 export class FollowupAddFieldsPage {
   trackByIndex(index: number): number {
@@ -55,7 +55,6 @@ export class FollowupAddFieldsPage {
       this.storageSr.set('followUpAddFieldsContext', this.navData);
     }
   }
-
 
   async ionViewWillEnter() {
     this.show_loading = true;

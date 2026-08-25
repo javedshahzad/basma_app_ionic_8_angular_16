@@ -14,15 +14,15 @@ import { StorageService } from '../service/storage.service';
 import { UserType } from '../constants/user-type';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
 import { FormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-register-teacher',
-    templateUrl: './register-teacher.page.html',
-    styleUrls: ['./register-teacher.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
+  selector: 'app-register-teacher',
+  templateUrl: './register-teacher.page.html',
+  styleUrls: ['./register-teacher.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class RegisterTeacherPage {
   teacher: any = {};
@@ -51,7 +51,6 @@ export class RegisterTeacherPage {
       this.school_id = navigation.extras.state['id'];
     }
   }
-
 
   // 🟢 3. جعل الدالة async للتعامل مع الذاكرة بشكل آمن
   async ionViewWillEnter() {

@@ -1,23 +1,27 @@
 ﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar class="relative text-center">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
-      <ion-back-button defaultHref="/tabs" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+      <ion-back-button
+        defaultHref="/tabs"
+        text=""
+        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+      ></ion-back-button>
     </ion-buttons>
-    
+
     <ion-title class="font-extrabold text-slate-800 text-base w-full">{{'classlist.pagetitle' | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="lineone-bg" mode="md" dir="rtl">
-  
   <ion-refresher slot="fixed" pullFactor="0.5" pullMin="100" pullMax="200" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
   <div class="px-4 py-6 pb-12 max-w-3xl mx-auto space-y-3">
-    
-    <div class="space-y-3" *ngIf="isLoading">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 animate-pulse" *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex">
+    @if (isLoading) {
+    <div class="space-y-3">
+      @for (dummy of [1,2,3,4,5]; track trackByIndex($index)) {
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 animate-pulse">
         <div class="w-12 h-12 bg-slate-200 rounded-xl"></div>
         <div class="flex-1 space-y-3">
           <div class="h-4 bg-slate-200 rounded-md w-1/3"></div>
@@ -25,39 +29,40 @@
         </div>
         <div class="w-6 h-6 bg-slate-200 rounded-full"></div>
       </div>
+      }
     </div>
-
-    <ng-container *ngIf="!isLoading && classes?.length > 0; else noClasses">
-      <div *ngFor="let course of classes; let i = index; trackBy: trackByIndex">
-        <ion-card class="lineone-card m-0 cursor-pointer shadow-sm shadow-slate-200/50" (click)="openClassStudents(course)">
-          <div class="card-content-flex flex items-center p-4">
-            
-            <div class="icon-box shrink-0" [style.color]="course.backgroundColor || '#4f46e5'">
-              <div class="icon-bg" [style.background-color]="course.backgroundColor || '#4f46e5'"></div>
-              <ion-icon name="library-outline"></ion-icon>
-            </div>
-
-            <div class="text-content flex-1 pr-4">
-              <h3 class="card-title font-bold text-slate-800 text-base m-0">{{course.name}}</h3>
-              <p class="card-subtitle text-[11px] sm:text-xs font-bold text-slate-500 mt-1 mb-0" *ngIf="course.desc">{{course.desc}}</p>
-            </div>
-
-            <ion-icon name="chevron-back-outline" class="forward-icon text-slate-400 text-xl"></ion-icon>
-            
+    } @if (!isLoading && classes?.length > 0) { @for (course of classes; track trackByIndex(i); let i = $index)
+    {
+    <div>
+      <ion-card
+        class="lineone-card m-0 cursor-pointer shadow-sm shadow-slate-200/50"
+        (click)="openClassStudents(course)"
+      >
+        <div class="card-content-flex flex items-center p-4">
+          <div class="icon-box shrink-0" [style.color]="course.backgroundColor || '#4f46e5'">
+            <div class="icon-bg" [style.background-color]="course.backgroundColor || '#4f46e5'"></div>
+            <ion-icon name="library-outline"></ion-icon>
           </div>
-        </ion-card>
-      </div>
-    </ng-container>
-
-    <ng-template #noClasses>
-      <div class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white mt-4 shadow-sm" *ngIf="!isLoading">
-        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-          <ion-icon name="folder-open-outline" class="text-4xl text-slate-300"></ion-icon>
+          <div class="text-content flex-1 pr-4">
+            <h3 class="card-title font-bold text-slate-800 text-base m-0">{{course.name}}</h3>
+            @if (course.desc) {
+            <p class="card-subtitle text-[11px] sm:text-xs font-bold text-slate-500 mt-1 mb-0">{{course.desc}}</p>
+            }
+          </div>
+          <ion-icon name="chevron-back-outline" class="forward-icon text-slate-400 text-xl"></ion-icon>
         </div>
-        <h3 class="text-slate-700 font-bold text-lg mb-1">لا توجد فصول</h3>
-        <p class="text-slate-400 text-sm font-medium">{{noDataFound || 'لم يتم العثور على فصول مسجلة حتى الآن.'}}</p>
+      </ion-card>
+    </div>
+    } } @else { @if (!isLoading) {
+    <div
+      class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white mt-4 shadow-sm"
+    >
+      <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+        <ion-icon name="folder-open-outline" class="text-4xl text-slate-300"></ion-icon>
       </div>
-    </ng-template>
-
+      <h3 class="text-slate-700 font-bold text-lg mb-1">لا توجد فصول</h3>
+      <p class="text-slate-400 text-sm font-medium">{{noDataFound || 'لم يتم العثور على فصول مسجلة حتى الآن.'}}</p>
+    </div>
+    } }
   </div>
 </ion-content>

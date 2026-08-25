@@ -1,7 +1,11 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc;" class="relative text-center border-b border-slate-100">
+  <ion-toolbar style="--background: #f8fafc" class="relative text-center border-b border-slate-100">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
-      <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+      <ion-back-button
+        defaultHref="/"
+        text=""
+        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+      ></ion-back-button>
     </ion-buttons>
     <ion-title class="font-extrabold text-slate-800 text-base w-full">{{'manage_report.title' | translate}}</ion-title>
   </ion-toolbar>
@@ -9,13 +13,24 @@
 
 <ion-content class="lineone-bg" mode="md" dir="rtl">
   <div class="px-4 py-6 max-w-2xl mx-auto space-y-6 pb-16">
-    
-    <div class="bg-white rounded-[2rem] p-4 sm:p-5 shadow-sm border border-slate-100 flex items-center gap-4 animate-fade-in-up">
+    <div
+      class="bg-white rounded-[2rem] p-4 sm:p-5 shadow-sm border border-slate-100 flex items-center gap-4 animate-fade-in-up"
+    >
       <div class="relative shrink-0">
-        <img loading="lazy" [src]="navData?.pic || navData?.student_pic || 'assets/imgs/default_avatar.png'" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-slate-100 shadow-sm">
+        <img
+          loading="lazy"
+          [src]="navData?.pic || navData?.student_pic || 'assets/imgs/default_avatar.png'"
+          onerror="
+            this.onerror = null;
+            this.src = 'assets/imgs/default_avatar.png';
+          "
+          class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-slate-100 shadow-sm"
+        />
       </div>
       <div class="flex-1">
-        <h4 class="font-black text-slate-800 text-sm sm:text-base m-0">{{ navData?.student_name || navData?.name || navData?.studentName || 'بيانات الطالب غير متوفرة' }}</h4>
+        <h4 class="font-black text-slate-800 text-sm sm:text-base m-0">
+          {{ navData?.student_name || navData?.name || navData?.studentName || 'بيانات الطالب غير متوفرة' }}
+        </h4>
         <p class="text-xs font-bold text-slate-500 m-0 mt-1.5 flex items-center gap-1.5">
           <ion-icon name="business" class="text-indigo-400 text-sm"></ion-icon>
           {{ navData?.course_name || navData?.className || 'بيانات الصف غير متوفرة' }}
@@ -23,417 +38,718 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-[2rem] p-5 sm:p-6 shadow-sm shadow-slate-200/50 border border-slate-100 animate-fade-in-up" style="animation-delay: 0.1s;">
-      
+    <div
+      class="bg-white rounded-[2rem] p-5 sm:p-6 shadow-sm shadow-slate-200/50 border border-slate-100 animate-fade-in-up"
+      style="animation-delay: 0.1s"
+    >
       <div class="flex items-center gap-3 mb-5">
-        <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100">
+        <div
+          class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 border border-indigo-100"
+        >
           <ion-icon name="document-text" class="text-xl"></ion-icon>
         </div>
         <h3 class="text-base font-black text-slate-800 m-0">إضافة تقرير</h3>
       </div>
 
       <div class="space-y-4">
-        
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.report_type' |translate}}</label>
-          <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            
-            <ion-select mode="md" interface="action-sheet" cancelText="إلغاء" [(ngModel)]="formData.reportType" placeholder="{{'manage_report.report_type' |translate}}" (ionChange)="$any($event.target).offsetWidth > 0 ? changeReportType($event) : null" class="w-full text-sm font-bold text-slate-800 py-3 md:hidden">
+          <label class="block text-xs font-bold text-slate-600 mb-1.5"
+            >{{'manage_report.report_type' |translate}}</label
+          >
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-select
+              mode="md"
+              interface="action-sheet"
+              cancelText="إلغاء"
+              [(ngModel)]="formData.reportType"
+              placeholder="{{'manage_report.report_type' |translate}}"
+              (ionChange)="$any($event.target).offsetWidth > 0 ? changeReportType($event) : null"
+              class="w-full text-sm font-bold text-slate-800 py-3 md:hidden"
+            >
               <!-- 🟢 الدرع الثاني: إضافة ? لمعامل الأمان -->
-              <ion-select-option class="ion-text-center" value="medical" *appHasRole="[UserType.Medical, UserType.Admin]">{{'manage_report.medical_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" value="suspend" *appHasRole="[UserType.Moderator, UserType.Admin]">{{'manage_report.suspension_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" value="exit" *appHasRole="[UserType.Medical, UserType.Admin]">{{'manage_report.exit_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug !== 'premium'" value="callofstudents" *appHasRole="[UserType.Moderator, UserType.Viewer, UserType.Admin]">{{'manage_report.call_off_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug !== 'premium'" value="studentspledges" *appHasRole="[UserType.Moderator, UserType.Viewer, UserType.Admin]">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
+              <ion-select-option
+                class="ion-text-center"
+                value="medical"
+                *appHasRole="[UserType.Medical, UserType.Admin]"
+                >{{'manage_report.medical_report' | translate}}</ion-select-option
+              >
+              <ion-select-option
+                class="ion-text-center"
+                value="suspend"
+                *appHasRole="[UserType.Moderator, UserType.Admin]"
+                >{{'manage_report.suspension_report' | translate}}</ion-select-option
+              >
+              <ion-select-option class="ion-text-center" value="exit" *appHasRole="[UserType.Medical, UserType.Admin]"
+                >{{'manage_report.exit_report' | translate}}</ion-select-option
+              >
+              <ion-select-option
+                class="ion-text-center"
+                [disabled]="AvailablePlan?.plan?.slug !== 'premium'"
+                value="callofstudents"
+                *appHasRole="[UserType.Moderator, UserType.Viewer, UserType.Admin]"
+                >{{'manage_report.call_off_report' | translate}}</ion-select-option
+              >
+              <ion-select-option
+                class="ion-text-center"
+                [disabled]="AvailablePlan?.plan?.slug !== 'premium'"
+                value="studentspledges"
+                *appHasRole="[UserType.Moderator, UserType.Viewer, UserType.Admin]"
+                >{{'manage_report.student_pledges_report' | translate}}</ion-select-option
+              >
             </ion-select>
 
-            <ion-select mode="md" interface="popover" [(ngModel)]="formData.reportType" placeholder="{{'manage_report.report_type' |translate}}" (ionChange)="$any($event.target).offsetWidth > 0 ? changeReportType($event) : null" class="w-full text-sm font-bold text-slate-800 py-3 hidden md:block">
-              <ion-select-option class="ion-text-center" value="medical" *appHasRole="[UserType.Medical, UserType.Admin]">{{'manage_report.medical_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" value="suspend" *appHasRole="[UserType.Moderator, UserType.Admin]">{{'manage_report.suspension_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" value="exit" *appHasRole="[UserType.Medical, UserType.Admin]">{{'manage_report.exit_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug !== 'premium'" value="callofstudents" *appHasRole="[UserType.Moderator, UserType.Viewer, UserType.Admin]">{{'manage_report.call_off_report' | translate}}</ion-select-option>
-              <ion-select-option class="ion-text-center" [disabled]="AvailablePlan?.plan?.slug !== 'premium'" value="studentspledges" *appHasRole="[UserType.Moderator, UserType.Viewer, UserType.Admin]">{{'manage_report.student_pledges_report' | translate}}</ion-select-option>
+            <ion-select
+              mode="md"
+              interface="popover"
+              [(ngModel)]="formData.reportType"
+              placeholder="{{'manage_report.report_type' |translate}}"
+              (ionChange)="$any($event.target).offsetWidth > 0 ? changeReportType($event) : null"
+              class="w-full text-sm font-bold text-slate-800 py-3 hidden md:block"
+            >
+              <ion-select-option
+                class="ion-text-center"
+                value="medical"
+                *appHasRole="[UserType.Medical, UserType.Admin]"
+                >{{'manage_report.medical_report' | translate}}</ion-select-option
+              >
+              <ion-select-option
+                class="ion-text-center"
+                value="suspend"
+                *appHasRole="[UserType.Moderator, UserType.Admin]"
+                >{{'manage_report.suspension_report' | translate}}</ion-select-option
+              >
+              <ion-select-option class="ion-text-center" value="exit" *appHasRole="[UserType.Medical, UserType.Admin]"
+                >{{'manage_report.exit_report' | translate}}</ion-select-option
+              >
+              <ion-select-option
+                class="ion-text-center"
+                [disabled]="AvailablePlan?.plan?.slug !== 'premium'"
+                value="callofstudents"
+                *appHasRole="[UserType.Moderator, UserType.Viewer, UserType.Admin]"
+                >{{'manage_report.call_off_report' | translate}}</ion-select-option
+              >
+              <ion-select-option
+                class="ion-text-center"
+                [disabled]="AvailablePlan?.plan?.slug !== 'premium'"
+                value="studentspledges"
+                *appHasRole="[UserType.Moderator, UserType.Viewer, UserType.Admin]"
+                >{{'manage_report.student_pledges_report' | translate}}</ion-select-option
+              >
             </ion-select>
-
           </div>
         </div>
 
-        <div *ngIf="formData.reportType" class="space-y-4 animate-fade-in-up">
-          
-          <ng-container *ngIf="formData.reportType !=='exit' && formData.reportType !=='callofstudents' && formData.reportType !== 'studentspledges'">
-            
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.select_date' | translate}}</label>
-              
-              <div id="open-report-date-1" class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm">
-                <span class="text-sm font-bold" [ngClass]="formData.selectedDate ? 'text-slate-800' : 'text-slate-400'">
-                  {{ formData.selectedDate ? (formData.selectedDate | date: 'yyyy-MM-dd') : ('manage_report.select_date' | translate) }}
-                </span>
-                <ion-icon name="calendar-clear-outline" class="text-indigo-500 text-lg"></ion-icon>
-              </div>
-
-              <ion-modal trigger="open-report-date-1" [keepContentsMounted]="true" [initialBreakpoint]="0.6" [breakpoints]="[0, 0.6, 0.85]" handleBehavior="cycle" class="lineone-modal">
-                <ng-template>
-                  <ion-header class="ion-no-border bg-white pt-3">
-                    <div class="flex justify-center items-center px-4 pb-2 border-b border-slate-100">
-                      <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
-                        <ion-icon name="calendar" class="text-indigo-600"></ion-icon>
-                        {{'manage_report.select_date' | translate}}
-                      </h3>
-                    </div>
-                  </ion-header>
-                  <ion-content class="bg-slate-50">
-                    <div class="flex justify-center p-4">
-                      <ion-datetime mode="ios" presentation="date" [(ngModel)]="formData.selectedDate" [ngModelOptions]="{standalone: true}" max="2030-10-31" [showDefaultButtons]="true" doneText="تأكيد" cancelText="إلغاء" class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm" color="primary"></ion-datetime>
-                    </div>
-                  </ion-content>
-                </ng-template>
-              </ion-modal>
+        @if (formData.reportType) {
+        <div class="space-y-4 animate-fade-in-up">
+          @if (formData.reportType !=='exit' && formData.reportType !=='callofstudents' && formData.reportType !==
+          'studentspledges') {
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5"
+              >{{'manage_report.select_date' | translate}}</label
+            >
+            <div
+              id="open-report-date-1"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+            >
+              <span class="text-sm font-bold" [ngClass]="formData.selectedDate ? 'text-slate-800' : 'text-slate-400'">
+                {{ formData.selectedDate ? (formData.selectedDate | date: 'yyyy-MM-dd') : ('manage_report.select_date' |
+                translate) }}
+              </span>
+              <ion-icon name="calendar-clear-outline" class="text-indigo-500 text-lg"></ion-icon>
             </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.days'|translate}}</label>
-              <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm">
-                <ion-input type="number" [(ngModel)]="formData.selectedDays" class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
-              </div>
+            <ion-modal
+              trigger="open-report-date-1"
+              [keepContentsMounted]="true"
+              [initialBreakpoint]="0.6"
+              [breakpoints]="[0, 0.6, 0.85]"
+              handleBehavior="cycle"
+              class="lineone-modal"
+            >
+              <ng-template>
+                <ion-header class="ion-no-border bg-white pt-3">
+                  <div class="flex justify-center items-center px-4 pb-2 border-b border-slate-100">
+                    <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
+                      <ion-icon name="calendar" class="text-indigo-600"></ion-icon>
+                      {{'manage_report.select_date' | translate}}
+                    </h3>
+                  </div>
+                </ion-header>
+                <ion-content class="bg-slate-50">
+                  <div class="flex justify-center p-4">
+                    <ion-datetime
+                      mode="ios"
+                      presentation="date"
+                      [(ngModel)]="formData.selectedDate"
+                      [ngModelOptions]="{standalone: true}"
+                      max="2030-10-31"
+                      [showDefaultButtons]="true"
+                      doneText="تأكيد"
+                      cancelText="إلغاء"
+                      class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm"
+                      color="primary"
+                    ></ion-datetime>
+                  </div>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.days'|translate}}</label>
+            <div
+              class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
+            >
+              <ion-input
+                type="number"
+                [(ngModel)]="formData.selectedDays"
+                class="text-sm font-bold text-slate-800 w-full m-0"
+              ></ion-input>
             </div>
-          </ng-container>
-
-          <ng-container *ngIf="formData.reportType ==='exit' && !isExitToday">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.note'|translate}}</label>
-              <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm">
-                <ion-input type="text" [(ngModel)]="formData.note" class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
-              </div>
+          </div>
+          } @if (formData.reportType ==='exit' && !isExitToday) {
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.note'|translate}}</label>
+            <div
+              class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
+            >
+              <ion-input
+                type="text"
+                [(ngModel)]="formData.note"
+                class="text-sm font-bold text-slate-800 w-full m-0"
+              ></ion-input>
             </div>
-          </ng-container>
-
-          <ng-container *ngIf="formData.reportType ==='suspend'">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.note'|translate}}</label>
-              <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm">
-                <ion-input type="text" [(ngModel)]="formData.note" value="suspend" class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
-              </div>
+          </div>
+          } @if (formData.reportType ==='suspend') {
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.note'|translate}}</label>
+            <div
+              class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
+            >
+              <ion-input
+                type="text"
+                [(ngModel)]="formData.note"
+                value="suspend"
+                class="text-sm font-bold text-slate-800 w-full m-0"
+              ></ion-input>
             </div>
-          </ng-container>
-
-          <ng-container *ngIf="formData.reportType === 'callofstudents'">
-            
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.select_date' | translate}}</label>
-              
-              <div id="open-report-date-2" class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm">
-                <span class="text-sm font-bold" [ngClass]="formData.selectedDate ? 'text-slate-800' : 'text-slate-400'">
-                  {{ formData.selectedDate ? (formData.selectedDate | date: 'yyyy-MM-dd') : ('manage_report.select_date' | translate) }}
-                </span>
-                <ion-icon name="calendar-clear-outline" class="text-indigo-500 text-lg"></ion-icon>
-              </div>
-
-              <ion-modal trigger="open-report-date-2" [keepContentsMounted]="true" [initialBreakpoint]="0.6" [breakpoints]="[0, 0.6, 0.85]" handleBehavior="cycle" class="lineone-modal">
-                <ng-template>
-                  <ion-header class="ion-no-border bg-white pt-3">
-                    <div class="flex justify-center items-center px-4 pb-2 border-b border-slate-100">
-                      <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
-                        <ion-icon name="calendar" class="text-indigo-600"></ion-icon>
-                        {{'manage_report.select_date' | translate}}
-                      </h3>
-                    </div>
-                  </ion-header>
-                  <ion-content class="bg-slate-50">
-                    <div class="flex justify-center p-4">
-                      <ion-datetime mode="ios" presentation="date" [(ngModel)]="formData.selectedDate" [ngModelOptions]="{standalone: true}" max="2030-10-31" [showDefaultButtons]="true" doneText="تأكيد" cancelText="إلغاء" class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm" color="primary"></ion-datetime>
-                    </div>
-                  </ion-content>
-                </ng-template>
-              </ion-modal>
+          </div>
+          } @if (formData.reportType === 'callofstudents') {
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5"
+              >{{'manage_report.select_date' | translate}}</label
+            >
+            <div
+              id="open-report-date-2"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+            >
+              <span class="text-sm font-bold" [ngClass]="formData.selectedDate ? 'text-slate-800' : 'text-slate-400'">
+                {{ formData.selectedDate ? (formData.selectedDate | date: 'yyyy-MM-dd') : ('manage_report.select_date' |
+                translate) }}
+              </span>
+              <ion-icon name="calendar-clear-outline" class="text-indigo-500 text-lg"></ion-icon>
             </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.select_time' | translate}}</label>
-              
-              <div id="open-report-time" class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm">
-                <span class="text-sm font-bold" [ngClass]="formData.time ? 'text-slate-800' : 'text-slate-400'">
-                  {{ formData.time ? (formData.time | date: 'shortTime') : ('manage_report.select_time' | translate) }}
-                </span>
-                <ion-icon name="time-outline" class="text-indigo-500 text-lg"></ion-icon>
-              </div>
-
-              <ion-modal trigger="open-report-time" [keepContentsMounted]="true" [initialBreakpoint]="0.5" [breakpoints]="[0, 0.5, 0.75]" handleBehavior="cycle" class="lineone-modal">
-                <ng-template>
-                  <ion-header class="ion-no-border bg-white pt-3">
-                    <div class="flex justify-center items-center px-4 pb-2 border-b border-slate-100">
-                      <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
-                        <ion-icon name="time" class="text-indigo-600"></ion-icon>
-                        {{'manage_report.select_time' | translate}}
-                      </h3>
-                    </div>
-                  </ion-header>
-                  <ion-content class="bg-slate-50">
-                    <div class="flex justify-center p-4">
-                      <ion-datetime mode="ios" presentation="time" [(ngModel)]="formData.time" [ngModelOptions]="{standalone: true}" [showDefaultButtons]="true" doneText="تأكيد" cancelText="إلغاء" class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm" color="primary"></ion-datetime>
-                    </div>
-                  </ion-content>
-                </ng-template>
-              </ion-modal>
+            <ion-modal
+              trigger="open-report-date-2"
+              [keepContentsMounted]="true"
+              [initialBreakpoint]="0.6"
+              [breakpoints]="[0, 0.6, 0.85]"
+              handleBehavior="cycle"
+              class="lineone-modal"
+            >
+              <ng-template>
+                <ion-header class="ion-no-border bg-white pt-3">
+                  <div class="flex justify-center items-center px-4 pb-2 border-b border-slate-100">
+                    <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
+                      <ion-icon name="calendar" class="text-indigo-600"></ion-icon>
+                      {{'manage_report.select_date' | translate}}
+                    </h3>
+                  </div>
+                </ion-header>
+                <ion-content class="bg-slate-50">
+                  <div class="flex justify-center p-4">
+                    <ion-datetime
+                      mode="ios"
+                      presentation="date"
+                      [(ngModel)]="formData.selectedDate"
+                      [ngModelOptions]="{standalone: true}"
+                      max="2030-10-31"
+                      [showDefaultButtons]="true"
+                      doneText="تأكيد"
+                      cancelText="إلغاء"
+                      class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm"
+                      color="primary"
+                    ></ion-datetime>
+                  </div>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5"
+              >{{'manage_report.select_time' | translate}}</label
+            >
+            <div
+              id="open-report-time"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+            >
+              <span class="text-sm font-bold" [ngClass]="formData.time ? 'text-slate-800' : 'text-slate-400'">
+                {{ formData.time ? (formData.time | date: 'shortTime') : ('manage_report.select_time' | translate) }}
+              </span>
+              <ion-icon name="time-outline" class="text-indigo-500 text-lg"></ion-icon>
             </div>
-
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.reason'|translate}}</label>
-              <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm">
-                <ion-input type="text" [(ngModel)]="formData.reason" class="text-sm font-bold text-slate-800 w-full m-0"></ion-input>
-              </div>
+            <ion-modal
+              trigger="open-report-time"
+              [keepContentsMounted]="true"
+              [initialBreakpoint]="0.5"
+              [breakpoints]="[0, 0.5, 0.75]"
+              handleBehavior="cycle"
+              class="lineone-modal"
+            >
+              <ng-template>
+                <ion-header class="ion-no-border bg-white pt-3">
+                  <div class="flex justify-center items-center px-4 pb-2 border-b border-slate-100">
+                    <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
+                      <ion-icon name="time" class="text-indigo-600"></ion-icon>
+                      {{'manage_report.select_time' | translate}}
+                    </h3>
+                  </div>
+                </ion-header>
+                <ion-content class="bg-slate-50">
+                  <div class="flex justify-center p-4">
+                    <ion-datetime
+                      mode="ios"
+                      presentation="time"
+                      [(ngModel)]="formData.time"
+                      [ngModelOptions]="{standalone: true}"
+                      [showDefaultButtons]="true"
+                      doneText="تأكيد"
+                      cancelText="إلغاء"
+                      class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm"
+                      color="primary"
+                    ></ion-datetime>
+                  </div>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.reason'|translate}}</label>
+            <div
+              class="bg-slate-50 border border-slate-200 rounded-xl px-3 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
+            >
+              <ion-input
+                type="text"
+                [(ngModel)]="formData.reason"
+                class="text-sm font-bold text-slate-800 w-full m-0"
+              ></ion-input>
             </div>
-          </ng-container>
-
-          <ng-container *ngIf="formData.reportType === 'studentspledges'">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.select_degree' |translate}}</label>
-              <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-                <ion-select mode="md" interface="action-sheet" cancelText="إلغاء" [(ngModel)]="formData.degree" placeholder="{{'manage_report.select_degree' |translate}}" (ionChange)="$any($event.target).offsetWidth > 0 ? OnselectDegree($event) : null" class="w-full text-sm font-bold text-slate-800 py-3 md:hidden">
-                  <ion-select-option *ngFor="let item of AllDegrees; trackBy: trackById" [value]="item.id">{{ item.name }}</ion-select-option>
-                </ion-select>
-                <ion-select mode="md" interface="popover" [(ngModel)]="formData.degree" placeholder="{{'manage_report.select_degree' |translate}}" (ionChange)="$any($event.target).offsetWidth > 0 ? OnselectDegree($event) : null" class="w-full text-sm font-bold text-slate-800 py-3 hidden md:block">
-                  <ion-select-option *ngFor="let item of AllDegrees; trackBy: trackById" [value]="item.id">{{ item.name }}</ion-select-option>
-                </ion-select>
-              </div>
+          </div>
+          } @if (formData.reportType === 'studentspledges') {
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1.5"
+              >{{'manage_report.select_degree' |translate}}</label
+            >
+            <div
+              class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+            >
+              <ion-select
+                mode="md"
+                interface="action-sheet"
+                cancelText="إلغاء"
+                [(ngModel)]="formData.degree"
+                placeholder="{{'manage_report.select_degree' |translate}}"
+                (ionChange)="$any($event.target).offsetWidth > 0 ? OnselectDegree($event) : null"
+                class="w-full text-sm font-bold text-slate-800 py-3 md:hidden"
+              >
+                @for (item of AllDegrees; track trackById($index, item)) {
+                <ion-select-option [value]="item.id">{{ item.name }}</ion-select-option>
+                }
+              </ion-select>
+              <ion-select
+                mode="md"
+                interface="popover"
+                [(ngModel)]="formData.degree"
+                placeholder="{{'manage_report.select_degree' |translate}}"
+                (ionChange)="$any($event.target).offsetWidth > 0 ? OnselectDegree($event) : null"
+                class="w-full text-sm font-bold text-slate-800 py-3 hidden md:block"
+              >
+                @for (item of AllDegrees; track trackById($index, item)) {
+                <ion-select-option [value]="item.id">{{ item.name }}</ion-select-option>
+                }
+              </ion-select>
             </div>
-            
-            <div *ngIf="AllDegreesViolations.length > 0" class="mt-4 animate-fade-in-up">
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.select_violation' |translate}}</label>
-              
-              <div (click)="isViolationModalOpen = true" class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm">
-                <span class="text-xs font-bold truncate pr-2" [ngClass]="pledgesViolation ? 'text-slate-800' : 'text-slate-400'">
-                  {{ pledgesViolation ? pledgesViolation.description : ('manage_report.select_violation' | translate) }}
-                </span>
-                <ion-icon name="chevron-down-outline" class="text-slate-400 text-lg shrink-0"></ion-icon>
-              </div>
-
-              <ion-modal [isOpen]="isViolationModalOpen" (didDismiss)="isViolationModalOpen = false" [initialBreakpoint]="0.75" [breakpoints]="[0, 0.5, 0.75, 1]" handleBehavior="cycle" class="lineone-modal">
-                <ng-template>
-                  <ion-header class="ion-no-border bg-white pt-3 border-b border-slate-100">
-                    <div class="flex justify-between items-center px-4 pb-2">
-                      <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
-                        <ion-icon name="warning" class="text-rose-500"></ion-icon>
-                        {{'manage_report.select_violation' | translate}}
-                      </h3>
-                      <button (click)="isViolationModalOpen = false" class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-600 active:scale-95 transition-all">
-                        <ion-icon name="close"></ion-icon>
-                      </button>
-                    </div>
-                    <div class="px-4 pb-3 mt-2">
-                      <div class="bg-slate-50 border border-slate-200 rounded-xl flex items-center px-3 h-10 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-                        <ion-icon name="search" class="text-slate-400 text-lg ml-2"></ion-icon>
-                        <input type="text" placeholder="بحث عن مخالفة..." (input)="searchViolations($event)" class="bg-transparent border-none outline-none text-sm font-bold text-slate-800 w-full placeholder:text-slate-400">
-                      </div>
-                    </div>
-                  </ion-header>
-                  <ion-content class="bg-slate-50">
-                    <div class="p-4 space-y-2 pb-8">
-                      <div *ngFor="let item of filteredViolations; trackBy: trackById" (click)="selectViolation(item)" class="p-3.5 bg-white border rounded-xl flex items-center justify-between active:scale-95 transition-all cursor-pointer shadow-sm hover:border-indigo-300" [ngClass]="pledgesViolation?.id === item.id ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-200'">
-                        <span class="text-xs font-bold text-slate-700 leading-relaxed">{{item.description}}</span>
-                        <ion-icon *ngIf="pledgesViolation?.id === item.id" name="checkmark-circle" class="text-indigo-600 text-xl shrink-0"></ion-icon>
-                      </div>
-                      <div *ngIf="filteredViolations.length === 0" class="text-center py-8">
-                        <ion-icon name="search-outline" class="text-4xl text-slate-300 mb-2"></ion-icon>
-                        <p class="text-sm font-bold text-slate-500">لا توجد نتائج مطابقة للبحث</p>
-                      </div>
-                    </div>
-                  </ion-content>
-                </ng-template>
-              </ion-modal>
+          </div>
+          @if (AllDegreesViolations.length > 0) {
+          <div class="mt-4 animate-fade-in-up">
+            <label class="block text-xs font-bold text-slate-600 mb-1.5"
+              >{{'manage_report.select_violation' |translate}}</label
+            >
+            <div
+              (click)="isViolationModalOpen = true"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+            >
+              <span
+                class="text-xs font-bold truncate pr-2"
+                [ngClass]="pledgesViolation ? 'text-slate-800' : 'text-slate-400'"
+              >
+                {{ pledgesViolation ? pledgesViolation.description : ('manage_report.select_violation' | translate) }}
+              </span>
+              <ion-icon name="chevron-down-outline" class="text-slate-400 text-lg shrink-0"></ion-icon>
             </div>
-
-
-            <div *ngIf="AllDegreeActions.length > 0" class="mt-4 animate-fade-in-up" style="animation-delay: 0.1s;">
-              <label class="block text-xs font-bold text-slate-600 mb-1.5">{{'manage_report.select_action' |translate}}</label>
-              
-              <div (click)="isActionModalOpen = true" class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm">
-                <span class="text-xs font-bold truncate pr-2" [ngClass]="pledgesAction ? 'text-slate-800' : 'text-slate-400'">
-                  {{ pledgesAction ? pledgesAction.description : ('manage_report.select_action' | translate) }}
-                </span>
-                <ion-icon name="chevron-down-outline" class="text-slate-400 text-lg shrink-0"></ion-icon>
-              </div>
-
-              <ion-modal [isOpen]="isActionModalOpen" (didDismiss)="isActionModalOpen = false" [initialBreakpoint]="0.75" [breakpoints]="[0, 0.5, 0.75, 1]" handleBehavior="cycle" class="lineone-modal">
-                <ng-template>
-                  <ion-header class="ion-no-border bg-white pt-3 border-b border-slate-100">
-                    <div class="flex justify-between items-center px-4 pb-2">
-                      <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
-                        <ion-icon name="hammer" class="text-indigo-500"></ion-icon>
-                        {{'manage_report.select_action' | translate}}
-                      </h3>
-                      <button (click)="isActionModalOpen = false" class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-600 active:scale-95 transition-all">
-                        <ion-icon name="close"></ion-icon>
-                      </button>
+            <ion-modal
+              [isOpen]="isViolationModalOpen"
+              (didDismiss)="isViolationModalOpen = false"
+              [initialBreakpoint]="0.75"
+              [breakpoints]="[0, 0.5, 0.75, 1]"
+              handleBehavior="cycle"
+              class="lineone-modal"
+            >
+              <ng-template>
+                <ion-header class="ion-no-border bg-white pt-3 border-b border-slate-100">
+                  <div class="flex justify-between items-center px-4 pb-2">
+                    <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
+                      <ion-icon name="warning" class="text-rose-500"></ion-icon>
+                      {{'manage_report.select_violation' | translate}}
+                    </h3>
+                    <button
+                      (click)="isViolationModalOpen = false"
+                      class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-600 active:scale-95 transition-all"
+                    >
+                      <ion-icon name="close"></ion-icon>
+                    </button>
+                  </div>
+                  <div class="px-4 pb-3 mt-2">
+                    <div
+                      class="bg-slate-50 border border-slate-200 rounded-xl flex items-center px-3 h-10 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+                    >
+                      <ion-icon name="search" class="text-slate-400 text-lg ml-2"></ion-icon>
+                      <input
+                        type="text"
+                        placeholder="بحث عن مخالفة..."
+                        (input)="searchViolations($event)"
+                        class="bg-transparent border-none outline-none text-sm font-bold text-slate-800 w-full placeholder:text-slate-400"
+                      />
                     </div>
-                    <div class="px-4 pb-3 mt-2">
-                      <div class="bg-slate-50 border border-slate-200 rounded-xl flex items-center px-3 h-10 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-                        <ion-icon name="search" class="text-slate-400 text-lg ml-2"></ion-icon>
-                        <input type="text" placeholder="بحث عن إجراء..." (input)="searchActions($event)" class="bg-transparent border-none outline-none text-sm font-bold text-slate-800 w-full placeholder:text-slate-400">
-                      </div>
+                  </div>
+                </ion-header>
+                <ion-content class="bg-slate-50">
+                  <div class="p-4 space-y-2 pb-8">
+                    @for (item of filteredViolations; track trackById($index, item)) {
+                    <div
+                      (click)="selectViolation(item)"
+                      class="p-3.5 bg-white border rounded-xl flex items-center justify-between active:scale-95 transition-all cursor-pointer shadow-sm hover:border-indigo-300"
+                      [ngClass]="pledgesViolation?.id === item.id ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-200'"
+                    >
+                      <span class="text-xs font-bold text-slate-700 leading-relaxed">{{item.description}}</span>
+                      @if (pledgesViolation?.id === item.id) {
+                      <ion-icon name="checkmark-circle" class="text-indigo-600 text-xl shrink-0"></ion-icon>
+                      }
                     </div>
-                  </ion-header>
-                  <ion-content class="bg-slate-50">
-                    <div class="p-4 space-y-2 pb-8">
-                      <div *ngFor="let item of filteredActions; trackBy: trackById" (click)="selectAction(item)" class="p-3.5 bg-white border rounded-xl flex items-center justify-between active:scale-95 transition-all cursor-pointer shadow-sm hover:border-indigo-300" [ngClass]="pledgesAction?.id === item.id ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-200'">
-                        <span class="text-xs font-bold text-slate-700 leading-relaxed">{{item.description}}</span>
-                        <ion-icon *ngIf="pledgesAction?.id === item.id" name="checkmark-circle" class="text-indigo-600 text-xl shrink-0"></ion-icon>
-                      </div>
-                      <div *ngIf="filteredActions.length === 0" class="text-center py-8">
-                        <ion-icon name="search-outline" class="text-4xl text-slate-300 mb-2"></ion-icon>
-                        <p class="text-sm font-bold text-slate-500">لا توجد نتائج مطابقة للبحث</p>
-                      </div>
+                    } @if (filteredViolations.length === 0) {
+                    <div class="text-center py-8">
+                      <ion-icon name="search-outline" class="text-4xl text-slate-300 mb-2"></ion-icon>
+                      <p class="text-sm font-bold text-slate-500">لا توجد نتائج مطابقة للبحث</p>
                     </div>
-                  </ion-content>
-                </ng-template>
-              </ion-modal>
+                    }
+                  </div>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </div>
+          } @if (AllDegreeActions.length > 0) {
+          <div class="mt-4 animate-fade-in-up" style="animation-delay: 0.1s">
+            <label class="block text-xs font-bold text-slate-600 mb-1.5"
+              >{{'manage_report.select_action' |translate}}</label
+            >
+            <div
+              (click)="isActionModalOpen = true"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+            >
+              <span
+                class="text-xs font-bold truncate pr-2"
+                [ngClass]="pledgesAction ? 'text-slate-800' : 'text-slate-400'"
+              >
+                {{ pledgesAction ? pledgesAction.description : ('manage_report.select_action' | translate) }}
+              </span>
+              <ion-icon name="chevron-down-outline" class="text-slate-400 text-lg shrink-0"></ion-icon>
             </div>
-          </ng-container>
-
+            <ion-modal
+              [isOpen]="isActionModalOpen"
+              (didDismiss)="isActionModalOpen = false"
+              [initialBreakpoint]="0.75"
+              [breakpoints]="[0, 0.5, 0.75, 1]"
+              handleBehavior="cycle"
+              class="lineone-modal"
+            >
+              <ng-template>
+                <ion-header class="ion-no-border bg-white pt-3 border-b border-slate-100">
+                  <div class="flex justify-between items-center px-4 pb-2">
+                    <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
+                      <ion-icon name="hammer" class="text-indigo-500"></ion-icon>
+                      {{'manage_report.select_action' | translate}}
+                    </h3>
+                    <button
+                      (click)="isActionModalOpen = false"
+                      class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-600 active:scale-95 transition-all"
+                    >
+                      <ion-icon name="close"></ion-icon>
+                    </button>
+                  </div>
+                  <div class="px-4 pb-3 mt-2">
+                    <div
+                      class="bg-slate-50 border border-slate-200 rounded-xl flex items-center px-3 h-10 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+                    >
+                      <ion-icon name="search" class="text-slate-400 text-lg ml-2"></ion-icon>
+                      <input
+                        type="text"
+                        placeholder="بحث عن إجراء..."
+                        (input)="searchActions($event)"
+                        class="bg-transparent border-none outline-none text-sm font-bold text-slate-800 w-full placeholder:text-slate-400"
+                      />
+                    </div>
+                  </div>
+                </ion-header>
+                <ion-content class="bg-slate-50">
+                  <div class="p-4 space-y-2 pb-8">
+                    @for (item of filteredActions; track trackById($index, item)) {
+                    <div
+                      (click)="selectAction(item)"
+                      class="p-3.5 bg-white border rounded-xl flex items-center justify-between active:scale-95 transition-all cursor-pointer shadow-sm hover:border-indigo-300"
+                      [ngClass]="pledgesAction?.id === item.id ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-200'"
+                    >
+                      <span class="text-xs font-bold text-slate-700 leading-relaxed">{{item.description}}</span>
+                      @if (pledgesAction?.id === item.id) {
+                      <ion-icon name="checkmark-circle" class="text-indigo-600 text-xl shrink-0"></ion-icon>
+                      }
+                    </div>
+                    } @if (filteredActions.length === 0) {
+                    <div class="text-center py-8">
+                      <ion-icon name="search-outline" class="text-4xl text-slate-300 mb-2"></ion-icon>
+                      <p class="text-sm font-bold text-slate-500">لا توجد نتائج مطابقة للبحث</p>
+                    </div>
+                    }
+                  </div>
+                </ion-content>
+              </ng-template>
+            </ion-modal>
+          </div>
+          } }
         </div>
+        }
       </div>
 
-      <ng-container *ngIf="
-        !formData.reportType || 
-        ((formData.reportType === 'medical' || formData.reportType === 'suspend') && (!formData.selectedDate || !formData.selectedDays)) ||
-        (formData.reportType === 'exit' && !isExitToday && (!formData.note || formData.note === '')) ||
-        (formData.reportType === 'callofstudents' && (!formData.selectedDate || !formData.time || !formData.reason || formData.reason === '')) ||
-        (formData.reportType === 'studentspledges' && (!formData.degree || !pledgesViolation || !pledgesAction)); 
-        else validForm
-      ">
-        <button disabled class="w-full mt-6 py-3.5 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2 opacity-50 cursor-not-allowed">
-          <ion-icon name="save-outline" class="text-xl"></ion-icon>
-          {{'manage_report.save'|translate}}
-        </button>
-      </ng-container>
-
-      <ng-template #validForm>
-        <button (click)="submitForm()" class="w-full mt-6 py-3.5 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all active:scale-95 hover:bg-indigo-700 flex items-center justify-center gap-2">
-          <ion-icon name="save-outline" class="text-xl"></ion-icon>
-          {{'manage_report.save'|translate}}
-        </button>
-      </ng-template>
-
+      @if ( !formData.reportType || ((formData.reportType === 'medical' || formData.reportType === 'suspend') &&
+      (!formData.selectedDate || !formData.selectedDays)) || (formData.reportType === 'exit' && !isExitToday &&
+      (!formData.note || formData.note === '')) || (formData.reportType === 'callofstudents' && (!formData.selectedDate
+      || !formData.time || !formData.reason || formData.reason === '')) || (formData.reportType === 'studentspledges' &&
+      (!formData.degree || !pledgesViolation || !pledgesAction))) {
+      <button
+        disabled
+        class="w-full mt-6 py-3.5 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
+      >
+        <ion-icon name="save-outline" class="text-xl"></ion-icon>
+        {{'manage_report.save'|translate}}
+      </button>
+      } @else {
+      <button
+        (click)="submitForm()"
+        class="w-full mt-6 py-3.5 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all active:scale-95 hover:bg-indigo-700 flex items-center justify-center gap-2"
+      >
+        <ion-icon name="save-outline" class="text-xl"></ion-icon>
+        {{'manage_report.save'|translate}}
+      </button>
+      }
     </div>
-
 
     <ng-container *appHasRole="[UserType.Moderator, UserType.Admin]">
-    <div *ngIf="suspend.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.2s;">
-      <div class="flex items-center justify-between mb-4 px-1">
-        <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.suspension_days' | translate}}</h3>
-        <button class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-orange-100" (click)="printReport('suspend')">
-          <ion-icon name="print-outline"></ion-icon> طباعة
-        </button>
-      </div>
-      <div class="space-y-3">
-        <div *ngFor="let sdays of suspend; let i=index; trackBy: trackById" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3">
-          <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-orange-500 rounded-r-2xl"></div>
-          <div class="flex justify-between items-start pl-1 pr-3">
-            <div>
-              <span class="text-[10px] font-bold text-slate-400">{{'manage_report.start_date' | translate}} - {{'manage_report.end_date' | translate}}</span>
-              <div class="font-bold text-[13px] text-slate-800 mt-0.5">{{sdays.start_date}} <span class="text-slate-400 mx-1">إلى</span> {{sdays.end_date}}</div>
-            </div>
-            <div class="bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-center shrink-0">
-              <span class="block text-[10px] font-bold text-slate-500">{{'manage_report.days' | translate}}</span>
-              <span class="block font-black text-orange-500 text-lg leading-tight">{{sdays.amount_days}}</span>
-            </div>
-          </div>
-          <button (click)="openDeleteConfirm(sdays.id || '','suspend')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
-            <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
-          </button>
-        </div>
-      </div>
-    </div>
-    </ng-container>
-
-    <ng-container *appHasRole="[UserType.Medical, UserType.Admin]">
-    <div *ngIf="medical.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.3s;">
-      <div class="flex items-center justify-between mb-4 px-1">
-        <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.medical_days' | translate}}</h3>
-        <button class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-emerald-100" (click)="printReport('medical')">
-          <ion-icon name="print-outline"></ion-icon> طباعة
-        </button>
-      </div>
-      <div class="space-y-3">
-        <div *ngFor="let mdays of medical; let i=index; trackBy: trackById" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3">
-          <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-emerald-500 rounded-r-2xl"></div>
-          <div class="flex justify-between items-start pl-1 pr-3">
-            <div>
-              <span class="text-[10px] font-bold text-slate-400">{{'manage_report.start_date' | translate}} - {{'manage_report.end_date' | translate}}</span>
-              <div class="font-bold text-[13px] text-slate-800 mt-0.5">{{mdays.start_date}} <span class="text-slate-400 mx-1">إلى</span> {{mdays.end_date}}</div>
-            </div>
-            <div class="bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-center shrink-0">
-              <span class="block text-[10px] font-bold text-slate-500">{{'manage_report.days' | translate}}</span>
-              <span class="block font-black text-emerald-600 text-lg leading-tight">{{mdays.amount_days}}</span>
-            </div>
-          </div>
-          <button (click)="openDeleteConfirm(mdays.id || '','medical')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
-            <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
-          </button>
-        </div>
-      </div>
-    </div>
-    </ng-container>
-
-    <ng-container *appHasRole="[UserType.Medical, UserType.Admin]">
-    <div *ngIf="exitdays.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.4s;">
-      <div class="flex items-center justify-between mb-4 px-1">
-        <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.exit_days' | translate}}</h3>
-        <button class="bg-cyan-50 text-cyan-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-cyan-100" (click)="printReport('exit')">
-          <ion-icon name="print-outline"></ion-icon> طباعة
-        </button>
-      </div>
-      <div class="space-y-3">
-        <div *ngFor="let edays of exitdays; let i=index; trackBy: trackById" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3">
-          <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-cyan-500 rounded-r-2xl"></div>
-          <div class="flex justify-between items-center pl-1 pr-3">
-            <div>
-              <span class="text-[10px] font-bold text-slate-400">{{'manage_report.date' | translate}} / {{'manage_report.time' | translate}}</span>
-              <div class="font-bold text-[13px] text-slate-800 mt-0.5">{{edays.date}} <span class="text-slate-300 mx-2">|</span> <span class="text-cyan-600">{{edays.time}}</span></div>
-            </div>
-            <button (click)="openDeleteConfirm(edays.id || '','exit')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
-              <ion-icon name="trash-outline"></ion-icon> حذف
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    </ng-container>
-
-    <ng-container *appHasRole="[UserType.Viewer, UserType.Admin, UserType.Moderator]">
-      <div *ngIf="callOfStudentsReport.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.5s;">
+      @if (suspend.length > 0) {
+      <div class="animate-fade-in-up mt-8" style="animation-delay: 0.2s">
         <div class="flex items-center justify-between mb-4 px-1">
-          <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.call_off_report' | translate}}</h3>
-          <button class="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-indigo-100" (click)="printReports('callOfParent')">
+          <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.suspension_days' | translate}}</h3>
+          <button
+            class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-orange-100"
+            (click)="printReport('suspend')"
+          >
             <ion-icon name="print-outline"></ion-icon> طباعة
           </button>
         </div>
         <div class="space-y-3">
-          <div *ngFor="let edays of callOfStudentsReport; let i=index; trackBy: trackById" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3">
+          @for (sdays of suspend; track trackById(i, sdays); let i = $index) {
+          <div
+            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+          >
+            <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-orange-500 rounded-r-2xl"></div>
+            <div class="flex justify-between items-start pl-1 pr-3">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400"
+                  >{{'manage_report.start_date' | translate}} - {{'manage_report.end_date' | translate}}</span
+                >
+                <div class="font-bold text-[13px] text-slate-800 mt-0.5">
+                  {{sdays.start_date}} <span class="text-slate-400 mx-1">إلى</span> {{sdays.end_date}}
+                </div>
+              </div>
+              <div class="bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-center shrink-0">
+                <span class="block text-[10px] font-bold text-slate-500">{{'manage_report.days' | translate}}</span>
+                <span class="block font-black text-orange-500 text-lg leading-tight">{{sdays.amount_days}}</span>
+              </div>
+            </div>
+            <button
+              (click)="openDeleteConfirm(sdays.id || '','suspend')"
+              class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100"
+            >
+              <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </ng-container>
+
+    <ng-container *appHasRole="[UserType.Medical, UserType.Admin]">
+      @if (medical.length > 0) {
+      <div class="animate-fade-in-up mt-8" style="animation-delay: 0.3s">
+        <div class="flex items-center justify-between mb-4 px-1">
+          <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.medical_days' | translate}}</h3>
+          <button
+            class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-emerald-100"
+            (click)="printReport('medical')"
+          >
+            <ion-icon name="print-outline"></ion-icon> طباعة
+          </button>
+        </div>
+        <div class="space-y-3">
+          @for (mdays of medical; track trackById(i, mdays); let i = $index) {
+          <div
+            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+          >
+            <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-emerald-500 rounded-r-2xl"></div>
+            <div class="flex justify-between items-start pl-1 pr-3">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400"
+                  >{{'manage_report.start_date' | translate}} - {{'manage_report.end_date' | translate}}</span
+                >
+                <div class="font-bold text-[13px] text-slate-800 mt-0.5">
+                  {{mdays.start_date}} <span class="text-slate-400 mx-1">إلى</span> {{mdays.end_date}}
+                </div>
+              </div>
+              <div class="bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-center shrink-0">
+                <span class="block text-[10px] font-bold text-slate-500">{{'manage_report.days' | translate}}</span>
+                <span class="block font-black text-emerald-600 text-lg leading-tight">{{mdays.amount_days}}</span>
+              </div>
+            </div>
+            <button
+              (click)="openDeleteConfirm(mdays.id || '','medical')"
+              class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100"
+            >
+              <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </ng-container>
+
+    <ng-container *appHasRole="[UserType.Medical, UserType.Admin]">
+      @if (exitdays.length > 0) {
+      <div class="animate-fade-in-up mt-8" style="animation-delay: 0.4s">
+        <div class="flex items-center justify-between mb-4 px-1">
+          <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.exit_days' | translate}}</h3>
+          <button
+            class="bg-cyan-50 text-cyan-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-cyan-100"
+            (click)="printReport('exit')"
+          >
+            <ion-icon name="print-outline"></ion-icon> طباعة
+          </button>
+        </div>
+        <div class="space-y-3">
+          @for (edays of exitdays; track trackById(i, edays); let i = $index) {
+          <div
+            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+          >
+            <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-cyan-500 rounded-r-2xl"></div>
+            <div class="flex justify-between items-center pl-1 pr-3">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400"
+                  >{{'manage_report.date' | translate}} / {{'manage_report.time' | translate}}</span
+                >
+                <div class="font-bold text-[13px] text-slate-800 mt-0.5">
+                  {{edays.date}} <span class="text-slate-300 mx-2">|</span>
+                  <span class="text-cyan-600">{{edays.time}}</span>
+                </div>
+              </div>
+              <button
+                (click)="openDeleteConfirm(edays.id || '','exit')"
+                class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100"
+              >
+                <ion-icon name="trash-outline"></ion-icon> حذف
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </ng-container>
+
+    <ng-container *appHasRole="[UserType.Viewer, UserType.Admin, UserType.Moderator]">
+      @if (callOfStudentsReport.length > 0) {
+      <div class="animate-fade-in-up mt-8" style="animation-delay: 0.5s">
+        <div class="flex items-center justify-between mb-4 px-1">
+          <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.call_off_report' | translate}}</h3>
+          <button
+            class="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-indigo-100"
+            (click)="printReports('callOfParent')"
+          >
+            <ion-icon name="print-outline"></ion-icon> طباعة
+          </button>
+        </div>
+        <div class="space-y-3">
+          @for (edays of callOfStudentsReport; track trackById(i, edays); let i = $index) {
+          <div
+            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+          >
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-indigo-500 rounded-r-2xl"></div>
             <div class="pl-1 pr-3">
               <span class="text-[10px] font-bold text-slate-400">{{'manage_report.date' | translate}}</span>
               <div class="font-bold text-[13px] text-slate-800 mb-2">{{edays.date}}</div>
-              
               <span class="text-[10px] font-bold text-slate-400">{{'manage_report.reason' | translate}}</span>
-              <div class="font-bold text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100 leading-relaxed">{{edays.reason}}</div>
+              <div
+                class="font-bold text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100 leading-relaxed"
+              >
+                {{edays.reason}}
+              </div>
             </div>
-            <button (click)="openDeleteConfirm(edays.id || '','callofparent')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100">
+            <button
+              (click)="openDeleteConfirm(edays.id || '','callofparent')"
+              class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100"
+            >
               <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
             </button>
           </div>
+          }
         </div>
       </div>
-
-      <div *ngIf="AllStudentPledgesReports.length > 0" class="animate-fade-in-up mt-8" style="animation-delay: 0.6s;">
+      } @if (AllStudentPledgesReports.length > 0) {
+      <div class="animate-fade-in-up mt-8" style="animation-delay: 0.6s">
         <div class="flex items-center justify-between mb-4 px-1">
-          <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.student_pledges_report' | translate}}</h3>
-          <button class="bg-purple-50 text-purple-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-purple-100" (click)="printReports('pledges')">
+          <h3 class="text-base font-black text-slate-800 m-0">
+            {{'manage_report.student_pledges_report' | translate}}
+          </h3>
+          <button
+            class="bg-purple-50 text-purple-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-purple-100"
+            (click)="printReports('pledges')"
+          >
             <ion-icon name="print-outline"></ion-icon> طباعة
           </button>
         </div>
         <div class="space-y-3">
-          <div *ngFor="let edays of AllStudentPledgesReports; let i=index; trackBy: trackById" class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3">
+          @for (edays of AllStudentPledgesReports; track trackById(i, edays); let i = $index) {
+          <div
+            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+          >
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-purple-500 rounded-r-2xl"></div>
             <div class="pl-1 pr-3">
               <div class="flex items-center justify-between mb-3">
@@ -443,63 +759,76 @@
                 </div>
                 <div class="text-left">
                   <span class="text-[10px] font-bold text-slate-400">{{'manage_report.degree' | translate}}</span>
-                  <div class="font-bold text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-md">{{edays.degree_name}}</div>
+                  <div class="font-bold text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-md">
+                    {{edays.degree_name}}
+                  </div>
                 </div>
               </div>
-              
               <div class="mb-3">
-                  <span class="text-[10px] font-bold text-slate-400">{{'manage_report.reason' | translate}}</span>
-                  <div class="font-bold text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 leading-relaxed">
-                    <span class="text-purple-600 ml-1">{{edays.violation_desc_number}}</span>
-                    {{edays.violation_description || edays.violation_desc}}
-                  </div>
+                <span class="text-[10px] font-bold text-slate-400">{{'manage_report.reason' | translate}}</span>
+                <div
+                  class="font-bold text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 leading-relaxed"
+                >
+                  <span class="text-purple-600 ml-1">{{edays.violation_desc_number}}</span>
+                  {{edays.violation_description || edays.violation_desc}}
+                </div>
               </div>
-
               <div>
-                  <span class="text-[10px] font-bold text-slate-400">{{'manage_report.action' | translate}}</span>
-                  <div class="font-bold text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 leading-relaxed">
-                    <span class="text-purple-600 ml-1">{{edays.action_desc_number}}</span>
-                    {{edays.action_description || edays.action_desc}}
-                  </div>
+                <span class="text-[10px] font-bold text-slate-400">{{'manage_report.action' | translate}}</span>
+                <div
+                  class="font-bold text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 leading-relaxed"
+                >
+                  <span class="text-purple-600 ml-1">{{edays.action_desc_number}}</span>
+                  {{edays.action_description || edays.action_desc}}
+                </div>
               </div>
-
             </div>
-            <button (click)="openDeleteConfirm(edays.id || '','PledgesReports')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100 mt-1">
+            <button
+              (click)="openDeleteConfirm(edays.id || '','PledgesReports')"
+              class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100 mt-1"
+            >
               <ion-icon name="trash-outline" class="text-sm"></ion-icon> {{'manage_report.delete' | translate}}
             </button>
           </div>
+          }
         </div>
       </div>
+      }
     </ng-container>
-
   </div>
 </ion-content>
 
-
 <ion-modal [isOpen]="isDeleteModalOpen" (didDismiss)="isDeleteModalOpen = false" class="lineone-delete-modal">
-      <ng-template>
-        <div class="bg-white p-6 flex flex-col items-center justify-center text-center h-full rounded-[1.5rem]">
-          
-          <div class="w-20 h-20 rounded-full bg-rose-50 flex items-center justify-center mb-5 relative">
-            <div class="absolute inset-0 bg-rose-100 rounded-full animate-ping opacity-40" style="animation-duration: 2s;"></div>
-            <ion-icon name="trash-outline" class="text-4xl text-rose-500 relative z-10"></ion-icon>
-          </div>
+  <ng-template>
+    <div class="bg-white p-6 flex flex-col items-center justify-center text-center h-full rounded-[1.5rem]">
+      <div class="w-20 h-20 rounded-full bg-rose-50 flex items-center justify-center mb-5 relative">
+        <div
+          class="absolute inset-0 bg-rose-100 rounded-full animate-ping opacity-40"
+          style="animation-duration: 2s"
+        ></div>
+        <ion-icon name="trash-outline" class="text-4xl text-rose-500 relative z-10"></ion-icon>
+      </div>
 
-          <h3 class="text-xl font-black text-slate-800 mb-2">تأكيد الحذف</h3>
-          <p class="text-sm font-bold text-slate-500 mb-8 leading-relaxed px-2">
-            {{lang?.want_to_delete || 'هل أنت متأكد من رغبتك في حذف هذا التقرير؟ لا يمكن التراجع عن هذه الخطوة.'}}
-          </p>
-          
-          <div class="flex gap-3 w-full">
-            <button (click)="isDeleteModalOpen = false" class="flex-1 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-black text-sm rounded-xl border border-slate-200 active:scale-95 transition-all">
-              {{lang?.no || 'تراجع'}}
-            </button>
-            <button (click)="confirmDelete()" class="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-black text-sm rounded-xl shadow-md shadow-rose-200 active:scale-95 transition-all flex items-center justify-center gap-2">
-              <ion-icon name="trash" class="text-lg"></ion-icon>
-              {{lang?.yes || 'نعم، احذف'}}
-            </button>
-          </div>
+      <h3 class="text-xl font-black text-slate-800 mb-2">تأكيد الحذف</h3>
+      <p class="text-sm font-bold text-slate-500 mb-8 leading-relaxed px-2">
+        {{lang?.want_to_delete || 'هل أنت متأكد من رغبتك في حذف هذا التقرير؟ لا يمكن التراجع عن هذه الخطوة.'}}
+      </p>
 
-        </div>
-      </ng-template>
-    </ion-modal>
+      <div class="flex gap-3 w-full">
+        <button
+          (click)="isDeleteModalOpen = false"
+          class="flex-1 py-3.5 bg-slate-50 hover:bg-slate-100 text-slate-600 font-black text-sm rounded-xl border border-slate-200 active:scale-95 transition-all"
+        >
+          {{lang?.no || 'تراجع'}}
+        </button>
+        <button
+          (click)="confirmDelete()"
+          class="flex-1 py-3.5 bg-rose-500 hover:bg-rose-600 text-white font-black text-sm rounded-xl shadow-md shadow-rose-200 active:scale-95 transition-all flex items-center justify-center gap-2"
+        >
+          <ion-icon name="trash" class="text-lg"></ion-icon>
+          {{lang?.yes || 'نعم، احذف'}}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</ion-modal>

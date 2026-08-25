@@ -9,15 +9,15 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { StorageService } from '../service/storage.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
-import { NgIf, NgFor } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-manage-teacher',
-    templateUrl: './manage-teacher.page.html',
-    styleUrls: ['./manage-teacher.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
+  selector: 'app-manage-teacher',
+  templateUrl: './manage-teacher.page.html',
+  styleUrls: ['./manage-teacher.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class ManageTeacherPage {
   trackByIndex(index: number): number {
@@ -65,7 +65,6 @@ export class ManageTeacherPage {
       }
     }
   }
-
 
   // 🟢 استخدام async/await للتعامل مع الذاكرة وجلب المعلمين بأمان
   async ionViewWillEnter() {

@@ -1,6 +1,25 @@
-import { Component, OnInit, NgZone, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  NgZone,
+  ViewChild,
+  ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  DestroyRef,
+  inject
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, ModalController, ItemReorderEventDetail, ItemReorderCustomEvent, Platform, ActionSheetController, PopoverController, IonicModule } from '@ionic/angular';
+import {
+  NavController,
+  AlertController,
+  ModalController,
+  ItemReorderEventDetail,
+  ItemReorderCustomEvent,
+  Platform,
+  ActionSheetController,
+  PopoverController,
+  IonicModule
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
@@ -23,7 +42,7 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
 import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
 import { HasRoleDirective } from '../directives/has-role.directive';
-import { NgIf, NgClass, NgFor } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Course } from '../service/courses-api/courses-api.service';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
@@ -37,11 +56,11 @@ interface DashboardSeminar {
 }
 
 @Component({
-    selector: 'app-classlist',
-    templateUrl: './classlist.page.html',
-    styleUrls: ['./classlist.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgClass, NgFor, FormsModule, TranslatePipe, HasRoleDirective]
+  selector: 'app-classlist',
+  templateUrl: './classlist.page.html',
+  styleUrls: ['./classlist.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, FormsModule, TranslatePipe, HasRoleDirective]
 })
 export class ClasslistPage implements OnInit {
   readonly UserType = UserType;
@@ -275,7 +294,7 @@ export class ClasslistPage implements OnInit {
     };
     this.dataProvider
       .run(() => this.userManagementApi.revertDeletedSchoolSettings(data))
-      .then((response) => {
+      .then(response => {
         this.dataProvider.errorALertMessage(response.message || '');
         this.deactivate_date = '';
         this.dataProvider.deactivate_date = '';

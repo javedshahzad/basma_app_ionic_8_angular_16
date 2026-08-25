@@ -18,16 +18,16 @@ import { Share } from '@capacitor/share';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { ElearningApiService, ElearningMaterial } from '../service/elearning-api/elearning-api.service';
-import { NgIf, NgFor } from '@angular/common';
+
 import { SafePipe } from '../pipes/safe/safe.pipe';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-playvideo',
-    templateUrl: './playvideo.page.html',
-    styleUrls: ['./playvideo.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, SafePipe, TranslatePipe]
+  selector: 'app-playvideo',
+  templateUrl: './playvideo.page.html',
+  styleUrls: ['./playvideo.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, SafePipe, TranslatePipe]
 })
 export class PlayvideoPage {
   trackByIndex(index: number): number {
@@ -68,7 +68,6 @@ export class PlayvideoPage {
       this.loadVideo(this.materialId);
     });
   }
-
 
   // 🟢 إعادة قفل الشاشة للوضع العمودي عند الخروج من الصفحة
   ionViewWillLeave() {

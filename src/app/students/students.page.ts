@@ -1,6 +1,15 @@
 import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, NavParams, AlertController, Platform, PopoverController, ActionSheetController, ModalController, IonicModule } from '@ionic/angular';
+import {
+  NavController,
+  NavParams,
+  AlertController,
+  Platform,
+  PopoverController,
+  ActionSheetController,
+  ModalController,
+  IonicModule
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -26,7 +35,7 @@ import { HolidaysApiService } from '../service/holidays-api/holidays-api.service
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
 import { UserType } from '../constants/user-type';
-import { NgClass, NgIf, NgFor, DecimalPipe, DatePipe } from '@angular/common';
+import { NgClass, DecimalPipe, DatePipe } from '@angular/common';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 import { Student } from '../model/student.model';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
@@ -34,11 +43,22 @@ import { Course } from '../service/courses-api/courses-api.service';
 import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
-    selector: 'app-students',
-    templateUrl: './students.page.html',
-    styleUrls: ['./students.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgClass, ɵɵDir, NgIf, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf, NgFor, DecimalPipe, DatePipe, TranslatePipe, HasRoleDirective]
+  selector: 'app-students',
+  templateUrl: './students.page.html',
+  styleUrls: ['./students.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    IonicModule,
+    NgClass,
+    ɵɵDir,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    DecimalPipe,
+    DatePipe,
+    TranslatePipe,
+    HasRoleDirective
+  ]
 })
 export class StudentsPage {
   readonly UserType = UserType;
@@ -166,7 +186,6 @@ export class StudentsPage {
       this.cdr.markForCheck();
     });
   }
-
 
   trackByStudent(index: number, student: Student): string | number {
     return student?.sid ?? index;
@@ -324,7 +343,8 @@ export class StudentsPage {
 
       student.studentBehaviour = behaviour;
 
-      const { StudentProfileModalComponent } = await import('../components/student-profile-modal/student-profile-modal.component');
+      const { StudentProfileModalComponent } =
+        await import('../components/student-profile-modal/student-profile-modal.component');
       const modal = await this.modalController.create({
         component: StudentProfileModalComponent,
         cssClass: 'profile-modal-class',

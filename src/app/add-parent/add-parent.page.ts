@@ -7,14 +7,14 @@ import { Router } from '@angular/router';
 import { ParentManagementApiService } from '../service/parent-management-api/parent-management-api.service';
 import { StorageService } from '../service/storage.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
-import { NgClass, NgIf, NgFor } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-add-parent',
-    templateUrl: './add-parent.page.html',
-    styleUrls: ['./add-parent.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, ReactiveFormsModule, NgClass, NgIf, NgFor, TranslatePipe]
+  selector: 'app-add-parent',
+  templateUrl: './add-parent.page.html',
+  styleUrls: ['./add-parent.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, ReactiveFormsModule, NgClass, TranslatePipe]
 })
 export class AddParentPage implements OnInit {
   trackByIndex(index: number): number {

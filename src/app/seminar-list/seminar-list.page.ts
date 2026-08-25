@@ -11,14 +11,14 @@ import domtoimage from 'dom-to-image';
 import { StorageService } from '../service/storage.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { CoursesApiService } from '../service/courses-api/courses-api.service';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-seminar-list',
-    templateUrl: './seminar-list.page.html',
-    styleUrls: ['./seminar-list.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, DatePipe, TranslatePipe]
+  selector: 'app-seminar-list',
+  templateUrl: './seminar-list.page.html',
+  styleUrls: ['./seminar-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, DatePipe, TranslatePipe]
 })
 export class SeminarListPage implements OnInit {
   trackByIndex(index: number): number {

@@ -1,42 +1,76 @@
 ﻿<ion-content class="bg-[#f8fafc]" mode="md">
-  
   <div class="min-h-screen flex flex-col justify-center items-center p-5" dir="rtl">
-    
     <div class="mb-8 text-center w-full max-w-md">
-      <div class="w-24 h-24 mx-auto mb-5 bg-white rounded-[2rem] shadow-xl shadow-indigo-100/50 border border-slate-100 overflow-hidden flex items-center justify-center p-2">
-        <img src="assets/icons/icon-512.webp" alt="شعار التطبيق" class="w-full h-full object-contain">
+      <div
+        class="w-24 h-24 mx-auto mb-5 bg-white rounded-[2rem] shadow-xl shadow-indigo-100/50 border border-slate-100 overflow-hidden flex items-center justify-center p-2"
+      >
+        <img src="assets/icons/icon-512.webp" alt="شعار التطبيق" class="w-full h-full object-contain" />
       </div>
       <h1 class="text-2xl font-extrabold text-slate-800 mb-2">{{'login.pagetitle' | translate}}</h1>
       <p class="text-sm font-medium text-slate-500 m-0">مرحباً بك مجدداً، يرجى تسجيل الدخول للمتابعة</p>
     </div>
 
     <!-- 🟢 قسم الحسابات المحفوظة (يظهر فقط إذا كان هناك حسابات سابقة) -->
-    <div *ngIf="loggedinUser.length > 0" class="w-full max-w-md mb-6 flex gap-3 overflow-x-auto pb-2 scrollbar-hide" dir="rtl">
-      <div *ngFor="let u of loggedinUser; trackBy: trackByIndex" 
-           class="flex flex-col items-center justify-center bg-white p-3 rounded-2xl shadow-sm border border-slate-200 min-w-[90px] cursor-pointer hover:border-indigo-300 hover:shadow-md transition-all active:scale-95"
-           (click)="user.email_id = u.email_id; user.password = u.password; login()">
-        <img loading="lazy" [src]="u.image" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-full object-cover border border-slate-100 shadow-inner mb-2 bg-slate-50">
+    @if (loggedinUser.length > 0) {
+    <div class="w-full max-w-md mb-6 flex gap-3 overflow-x-auto pb-2 scrollbar-hide" dir="rtl">
+      @for (u of loggedinUser; track trackByIndex($index)) {
+      <div
+        class="flex flex-col items-center justify-center bg-white p-3 rounded-2xl shadow-sm border border-slate-200 min-w-[90px] cursor-pointer hover:border-indigo-300 hover:shadow-md transition-all active:scale-95"
+        (click)="user.email_id = u.email_id; user.password = u.password; login()"
+      >
+        <img
+          loading="lazy"
+          [src]="u.image"
+          onerror="
+            this.onerror = null;
+            this.src = 'assets/imgs/default_avatar.png';
+          "
+          class="w-12 h-12 rounded-full object-cover border border-slate-100 shadow-inner mb-2 bg-slate-50"
+        />
         <span class="text-[11px] font-bold text-slate-700 truncate w-full text-center">{{u.name || 'مستخدم'}}</span>
       </div>
+      }
     </div>
+    }
 
     <div class="bg-white w-full max-w-md rounded-[2rem] shadow-sm border border-slate-200 p-6 md:p-8">
-      <form #loginform='ngForm'>
-        
+      <form #loginform="ngForm">
         <div class="mb-4">
           <label class="block text-xs font-bold text-slate-700 mb-2 px-1">{{'login.username' | translate}}</label>
-          <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all duration-300">
+          <div
+            class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all duration-300"
+          >
             <ion-icon name="person-outline" class="text-slate-400 text-lg ml-2"></ion-icon>
-            <ion-input type="text" placeholder="{{'login.username' | translate}}" name="name" [(ngModel)]="user.email_id" class="text-sm font-bold text-slate-800 flex-1" required></ion-input>
+            <ion-input
+              type="text"
+              placeholder="{{'login.username' | translate}}"
+              name="name"
+              [(ngModel)]="user.email_id"
+              class="text-sm font-bold text-slate-800 flex-1"
+              required
+            ></ion-input>
           </div>
         </div>
 
         <div class="mb-5">
           <label class="block text-xs font-bold text-slate-700 mb-2 px-1">{{'login.password' | translate}}</label>
-          <div class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all duration-300">
+          <div
+            class="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all duration-300"
+          >
             <ion-icon name="lock-closed-outline" class="text-slate-400 text-lg ml-2"></ion-icon>
-            <ion-input [type]="viewPass ? 'text' : 'password'" placeholder="{{'login.password' | translate}}" name="pass" [(ngModel)]="user.password" class="text-sm font-bold text-slate-800 flex-1" required></ion-input>
-            <button type="button" class="text-slate-400 hover:text-indigo-600 transition-colors p-2 flex items-center justify-center focus:outline-none" (click)="togglePass()">
+            <ion-input
+              [type]="viewPass ? 'text' : 'password'"
+              placeholder="{{'login.password' | translate}}"
+              name="pass"
+              [(ngModel)]="user.password"
+              class="text-sm font-bold text-slate-800 flex-1"
+              required
+            ></ion-input>
+            <button
+              type="button"
+              class="text-slate-400 hover:text-indigo-600 transition-colors p-2 flex items-center justify-center focus:outline-none"
+              (click)="togglePass()"
+            >
               <ion-icon [name]="viewPass ? 'eye-off' : 'eye'" class="text-lg"></ion-icon>
             </button>
           </div>
@@ -44,19 +78,38 @@
 
         <div class="flex items-center justify-between mb-8 px-1">
           <div class="flex items-center gap-2">
-            <ion-checkbox mode="md" class="border-slate-300 shadow-sm" style="--border-radius: 6px; --checkmark-color: white; --background-checked: #4f46e5; --border-color-checked: #4f46e5;" [(ngModel)]="rememberMe" name="rememberme"></ion-checkbox>
+            <ion-checkbox
+              mode="md"
+              class="border-slate-300 shadow-sm"
+              style="
+                --border-radius: 6px;
+                --checkmark-color: white;
+                --background-checked: #4f46e5;
+                --border-color-checked: #4f46e5;
+              "
+              [(ngModel)]="rememberMe"
+              name="rememberme"
+            ></ion-checkbox>
             <span class="text-xs font-bold text-slate-600">{{'login.remember_me' | translate}}</span>
           </div>
-          <button type="button" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors focus:outline-none" (click)="forgotPassword()">
+          <button
+            type="button"
+            class="text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors focus:outline-none"
+            (click)="forgotPassword()"
+          >
             {{'login.forgot' | translate}}
           </button>
         </div>
 
-        <button type="button" class="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all active:scale-[0.98] focus:outline-none disabled:opacity-50" (click)="login()" [disabled]="!user.email_id || !user.password">
+        <button
+          type="button"
+          class="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all active:scale-[0.98] focus:outline-none disabled:opacity-50"
+          (click)="login()"
+          [disabled]="!user.email_id || !user.password"
+        >
           {{'login.login_btn' | translate}}
           <ion-icon name="log-in-outline" class="text-xl mr-1"></ion-icon>
         </button>
-        
       </form>
 
       <div class="flex items-center my-6">
@@ -65,12 +118,14 @@
         <div class="flex-1 border-t border-slate-100"></div>
       </div>
 
-      <button type="button" class="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-all active:scale-[0.98] focus:outline-none" (click)="openRegister()">
+      <button
+        type="button"
+        class="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-all active:scale-[0.98] focus:outline-none"
+        (click)="openRegister()"
+      >
         <ion-icon name="business-outline" class="text-xl"></ion-icon>
         {{'login.register_school' | translate}}
       </button>
-
     </div>
   </div>
-
 </ion-content>

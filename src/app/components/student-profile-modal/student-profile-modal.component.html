@@ -1,93 +1,193 @@
 ﻿<div class="bg-white w-full h-full rounded-3xl overflow-y-auto hide-scrollbar relative">
-    
-  <button class="absolute top-4 left-4 z-20 w-8 h-8 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all" (click)="closeModal()">
+  <button
+    class="absolute top-4 left-4 z-20 w-8 h-8 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all"
+    (click)="closeModal()"
+  >
     <ion-icon name="close" class="text-xl"></ion-icon>
   </button>
-  
-  <div class="h-28 relative bg-cover bg-center bg-indigo-500" [ngStyle]="{'background-image': 'url('+student?.pic+')'}">
+
+  <div
+    class="h-28 relative bg-cover bg-center bg-indigo-500"
+    [ngStyle]="{ 'background-image': 'url(' + student?.pic + ')' }"
+  >
     <div class="absolute inset-0 bg-black/50"></div>
-    <button class="absolute top-4 right-4 z-20 text-white bg-black/30 p-2 rounded-full backdrop-blur-md hover:bg-black/50 transition-colors" (click)="triggerCamera($event)" *ngIf="userType !== UserType.Teacher && userType !== UserType.Viewer">
-      <ion-icon name="camera" class="text-xl"></ion-icon>
-    </button>
+    @if (userType !== UserType.Teacher && userType !== UserType.Viewer) {
+      <button
+        class="absolute top-4 right-4 z-20 text-white bg-black/30 p-2 rounded-full backdrop-blur-md hover:bg-black/50 transition-colors"
+        (click)="triggerCamera($event)"
+      >
+        <ion-icon name="camera" class="text-xl"></ion-icon>
+      </button>
+    }
   </div>
-  
+
   <div class="px-6 pb-6 text-center relative -mt-12">
-    <img loading="lazy" [src]="student?.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-24 h-24 rounded-full border-4 border-white mx-auto shadow-md object-cover relative z-10 bg-white cursor-pointer hover:scale-105 transition-transform" (click)="triggerFullscreen(student?.pic)">
-    
-    <h2 class="text-xl font-bold text-slate-800 mt-3">{{student?.name}}</h2>
-    <p class="text-indigo-600 font-medium text-sm mt-1 mb-4" *ngIf="editMode">{{student?.course_name}}</p>
+    <img
+      loading="lazy"
+      [src]="student?.pic"
+      onerror="
+        this.onerror = null;
+        this.src = 'assets/imgs/default_avatar.png';
+      "
+      class="w-24 h-24 rounded-full border-4 border-white mx-auto shadow-md object-cover relative z-10 bg-white cursor-pointer hover:scale-105 transition-transform"
+      (click)="triggerFullscreen(student?.pic)"
+    />
+
+    <h2 class="text-xl font-bold text-slate-800 mt-3">{{ student?.name }}</h2>
+    @if (editMode) {
+      <p class="text-indigo-600 font-medium text-sm mt-1 mb-4">{{ student?.course_name }}</p>
+    }
 
     <div class="mt-4 grid grid-cols-2 gap-3" dir="rtl">
-
-      <div class="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-sm transition-all hover:bg-slate-100">
+      <div
+        class="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-sm transition-all hover:bg-slate-100"
+      >
         <span class="text-[9px] font-black text-slate-400 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
           <ion-icon name="analytics-outline" class="text-indigo-400 text-sm"></ion-icon>
           مؤشر الأداء العام
         </span>
         <p class="text-slate-700 font-bold text-[11px] m-0 text-center leading-tight">
-          <ion-icon 
-     [name]="gamification.getBehaviourIcon(student)" 
-     class="text-xs {{ gamification.getBehaviourColorClass(student) }}">
-  </ion-icon>
-  <span class="text-[11px] font-black {{ gamification.getBehaviourColorClass(student) }}">
-    {{ gamification.getStudentBehaviourText(student) }}
-  </span>
+          <ion-icon
+            [name]="gamification.getBehaviourIcon(student)"
+            class="text-xs {{ gamification.getBehaviourColorClass(student) }}"
+          >
+          </ion-icon>
+          <span class="text-[11px] font-black {{ gamification.getBehaviourColorClass(student) }}">
+            {{ gamification.getStudentBehaviourText(student) }}
+          </span>
         </p>
       </div>
 
-      <div class="bg-gradient-to-b from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-sm transition-all hover:border-amber-200" *ngIf="studentTitle">
-        <span class="text-[9px] font-black text-amber-500 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
-          <ion-icon name="star-outline" class="text-amber-500 text-sm"></ion-icon>
-          مؤشر التميز المهاري
-        </span>
-        <p class="text-amber-700 font-black text-[11px] m-0 text-center leading-tight">{{ studentTitle }}</p>
-      </div>
+      @if (studentTitle) {
+        <div
+          class="bg-gradient-to-b from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-sm transition-all hover:border-amber-200"
+        >
+          <span class="text-[9px] font-black text-amber-500 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
+            <ion-icon name="star-outline" class="text-amber-500 text-sm"></ion-icon>
+            مؤشر التميز المهاري
+          </span>
+          <p class="text-amber-700 font-black text-[11px] m-0 text-center leading-tight">{{ studentTitle }}</p>
+        </div>
+      }
+    </div>
+    @if (userType !== UserType.Teacher) {
+      <p class="text-indigo-600 text-sm font-semibold mt-4 bg-indigo-50 py-2 rounded-xl border border-indigo-100">
+        {{ 'list-student.total_absents' | translate }} : {{ student?.total_absent || 0 }}
+      </p>
+    }
+  </div>
 
+  @if (userType !== UserType.Teacher) {
+    <div class="bg-slate-50 border-t border-slate-100 p-4">
+      <div class="grid grid-cols-4 divide-x divide-x-reverse divide-slate-200 text-center">
+        <div>
+          <p class="text-xl font-bold text-rose-500">{{ student?.unacceptable_absent_days || 0 }}</p>
+          <p class="text-[9px] text-slate-500 font-bold mt-1">{{ 'list-student.unacceptable_absence' | translate }}</p>
+        </div>
+        <div>
+          <p class="text-xl font-bold text-orange-500">{{ student?.suspend_days || 0 }}</p>
+          <p class="text-[9px] text-slate-500 font-bold mt-1">{{ 'list-student.suspension_days' | translate }}</p>
+        </div>
+        <div>
+          <p class="text-xl font-bold text-emerald-500">{{ student?.medical_days || 0 }}</p>
+          <p class="text-[9px] text-slate-500 font-bold mt-1">{{ 'list-student.medical_days' | translate }}</p>
+        </div>
+        <div>
+          @if (!isLoadingSkills) {
+            <p class="text-xl font-black text-amber-500">{{ studentTotalPoints || 0 }}</p>
+            <p class="text-[9px] text-slate-500 font-bold mt-1">إجمالي النقاط</p>
+          }
+          @if (isLoadingSkills) {
+            <ion-spinner name="dots" color="warning" class="h-5 mt-1"></ion-spinner>
+          }
+        </div>
+      </div>
     </div>
-    <p class="text-indigo-600 text-sm font-semibold mt-4 bg-indigo-50 py-2 rounded-xl border border-indigo-100" *ngIf="userType !== UserType.Teacher">{{'list-student.total_absents' | translate}} : {{student?.total_absent || 0}}</p>
-  </div>
-  
-  <div class="bg-slate-50 border-t border-slate-100 p-4" *ngIf="userType !== UserType.Teacher">
-    <div class="grid grid-cols-4 divide-x divide-x-reverse divide-slate-200 text-center">
-      <div>
-        <p class="text-xl font-bold text-rose-500">{{student?.unacceptable_absent_days || 0}}</p>
-        <p class="text-[9px] text-slate-500 font-bold mt-1">{{'list-student.unacceptable_absence' | translate}}</p>
-      </div>
-      <div>
-        <p class="text-xl font-bold text-orange-500">{{student?.suspend_days || 0}}</p>
-        <p class="text-[9px] text-slate-500 font-bold mt-1">{{'list-student.suspension_days' | translate}}</p>
-      </div>
-      <div>
-        <p class="text-xl font-bold text-emerald-500">{{student?.medical_days || 0}}</p>
-        <p class="text-[9px] text-slate-500 font-bold mt-1">{{'list-student.medical_days' | translate}}</p>
-      </div>
-      <div>
-        <ng-container *ngIf="!isLoadingSkills">
-          <p class="text-xl font-black text-amber-500">{{studentTotalPoints || 0}}</p>
-          <p class="text-[9px] text-slate-500 font-bold mt-1">إجمالي النقاط</p>
-        </ng-container>
-        <ion-spinner name="dots" *ngIf="isLoadingSkills" color="warning" class="h-5 mt-1"></ion-spinner>
-      </div>
-    </div>
-  </div>
+  }
 
   <div class="p-4 bg-white border-t border-slate-100 w-full pb-8">
     <h3 class="text-sm font-black text-slate-800 mb-4 flex items-center justify-center gap-2">
       <ion-icon name="analytics" class="text-indigo-500 text-lg"></ion-icon>
       تحليل المهارات
     </h3>
-    <div *ngIf="isLoadingSkills" class="flex justify-center py-4">
-       <ion-spinner name="crescent" color="primary"></ion-spinner>
-    </div>
-    <div *ngIf="!isLoadingSkills && studentSkillData" class="space-y-3" dir="rtl">
-      <div><div class="flex justify-between text-[11px] font-bold mb-1.5"><span class="text-slate-600"><ion-icon name="bulb" class="text-amber-500 text-sm"></ion-icon> العبقرية العلمية</span><span class="text-amber-500">{{studentSkillData.cognitive || 0}}</span></div><div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr"><div class="bg-amber-400 h-1.5 rounded-full" [style.width]="(studentSkillData.cognitive / (studentTotalPoints || 1) * 100) + '%'"></div></div></div>
-      <div><div class="flex justify-between text-[11px] font-bold mb-1.5"><span class="text-slate-600"><ion-icon name="chatbubbles" class="text-blue-500 text-sm"></ion-icon> التواصل والتعاون</span><span class="text-blue-500">{{studentSkillData.social || 0}}</span></div><div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr"><div class="bg-blue-500 h-1.5 rounded-full" [style.width]="(studentSkillData.social / (studentTotalPoints || 1) * 100) + '%'"></div></div></div>
-      <div><div class="flex justify-between text-[11px] font-bold mb-1.5"><span class="text-slate-600"><ion-icon name="shield-checkmark" class="text-emerald-500 text-sm"></ion-icon> الانضباط والمسؤولية</span><span class="text-emerald-500">{{studentSkillData.discipline || 0}}</span></div><div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr"><div class="bg-emerald-500 h-1.5 rounded-full" [style.width]="(studentSkillData.discipline / (studentTotalPoints || 1) * 100) + '%'"></div></div></div>
-      <div><div class="flex justify-between text-[11px] font-bold mb-1.5"><span class="text-slate-600"><ion-icon name="heart" class="text-rose-500 text-sm"></ion-icon> الذكاء العاطفي</span><span class="text-rose-500">{{studentSkillData.emotional || 0}}</span></div><div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr"><div class="bg-rose-500 h-1.5 rounded-full" [style.width]="(studentSkillData.emotional / (studentTotalPoints || 1) * 100) + '%'"></div></div></div>
-      <div><div class="flex justify-between text-[11px] font-bold mb-1.5"><span class="text-slate-600"><ion-icon name="laptop" class="text-purple-500 text-sm"></ion-icon> المهارات العملية</span><span class="text-purple-500">{{studentSkillData.practical || 0}}</span></div><div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr"><div class="bg-purple-500 h-1.5 rounded-full" [style.width]="(studentSkillData.practical / (studentTotalPoints || 1) * 100) + '%'"></div></div></div>
-    </div>
-    <div *ngIf="!isLoadingSkills && studentTotalPoints === 0" class="text-center py-4">
-      <p class="text-xs font-bold text-slate-400">لا توجد مهارات مسجلة حتى الآن</p>
-    </div>
+    @if (isLoadingSkills) {
+      <div class="flex justify-center py-4">
+        <ion-spinner name="crescent" color="primary"></ion-spinner>
+      </div>
+    }
+    @if (!isLoadingSkills && studentSkillData) {
+      <div class="space-y-3" dir="rtl">
+        <div>
+          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+            <span class="text-slate-600"
+              ><ion-icon name="bulb" class="text-amber-500 text-sm"></ion-icon> العبقرية العلمية</span
+            ><span class="text-amber-500">{{ studentSkillData.cognitive || 0 }}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div
+              class="bg-amber-400 h-1.5 rounded-full"
+              [style.width]="(studentSkillData.cognitive / (studentTotalPoints || 1)) * 100 + '%'"
+            ></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+            <span class="text-slate-600"
+              ><ion-icon name="chatbubbles" class="text-blue-500 text-sm"></ion-icon> التواصل والتعاون</span
+            ><span class="text-blue-500">{{ studentSkillData.social || 0 }}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div
+              class="bg-blue-500 h-1.5 rounded-full"
+              [style.width]="(studentSkillData.social / (studentTotalPoints || 1)) * 100 + '%'"
+            ></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+            <span class="text-slate-600"
+              ><ion-icon name="shield-checkmark" class="text-emerald-500 text-sm"></ion-icon> الانضباط والمسؤولية</span
+            ><span class="text-emerald-500">{{ studentSkillData.discipline || 0 }}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div
+              class="bg-emerald-500 h-1.5 rounded-full"
+              [style.width]="(studentSkillData.discipline / (studentTotalPoints || 1)) * 100 + '%'"
+            ></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+            <span class="text-slate-600"
+              ><ion-icon name="heart" class="text-rose-500 text-sm"></ion-icon> الذكاء العاطفي</span
+            ><span class="text-rose-500">{{ studentSkillData.emotional || 0 }}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div
+              class="bg-rose-500 h-1.5 rounded-full"
+              [style.width]="(studentSkillData.emotional / (studentTotalPoints || 1)) * 100 + '%'"
+            ></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+            <span class="text-slate-600"
+              ><ion-icon name="laptop" class="text-purple-500 text-sm"></ion-icon> المهارات العملية</span
+            ><span class="text-purple-500">{{ studentSkillData.practical || 0 }}</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-1.5 flex" dir="ltr">
+            <div
+              class="bg-purple-500 h-1.5 rounded-full"
+              [style.width]="(studentSkillData.practical / (studentTotalPoints || 1)) * 100 + '%'"
+            ></div>
+          </div>
+        </div>
+      </div>
+    }
+    @if (!isLoadingSkills && studentTotalPoints === 0) {
+      <div class="text-center py-4">
+        <p class="text-xs font-bold text-slate-400">لا توجد مهارات مسجلة حتى الآن</p>
+      </div>
+    }
   </div>
 </div>

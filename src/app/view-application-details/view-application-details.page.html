@@ -1,131 +1,187 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc;" class="relative text-center">
+  <ion-toolbar style="--background: #f8fafc" class="relative text-center">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
-      <ion-back-button defaultHref="/" text="" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+      <ion-back-button
+        defaultHref="/"
+        text=""
+        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+      ></ion-back-button>
     </ion-buttons>
-    
-    <ion-title class="font-extrabold text-slate-800 text-base w-full">{{'absent_students.application_details' | translate}}</ion-title>
+
+    <ion-title class="font-extrabold text-slate-800 text-base w-full"
+      >{{'absent_students.application_details' | translate}}</ion-title
+    >
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="lineone-bg" mode="md" dir="rtl">
   <div class="px-4 py-6 pb-12 max-w-lg mx-auto">
-    
-    <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 overflow-hidden relative" *ngIf="AppData">
-
-      <div class="h-2 w-full"
-           [ngClass]="{
+    @if (AppData) {
+    <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 overflow-hidden relative">
+      <div
+        class="h-2 w-full"
+        [ngClass]="{
              'bg-amber-400': AppData.application_status === '0',
              'bg-emerald-500': AppData.application_status === '1',
              'bg-rose-500': AppData.application_status === '2'
-           }"></div>
-
+           }"
+      ></div>
       <div class="p-6">
-        
         <div class="flex justify-between items-start mb-6">
           <div class="flex items-center gap-3">
-            <div class="w-14 h-14 rounded-full bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center flex-shrink-0 shadow-sm">
-               <ion-icon name="person" class="text-indigo-400 text-2xl"></ion-icon>
+            <div
+              class="w-14 h-14 rounded-full bg-indigo-50 border-2 border-indigo-100 flex items-center justify-center flex-shrink-0 shadow-sm"
+            >
+              <ion-icon name="person" class="text-indigo-400 text-2xl"></ion-icon>
             </div>
             <div>
               <h2 class="text-lg font-black text-slate-800 m-0 leading-tight">{{AppData.studentObj.name}}</h2>
               <p class="text-xs font-bold text-slate-500 mt-1 mb-0">{{AppData.courseObj.name}}</p>
             </div>
           </div>
-
           <div class="flex-shrink-0">
-            <span class="bg-amber-50 text-amber-600 border border-amber-100 px-3 py-1.5 rounded-xl text-xs font-black inline-flex items-center gap-1 shadow-sm" *ngIf="AppData.application_status === '0'">
+            @if (AppData.application_status === '0') {
+            <span
+              class="bg-amber-50 text-amber-600 border border-amber-100 px-3 py-1.5 rounded-xl text-xs font-black inline-flex items-center gap-1 shadow-sm"
+            >
               <ion-icon name="time-outline" class="text-sm"></ion-icon>
               {{'absent_students.pending' | translate}}
             </span>
-            <span class="bg-emerald-50 text-emerald-600 border border-emerald-100 px-3 py-1.5 rounded-xl text-xs font-black inline-flex items-center gap-1 shadow-sm" *ngIf="AppData.application_status === '1'">
+            } @if (AppData.application_status === '1') {
+            <span
+              class="bg-emerald-50 text-emerald-600 border border-emerald-100 px-3 py-1.5 rounded-xl text-xs font-black inline-flex items-center gap-1 shadow-sm"
+            >
               <ion-icon name="checkmark-circle-outline" class="text-sm"></ion-icon>
               {{'absent_students.accepted' | translate}}
             </span>
-            <span class="bg-rose-50 text-rose-600 border border-rose-100 px-3 py-1.5 rounded-xl text-xs font-black inline-flex items-center gap-1 shadow-sm" *ngIf="AppData.application_status === '2'">
+            } @if (AppData.application_status === '2') {
+            <span
+              class="bg-rose-50 text-rose-600 border border-rose-100 px-3 py-1.5 rounded-xl text-xs font-black inline-flex items-center gap-1 shadow-sm"
+            >
               <ion-icon name="close-circle-outline" class="text-sm"></ion-icon>
               {{'absent_students.rejected' | translate}}
             </span>
+            }
           </div>
         </div>
-
         <div class="h-px bg-slate-100 w-full mb-6"></div>
-
         <div class="space-y-5">
           <div class="flex items-start gap-3">
-            <div class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-slate-100">
+            <div
+              class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-slate-100"
+            >
               <ion-icon name="calendar-outline" class="text-indigo-400 text-lg"></ion-icon>
             </div>
             <div>
-              <span class="block text-[11px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider">{{'absent_students.Date' | translate}}</span>
+              <span class="block text-[11px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider"
+                >{{'absent_students.Date' | translate}}</span
+              >
               <span class="block text-sm font-bold text-slate-800">{{AppData.absent_date}}</span>
             </div>
           </div>
-
           <div class="flex items-start gap-3">
-            <div class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-slate-100">
+            <div
+              class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-slate-100"
+            >
               <ion-icon name="time-outline" class="text-indigo-400 text-lg"></ion-icon>
             </div>
             <div>
-              <span class="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wider">{{'absent_students.Sems' | translate}}</span>
+              <span class="block text-[11px] font-bold text-slate-400 mb-1 uppercase tracking-wider"
+                >{{'absent_students.Sems' | translate}}</span
+              >
               <div class="flex flex-wrap gap-1.5">
-                <span *ngFor="let sem of formattedSeminars; trackBy: trackByIndex" class="block text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">
+                @for (sem of formattedSeminars; track trackByIndex($index)) {
+                <span
+                  class="block text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100"
+                >
                   {{sem}}
                 </span>
+                }
               </div>
             </div>
           </div>
-
           <div class="flex items-start gap-3">
-            <div class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-slate-100">
+            <div
+              class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-slate-100"
+            >
               <ion-icon name="person-circle-outline" class="text-indigo-400 text-lg"></ion-icon>
             </div>
             <div>
-              <span class="block text-[11px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider">{{'absent_students.submitted_by' | translate}}</span>
+              <span class="block text-[11px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider"
+                >{{'absent_students.submitted_by' | translate}}</span
+              >
               <span class="block text-sm font-bold text-slate-800">{{AppData.submitted_by_Obj.first_name}}</span>
             </div>
           </div>
-
           <div class="flex items-start gap-3">
-            <div class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-slate-100">
+            <div
+              class="w-9 h-9 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 mt-0.5 border border-slate-100"
+            >
               <ion-icon name="document-text-outline" class="text-indigo-400 text-lg"></ion-icon>
             </div>
             <div class="flex-1">
-              <span class="block text-[11px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider">{{'absent_students.notes' | translate}}</span>
+              <span class="block text-[11px] font-bold text-slate-400 mb-0.5 uppercase tracking-wider"
+                >{{'absent_students.notes' | translate}}</span
+              >
               <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 mt-1">
-                <span class="block text-sm font-bold text-slate-700 leading-relaxed">{{AppData.absent_notes || 'لا توجد ملاحظات'}}</span>
+                <span class="block text-sm font-bold text-slate-700 leading-relaxed"
+                  >{{AppData.absent_notes || 'لا توجد ملاحظات'}}</span
+                >
               </div>
             </div>
           </div>
         </div>
-
-        <div *ngIf="AppData.pic_url" class="mt-8">
+        @if (AppData.pic_url) {
+        <div class="mt-8">
           <div class="flex items-center gap-2 mb-3">
             <ion-icon name="image-outline" class="text-slate-400"></ion-icon>
             <h4 class="text-xs font-bold text-slate-500 m-0">المرفقات (اضغط للتكبير)</h4>
           </div>
-          <div class="rounded-2xl border-2 border-slate-100 overflow-hidden shadow-sm bg-slate-50 p-1 relative group cursor-pointer active:scale-95 transition-all"
-               (click)="openFullscreenImage(AppData.pic_url)">
-            <img loading="lazy" [src]="AppData.pic_url" class="w-full h-auto object-cover max-h-72 rounded-xl transition-transform duration-300 group-hover:scale-[1.02]" alt="مرفق الطلب">
-            <div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
-                <ion-icon name="search-outline" class="text-white text-3xl"></ion-icon>
+          <div
+            class="rounded-2xl border-2 border-slate-100 overflow-hidden shadow-sm bg-slate-50 p-1 relative group cursor-pointer active:scale-95 transition-all"
+            (click)="openFullscreenImage(AppData.pic_url)"
+          >
+            <img
+              loading="lazy"
+              [src]="AppData.pic_url"
+              class="w-full h-auto object-cover max-h-72 rounded-xl transition-transform duration-300 group-hover:scale-[1.02]"
+              alt="مرفق الطلب"
+            />
+            <div
+              class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"
+            >
+              <ion-icon name="search-outline" class="text-white text-3xl"></ion-icon>
             </div>
           </div>
         </div>
-
+        }
       </div>
     </div>
-
+    }
   </div>
 
-  <div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300" *ngIf="showImageViewer" (click)="closeFullscreenImage()">
-    <button class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95" (click)="closeFullscreenImage()">
+  @if (showImageViewer) {
+  <div
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300"
+    (click)="closeFullscreenImage()"
+  >
+    <button
+      class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95"
+      (click)="closeFullscreenImage()"
+    >
       <ion-icon name="close" class="text-xl"></ion-icon>
     </button>
-    
-    <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
-      <img loading="lazy" [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+    <div
+      class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto"
+      style="touch-action: pan-x pan-y pinch-zoom"
+      (click)="$event.stopPropagation()"
+    >
+      <img
+        loading="lazy"
+        [src]="viewImageUrl"
+        class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300"
+      />
     </div>
   </div>
-
+  }
 </ion-content>

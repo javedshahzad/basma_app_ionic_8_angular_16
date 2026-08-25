@@ -10,16 +10,16 @@ import { GeoServiceProvider } from '../service/geo-service/geo-service';
 import { StorageService } from '../service/storage.service';
 import { ElearningApiService, ElearningCategory } from '../service/elearning-api/elearning-api.service';
 import { School } from '../service/school-directory-api/school-directory-api.service';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 type ElearningCategoryWithUiState = ElearningCategory & { isOpen: boolean };
 
 @Component({
-    selector: 'app-elearning-school-video',
-    templateUrl: './elearning-school-video.page.html',
-    styleUrls: ['./elearning-school-video.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, TranslatePipe]
+  selector: 'app-elearning-school-video',
+  templateUrl: './elearning-school-video.page.html',
+  styleUrls: ['./elearning-school-video.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, TranslatePipe]
 })
 export class ElearningSchoolVideoPage {
   private destroyRef = inject(DestroyRef);
@@ -86,7 +86,6 @@ export class ElearningSchoolVideoPage {
     });
   }
 
-
   getElerningMaterials(c_dode: string | null) {
     this.show_loading = true;
     this.elearningApi
@@ -94,7 +93,7 @@ export class ElearningSchoolVideoPage {
       .then(materialList => {
         this.show_loading = false;
         // 🟢 إضافة متغير 'isOpen' للتحكم بفتح وإغلاق القوائم بطريقة Angular صحيحة بدلاً من DOM
-        this.categories = materialList.map((cat) => {
+        this.categories = materialList.map(cat => {
           return { ...cat, isOpen: false };
         });
         this.cdr.markForCheck();

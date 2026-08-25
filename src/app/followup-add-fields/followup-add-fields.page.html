@@ -1,7 +1,11 @@
 ﻿<ion-header class="ion-no-border bg-white border-b border-slate-200" mode="md">
   <ion-toolbar class="--bg-transparent">
     <ion-buttons slot="end" class="mr-2">
-      <ion-back-button defaultHref="/tabs/follow-up-student" text="" class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-100 transition-all flex items-center justify-center"></ion-back-button>
+      <ion-back-button
+        defaultHref="/tabs/follow-up-student"
+        text=""
+        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-100 transition-all flex items-center justify-center"
+      ></ion-back-button>
     </ion-buttons>
     <ion-title class="text-slate-800 font-bold text-sm text-center">
       {{'followUp_student.add_fields' | translate}}
@@ -12,93 +16,145 @@
 
 <ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
   <div class="p-4 max-w-3xl mx-auto pb-24">
-
     <!-- شاشة التحميل الوهمية -->
-    <div *ngIf="show_loading" class="space-y-4">
-      <div *ngFor="let d of [1,2]; trackBy: trackByIndex" class="bg-white rounded-2xl h-48 border border-slate-100 animate-pulse shadow-sm"></div>
+    @if (show_loading) {
+    <div class="space-y-4">
+      @for (d of [1,2]; track trackByIndex($index)) {
+      <div class="bg-white rounded-2xl h-48 border border-slate-100 animate-pulse shadow-sm"></div>
+      }
     </div>
+    }
 
     <!-- الحقول -->
-    <div class="space-y-4 animate-fade-in-up" *ngIf="!show_loading && fields.length">
-      
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative group" *ngFor="let f of fields; let i=index; trackBy: trackByIndex">
-        
+    @if (!show_loading && fields.length) {
+    <div class="space-y-4 animate-fade-in-up">
+      @for (f of fields; track trackByIndex(i); let i = $index) {
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative group">
         <div class="bg-slate-50 border-b border-slate-100 p-3 flex justify-between items-center">
           <div class="flex items-center gap-2 text-indigo-600 font-bold text-sm">
             <div class="w-6 h-6 rounded bg-indigo-100 flex items-center justify-center text-xs">{{i + 1}}</div>
             {{'followUp_student.field_name_enter' | translate}}
           </div>
-          <button (click)="removeField(i,f)" class="w-8 h-8 rounded-full bg-white border border-rose-100 text-rose-500 hover:bg-rose-500 hover:text-white transition-colors flex items-center justify-center shadow-sm">
+          <button
+            (click)="removeField(i,f)"
+            class="w-8 h-8 rounded-full bg-white border border-rose-100 text-rose-500 hover:bg-rose-500 hover:text-white transition-colors flex items-center justify-center shadow-sm"
+          >
             <ion-icon name="trash" class="text-base"></ion-icon>
           </button>
         </div>
-
         <div class="p-4 space-y-4">
-          
           <div>
             <div class="flex justify-between items-center mb-2">
-              <label class="text-xs font-bold text-slate-500">{{'followUp_student.field_name' | translate}} <span class="text-rose-500">*</span></label>
-              <span class="text-[10px] font-bold" [ngClass]="f.field_name?.length >= 30 ? 'text-rose-500' : 'text-slate-400'">{{f.field_name?.length || 0}} / 30</span>
+              <label class="text-xs font-bold text-slate-500"
+                >{{'followUp_student.field_name' | translate}} <span class="text-rose-500">*</span></label
+              >
+              <span
+                class="text-[10px] font-bold"
+                [ngClass]="f.field_name?.length >= 30 ? 'text-rose-500' : 'text-slate-400'"
+                >{{f.field_name?.length || 0}} / 30</span
+              >
             </div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-11 flex items-center">
-              <ion-input [(ngModel)]="f.field_name" type="text" maxlength="30" placeholder="مثال: المشاركة الصفية" class="text-sm font-bold text-slate-800 bg-transparent w-full"></ion-input>
+            <div
+              class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-11 flex items-center"
+            >
+              <ion-input
+                [(ngModel)]="f.field_name"
+                type="text"
+                maxlength="30"
+                placeholder="مثال: المشاركة الصفية"
+                class="text-sm font-bold text-slate-800 bg-transparent w-full"
+              ></ion-input>
             </div>
           </div>
-
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-500 mb-2">{{'followUp_student.field_max_mark' | translate }} <span class="text-rose-500">*</span></label>
-              <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-11 flex items-center">
-                <ion-input [(ngModel)]="f.field_max_marks" type="number" class="text-sm font-bold text-slate-800 bg-transparent w-full text-center"></ion-input>
+              <label class="block text-xs font-bold text-slate-500 mb-2"
+                >{{'followUp_student.field_max_mark' | translate }} <span class="text-rose-500">*</span></label
+              >
+              <div
+                class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-11 flex items-center"
+              >
+                <ion-input
+                  [(ngModel)]="f.field_max_marks"
+                  type="number"
+                  class="text-sm font-bold text-slate-800 bg-transparent w-full text-center"
+                ></ion-input>
               </div>
             </div>
-
             <div>
-              <label class="block text-xs font-bold text-slate-500 mb-2">{{'followUp_student.mark_on_present' | translate }}</label>
-              <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-11 flex items-center">
-                <ion-input [(ngModel)]="f.marks_on_present" type="number" class="text-sm font-bold text-slate-800 bg-transparent w-full text-center"></ion-input>
+              <label class="block text-xs font-bold text-slate-500 mb-2"
+                >{{'followUp_student.mark_on_present' | translate }}</label
+              >
+              <div
+                class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-11 flex items-center"
+              >
+                <ion-input
+                  [(ngModel)]="f.marks_on_present"
+                  type="number"
+                  class="text-sm font-bold text-slate-800 bg-transparent w-full text-center"
+                ></ion-input>
               </div>
             </div>
           </div>
-
           <!-- 🟢 التعديل السحري هنا: جعل المستطيل بالكامل قابلاً للنقر مع تأثير تفاعلي -->
-          <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-100 mt-2 cursor-pointer hover:bg-slate-100 transition-all active:scale-[0.99]"
-               (click)="f.absent_marks = !f.absent_marks">
-            <label class="text-sm font-bold text-slate-700 select-none pointer-events-none">{{'followUp_student.absent_fill' | translate }}</label>
-            <ion-checkbox [(ngModel)]="f.absent_marks" mode="ios" class="--border-radius-sm pointer-events-none"></ion-checkbox>  
+          <div
+            class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-100 mt-2 cursor-pointer hover:bg-slate-100 transition-all active:scale-[0.99]"
+            (click)="f.absent_marks = !f.absent_marks"
+          >
+            <label class="text-sm font-bold text-slate-700 select-none pointer-events-none"
+              >{{'followUp_student.absent_fill' | translate }}</label
+            >
+            <ion-checkbox
+              [(ngModel)]="f.absent_marks"
+              mode="ios"
+              class="--border-radius-sm pointer-events-none"
+            ></ion-checkbox>
           </div>
-
         </div>
       </div>
+      }
     </div>
+    }
 
     <!-- الشاشة الفارغة -->
-    <div class="text-center py-20 animate-fade-in-up" *ngIf="!show_loading && fields.length === 0">
-      <div class="w-20 h-20 bg-slate-100 border border-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-300 shadow-sm">
+    @if (!show_loading && fields.length === 0) {
+    <div class="text-center py-20 animate-fade-in-up">
+      <div
+        class="w-20 h-20 bg-slate-100 border border-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-300 shadow-sm"
+      >
         <ion-icon name="list-outline" class="text-4xl"></ion-icon>
       </div>
       <h3 class="text-lg font-bold text-slate-800 mb-1">لا توجد حقول مسجلة</h3>
       <p class="text-sm font-medium text-slate-500">قم بإضافة حقل تقييم جديد لتبدأ بمتابعة طلابك.</p>
     </div>
+    }
 
     <!-- زر الإضافة -->
-    <div class="mt-6 flex justify-center" *ngIf="!show_loading">
-      <button class="bg-white border-2 border-dashed border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:border-indigo-400 font-bold py-3 px-8 rounded-xl transition-all flex items-center justify-center gap-2 w-full max-w-sm" (click)="addExtraFields()">
+    @if (!show_loading) {
+    <div class="mt-6 flex justify-center">
+      <button
+        class="bg-white border-2 border-dashed border-indigo-200 text-indigo-600 hover:bg-indigo-50 hover:border-indigo-400 font-bold py-3 px-8 rounded-xl transition-all flex items-center justify-center gap-2 w-full max-w-sm"
+        (click)="addExtraFields()"
+      >
         <ion-icon name="add-circle" class="text-xl"></ion-icon>
         {{'followUp_student.add_field' | translate }}
       </button>
     </div>
-
+    }
   </div>
 </ion-content>
 
 <!-- زر الحفظ -->
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="!show_loading && fields.length > 0">
+@if (!show_loading && fields.length > 0) {
+<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl">
   <div class="p-5 max-w-3xl mx-auto pb-safe">
-    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2"
-            (click)="submitFields()">
+    <button
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2"
+      (click)="submitFields()"
+    >
       <ion-icon name="save-outline" class="text-xl"></ion-icon>
       {{'followUp_student.submit' | translate}}
     </button>
   </div>
 </ion-footer>
+}

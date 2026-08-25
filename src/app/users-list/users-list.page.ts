@@ -16,16 +16,16 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor } from '@angular/common';
+
 import { UserSearchPipe } from '../pipes/user-search.pipe';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 
 @Component({
-    selector: 'app-users-list',
-    templateUrl: './users-list.page.html',
-    styleUrls: ['./users-list.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, NgFor, UserSearchPipe, TranslatePipe]
+  selector: 'app-users-list',
+  templateUrl: './users-list.page.html',
+  styleUrls: ['./users-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, UserSearchPipe, TranslatePipe]
 })
 export class UsersListPage implements OnInit {
   private destroyRef = inject(DestroyRef);

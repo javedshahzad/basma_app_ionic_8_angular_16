@@ -19,14 +19,13 @@ import { StorageService } from '../service/storage.service';
 import { NotesApiService } from '../service/notes-api/notes-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { UserType } from '../constants/user-type';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-view-notes',
-    templateUrl: './view-notes.page.html',
-    styleUrls: ['./view-notes.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-view-notes',
+  templateUrl: './view-notes.page.html',
+  styleUrls: ['./view-notes.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, TranslatePipe]
 })
 export class ViewNotesPage implements OnInit {
   trackByIndex(index: number): number {

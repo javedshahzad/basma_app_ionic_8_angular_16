@@ -2,16 +2,25 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
 import { IonicModule } from '@ionic/angular';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
 import { UserType } from '../../constants/user-type';
-import { NgIf, NgFor, NgClass, DecimalPipe } from '@angular/common';
+import { NgClass, DecimalPipe } from '@angular/common';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 import { HasRoleDirective } from '../../directives/has-role.directive';
 
 @Component({
-    selector: 'app-supervisor-view',
-    templateUrl: './supervisor-view.component.html',
-    styleUrl: './supervisor-view.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgIf, IonicModule, NgFor, NgClass, DecimalPipe, ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf, HasRoleDirective]
+  selector: 'app-supervisor-view',
+  templateUrl: './supervisor-view.component.html',
+  styleUrl: './supervisor-view.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    IonicModule,
+    NgClass,
+    DecimalPipe,
+    ɵɵDir,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    HasRoleDirective
+  ]
 })
 export class SupervisorViewComponent {
   readonly UserType = UserType;
@@ -43,6 +52,9 @@ export class SupervisorViewComponent {
 
   getTotalPoints(): number {
     if (!this.attendanceResponse?.students) return 0;
-    return this.attendanceResponse.students.reduce((sum: number, student: any) => sum + (Number(student.student_points) || 0), 0);
+    return this.attendanceResponse.students.reduce(
+      (sum: number, student: any) => sum + (Number(student.student_points) || 0),
+      0
+    );
   }
 }

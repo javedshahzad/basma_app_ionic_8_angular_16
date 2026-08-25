@@ -11,14 +11,13 @@ import { BulletinsApiService } from '../service/bulletins-api/bulletins-api.serv
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-select-bulletins-user',
-    templateUrl: './select-bulletins-user.page.html',
-    styleUrls: ['./select-bulletins-user.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-select-bulletins-user',
+  templateUrl: './select-bulletins-user.page.html',
+  styleUrls: ['./select-bulletins-user.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class SelectBulletinsUserPage {
   trackByIndex(index: number): number {
@@ -70,7 +69,6 @@ export class SelectBulletinsUserPage {
       this.cdr.markForCheck();
     });
   }
-
 
   // 🟢 استخدام async/await لجلب البيانات بأمان
   async ionViewWillEnter() {
@@ -224,17 +222,20 @@ export class SelectBulletinsUserPage {
       if (user && user.user_no !== this.userDetails.details.user_no) {
         this.formData.append('users', user.user_no); // إرسال المستخدم مباشرة
         this.dataProvider.showLoading();
-        this.bulletinsApi.createBulletins(this.formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
-          () => {
-            this.dataProvider.hideLoading();
-            this.dataProvider.showToast('تمت المشاركة بنجاح');
-            this.router.navigate(['bulletins']);
-          },
-          err => {
-            this.dataProvider.hideLoading();
-            this.dataProvider.showToast(err.message || 'خطأ غير متوقع');
-          }
-        );
+        this.bulletinsApi
+          .createBulletins(this.formData)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe(
+            () => {
+              this.dataProvider.hideLoading();
+              this.dataProvider.showToast('تمت المشاركة بنجاح');
+              this.router.navigate(['bulletins']);
+            },
+            err => {
+              this.dataProvider.hideLoading();
+              this.dataProvider.showToast(err.message || 'خطأ غير متوقع');
+            }
+          );
       } else {
         this.dataProvider.showToast(this.lang.same_user || 'لا يمكنك الإرسال لنفسك');
       }

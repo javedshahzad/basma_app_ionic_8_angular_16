@@ -10,14 +10,13 @@ import { StorageService } from '../service/storage.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-manage-student',
-    templateUrl: './manage-student.page.html',
-    styleUrls: ['./manage-student.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-manage-student',
+  templateUrl: './manage-student.page.html',
+  styleUrls: ['./manage-student.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class ManageStudentPage {
   trackByIndex(index: number): number {
@@ -60,7 +59,6 @@ export class ManageStudentPage {
       }
     }
   }
-
 
   // 🟢 جلب بيانات المستخدم وبدء العملية بطريقة آمنة تماماً
   async ionViewWillEnter() {

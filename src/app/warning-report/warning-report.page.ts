@@ -9,14 +9,14 @@ import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { ReportsApiService } from '../service/reports-api/reports-api.service';
-import { NgClass, NgIf, NgFor, DatePipe } from '@angular/common';
+import { NgClass, DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-warning-report',
-    templateUrl: './warning-report.page.html',
-    styleUrls: ['./warning-report.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgClass, NgIf, NgFor, DatePipe, TranslatePipe]
+  selector: 'app-warning-report',
+  templateUrl: './warning-report.page.html',
+  styleUrls: ['./warning-report.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, DatePipe, TranslatePipe]
 })
 export class WarningReportPage {
   trackByIndex(index: number): number {
@@ -47,7 +47,6 @@ export class WarningReportPage {
     private reportsApi: ReportsApiService,
     private cdr: ChangeDetectorRef
   ) {}
-
 
   // 🟢 3. التخلص من localStorage واستخدام async/await
   async ionViewWillEnter() {

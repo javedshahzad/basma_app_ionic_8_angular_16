@@ -1,38 +1,58 @@
 ﻿<ion-header mode="md">
   <ion-toolbar>
-  	<ion-buttons slot="end">
-  		<ion-back-button></ion-back-button>
-  	</ion-buttons>
-     <ion-toolbar>
-        <ion-searchbar style="padding-top: 15px;" mode="ios" placeholder="{{'search.search_user' | translate}}" id="search" (keyup)="filterList($event)"></ion-searchbar>
-      </ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-toolbar>
+      <ion-searchbar
+        style="padding-top: 15px"
+        mode="ios"
+        placeholder="{{'search.search_user' | translate}}"
+        id="search"
+        (keyup)="filterList($event)"
+      ></ion-searchbar>
+    </ion-toolbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content mode="md">
-	<div class="students" id="students" *ngIf="users" > 
-		<ion-card  class="text-left body-font card heigt-min"  *ngFor="let users of allUsers; let i=index; trackBy: trackByIndex">
-			<ion-item  >
-				<ion-checkbox slot="end" id="ch{{i}}" (ionChange)="selectUser(users,$event,i)" [checked]="selectedUsers.includes(users.user_no)"></ion-checkbox>
-				<ion-avatar slot="start">
-					<img loading="lazy" [src]="users.pic"  onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';">
-				</ion-avatar>
-			    <ion-label>
-			    	<h4>{{users.first_name}}</h4>
-			    	<p>{{users.username}}</p> 
-			    	<!-- <p>{{users.user_no}}</p>  -->
-			    </ion-label>
-			</ion-item>
-		</ion-card>
-			<ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-			    <ion-infinite-scroll-content></ion-infinite-scroll-content>
-			  </ion-infinite-scroll>
-
-	</div>
-
+  @if (users) {
+  <div class="students" id="students">
+    @for (users of allUsers; track trackByIndex(i); let i = $index) {
+    <ion-card class="text-left body-font card heigt-min">
+      <ion-item>
+        <ion-checkbox
+          slot="end"
+          id="ch{{i}}"
+          (ionChange)="selectUser(users,$event,i)"
+          [checked]="selectedUsers.includes(users.user_no)"
+        ></ion-checkbox>
+        <ion-avatar slot="start">
+          <img
+            loading="lazy"
+            [src]="users.pic"
+            onerror="
+              this.onerror = null;
+              this.src = 'assets/imgs/default_avatar.png';
+            "
+          />
+        </ion-avatar>
+        <ion-label>
+          <h4>{{users.first_name}}</h4>
+          <p>{{users.username}}</p>
+          <!-- <p>{{users.user_no}}</p>  -->
+        </ion-label>
+      </ion-item>
+    </ion-card>
+    }
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </div>
+  }
 </ion-content>
 <ion-footer>
-	<ion-button  expand="block" shape="round" color="primary" (click)="sendUser()">
-		{{'sendmsg.select_user' | translate}}
-	</ion-button>
-	</ion-footer>
+  <ion-button expand="block" shape="round" color="primary" (click)="sendUser()">
+    {{'sendmsg.select_user' | translate}}
+  </ion-button>
+</ion-footer>

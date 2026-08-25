@@ -1,13 +1,13 @@
-﻿import {
-  Component,
-  NgZone,
-  DestroyRef,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+﻿import { Component, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, Platform, ActionSheetController, PopoverController, IonicModule } from '@ionic/angular';
+import {
+  NavController,
+  AlertController,
+  Platform,
+  ActionSheetController,
+  PopoverController,
+  IonicModule
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -20,15 +20,15 @@ import { UserManagementApiService } from '../service/user-management-api/user-ma
 import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgClass, NgFor } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { HasRoleDirective } from '../directives/has-role.directive';
 
 @Component({
-    selector: 'app-edit-user-profile',
-    templateUrl: './edit-user-profile.page.html',
-    styleUrls: ['./edit-user-profile.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, NgClass, NgFor, TranslatePipe, HasRoleDirective]
+  selector: 'app-edit-user-profile',
+  templateUrl: './edit-user-profile.page.html',
+  styleUrls: ['./edit-user-profile.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, NgClass, TranslatePipe, HasRoleDirective]
 })
 export class EditUserProfilePage {
   trackByIndex(index: number): number {
@@ -117,7 +117,6 @@ export class EditUserProfilePage {
       this.cdr.markForCheck();
     });
   }
-
 
   async ionViewWillEnter() {
     // 🟢 قراءة بيانات المشرف أو المدير الحالي بأمان

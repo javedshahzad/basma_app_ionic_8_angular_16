@@ -1,11 +1,4 @@
-﻿import {
-  Component,
-  NgZone,
-  DestroyRef,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+﻿import { Component, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, Platform, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
@@ -24,16 +17,15 @@ import { AuthService } from '../service/auth/auth.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { MessagingApiService } from '../service/messaging-api/messaging-api.service';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor } from '@angular/common';
 
 const env = environment;
 
 @Component({
-    selector: 'app-sendmessage',
-    templateUrl: './sendmessage.page.html',
-    styleUrls: ['./sendmessage.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-sendmessage',
+  templateUrl: './sendmessage.page.html',
+  styleUrls: ['./sendmessage.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class SendmessagePage {
   trackByIndex(index: number): number {
@@ -108,7 +100,6 @@ export class SendmessagePage {
       this.cdr.markForCheck();
     });
   }
-
 
   // 🟢 3. جعل الدالة async لاستخدام StorageService بدلاً من localStorage
   async ionViewWillEnter() {

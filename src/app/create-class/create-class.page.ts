@@ -1,5 +1,13 @@
 ﻿import { Component, OnInit, NgZone, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { NavController, ModalController, MenuController, ToastController, AlertController, LoadingController, IonicModule } from '@ionic/angular';
+import {
+  NavController,
+  ModalController,
+  MenuController,
+  ToastController,
+  AlertController,
+  LoadingController,
+  IonicModule
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
@@ -8,14 +16,14 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { StorageService } from '../service/storage.service';
 import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { FormsModule } from '@angular/forms';
-import { NgClass, NgIf, NgFor } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-create-class',
-    templateUrl: './create-class.page.html',
-    styleUrls: ['./create-class.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgClass, NgIf, NgFor, TranslatePipe]
+  selector: 'app-create-class',
+  templateUrl: './create-class.page.html',
+  styleUrls: ['./create-class.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, NgClass, TranslatePipe]
 })
 export class CreateClassPage implements OnInit {
   trackByIndex(index: number): number {

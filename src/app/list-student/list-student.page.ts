@@ -1,6 +1,15 @@
 import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, Platform, ModalController, ActionSheetController, MenuController, PopoverController, IonicModule } from '@ionic/angular';
+import {
+  NavController,
+  AlertController,
+  Platform,
+  ModalController,
+  ActionSheetController,
+  MenuController,
+  PopoverController,
+  IonicModule
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -23,7 +32,7 @@ import { GamificationApiService } from '../service/gamification-api/gamification
 import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
-import { NgClass, NgIf, NgFor, DatePipe } from '@angular/common';
+import { NgClass, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SupervisorViewComponent } from '../components/supervisor-view/supervisor-view.component';
 import { TeacherViewComponent } from '../components/teacher-view/teacher-view.component';
@@ -63,11 +72,11 @@ interface TeacherEditPowersResponse {
 }
 
 @Component({
-    selector: 'app-list-student',
-    templateUrl: './list-student.page.html',
-    styleUrls: ['./list-student.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgClass, NgIf, FormsModule, NgFor, SupervisorViewComponent, TeacherViewComponent, DatePipe, TranslatePipe]
+  selector: 'app-list-student',
+  templateUrl: './list-student.page.html',
+  styleUrls: ['./list-student.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, FormsModule, SupervisorViewComponent, TeacherViewComponent, DatePipe, TranslatePipe]
 })
 export class ListStudentPage {
   trackByIndex(index: number): number {
@@ -225,7 +234,6 @@ export class ListStudentPage {
       this.cdr.markForCheck();
     });
   }
-
 
   async ionViewWillEnter() {
     await this.onInitPage();
@@ -677,9 +685,9 @@ export class ListStudentPage {
 
     this.followupFieldsApi
       .getFollowUpStudentList(requestData)
-      .then((followUpRes) => {
+      .then(followUpRes => {
         if (followUpRes?.data?.students) {
-          let matched = followUpRes.data.students.find((s) => s.sid === student.sid);
+          let matched = followUpRes.data.students.find(s => s.sid === student.sid);
           if (matched) {
             this.zone.run(() => {
               student.student_points = matched.student_points || 0;

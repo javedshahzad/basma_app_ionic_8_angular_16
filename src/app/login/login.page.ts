@@ -14,15 +14,15 @@ import { StorageService } from '../service/storage.service';
 import { CredentialStorageService } from '../service/credential-storage/credential-storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
-import { NgIf, NgFor } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.page.html',
-    styleUrls: ['./login.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, FormsModule, TranslatePipe]
+  selector: 'app-login',
+  templateUrl: './login.page.html',
+  styleUrls: ['./login.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class LoginPage {
   trackByIndex(index: number): number {
@@ -52,7 +52,6 @@ export class LoginPage {
     private planApi: PlanApiService,
     private cdr: ChangeDetectorRef
   ) {}
-
 
   // 🟢 3. دورة الحياة المتزامنة لتجهيز المعرفات والبيانات
   async ionViewWillEnter() {

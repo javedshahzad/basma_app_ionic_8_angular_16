@@ -17,15 +17,15 @@ import { StorageService } from '../service/storage.service';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
 import { CoursesApiService } from '../service/courses-api/courses-api.service';
 import { UserType } from '../constants/user-type';
-import { NgClass, NgIf, NgFor } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-add-user',
-    templateUrl: './add-user.page.html',
-    styleUrls: ['./add-user.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgClass, FormsModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-add-user',
+  templateUrl: './add-user.page.html',
+  styleUrls: ['./add-user.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, FormsModule, TranslatePipe]
 })
 export class AddUserPage implements OnInit {
   trackByIndex(index: number): number {

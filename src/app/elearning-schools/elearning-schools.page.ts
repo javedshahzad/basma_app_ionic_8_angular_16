@@ -8,15 +8,15 @@ import { SchoolDirectoryApiService, School } from '../service/school-directory-a
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-elearning-schools',
-    templateUrl: './elearning-schools.page.html',
-    styleUrls: ['./elearning-schools.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, FormsModule, NgClass, TranslatePipe]
+  selector: 'app-elearning-schools',
+  templateUrl: './elearning-schools.page.html',
+  styleUrls: ['./elearning-schools.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, NgClass, TranslatePipe]
 })
 export class ElearningSchoolsPage {
   trackByIndex(index: number): number {
@@ -61,7 +61,6 @@ export class ElearningSchoolsPage {
       this.cdr.markForCheck();
     });
   }
-
 
   async ionViewWillEnter() {
     this.show_loading = true;

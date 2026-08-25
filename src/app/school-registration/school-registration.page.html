@@ -1,25 +1,32 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc;">
+  <ion-toolbar style="--background: #f8fafc">
     <ion-buttons slot="end" class="ml-2">
-      <ion-back-button defaultHref="/" text="" class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"></ion-back-button>
+      <ion-back-button
+        defaultHref="/"
+        text=""
+        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+      ></ion-back-button>
     </ion-buttons>
-    <ion-title class="font-extrabold text-slate-800 text-lg text-right">{{'reg_school.pagetitle' | translate}}</ion-title>
+    <ion-title class="font-extrabold text-slate-800 text-lg text-right"
+      >{{'reg_school.pagetitle' | translate}}</ion-title
+    >
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="lineone-bg" mode="md" dir="rtl">
   <div class="px-4 py-6 pb-12 sm:px-8 max-w-3xl mx-auto">
-    
     <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 p-6 sm:p-10">
-      
-      <form #registerForm='ngForm' class="space-y-6">
-        
+      <form #registerForm="ngForm" class="space-y-6">
         <div class="flex flex-col items-center justify-center mb-8">
           <div class="relative group cursor-pointer" (click)="takePicture('schoollogo')">
-            <div class="w-28 h-28 rounded-full border-4 border-slate-50 shadow-md overflow-hidden bg-slate-100 flex items-center justify-center">
-              <img loading="lazy" [src]="school_logo" class="w-full h-full object-cover">
+            <div
+              class="w-28 h-28 rounded-full border-4 border-slate-50 shadow-md overflow-hidden bg-slate-100 flex items-center justify-center"
+            >
+              <img loading="lazy" [src]="school_logo" class="w-full h-full object-cover" />
             </div>
-            <div class="absolute bottom-0 left-0 w-9 h-9 bg-indigo-600 rounded-full border-4 border-white flex items-center justify-center shadow-md transition-transform group-hover:scale-110 active:scale-95">
+            <div
+              class="absolute bottom-0 left-0 w-9 h-9 bg-indigo-600 rounded-full border-4 border-white flex items-center justify-center shadow-md transition-transform group-hover:scale-110 active:scale-95"
+            >
               <ion-icon name="camera" class="text-white text-sm"></ion-icon>
             </div>
           </div>
@@ -29,116 +36,228 @@
         <div class="h-px w-full bg-slate-100 my-6"></div>
 
         <div class="space-y-2">
-          <span class="block text-sm font-bold text-slate-700 px-1">{{'reg_school.school_name' | translate}} <span class="text-rose-500">*</span></span>
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            <ion-input type="text" name="schoolName" #schoolName='ngModel' [(ngModel)]="school.schoolName" required class="font-bold text-slate-800"></ion-input>
+          <span class="block text-sm font-bold text-slate-700 px-1"
+            >{{'reg_school.school_name' | translate}} <span class="text-rose-500">*</span></span
+          >
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              type="text"
+              name="schoolName"
+              #schoolName="ngModel"
+              [(ngModel)]="school.schoolName"
+              required
+              class="font-bold text-slate-800"
+            ></ion-input>
           </div>
-          <div *ngIf="schoolName.invalid && (schoolName.dirty || schoolName.touched)" class="text-rose-500 text-xs font-bold px-2">
-            <span *ngIf="schoolName.errors?.required">{{'validations.required' | translate}}</span>
+          @if (schoolName.invalid && (schoolName.dirty || schoolName.touched)) {
+          <div class="text-rose-500 text-xs font-bold px-2">
+            @if (schoolName.errors?.required) {
+            <span>{{'validations.required' | translate}}</span>
+            }
           </div>
+          }
         </div>
 
         <div class="space-y-2">
-          <span class="block text-sm font-bold text-slate-700 px-1">{{'reg_school.school_details' | translate}} <span class="text-rose-500">*</span></span>
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            
-            <ion-input type="text" name="address" #address='ngModel' [(ngModel)]="school.address" required class="font-bold text-slate-800"></ion-input>
-            
+          <span class="block text-sm font-bold text-slate-700 px-1"
+            >{{'reg_school.school_details' | translate}} <span class="text-rose-500">*</span></span
+          >
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              type="text"
+              name="address"
+              #address="ngModel"
+              [(ngModel)]="school.address"
+              required
+              class="font-bold text-slate-800"
+            ></ion-input>
           </div>
-          <div *ngIf="address.invalid && (address.dirty || address.touched)" class="text-rose-500 text-xs font-bold px-2 mt-1">
-            <span *ngIf="address.errors?.required">{{'validations.required' | translate}}</span>
+          @if (address.invalid && (address.dirty || address.touched)) {
+          <div class="text-rose-500 text-xs font-bold px-2 mt-1">
+            @if (address.errors?.required) {
+            <span>{{'validations.required' | translate}}</span>
+            }
           </div>
+          }
         </div>
 
         <div class="space-y-2">
-          <span class="block text-sm font-bold text-slate-700 px-1">{{'reg_school.username' | translate}} <span class="text-rose-500">*</span></span>
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            
-            <ion-input type="text" name="userName" #userName='ngModel' [(ngModel)]="school.username" 
-                       required 
-                       pattern="^[a-zA-Z0-9_]+$" 
-                       class="font-bold text-slate-800" 
-                       dir="ltr" text-right></ion-input>
+          <span class="block text-sm font-bold text-slate-700 px-1"
+            >{{'reg_school.username' | translate}} <span class="text-rose-500">*</span></span
+          >
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              type="text"
+              name="userName"
+              #userName="ngModel"
+              [(ngModel)]="school.username"
+              required
+              pattern="^[a-zA-Z0-9_]+$"
+              class="font-bold text-slate-800"
+              dir="ltr"
+              text-right
+            ></ion-input>
           </div>
-          
-          <div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="text-rose-500 text-xs font-bold px-2 mt-1">
-            <span *ngIf="userName.errors?.required">{{'validations.required' | translate}}</span>
-            
-            <span *ngIf="userName.errors?.pattern">يسمح فقط بالأحرف الإنجليزية، الأرقام، وعلامة (_) بدون مسافات.</span>
+
+          @if (userName.invalid && (userName.dirty || userName.touched)) {
+          <div class="text-rose-500 text-xs font-bold px-2 mt-1">
+            @if (userName.errors?.required) {
+            <span>{{'validations.required' | translate}}</span>
+            } @if (userName.errors?.pattern) {
+            <span>يسمح فقط بالأحرف الإنجليزية، الأرقام، وعلامة (_) بدون مسافات.</span>
+            }
           </div>
+          }
         </div>
 
         <div class="space-y-2">
-          <span class="block text-sm font-bold text-slate-700 px-1">{{'login.password' | translate}} <span class="text-rose-500">*</span></span>
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            <ion-input type="password" name="password" #password='ngModel' [(ngModel)]="school.password" required class="font-bold text-slate-800"></ion-input>
+          <span class="block text-sm font-bold text-slate-700 px-1"
+            >{{'login.password' | translate}} <span class="text-rose-500">*</span></span
+          >
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              type="password"
+              name="password"
+              #password="ngModel"
+              [(ngModel)]="school.password"
+              required
+              class="font-bold text-slate-800"
+            ></ion-input>
           </div>
-          <div *ngIf="password.invalid && (password.dirty || password.touched)" class="text-rose-500 text-xs font-bold px-2">
-            <span *ngIf="password.errors?.required">{{'validations.required' | translate}}</span>
+          @if (password.invalid && (password.dirty || password.touched)) {
+          <div class="text-rose-500 text-xs font-bold px-2">
+            @if (password.errors?.required) {
+            <span>{{'validations.required' | translate}}</span>
+            }
           </div>
+          }
         </div>
 
         <div class="space-y-2">
-          <span class="block text-sm font-bold text-slate-700 px-1">{{'reg_school.country' | translate}} <span class="text-rose-500">*</span></span>
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl relative overflow-hidden focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+          <span class="block text-sm font-bold text-slate-700 px-1"
+            >{{'reg_school.country' | translate}} <span class="text-rose-500">*</span></span
+          >
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-2xl relative overflow-hidden focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
             <ionic-selectable
               [(ngModel)]="selected_country"
               name="country"
               itemValueField="code"
               itemTextField="name"
-              [items]="countries" 
+              [items]="countries"
               [canSearch]="true"
               (onChange)="countryChange($event)"
               modalCssClass="lineone-selectable-modal"
-              class="w-full block font-bold text-slate-800 px-4 py-3">
-              
+              class="w-full block font-bold text-slate-800 px-4 py-3"
+            >
               <ng-template ionicSelectableCloseButtonTemplate>
-                <ion-icon name="close" class="text-3xl text-slate-500 hover:text-slate-800 transition-colors bg-slate-100 hover:bg-slate-200 rounded-full p-1 w-8 h-8 flex items-center justify-center"></ion-icon>
+                <ion-icon
+                  name="close"
+                  class="text-3xl text-slate-500 hover:text-slate-800 transition-colors bg-slate-100 hover:bg-slate-200 rounded-full p-1 w-8 h-8 flex items-center justify-center"
+                ></ion-icon>
               </ng-template>
-              
             </ionic-selectable>
           </div>
         </div>
 
         <div class="space-y-2">
-          <span class="block text-sm font-bold text-slate-700 px-1">{{'reg_school.email' | translate}} <span class="text-rose-500">*</span></span>
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            <ion-input type="email" name="emailId" #emailId='ngModel' [(ngModel)]="school.email_id" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" class="font-bold text-slate-800" dir="ltr" text-right></ion-input>
+          <span class="block text-sm font-bold text-slate-700 px-1"
+            >{{'reg_school.email' | translate}} <span class="text-rose-500">*</span></span
+          >
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              type="email"
+              name="emailId"
+              #emailId="ngModel"
+              [(ngModel)]="school.email_id"
+              required
+              pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+              class="font-bold text-slate-800"
+              dir="ltr"
+              text-right
+            ></ion-input>
           </div>
-          <div *ngIf="emailId.invalid && (emailId.dirty || emailId.touched)" class="text-rose-500 text-xs font-bold px-2">
-            <span *ngIf="emailId.errors?.required">{{'validations.required' | translate}}</span>
-            <span *ngIf="emailId.errors?.pattern">{{'validations.invalidemail' | translate}}</span>
+          @if (emailId.invalid && (emailId.dirty || emailId.touched)) {
+          <div class="text-rose-500 text-xs font-bold px-2">
+            @if (emailId.errors?.required) {
+            <span>{{'validations.required' | translate}}</span>
+            } @if (emailId.errors?.pattern) {
+            <span>{{'validations.invalidemail' | translate}}</span>
+            }
           </div>
+          }
         </div>
 
         <div class="space-y-2">
-          <span class="block text-sm font-bold text-slate-700 px-1">{{'reg_school.contact' | translate}} <span class="text-rose-500">*</span></span>
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            <ion-input type="tel" name="contact" #contact='ngModel' [(ngModel)]="school.contact" required class="font-bold text-slate-800" dir="ltr" text-right></ion-input>
+          <span class="block text-sm font-bold text-slate-700 px-1"
+            >{{'reg_school.contact' | translate}} <span class="text-rose-500">*</span></span
+          >
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-1.5 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              type="tel"
+              name="contact"
+              #contact="ngModel"
+              [(ngModel)]="school.contact"
+              required
+              class="font-bold text-slate-800"
+              dir="ltr"
+              text-right
+            ></ion-input>
           </div>
-          <div *ngIf="contact.invalid && (contact.dirty || contact.touched)" class="text-rose-500 text-xs font-bold px-2">
-            <span *ngIf="contact.errors?.required">{{'validations.required' | translate}}</span>
+          @if (contact.invalid && (contact.dirty || contact.touched)) {
+          <div class="text-rose-500 text-xs font-bold px-2">
+            @if (contact.errors?.required) {
+            <span>{{'validations.required' | translate}}</span>
+            }
           </div>
+          }
         </div>
 
         <div class="flex items-start gap-3 mt-8 p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100">
-          <ion-checkbox [(ngModel)]="AgreeOnTosPP" [ngModelOptions]="{standalone: true}" mode="md" class="mt-1 flex-shrink-0"></ion-checkbox>
+          <ion-checkbox
+            [(ngModel)]="AgreeOnTosPP"
+            [ngModelOptions]="{standalone: true}"
+            mode="md"
+            class="mt-1 flex-shrink-0"
+          ></ion-checkbox>
           <div class="text-sm font-bold text-slate-600 leading-loose">
             {{'tos_pp.agree_on' | translate}}
-            <a (click)="openUrl('https://basmapp.com/Pp.html')" class="text-indigo-600 hover:text-indigo-800 underline decoration-indigo-200 underline-offset-4 cursor-pointer mx-1 transition-colors">{{'tos_pp.privacy_policy' | translate}}</a>
+            <a
+              (click)="openUrl('https://basmapp.com/Pp.html')"
+              class="text-indigo-600 hover:text-indigo-800 underline decoration-indigo-200 underline-offset-4 cursor-pointer mx-1 transition-colors"
+              >{{'tos_pp.privacy_policy' | translate}}</a
+            >
             {{'tos_pp.and' | translate}}
-            <a (click)="openUrl('https://basmapp.com/tOs.html')" class="text-indigo-600 hover:text-indigo-800 underline decoration-indigo-200 underline-offset-4 cursor-pointer mx-1 transition-colors">{{'tos_pp.term_of_service' | translate}}</a>.
+            <a
+              (click)="openUrl('https://basmapp.com/tOs.html')"
+              class="text-indigo-600 hover:text-indigo-800 underline decoration-indigo-200 underline-offset-4 cursor-pointer mx-1 transition-colors"
+              >{{'tos_pp.term_of_service' | translate}}</a
+            >.
           </div>
         </div>
 
-        <button class="w-full mt-8 py-4 rounded-2xl font-extrabold text-white text-base bg-indigo-600 shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2"
-                [disabled]="!registerForm.valid"
-                [ngClass]="!registerForm.valid ? 'opacity-60 grayscale cursor-not-allowed' : 'active:scale-95'"
-                (click)="registerSchool()">
+        <button
+          class="w-full mt-8 py-4 rounded-2xl font-extrabold text-white text-base bg-indigo-600 shadow-xl shadow-indigo-200 hover:bg-indigo-700 transition-all flex items-center justify-center gap-2"
+          [disabled]="!registerForm.valid"
+          [ngClass]="!registerForm.valid ? 'opacity-60 grayscale cursor-not-allowed' : 'active:scale-95'"
+          (click)="registerSchool()"
+        >
           <ion-icon name="checkmark-circle" class="text-2xl"></ion-icon>
           {{'reg_school.register_btn' | translate}}
         </button>
-
       </form>
     </div>
   </div>

@@ -1,37 +1,52 @@
 <div class="bg-white flex flex-col p-2 w-full overflow-hidden" dir="rtl">
-
-  <button class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none" 
-          (click)="popoverAction('search')" *appHasRole="[UserType.Admin, UserType.Moderator]">
+  <button
+    class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none"
+    (click)="popoverAction('search')"
+    *appHasRole="[UserType.Admin, UserType.Moderator]"
+  >
     <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
       <ion-icon name="search-outline" class="text-lg"></ion-icon>
     </div>
-    <span class="font-bold text-sm text-slate-700">{{lang1?.search || 'بحث'}}</span>
+    <span class="font-bold text-sm text-slate-700">{{ lang1?.search || 'بحث' }}</span>
   </button>
 
-  <button class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none" 
-          (click)="popoverAction('create')" *ngIf="userType === UserType.Admin">
-    <div class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
-      <ion-icon name="add-outline" class="text-xl"></ion-icon>
-    </div>
-    <span class="font-bold text-sm text-slate-700">{{lang1?.create_class || 'إضافة صف جديد'}}</span>
-  </button>
-  
-  <button class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none" 
-          (click)="popoverAction('edit')" *ngIf="userType === UserType.Admin && !editMode">
-    <div class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
-      <ion-icon name="pencil-sharp" class="text-lg"></ion-icon>
-    </div>
-    <span class="font-bold text-sm text-slate-700">{{lang1?.edit_class || 'تعديل بيانات الصفوف'}}</span>
-  </button>
+  @if (userType === UserType.Admin) {
+    <button
+      class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none"
+      (click)="popoverAction('create')"
+    >
+      <div class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
+        <ion-icon name="add-outline" class="text-xl"></ion-icon>
+      </div>
+      <span class="font-bold text-sm text-slate-700">{{ lang1?.create_class || 'إضافة صف جديد' }}</span>
+    </button>
+  }
 
-  <div class="h-px w-full bg-slate-100 my-1" *ngIf="canReorder"></div>
+  @if (userType === UserType.Admin && !editMode) {
+    <button
+      class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none"
+      (click)="popoverAction('edit')"
+    >
+      <div class="w-9 h-9 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
+        <ion-icon name="pencil-sharp" class="text-lg"></ion-icon>
+      </div>
+      <span class="font-bold text-sm text-slate-700">{{ lang1?.edit_class || 'تعديل بيانات الصفوف' }}</span>
+    </button>
+  }
 
-  <button class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none" 
-          (click)="popoverAction('reorder')" *ngIf="canReorder">
-    <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
-      <ion-icon name="swap-vertical-outline" class="text-lg"></ion-icon>
-    </div>
-    <span class="font-bold text-sm text-slate-700">{{lang1?.reorder_class || 'إعادة ترتيب الفصول'}}</span>
-  </button>
+  @if (canReorder) {
+    <div class="h-px w-full bg-slate-100 my-1"></div>
+  }
 
+  @if (canReorder) {
+    <button
+      class="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-slate-50 transition-all active:scale-[0.98] text-right focus:outline-none"
+      (click)="popoverAction('reorder')"
+    >
+      <div class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 flex-shrink-0">
+        <ion-icon name="swap-vertical-outline" class="text-lg"></ion-icon>
+      </div>
+      <span class="font-bold text-sm text-slate-700">{{ lang1?.reorder_class || 'إعادة ترتيب الفصول' }}</span>
+    </button>
+  }
 </div>

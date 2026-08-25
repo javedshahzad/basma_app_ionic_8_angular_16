@@ -3,15 +3,15 @@ import { NgForm, FormsModule } from '@angular/forms';
 import { DataService } from '../service/data/data.service';
 import { Platform, IonicModule } from '@ionic/angular';
 import { ContactApiService } from '../service/contact-api/contact-api.service';
-import { NgIf } from '@angular/common';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
-    selector: 'app-contact-us',
-    templateUrl: './contact-us.page.html',
-    styleUrls: ['./contact-us.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, TranslatePipe]
+  selector: 'app-contact-us',
+  templateUrl: './contact-us.page.html',
+  styleUrls: ['./contact-us.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class ContactUsPage {
   user: any = {};
@@ -46,5 +46,4 @@ export class ContactUsPage {
       this.dataProvider.errorALertMessage(error instanceof Error ? error.message : String(error));
     }
   }
-
 }

@@ -6,17 +6,17 @@ import { Router } from '@angular/router';
 import { Device } from '@capacitor/device';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { LoggedInUser } from '../model/logged-in-user.model';
 import { Device as UserDevice } from '../service/device-api/device-api.service';
 
 @Component({
-    selector: 'app-all-devices',
-    templateUrl: './all-devices.page.html',
-    styleUrls: ['./all-devices.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, TranslatePipe]
+  selector: 'app-all-devices',
+  templateUrl: './all-devices.page.html',
+  styleUrls: ['./all-devices.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, TranslatePipe]
 })
 export class AllDevicesPage implements OnInit {
   trackByIndex(index: number): number {

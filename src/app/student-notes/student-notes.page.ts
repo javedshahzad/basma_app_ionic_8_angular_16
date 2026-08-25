@@ -1,11 +1,4 @@
-﻿import {
-  Component,
-  NgZone,
-  DestroyRef,
-  inject,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+﻿import { Component, NgZone, DestroyRef, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, ModalController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
@@ -17,14 +10,13 @@ import { Browser } from '@capacitor/browser';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { NotesApiService } from '../service/notes-api/notes-api.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-student-notes',
-    templateUrl: './student-notes.page.html',
-    styleUrls: ['./student-notes.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-student-notes',
+  templateUrl: './student-notes.page.html',
+  styleUrls: ['./student-notes.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, TranslatePipe]
 })
 export class StudentNotesPage {
   trackByIndex(index: number): number {
@@ -76,7 +68,6 @@ export class StudentNotesPage {
       });
     });
   }
-
 
   // 🟢 دوال عرض الصور
   showPhoto(url: string) {

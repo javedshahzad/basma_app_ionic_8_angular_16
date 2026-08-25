@@ -7,14 +7,14 @@ import { DataService } from '../service/data/data.service';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
-import { NgIf, NgFor, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-add-class',
-    templateUrl: './add-class.page.html',
-    styleUrls: ['./add-class.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, TranslatePipe]
+  selector: 'app-add-class',
+  templateUrl: './add-class.page.html',
+  styleUrls: ['./add-class.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, TranslatePipe]
 })
 export class AddClassPage {
   trackByIndex(index: number): number {
@@ -42,7 +42,6 @@ export class AddClassPage {
       this.cdr.markForCheck();
     });
   }
-
 
   // 🟢 جلب البيانات بأمان باستخدام async/await بدلاً من ngOnInit
   async ionViewWillEnter() {

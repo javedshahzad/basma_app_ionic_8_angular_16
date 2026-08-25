@@ -1,15 +1,16 @@
 ﻿<ion-header class="lineone-header ion-no-border" mode="md">
   <ion-toolbar>
-    <ion-buttons slot="start" class="menu-btn-container">
-    </ion-buttons>
+    <ion-buttons slot="start" class="menu-btn-container"> </ion-buttons>
 
-    <ion-title class="ion-text-center fw-bold text-dark">
-      {{'sendmsg.title'| translate}}
-    </ion-title>
+    <ion-title class="ion-text-center fw-bold text-dark"> {{'sendmsg.title'| translate}} </ion-title>
 
     <ion-buttons slot="end" class="mr-2 w-10 menu-btn-container">
       <ion-button color="dark" class="custom-menu-btn" (click)="moveBack()">
-        <ion-icon name="arrow-back-outline" [class.transform]="true" [class.-scale-x-100]="lang?.direction === 'rtl'"></ion-icon>
+        <ion-icon
+          name="arrow-back-outline"
+          [class.transform]="true"
+          [class.-scale-x-100]="lang?.direction === 'rtl'"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -17,32 +18,32 @@
 
 <ion-content class="bg-[#f8fafc]" mode="md">
   <div class="p-4 md:p-6 lg:p-8 max-w-2xl mx-auto pb-10" dir="rtl">
-    
-    <form #privateMessage='ngForm' class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full relative">
-      
+    <form
+      #privateMessage="ngForm"
+      class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full relative"
+    >
       <div class="p-4 md:p-6 border-b border-slate-100 bg-white">
         <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
           <ion-icon name="people-outline" class="text-indigo-500 text-lg"></ion-icon>
           الفئة المستهدفة
         </h3>
-        
+
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-          
           <ion-item lines="none" class="bg-slate-50 rounded-xl border border-slate-100 checkbox-item">
             <ion-checkbox slot="start" [(ngModel)]="mail.send_to.admin" name="admin" color="primary"></ion-checkbox>
             <ion-label>{{'sendmsg.admin'| translate}}</ion-label>
-          </ion-item>         
-          
+          </ion-item>
+
           <ion-item lines="none" class="bg-slate-50 rounded-xl border border-slate-100 checkbox-item">
             <ion-checkbox slot="start" [(ngModel)]="mail.send_to.mod" name="moderator" color="primary"></ion-checkbox>
             <ion-label>{{'sendmsg.mod'| translate}}</ion-label>
           </ion-item>
-          
+
           <ion-item lines="none" class="bg-slate-50 rounded-xl border border-slate-100 checkbox-item">
             <ion-checkbox slot="start" [(ngModel)]="mail.send_to.tech" name="teacher" color="primary"></ion-checkbox>
             <ion-label>{{'sendmsg.teachers'| translate}}</ion-label>
           </ion-item>
-          
+
           <ion-item lines="none" class="bg-slate-50 rounded-xl border border-slate-100 checkbox-item">
             <ion-checkbox slot="start" [(ngModel)]="mail.send_to.viewer" name="viewer" color="primary"></ion-checkbox>
             <ion-label>{{'sendmsg.viewer'| translate}}</ion-label>
@@ -52,75 +53,117 @@
             <ion-checkbox slot="start" [(ngModel)]="mail.send_to.parents" name="parent" color="primary"></ion-checkbox>
             <ion-label>{{'sendmsg.parent'| translate}}</ion-label>
           </ion-item>
-          
+
           <ion-item lines="none" class="bg-slate-50 rounded-xl border border-slate-100 checkbox-item">
-            <ion-checkbox slot="start" [(ngModel)]="mail.send_to.students" name="students" color="primary"></ion-checkbox>
+            <ion-checkbox
+              slot="start"
+              [(ngModel)]="mail.send_to.students"
+              name="students"
+              color="primary"
+            ></ion-checkbox>
             <ion-label>{{'sendmsg.students'| translate}}</ion-label>
           </ion-item>
-          
+
           <ion-item lines="none" class="bg-slate-50 rounded-xl border border-slate-100 checkbox-item">
-            <ion-checkbox slot="start" [(ngModel)]="mail.send_to.others" (ionChange)="checkUserList()" name="other" color="primary"></ion-checkbox>
+            <ion-checkbox
+              slot="start"
+              [(ngModel)]="mail.send_to.others"
+              (ionChange)="checkUserList()"
+              name="other"
+              color="primary"
+            ></ion-checkbox>
             <ion-label>{{'sendmsg.users'| translate}}</ion-label>
           </ion-item>
         </div>
       </div>
 
-      <div class="p-4 md:p-6 border-b border-slate-100" *ngIf="mail.send_to.others">
+      @if (mail.send_to.others) {
+      <div class="p-4 md:p-6 border-b border-slate-100">
         <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
           <ion-icon name="person-add-outline" class="text-indigo-500 text-lg"></ion-icon>
-          تحديد مستخدمين 
+          تحديد مستخدمين
           <span class="text-xs text-rose-500 font-bold">* (مطلوب)</span>
         </h3>
-        
-        <div (click)="openUserSelection()" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex justify-between items-center cursor-pointer hover:border-indigo-400 transition-colors shadow-sm">
+        <div
+          (click)="openUserSelection()"
+          class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex justify-between items-center cursor-pointer hover:border-indigo-400 transition-colors shadow-sm"
+        >
           <span class="font-bold text-slate-600 text-sm">
-            {{ mail.selected_users?.length > 0 ? 'تم تحديد (' + mail.selected_users.length + ') مستخدمين' : 'اضغط هنا لفتح قائمة المستخدمين...' }}
+            {{ mail.selected_users?.length > 0 ? 'تم تحديد (' + mail.selected_users.length + ') مستخدمين' : 'اضغط هنا
+            لفتح قائمة المستخدمين...' }}
           </span>
           <ion-icon name="chevron-back-outline" class="text-slate-400 text-xl"></ion-icon>
         </div>
-
-        <div class="flex flex-wrap gap-2 mt-4" *ngIf="mail.selected_users?.length > 0">
-          <span *ngFor="let user of mail.selected_users; trackBy: trackByIndex" class="bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center shadow-sm">
+        @if (mail.selected_users?.length > 0) {
+        <div class="flex flex-wrap gap-2 mt-4">
+          @for (user of mail.selected_users; track trackByIndex($index)) {
+          <span
+            class="bg-indigo-50 border border-indigo-100 text-indigo-600 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center shadow-sm"
+          >
             {{user.first_name}}
           </span>
+          }
         </div>
+        }
       </div>
+      }
 
       <div class="p-4 md:p-6 bg-slate-50 border-b border-slate-100 relative min-h-[180px]">
-        <ion-textarea rows="6" placeholder="{{'sendmsg.notification'| translate}}"
-          [(ngModel)]="mail.notification" name="msg_body" #msg_body='ngModel' required maxlength="140"
-          class="text-sm font-medium text-slate-800 p-0 leading-relaxed bg-transparent w-full">
+        <ion-textarea
+          rows="6"
+          placeholder="{{'sendmsg.notification'| translate}}"
+          [(ngModel)]="mail.notification"
+          name="msg_body"
+          #msg_body="ngModel"
+          required
+          maxlength="140"
+          class="text-sm font-medium text-slate-800 p-0 leading-relaxed bg-transparent w-full"
+        >
         </ion-textarea>
-        
+
         <div class="absolute bottom-4 left-4 flex gap-2" dir="ltr">
-          <button type="button" class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors shadow-sm border border-indigo-100 active:scale-95" (click)="takePicture()">
+          <button
+            type="button"
+            class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition-colors shadow-sm border border-indigo-100 active:scale-95"
+            (click)="takePicture()"
+          >
             <ion-icon name="image" class="text-xl"></ion-icon>
           </button>
         </div>
       </div>
 
-      <div class="p-4 flex items-center gap-3 bg-white border-b border-slate-100" *ngIf="ticketImage !== ''">
-        <div class="w-16 h-16 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm relative">
-          <img loading="lazy" [src]="'data:image/jpeg;base64,' + ticketImage" class="w-full h-full object-cover"/>
+      @if (ticketImage !== '') {
+      <div class="p-4 flex items-center gap-3 bg-white border-b border-slate-100">
+        <div
+          class="w-16 h-16 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm relative"
+        >
+          <img loading="lazy" [src]="'data:image/jpeg;base64,' + ticketImage" class="w-full h-full object-cover" />
         </div>
         <div class="flex-1 overflow-hidden">
           <span class="block text-sm font-bold text-slate-800">الصورة المرفقة</span>
           <span class="block text-[11px] font-medium text-emerald-500 truncate">جاهزة للإرسال</span>
         </div>
-        <button type="button" (click)="ticketImage=''" class="w-8 h-8 flex flex-shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-100 transition-colors">
+        <button
+          type="button"
+          (click)="ticketImage=''"
+          class="w-8 h-8 flex flex-shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-100 transition-colors"
+        >
           <ion-icon name="close" class="text-lg"></ion-icon>
         </button>
       </div>
+      }
 
       <div class="p-4 md:p-6 bg-white mt-auto">
-        <button type="button" class="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed" 
-                [disabled]="privateMessage.invalid || mail.notification.trim() === '' || !isAnyCheckboxSelected || (mail.send_to.others && (!mail.selected_users || mail.selected_users.length === 0))"
-                (click)="sendMessage()">
+        <button
+          type="button"
+          class="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+          [disabled]="privateMessage.invalid || mail.notification.trim() === '' || !isAnyCheckboxSelected || (mail.send_to.others && (!mail.selected_users || mail.selected_users.length === 0))"
+          (click)="sendMessage()"
+        >
           <ion-icon name="paper-plane-outline" class="text-xl mr-1 transform -rotate-45"></ion-icon>
           إرسال الرسالة
         </button>
       </div>
-
     </form>
   </div>
 </ion-content>

@@ -5,15 +5,15 @@ import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PasswordResetApiService } from '../service/password-reset-api/password-reset-api.service';
-import { NgIf, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-forgot-password',
-    templateUrl: './forgot-password.page.html',
-    styleUrls: ['./forgot-password.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgClass, FormsModule, TranslatePipe]
+  selector: 'app-forgot-password',
+  templateUrl: './forgot-password.page.html',
+  styleUrls: ['./forgot-password.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, FormsModule, TranslatePipe]
 })
 export class ForgotPasswordPage {
   // 🟢 استدعاء المحتوى للتحكم في التمرير (Scrolling) بطريقة Angular الآمنة
@@ -63,7 +63,6 @@ export class ForgotPasswordPage {
       this.email = navigation.extras.state['email'] || '';
     }
   }
-
 
   // 🟢 التمرير الآمن لأسفل الصفحة بدلاً من استخدام document.getElementById
   scrollToBottom() {

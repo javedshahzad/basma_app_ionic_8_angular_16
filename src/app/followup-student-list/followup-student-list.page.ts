@@ -1,13 +1,14 @@
-import {
-  Component,
-  NgZone,
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-  DestroyRef,
-  inject
-} from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavController, AlertController, Platform, ModalController, ActionSheetController, PopoverController, IonicModule } from '@ionic/angular';
+import {
+  NavController,
+  AlertController,
+  Platform,
+  ModalController,
+  ActionSheetController,
+  PopoverController,
+  IonicModule
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -30,9 +31,15 @@ import { HolidaysApiService } from '../service/holidays-api/holidays-api.service
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
 import { GamificationApiService } from '../service/gamification-api/gamification-api.service';
 import { PlanApiService, UserPlan } from '../service/plan-api/plan-api.service';
-import { FollowupFieldsApiService, FollowupStudentListResponse, FollowupStudentRecord, FollowupMarkEntry, FollowupField } from '../service/followup-fields-api/followup-fields-api.service';
+import {
+  FollowupFieldsApiService,
+  FollowupStudentListResponse,
+  FollowupStudentRecord,
+  FollowupMarkEntry,
+  FollowupField
+} from '../service/followup-fields-api/followup-fields-api.service';
 import { UserType } from '../constants/user-type';
-import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
+import { NgClass, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { Course } from '../service/courses-api/courses-api.service';
@@ -46,11 +53,11 @@ interface MarkSheetEntry {
 }
 
 @Component({
-    selector: 'app-followup-student-list',
-    templateUrl: './followup-student-list.page.html',
-    styleUrls: ['./followup-student-list.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgClass, NgFor, FormsModule, DatePipe, TranslatePipe]
+  selector: 'app-followup-student-list',
+  templateUrl: './followup-student-list.page.html',
+  styleUrls: ['./followup-student-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, FormsModule, DatePipe, TranslatePipe]
 })
 export class FollowupStudentListPage {
   readonly UserType = UserType;
@@ -166,7 +173,6 @@ export class FollowupStudentListPage {
       this.cdr.markForCheck();
     });
   }
-
 
   trackByStudent(index: number, student: FollowupStudentRecord): string | number {
     return student?.sid ?? index;
@@ -399,7 +405,7 @@ export class FollowupStudentListPage {
         };
 
         this.reportsApi.getMarksReport(studentData).then(
-          async (res) => {
+          async res => {
             this.dataProvider.hideLoading();
             if (res && res.data) {
               let fileUrl = String(res.data);
@@ -430,8 +436,7 @@ export class FollowupStudentListPage {
 
   async presentAlertConfirm() {
     const alert = await this.alertCtrl.create({
-      header:
-        this.userInfo.is_school_admin == 1 ? this.planLang.not_valid : this.planLang.not_valid_for_others,
+      header: this.userInfo.is_school_admin == 1 ? this.planLang.not_valid : this.planLang.not_valid_for_others,
       mode: 'ios',
       buttons: [{ text: 'موافق', role: 'cancel', cssClass: 'secondary' }]
     });
@@ -822,7 +827,9 @@ export class FollowupStudentListPage {
 
         // تحديث المصفوفة الحية التي تتصل بالشاشة
         if (this.attendanceResponse && this.attendanceResponse.students) {
-          const index = this.attendanceResponse.students.findIndex((s: FollowupStudentRecord) => s.sid === this.studentData.sid);
+          const index = this.attendanceResponse.students.findIndex(
+            (s: FollowupStudentRecord) => s.sid === this.studentData.sid
+          );
           if (index > -1) {
             this.attendanceResponse.students[index].pic = cleanUrl;
             // إجبار التحديث بعدم كسر المرجع أو بتغييره بطريقة صحيحة
@@ -866,7 +873,9 @@ export class FollowupStudentListPage {
           this.studentData.pic = newPicUrl;
 
           if (this.attendanceResponse && this.attendanceResponse.students) {
-            const index = this.attendanceResponse.students.findIndex((s: FollowupStudentRecord) => s.sid === this.studentData.sid);
+            const index = this.attendanceResponse.students.findIndex(
+              (s: FollowupStudentRecord) => s.sid === this.studentData.sid
+            );
             if (index > -1) {
               this.attendanceResponse.students[index].pic = newPicUrl;
             }

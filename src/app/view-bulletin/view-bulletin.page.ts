@@ -8,14 +8,14 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-view-bulletin',
-    templateUrl: './view-bulletin.page.html',
-    styleUrls: ['./view-bulletin.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, DatePipe]
+  selector: 'app-view-bulletin',
+  templateUrl: './view-bulletin.page.html',
+  styleUrls: ['./view-bulletin.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, DatePipe]
 })
 export class ViewBulletinPage {
   trackByIndex(index: number): number {
@@ -55,7 +55,6 @@ export class ViewBulletinPage {
       this.bulletin = this.navData.bulletin || this.navData;
     }
   }
-
 
   // 🟢 جلب المستخدم وتأمين البيانات من الضياع عند الـ Refresh
   async ionViewWillEnter() {

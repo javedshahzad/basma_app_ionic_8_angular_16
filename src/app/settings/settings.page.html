@@ -2,53 +2,74 @@
   <ion-toolbar class="--bg-transparent">
     <ion-buttons slot="start" class="ml-2">
       <ion-menu-toggle auto-hide="false">
-        <ion-button color="dark" class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 transition-colors">
+        <ion-button
+          color="dark"
+          class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center hover:bg-slate-200 transition-colors"
+        >
           <ion-icon name="menu-outline"></ion-icon>
         </ion-button>
       </ion-menu-toggle>
-    </ion-buttons>   
-    
-    <ion-title class="text-slate-700 font-bold text-base text-center">
-      {{'setting.title' | translate}}
-    </ion-title>
+    </ion-buttons>
+
+    <ion-title class="text-slate-700 font-bold text-base text-center"> {{'setting.title' | translate}} </ion-title>
 
     <ion-buttons slot="end" class="mr-2">
-      <ion-back-button 
-        defaultHref="/tabs" 
-        text="" 
-        class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors flex items-center justify-center">
+      <ion-back-button
+        defaultHref="/tabs"
+        text=""
+        class="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors flex items-center justify-center"
+      >
       </ion-back-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="bg-[#f8fafc]" mode="md">
-  
-  <div *ngIf="deactivate_date" class="bg-amber-50 border-b border-amber-200 text-amber-700 p-4 text-center font-bold text-sm shadow-sm">
+  @if (deactivate_date) {
+  <div class="bg-amber-50 border-b border-amber-200 text-amber-700 p-4 text-center font-bold text-sm shadow-sm">
     <ion-icon name="warning" class="text-2xl mb-1 text-amber-500"></ion-icon>
     <p class="m-0 leading-relaxed">
-      {{'setting.deactive_account_text' | translate}} <br>
-      <span class="inline-block mt-2 bg-amber-100 text-amber-800 px-3 py-1 rounded-lg border border-amber-200" dir="ltr">
-        <span *ngIf="remainingTime.days > 0">{{remainingTime.days}}D </span>
-        {{remainingTime.hours}}H {{remainingTime.minutes}}M
+      {{'setting.deactive_account_text' | translate}} <br />
+      <span
+        class="inline-block mt-2 bg-amber-100 text-amber-800 px-3 py-1 rounded-lg border border-amber-200"
+        dir="ltr"
+      >
+        @if (remainingTime.days > 0) {
+        <span>{{remainingTime.days}}D </span>
+        } {{remainingTime.hours}}H {{remainingTime.minutes}}M
       </span>
     </p>
   </div>
+  }
 
   <div class="p-5 max-w-2xl mx-auto" dir="rtl">
-    
     <div class="flex flex-col items-center justify-center mb-8">
       <div class="relative">
-        <img loading="lazy" [src]="displayPic" class="w-28 h-28 rounded-3xl object-cover border-4 border-white shadow-md bg-slate-100" onerror="this.onerror=null;this.src='assets/imgs/user-icon.PNG';">
-        
-        <button *ngIf="userType !== UserType.Student"
-                class="absolute -bottom-2 -left-2 w-10 h-10 bg-indigo-600 text-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center hover:bg-indigo-700 transition-colors active:scale-95" 
-                (click)="takePicture()">
+        <img
+          loading="lazy"
+          [src]="displayPic"
+          class="w-28 h-28 rounded-3xl object-cover border-4 border-white shadow-md bg-slate-100"
+          onerror="
+            this.onerror = null;
+            this.src = 'assets/imgs/user-icon.PNG';
+          "
+        />
+
+        @if (userType !== UserType.Student) {
+        <button
+          class="absolute -bottom-2 -left-2 w-10 h-10 bg-indigo-600 text-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center hover:bg-indigo-700 transition-colors active:scale-95"
+          (click)="takePicture()"
+        >
           <ion-icon name="camera-outline" class="text-xl"></ion-icon>
         </button>
+        }
       </div>
       <h3 class="mt-4 font-bold text-slate-800 text-xl">{{user.name}}</h3>
-      <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg mt-1 border border-indigo-100" *ngIf="user.username">{{user.username}}</span>
+      @if (user.username) {
+      <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg mt-1 border border-indigo-100"
+        >{{user.username}}</span
+      >
+      }
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6">
@@ -60,31 +81,63 @@
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-2">{{'setting.name' | translate}}</label>
           <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 opacity-80">
-            <ion-input type="text" [value]="user.name" disabled class="text-sm font-bold text-slate-700 bg-transparent"></ion-input>
+            <ion-input
+              type="text"
+              [value]="user.name"
+              disabled
+              class="text-sm font-bold text-slate-700 bg-transparent"
+            ></ion-input>
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-2">{{'setting.peronalid' | translate}}</label>
           <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 opacity-80">
-            <ion-input type="text" [value]="user.username" disabled class="text-sm font-bold text-slate-700 bg-transparent"></ion-input>
+            <ion-input
+              type="text"
+              [value]="user.username"
+              disabled
+              class="text-sm font-bold text-slate-700 bg-transparent"
+            ></ion-input>
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-2">{{'setting.email' | translate}}</label>
-          <div class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            <ion-input type="email" name="email" #email='ngModel' pattern="[A-Za-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" [(ngModel)]="user.email_id" class="text-sm font-bold text-slate-800 bg-transparent text-left" dir="ltr"></ion-input>
+          <div
+            class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              type="email"
+              name="email"
+              #email="ngModel"
+              pattern="[A-Za-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+              [(ngModel)]="user.email_id"
+              class="text-sm font-bold text-slate-800 bg-transparent text-left"
+              dir="ltr"
+            ></ion-input>
           </div>
-          <div *ngIf="email.invalid && (email.touched)" class="text-xs text-rose-500 font-bold mt-1 px-1">
-            <span *ngIf="email.errors?.pattern">{{'validations.invalidemail' | translate}}</span>
+          @if (email.invalid && (email.touched)) {
+          <div class="text-xs text-rose-500 font-bold mt-1 px-1">
+            @if (email.errors?.pattern) {
+            <span>{{'validations.invalidemail' | translate}}</span>
+            }
           </div>
+          }
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-2">{{'setting.phone' | translate}}</label>
-          <div class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            <ion-input type="number" name="phone" [(ngModel)]="user.phone_no" class="text-sm font-bold text-slate-800 bg-transparent text-left" dir="ltr"></ion-input>
+          <div
+            class="bg-white border border-slate-200 rounded-xl px-3 py-1.5 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              type="number"
+              name="phone"
+              [(ngModel)]="user.phone_no"
+              class="text-sm font-bold text-slate-800 bg-transparent text-left"
+              dir="ltr"
+            ></ion-input>
           </div>
         </div>
       </div>
@@ -98,8 +151,16 @@
       <div class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-2">{{'setting.oldpass' | translate}}</label>
-          <div class="bg-white border border-slate-200 rounded-xl px-3 flex items-center focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            <ion-input [type]="passwordType" name="oldpassword" [(ngModel)]="user.oldpass" class="text-sm font-bold text-slate-800 bg-transparent flex-1 text-left py-2" dir="ltr"></ion-input>
+          <div
+            class="bg-white border border-slate-200 rounded-xl px-3 flex items-center focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              [type]="passwordType"
+              name="oldpassword"
+              [(ngModel)]="user.oldpass"
+              class="text-sm font-bold text-slate-800 bg-transparent flex-1 text-left py-2"
+              dir="ltr"
+            ></ion-input>
             <button class="text-slate-400 p-2 hover:text-indigo-600 transition-colors" (click)="showpass()">
               <ion-icon [name]="passwordIcon" class="text-xl"></ion-icon>
             </button>
@@ -108,8 +169,16 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-2">{{'setting.newpass' | translate}}</label>
-          <div class="bg-white border border-slate-200 rounded-xl px-3 flex items-center focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-            <ion-input [type]="passwordTypecnf" name="newpassword" [(ngModel)]="user.newpass" class="text-sm font-bold text-slate-800 bg-transparent flex-1 text-left py-2" dir="ltr"></ion-input>
+          <div
+            class="bg-white border border-slate-200 rounded-xl px-3 flex items-center focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+          >
+            <ion-input
+              [type]="passwordTypecnf"
+              name="newpassword"
+              [(ngModel)]="user.newpass"
+              class="text-sm font-bold text-slate-800 bg-transparent flex-1 text-left py-2"
+              dir="ltr"
+            ></ion-input>
             <button class="text-slate-400 p-2 hover:text-indigo-600 transition-colors" (click)="showpasscnf()">
               <ion-icon [name]="passwordIconcnf" class="text-xl"></ion-icon>
             </button>
@@ -119,101 +188,171 @@
     </div>
 
     <ng-container *appHasRole="[UserType.Admin]">
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6" *ngIf="is_school_admin">
-      <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-5 flex items-center gap-2">
-        <ion-icon name="settings-outline" class="text-lg"></ion-icon> إعدادات المدرسة
-      </h4>
-
-      <div class="space-y-4">
-        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <span class="text-sm font-bold text-slate-700">{{'setting.parent_share_link' | translate}}</span>
-          <ion-toggle [checked]="parent_link" color="primary" [(ngModel)]="user.parent_register_link" mode="ios"></ion-toggle>
-        </div>
-
-        <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-3">
-          <span class="text-sm font-bold text-slate-700">{{'setting.teacher_register_link' | translate}}</span>
-          <ion-toggle [checked]="teacherLink" color="primary" [(ngModel)]="user.teacher_register_link" mode="ios"></ion-toggle>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-[11px] font-bold text-slate-500 mb-2 truncate">{{'setting.delay_rule' | translate}}</label>
-            <div class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
-              <ion-input type="number" [(ngModel)]="user.delay_rule" class="text-sm font-bold text-slate-800 text-center"></ion-input>
+      @if (is_school_admin) {
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6">
+        <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-5 flex items-center gap-2">
+          <ion-icon name="settings-outline" class="text-lg"></ion-icon> إعدادات المدرسة
+        </h4>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-3">
+            <span class="text-sm font-bold text-slate-700">{{'setting.parent_share_link' | translate}}</span>
+            <ion-toggle
+              [checked]="parent_link"
+              color="primary"
+              [(ngModel)]="user.parent_register_link"
+              mode="ios"
+            ></ion-toggle>
+          </div>
+          <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-3">
+            <span class="text-sm font-bold text-slate-700">{{'setting.teacher_register_link' | translate}}</span>
+            <ion-toggle
+              [checked]="teacherLink"
+              color="primary"
+              [(ngModel)]="user.teacher_register_link"
+              mode="ios"
+            ></ion-toggle>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 mb-2 truncate"
+                >{{'setting.delay_rule' | translate}}</label
+              >
+              <div
+                class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all"
+              >
+                <ion-input
+                  type="number"
+                  [(ngModel)]="user.delay_rule"
+                  class="text-sm font-bold text-slate-800 text-center"
+                ></ion-input>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 mb-2 truncate"
+                >{{'setting.warning_report' | translate}}</label
+              >
+              <div
+                class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all"
+              >
+                <ion-input
+                  type="number"
+                  [(ngModel)]="user.warning_report"
+                  class="text-sm font-bold text-slate-800 text-center"
+                ></ion-input>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 mb-2 truncate"
+                >{{'setting.warning_report_second' | translate}}</label
+              >
+              <div
+                class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all"
+              >
+                <ion-input
+                  type="number"
+                  [(ngModel)]="user.warning_report_second"
+                  class="text-sm font-bold text-slate-800 text-center"
+                ></ion-input>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-500 mb-2 truncate"
+                >{{'setting.warning_report_third' | translate}}</label
+              >
+              <div
+                class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all"
+              >
+                <ion-input
+                  type="number"
+                  [(ngModel)]="user.warning_report_third"
+                  class="text-sm font-bold text-slate-800 text-center"
+                ></ion-input>
+              </div>
             </div>
           </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-500 mb-2 truncate">{{'setting.warning_report' | translate}}</label>
-            <div class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
-              <ion-input type="number" [(ngModel)]="user.warning_report" class="text-sm font-bold text-slate-800 text-center"></ion-input>
+          <div class="mt-4">
+            <label class="block text-xs font-bold text-slate-600 mb-2">{{'setting.country' | translate}}</label>
+            <div
+              class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all"
+            >
+              <ion-select
+                [(ngModel)]="selectedCountyCode"
+                (ionChange)="assignCountry()"
+                interface="action-sheet"
+                [placeholder]="user.country"
+                class="w-full text-sm font-bold text-slate-800 py-2"
+              >
+                @for (c of countries; track trackByIndex($index)) {
+                <ion-select-option [value]="c.code">{{c.name}}</ion-select-option>
+                }
+              </ion-select>
             </div>
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-500 mb-2 truncate">{{'setting.warning_report_second' | translate}}</label>
-            <div class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
-              <ion-input type="number" [(ngModel)]="user.warning_report_second" class="text-sm font-bold text-slate-800 text-center"></ion-input>
-            </div>
-          </div>
-          <div>
-            <label class="block text-[11px] font-bold text-slate-500 mb-2 truncate">{{'setting.warning_report_third' | translate}}</label>
-            <div class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
-              <ion-input type="number" [(ngModel)]="user.warning_report_third" class="text-sm font-bold text-slate-800 text-center"></ion-input>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <label class="block text-xs font-bold text-slate-600 mb-2">{{'setting.country' | translate}}</label>
-          <div class="bg-white border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
-            <ion-select [(ngModel)]="selectedCountyCode" (ionChange)="assignCountry()" interface="action-sheet" [placeholder]="user.country" class="w-full text-sm font-bold text-slate-800 py-2">
-              <ion-select-option *ngFor="let c of countries; trackBy: trackByIndex" [value]="c.code">{{c.name}}</ion-select-option>
-            </ion-select>
           </div>
         </div>
       </div>
-    </div>
+      }
     </ng-container>
 
     <div class="space-y-3 mt-8">
-      <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-xl shadow-md shadow-indigo-200 transition-all flex justify-center items-center gap-2 active:scale-[0.98]" (click)="update()" [disabled]="show_save_spinner">
-        <ion-spinner name="crescent" *ngIf="show_save_spinner" class="w-5 h-5"></ion-spinner>
-        <ion-icon name="save-outline" class="text-xl" *ngIf="!show_save_spinner"></ion-icon> 
-        <span *ngIf="!show_save_spinner">{{'contact.submit' | translate}}</span>
+      <button
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-xl shadow-md shadow-indigo-200 transition-all flex justify-center items-center gap-2 active:scale-[0.98]"
+        (click)="update()"
+        [disabled]="show_save_spinner"
+      >
+        @if (show_save_spinner) {
+        <ion-spinner name="crescent" class="w-5 h-5"></ion-spinner>
+        } @if (!show_save_spinner) {
+        <ion-icon name="save-outline" class="text-xl"></ion-icon>
+        } @if (!show_save_spinner) {
+        <span>{{'contact.submit' | translate}}</span>
+        }
       </button>
 
-      <button *ngIf="!deactivate_date && is_school_admin" class="w-full bg-white border-2 border-rose-100 hover:bg-rose-50 text-rose-600 font-bold text-sm py-3 rounded-xl transition-all flex justify-center items-center gap-2 active:scale-[0.98]" (click)="onClickDeleteSchool()">
+      @if (!deactivate_date && is_school_admin) {
+      <button
+        class="w-full bg-white border-2 border-rose-100 hover:bg-rose-50 text-rose-600 font-bold text-sm py-3 rounded-xl transition-all flex justify-center items-center gap-2 active:scale-[0.98]"
+        (click)="onClickDeleteSchool()"
+      >
         <ion-icon name="trash-outline" class="text-lg"></ion-icon> {{'setting.delete_School_button_text' | translate}}
       </button>
-
-      <button *ngIf="deactivate_date" class="w-full bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-700 font-bold text-sm py-3 rounded-xl transition-all flex justify-center items-center gap-2 active:scale-[0.98]" (click)="revertSchoolDeletion()">
+      } @if (deactivate_date) {
+      <button
+        class="w-full bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-700 font-bold text-sm py-3 rounded-xl transition-all flex justify-center items-center gap-2 active:scale-[0.98]"
+        (click)="revertSchoolDeletion()"
+      >
         <ion-icon name="arrow-undo-outline" class="text-lg"></ion-icon> {{'setting.revert_deletion' | translate}}
       </button>
+      }
     </div>
 
-    <div class="h-10"></div> </div>
+    <div class="h-10"></div>
+  </div>
 </ion-content>
 
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity" *ngIf="showDeleteAlert">
+@if (showDeleteAlert) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
   <div class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10" dir="rtl">
-    
     <div class="flex flex-col items-center justify-center mb-6 text-center">
       <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mb-4">
         <ion-icon name="warning" class="text-4xl"></ion-icon>
       </div>
-      <h4 class="text-lg font-bold text-slate-800 m-0 leading-snug">
-        {{'setting.delete_school_alert' | translate}}
-      </h4>
+      <h4 class="text-lg font-bold text-slate-800 m-0 leading-snug">{{'setting.delete_school_alert' | translate}}</h4>
     </div>
-    
     <div class="flex gap-3 mt-2">
-      <button class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors" (click)="onCancelDeleteSchool()">
+      <button
+        class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors"
+        (click)="onCancelDeleteSchool()"
+      >
         {{'setting.delete_school_alert_btn_no' | translate}}
       </button>
-      <button class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-rose-200 transition-all active:scale-95" (click)="deleteSchool()">
+      <button
+        class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-rose-200 transition-all active:scale-95"
+        (click)="deleteSchool()"
+      >
         {{'setting.delete_school_alert_btn_yes' | translate}}
       </button>
     </div>
-
   </div>
   <div class="absolute inset-0" (click)="onCancelDeleteSchool()"></div>
 </div>
+}

@@ -3,7 +3,7 @@
     <ion-buttons slot="start" class="mr-2 w-10"></ion-buttons>
 
     <ion-title class="ion-text-center fw-bold text-dark text-base">
-      {{'create_notes.model_title' | translate}}
+      {{ 'create_notes.model_title' | translate }}
     </ion-title>
 
     <ion-buttons slot="end" class="ml-2 w-10">
@@ -15,208 +15,385 @@
 </ion-header>
 
 <ion-content class="bg-slate-50 ion-padding">
-  
-  <div *ngIf="studentDetails" class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 mb-6 flex flex-col items-center justify-center text-center mt-2">
-    <div class="relative" (click)="$event.stopPropagation(); openFullscreenImage(studentDetails.pic)">
-      <div class="w-20 h-20 rounded-full bg-cover bg-center border-4 border-slate-50 shadow-md cursor-pointer hover:scale-105 transition-transform"
-           [ngStyle]="{'background-image': 'url('+studentDetails.pic+')'}">
+  @if (studentDetails) {
+    <div
+      class="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 mb-6 flex flex-col items-center justify-center text-center mt-2"
+    >
+      <div class="relative" (click)="$event.stopPropagation(); openFullscreenImage(studentDetails.pic)">
+        <div
+          class="w-20 h-20 rounded-full bg-cover bg-center border-4 border-slate-50 shadow-md cursor-pointer hover:scale-105 transition-transform"
+          [ngStyle]="{ 'background-image': 'url(' + studentDetails.pic + ')' }"
+        ></div>
+      </div>
+      <h3 class="mt-4 text-lg font-bold text-slate-800">{{ studentDetails.name }}</h3>
+      @if (studentDetails?.course?.name) {
+        <p class="text-slate-500 font-medium mt-1 text-sm">{{ studentDetails?.course?.name }}</p>
+      }
+      <div class="w-full mt-6 space-y-3 px-2">
+        <button
+          (click)="openIndividualFollowupUrl()"
+          class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-3 rounded-xl border border-emerald-200 shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2"
+        >
+          <ion-icon name="cloud-download-outline" class="text-xl"></ion-icon>
+          {{ 'create_notes.individual_plan' | translate }}
+        </button>
+        <button
+          (click)="openGroupCounselingSessionUrl()"
+          class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-3 rounded-xl border border-emerald-200 shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2"
+        >
+          <ion-icon name="cloud-download-outline" class="text-xl"></ion-icon>
+          {{ 'create_notes.group_councling' | translate }}
+        </button>
       </div>
     </div>
-    <h3 class="mt-4 text-lg font-bold text-slate-800">{{studentDetails.name}}</h3>
-    <p class="text-slate-500 font-medium mt-1 text-sm" *ngIf="studentDetails?.course?.name">{{studentDetails?.course?.name}}</p>
-
-    <div class="w-full mt-6 space-y-3 px-2">
-      <button (click)="openIndividualFollowupUrl()" 
-              class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-3 rounded-xl border border-emerald-200 shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2">
-        <ion-icon name="cloud-download-outline" class="text-xl"></ion-icon>
-        {{'create_notes.individual_plan' | translate}}
-      </button>
-      <button (click)="openGroupCounselingSessionUrl()" 
-              class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold py-3 rounded-xl border border-emerald-200 shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2">
-        <ion-icon name="cloud-download-outline" class="text-xl"></ion-icon>
-        {{'create_notes.group_councling' | translate}}
-      </button>
-    </div>
-  </div>
+  }
 
   <div class="space-y-4 mb-6">
-    
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١۔ حضور المتعلم ومواظبته والتزامه بالمواعيد أثناء الحصة الدراسية</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١۔ حضور المتعلم ومواظبته والتزامه بالمواعيد أثناء
+        الحصة الدراسية
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(0, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[0] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(0, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[0] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٢۔ التعاون مع الزملاء المتعلمين أثناء الحصة الدراسية</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٢۔ التعاون مع الزملاء المتعلمين أثناء الحصة الدراسية
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(1, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[1] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(1, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[1] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٣۔ يعتمد سلوك المتعلم على احترام زملائه</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٣۔ يعتمد سلوك المتعلم على احترام زملائه
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(2, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[2] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(2, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[2] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٤۔ ترتبط العلاقة بين المتعلم والمعلم على أساس الاحترام المتبادل</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٤۔ ترتبط العلاقة بين المتعلم والمعلم على أساس الاحترام
+        المتبادل
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(3, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[3] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(3, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[3] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٥۔ الالتزام بضوابط المحافظة على الممتلكات العامة</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٥۔ الالتزام بضوابط المحافظة على الممتلكات العامة
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(4, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[4] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(4, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[4] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٦۔ مدى إدراك المتعلم بحقوقه والتزامه بواجباته</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٦۔ مدى إدراك المتعلم بحقوقه والتزامه بواجباته
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(5, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[5] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(5, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[5] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٧۔ مدى فهم واستيعاب المتعلم للنظم واللوائح داخل المؤسسة التعليمية</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٧۔ مدى فهم واستيعاب المتعلم للنظم واللوائح داخل
+        المؤسسة التعليمية
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(6, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[6] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(6, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[6] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٨۔ الاهتمام والتركيز في المشاركة أثناء الحصة الدراسية</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٨۔ الاهتمام والتركيز في المشاركة أثناء الحصة الدراسية
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(7, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[7] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(7, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[7] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٩۔ قدرة المتعلم على الاستيعاب الذهني أثناء الحصة الدراسية</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>٩۔ قدرة المتعلم على الاستيعاب الذهني أثناء الحصة
+        الدراسية
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(8, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[8] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(8, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[8] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٠۔ قدرة المتعلم على القراءة بطلاقة مع الفهم الدقيق للمعاني</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٠۔ قدرة المتعلم على القراءة بطلاقة مع الفهم الدقيق
+        للمعاني
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(9, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[9] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(9, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[9] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١١۔ قدرة المتعلم على تنظيم الأفكار والتعبير عنها كتابياً</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١١۔ قدرة المتعلم على تنظيم الأفكار والتعبير عنها
+        كتابياً
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(10, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[10] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(10, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[10] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٢۔ يُظهر المتعلم موقفاً مسؤولاً ولديه قدرة على اتخاذ القرار بالاعتماد على نفسة</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٢۔ يُظهر المتعلم موقفاً مسؤولاً ولديه قدرة على اتخاذ
+        القرار بالاعتماد على نفسة
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(11, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[11] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(11, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[11] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٣۔ مدى الاستفادة من حصيلة المعارف والمهارات السابقة في الاختبار العملي</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٣۔ مدى الاستفادة من حصيلة المعارف والمهارات السابقة
+        في الاختبار العملي
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(12, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[12] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(12, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[12] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٤۔ مستوى تحصيل المتعلم دراسياً قياساً بأهداف المادة الدراسية</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٤۔ مستوى تحصيل المتعلم دراسياً قياساً بأهداف المادة
+        الدراسية
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(13, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[13] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(13, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[13] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٥۔ قدرة المتعلم على اجراء العمليات بهدف حل المشكلات والتفكير الناقد</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٥۔ قدرة المتعلم على اجراء العمليات بهدف حل المشكلات
+        والتفكير الناقد
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(14, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[14] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(14, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[14] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 transition-all hover:border-indigo-100">
-      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl"><span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٦۔ مهارات الابتكار والتخطيط في أداء المشاريع</h4>
+      <h4 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2" dir="rtl">
+        <span class="w-1.5 h-4 bg-indigo-500 rounded-full"></span>١٦۔ مهارات الابتكار والتخطيط في أداء المشاريع
+      </h4>
       <div class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full" dir="rtl">
-        <div *ngFor="let sem of stars_array; let i = index; trackBy: trackByIndex" (click)="selectStarsForRating(15, i)"
-             class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
-             [ngClass]="postData[15] === (5 - i) ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]' : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'">
-          <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{sem.title}}</h5>
-        </div>
+        @for (sem of stars_array; track trackByIndex(i); let i = $index) {
+          <div
+            (click)="selectStarsForRating(15, i)"
+            class="flex flex-col items-center justify-center py-2.5 sm:py-3 rounded-xl transition-all border cursor-pointer active:scale-95"
+            [ngClass]="
+              postData[15] === 5 - i
+                ? 'bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-200 scale-[1.02]'
+                : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+            "
+          >
+            <h5 class="text-[10px] sm:text-xs font-bold leading-tight text-center m-0">{{ sem.title }}</h5>
+          </div>
+        }
       </div>
     </div>
-
   </div>
 
   <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 mb-6">
@@ -225,34 +402,68 @@
         <ion-icon name="document-text" class="text-indigo-500 text-lg p-1.5 bg-indigo-50 rounded-lg"></ion-icon>
         ملاحظات إضافية <span class="text-rose-500">*</span>
       </h4>
-      <span class="text-[10px] font-bold" [ngClass]="(noteMessage?.length || 0) > 45 ? 'text-rose-500' : 'text-slate-400'">
-        {{noteMessage?.length || 0}}/45
+      <span
+        class="text-[10px] font-bold"
+        [ngClass]="(noteMessage?.length || 0) > 45 ? 'text-rose-500' : 'text-slate-400'"
+      >
+        {{ noteMessage?.length || 0 }}/45
       </span>
     </div>
-    
-    <div class="bg-slate-50 rounded-xl border focus-within:ring-2 transition-all p-1" 
-         [ngClass]="(noteMessage?.length || 0) > 45 ? 'border-rose-300 focus-within:border-rose-400 focus-within:ring-rose-100' : 'border-slate-200 focus-within:border-indigo-400 focus-within:ring-indigo-100'" dir="rtl">
-      <ion-textarea rows="6" [(ngModel)]="noteMessage" 
-                    placeholder="{{'student-details.type_here' | translate}}"
-                    class="text-sm text-slate-700 bg-transparent px-2 font-medium">
+
+    <div
+      class="bg-slate-50 rounded-xl border focus-within:ring-2 transition-all p-1"
+      [ngClass]="
+        (noteMessage?.length || 0) > 45
+          ? 'border-rose-300 focus-within:border-rose-400 focus-within:ring-rose-100'
+          : 'border-slate-200 focus-within:border-indigo-400 focus-within:ring-indigo-100'
+      "
+      dir="rtl"
+    >
+      <ion-textarea
+        rows="6"
+        [(ngModel)]="noteMessage"
+        placeholder="{{ 'student-details.type_here' | translate }}"
+        class="text-sm text-slate-700 bg-transparent px-2 font-medium"
+      >
       </ion-textarea>
     </div>
   </div>
 
-  <button (click)="onClickSend()" 
-          class="w-full text-white font-bold text-base py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 flex justify-center items-center gap-2 mb-4"
-          [ngClass]="(!noteMessage || noteMessage?.trim() === '' || (noteMessage?.length || 0) > 45) ? 'bg-slate-300 shadow-none pointer-events-none' : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'">
+  <button
+    (click)="onClickSend()"
+    class="w-full text-white font-bold text-base py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 flex justify-center items-center gap-2 mb-4"
+    [ngClass]="
+      !noteMessage || noteMessage?.trim() === '' || (noteMessage?.length || 0) > 45
+        ? 'bg-slate-300 shadow-none pointer-events-none'
+        : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'
+    "
+  >
     <ion-icon name="save-outline" class="text-xl"></ion-icon>
-    {{'contact.submit' | translate}}
+    {{ 'contact.submit' | translate }}
   </button>
-
 </ion-content>
 
-<div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300" *ngIf="showImageViewer" (click)="closeFullscreenImage()">
-  <button class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95" (click)="closeFullscreenImage()">
-    <ion-icon name="close" class="text-xl"></ion-icon>
-  </button>
-  <div class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto" style="touch-action: pan-x pan-y pinch-zoom;" (click)="$event.stopPropagation()">
-    <img loading="lazy" [src]="viewImageUrl" class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300">
+@if (showImageViewer) {
+  <div
+    class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300"
+    (click)="closeFullscreenImage()"
+  >
+    <button
+      class="absolute top-6 right-6 z-10 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center backdrop-blur-lg transition-all active:scale-95"
+      (click)="closeFullscreenImage()"
+    >
+      <ion-icon name="close" class="text-xl"></ion-icon>
+    </button>
+    <div
+      class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto"
+      style="touch-action: pan-x pan-y pinch-zoom"
+      (click)="$event.stopPropagation()"
+    >
+      <img
+        loading="lazy"
+        [src]="viewImageUrl"
+        class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300"
+      />
+    </div>
   </div>
-</div>
+}

@@ -1,5 +1,12 @@
 ﻿import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { PopoverController, AlertController, NavController, Platform, MenuController, IonicModule } from '@ionic/angular';
+import {
+  PopoverController,
+  AlertController,
+  NavController,
+  Platform,
+  MenuController,
+  IonicModule
+} from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DatabaseService } from '../service/database/database.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -11,7 +18,7 @@ import { StorageService } from '../service/storage.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { CoursesApiService, Course } from '../service/courses-api/courses-api.service';
-import { NgIf, NgFor } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { Student } from '../model/student.model';
@@ -31,11 +38,11 @@ interface EditStudentNavData {
 }
 
 @Component({
-    selector: 'app-edit-student-profile',
-    templateUrl: './edit-student-profile.page.html',
-    styleUrls: ['./edit-student-profile.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, FormsModule, NgFor, TranslatePipe]
+  selector: 'app-edit-student-profile',
+  templateUrl: './edit-student-profile.page.html',
+  styleUrls: ['./edit-student-profile.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class EditStudentProfilePage {
   trackByIndex(index: number): number {
@@ -97,7 +104,6 @@ export class EditStudentProfilePage {
     }
   }
 
-
   // 🟢 4. دورة حياة الصفحة الآمنة والمتسلسلة (تمنع الاستباق)
   async ionViewWillEnter() {
     this.menuCtrl.swipeGesture(false);
@@ -142,9 +148,9 @@ export class EditStudentProfilePage {
 
       this.coursesApi
         .getCourses(data)
-        .then((response) => {
+        .then(response => {
           if (response && response.session) {
-            this.classes = (response.data || []).map((c) => {
+            this.classes = (response.data || []).map(c => {
               const course = c as EditableCourse;
               // نضمن أن جميع المعرفات مخزنة كنصوص للمطابقة السهلة
               return { ...course, cid: String(course.cid || course.course_id || course.id) };
@@ -168,7 +174,7 @@ export class EditStudentProfilePage {
 
       this.schoolDirectoryApi
         .getStudentDetails(data)
-        .then((response) => {
+        .then(response => {
           if (response && response.session) {
             this.student = response.data || {};
             this.studentName = this.student.name || '';

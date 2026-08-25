@@ -3,14 +3,14 @@ import { Browser } from '@capacitor/browser';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { DataService } from '../service/data/data.service';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-duration-subscription',
   templateUrl: './duration-subscription.component.html',
   styleUrls: ['./duration-subscription.component.scss'],
-  imports: [IonicModule, CommonModule, TranslateModule, FormsModule],
+  imports: [IonicModule, TranslateModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DurationSubscriptionComponent implements OnInit {

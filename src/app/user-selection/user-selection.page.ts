@@ -8,15 +8,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { StorageService } from '../service/storage.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { FormsModule } from '@angular/forms';
-import { NgFor, NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
 
 @Component({
-    selector: 'app-user-selection',
-    // 🟢 إصلاح مسارات الملفات لكي لا يظهر خطأ (Module not found)
-    templateUrl: './user-selection.page.html',
-    styleUrls: ['./user-selection.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgFor, NgClass, NgIf]
+  selector: 'app-user-selection',
+  // 🟢 إصلاح مسارات الملفات لكي لا يظهر خطأ (Module not found)
+  templateUrl: './user-selection.page.html',
+  styleUrls: ['./user-selection.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, NgClass]
 })
 // 🟢 إصلاح اسم الكلاس ليكون UserSelectionPage
 export class UserSelectionPage implements OnInit {

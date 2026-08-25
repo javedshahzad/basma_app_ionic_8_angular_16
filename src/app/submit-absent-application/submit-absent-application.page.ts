@@ -10,15 +10,15 @@ import { Camera, CameraResultType, CameraSource, ImageOptions } from '@capacitor
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { AbsentApplicationApiService } from '../service/absent-application-api/absent-application-api.service';
-import { NgFor, NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-submit-absent-application',
-    templateUrl: './submit-absent-application.page.html',
-    styleUrls: ['./submit-absent-application.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgFor, NgIf, FormsModule, TranslatePipe]
+  selector: 'app-submit-absent-application',
+  templateUrl: './submit-absent-application.page.html',
+  styleUrls: ['./submit-absent-application.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class SubmitAbsentApplicationPage implements OnInit {
   trackByIndex(index: number): number {

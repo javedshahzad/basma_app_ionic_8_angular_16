@@ -30,10 +30,6 @@
     "skipLibCheck": true,
     "target": "ES2022",
     "module": "es2022",
-    "lib": [
-      "es2022",
-      "dom"
-    ],
     "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true

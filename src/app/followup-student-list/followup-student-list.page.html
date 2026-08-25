@@ -1,11 +1,14 @@
 ﻿<ion-header class="ion-no-border bg-slate-50" mode="md">
   <ion-toolbar class="--bg-transparent">
-    
     <!-- زر الرجوع -->
     <ion-buttons slot="end" class="mr-2">
-      <ion-back-button defaultHref="/tabs/follow-up-student" text="" class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-100 transition-all flex items-center justify-center"></ion-back-button>
+      <ion-back-button
+        defaultHref="/tabs/follow-up-student"
+        text=""
+        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-100 transition-all flex items-center justify-center"
+      ></ion-back-button>
     </ion-buttons>
-    
+
     <!-- التقويم -->
     <ion-title class="text-slate-800 font-bold text-sm text-center" (click)="openCalenderModal()">
       <div class="flex items-center justify-center gap-2 cursor-pointer hover:text-indigo-600 transition-colors">
@@ -16,113 +19,168 @@
 
     <!-- 🟢 الأيقونات العلوية النظيفة (إضافة وطباعة فقط) -->
     <ion-buttons slot="start" class="ml-2 flex gap-2">
-      <button class="w-9 h-9 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center shadow-sm" (click)="addFields()" title="إضافة حقول">
+      <button
+        class="w-9 h-9 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center shadow-sm"
+        (click)="addFields()"
+        title="إضافة حقول"
+      >
         <ion-icon name="add" class="text-lg"></ion-icon>
       </button>
-      <button class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center shadow-sm" (click)="presentPrintOption()" title="تصدير كملف">
+      <button
+        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center shadow-sm"
+        (click)="presentPrintOption()"
+        title="تصدير كملف"
+      >
         <ion-icon name="print-outline" class="text-lg"></ion-icon>
       </button>
     </ion-buttons>
-
   </ion-toolbar>
 
   <!-- 🟢 منطقة حالة الدرجات (تطبيق فكرتك العبقرية هنا) -->
-  <div class="bg-white border-b border-slate-200 p-4 rounded-b-3xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative z-10 flex flex-col items-center justify-center">
+  <div
+    class="bg-white border-b border-slate-200 p-4 rounded-b-3xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] relative z-10 flex flex-col items-center justify-center"
+  >
     <h3 class="font-black text-slate-800 text-lg mb-2 m-0">{{courseInfo?.name}}</h3>
-    
-    <div class="flex items-center justify-center gap-2 h-8" *ngIf="attendanceResponse.submittedMsg">
-      
+
+    @if (attendanceResponse.submittedMsg) {
+    <div class="flex items-center justify-center gap-2 h-8">
       <!-- رسالة الحالة (تتحول للأخضر إذا تم الحفظ، وللبرتقالي إذا لم يتم) -->
-      <div class="text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-colors border"
-           [ngClass]="(!attendanceResponse.submittedMsg.includes('لم يتم') && !attendanceResponse.submittedMsg.includes('Not')) ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-orange-50 text-orange-600 border-orange-100'">
-        
-        <ion-icon [name]="(!attendanceResponse.submittedMsg.includes('لم يتم') && !attendanceResponse.submittedMsg.includes('Not')) ? 'checkmark-circle' : 'time'"></ion-icon>
+      <div
+        class="text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-colors border"
+        [ngClass]="(!attendanceResponse.submittedMsg.includes('لم يتم') && !attendanceResponse.submittedMsg.includes('Not')) ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-orange-50 text-orange-600 border-orange-100'"
+      >
+        <ion-icon
+          [name]="(!attendanceResponse.submittedMsg.includes('لم يتم') && !attendanceResponse.submittedMsg.includes('Not')) ? 'checkmark-circle' : 'time'"
+        ></ion-icon>
         {{attendanceResponse.submittedMsg}}
       </div>
-
       <!-- 🟢 زر الحذف (يختفي تماماً إذا كانت الرسالة تحتوي على 'لم يتم' أو 'Not') -->
-      <button *ngIf="!attendanceResponse.submittedMsg.includes('لم يتم') && !attendanceResponse.submittedMsg.includes('Not')" 
-              class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 border border-rose-100 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-95" 
-              (click)="deleteStudentMarks()" title="حذف درجات اليوم">
+      @if (!attendanceResponse.submittedMsg.includes('لم يتم') && !attendanceResponse.submittedMsg.includes('Not')) {
+      <button
+        class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 border border-rose-100 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-95"
+        (click)="deleteStudentMarks()"
+        title="حذف درجات اليوم"
+      >
         <ion-icon name="trash" class="text-base"></ion-icon>
       </button>
-
+      }
     </div>
+    }
   </div>
 </ion-header>
 
 <ion-content class="bg-slate-50" mode="md">
   <div class="p-4 max-w-3xl mx-auto" dir="rtl">
-
-    <div class="space-y-4" *ngIf="(attendanceResponse.students?.length || 0) > 0">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all" *ngFor="let student of visibleStudents; let sno = index; trackBy: trackByStudent">
-        
+    @if ((attendanceResponse.students?.length || 0) > 0) {
+    <div class="space-y-4">
+      @for (student of visibleStudents; track trackByStudent(sno, student); let sno = $index) {
+      <div
+        class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-all"
+      >
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="relative cursor-pointer" (click)="openUserImageModal(student)">
-              <img loading="lazy" [src]="student.pic" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 shadow-sm">
+              <img
+                loading="lazy"
+                [src]="student.pic"
+                onerror="
+                  this.onerror = null;
+                  this.src = 'assets/imgs/default_avatar.png';
+                "
+                class="w-12 h-12 rounded-full object-cover border-2 border-slate-100 shadow-sm"
+              />
             </div>
             <div>
               <h4 class="font-bold text-slate-800 text-sm flex items-center gap-1 m-0">
-                <span class="text-slate-400 text-xs">{{sno+1}}.</span> {{student.name}}
-                
-                <span *ngIf="(student.current_streak || 0) >= 10" class="flex items-center gap-0.5 bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-200 shadow-sm animate-pulse" title="أسطورة الالتزام">
+                <span class="text-slate-400 text-xs">{{sno+1}}.</span> {{student.name}} @if ((student.current_streak ||
+                0) >= 10) {
+                <span
+                  class="flex items-center gap-0.5 bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-200 shadow-sm animate-pulse"
+                  title="أسطورة الالتزام"
+                >
                   <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span>
                 </span>
-
-                <span *ngIf="(student.current_streak || 0) >= 5 && (student.current_streak || 0) < 10" class="flex items-center gap-0.5 bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded border border-orange-200 shadow-sm" title="مشتعل">
+                } @if ((student.current_streak || 0) >= 5 && (student.current_streak || 0) < 10) {
+                <span
+                  class="flex items-center gap-0.5 bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded border border-orange-200 shadow-sm"
+                  title="مشتعل"
+                >
                   <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span>
                 </span>
-
-                <span *ngIf="student.isFrozen" class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0">
+                } @if (student.isFrozen) {
+                <span
+                  class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
+                >
                   <ion-icon name="snow"></ion-icon> مجمد
                 </span>
+                }
               </h4>
               <p class="text-[11px] text-slate-500 mt-1 font-medium m-0 truncate max-w-[200px]">
-                <ion-icon [name]="gamification.getBehaviourIcon(student)" class="text-xs {{ gamification.getBehaviourColorClass(student) }}"></ion-icon>
+                <ion-icon
+                  [name]="gamification.getBehaviourIcon(student)"
+                  class="text-xs {{ gamification.getBehaviourColorClass(student) }}"
+                ></ion-icon>
                 <span class="text-[10px] font-black {{ gamification.getBehaviourColorClass(student) }}">
                   {{ gamification.getStudentBehaviourText(student) }}
                 </span>
               </p>
             </div>
           </div>
-          
           <!-- 🟢 زر (+) المطور بجانب الطالب لفتح القائمة السفلية (تطبيق الملاحظة رقم 2) -->
-          <button *ngIf="userType !== UserType.Parent && canAddStudentNote" 
-                  class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors flex items-center justify-center flex-shrink-0" 
-                  (click)="presentStudentActionSheet($event, student)">
+          @if (userType !== UserType.Parent && canAddStudentNote) {
+          <button
+            class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-colors flex items-center justify-center flex-shrink-0"
+            (click)="presentStudentActionSheet($event, student)"
+          >
             <ion-icon name="add" class="text-xl"></ion-icon>
           </button>
+          }
         </div>
-
         <!-- حقول إدخال الدرجات -->
-        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100" *ngIf="student.sheet?.length">
+        @if (student.sheet?.length) {
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
           <div class="grid grid-cols-3 sm:grid-cols-4 gap-3">
-            <div *ngFor="let sheet of student.sheet; trackBy: trackByIndex" class="flex flex-col">
-              <label class="text-[10px] font-bold text-slate-500 mb-1 text-center leading-tight px-1 h-7 flex items-end justify-center break-words line-clamp-2" title="{{sheet.field_name}}">{{sheet.field_name}}</label>
-              <div class="bg-white border border-slate-200 rounded-lg focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-9 flex items-center justify-center overflow-hidden">
-                <ion-input type="number" 
-                           [value]="sheet.marks" 
-                           [max]="sheet.field_max_marks" 
-                           debounce="500" 
-                           (ionChange)="changeMarks($event, student, sheet)"
-                           class="text-center font-bold text-sm text-slate-800 w-full h-full bg-transparent">
+            @for (sheet of student.sheet; track trackByIndex($index)) {
+            <div class="flex flex-col">
+              <label
+                class="text-[10px] font-bold text-slate-500 mb-1 text-center leading-tight px-1 h-7 flex items-end justify-center break-words line-clamp-2"
+                title="{{sheet.field_name}}"
+                >{{sheet.field_name}}</label
+              >
+              <div
+                class="bg-white border border-slate-200 rounded-lg focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-9 flex items-center justify-center overflow-hidden"
+              >
+                <ion-input
+                  type="number"
+                  [value]="sheet.marks"
+                  [max]="sheet.field_max_marks"
+                  debounce="500"
+                  (ionChange)="changeMarks($event, student, sheet)"
+                  class="text-center font-bold text-sm text-slate-800 w-full h-full bg-transparent"
+                >
                 </ion-input>
               </div>
             </div>
+            }
           </div>
         </div>
-
+        }
       </div>
-
-      <ion-infinite-scroll (ionInfinite)="loadMoreStudents($event)" [disabled]="visibleStudents.length >= (attendanceResponse.students?.length || 0)">
+      }
+      <ion-infinite-scroll
+        (ionInfinite)="loadMoreStudents($event)"
+        [disabled]="visibleStudents.length >= (attendanceResponse.students?.length || 0)"
+      >
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     </div>
+    }
 
     <!-- شاشة التحميل -->
-    <div class="space-y-4" *ngIf="show_loading">
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 animate-pulse" *ngFor="let dummy of [1,2,3,4,5]; trackBy: trackByIndex">
+    @if (show_loading) {
+    <div class="space-y-4">
+      @for (dummy of [1,2,3,4,5]; track trackByIndex($index)) {
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 animate-pulse">
         <div class="flex items-center gap-3 mb-4">
           <div class="w-12 h-12 bg-slate-200 rounded-full"></div>
           <div class="flex-1 space-y-2">
@@ -132,81 +190,121 @@
         </div>
         <div class="h-16 bg-slate-100 rounded-xl"></div>
       </div>
+      }
     </div>
+    }
 
     <!-- الشاشة الفارغة -->
-    <div class="text-center py-20" *ngIf="attendanceResponse.students?.length === 0 && !show_loading">
-      <div class="w-20 h-20 bg-slate-100 border border-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-300 shadow-sm">
+    @if (attendanceResponse.students?.length === 0 && !show_loading) {
+    <div class="text-center py-20">
+      <div
+        class="w-20 h-20 bg-slate-100 border border-slate-200 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-300 shadow-sm"
+      >
         <ion-icon name="folder-open-outline" class="text-4xl"></ion-icon>
       </div>
       <h3 class="text-lg font-bold text-slate-800 mb-1">لا يوجد طلاب</h3>
       <p class="text-sm font-medium text-slate-500">{{noDataFound || 'لم يتم العثور على طلاب في هذا الفصل.'}}</p>
     </div>
-
+    }
   </div>
 </ion-content>
 
 <!-- زر الحفظ -->
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl" *ngIf="!isHoliday && userType !== UserType.Viewer && (attendanceResponse.students?.length || 0) > 0">
+@if (!isHoliday && userType !== UserType.Viewer && (attendanceResponse.students?.length || 0) > 0) {
+<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl">
   <div class="p-5 max-w-3xl mx-auto">
-    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2"
-            (click)="submitMarks()">
+    <button
+      class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2"
+      (click)="submitMarks()"
+    >
       <ion-icon name="save-outline" class="text-xl"></ion-icon>
       {{'list-student.submitbtn' | translate}}
     </button>
   </div>
 </ion-footer>
+}
 
 <!-- نافذة الملاحظات النصية -->
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity" *ngIf="showNoteModal">
-  <div class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10" dir="rtl" (click)="$event.stopPropagation()">
+@if (showNoteModal) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
+  <div
+    class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10"
+    dir="rtl"
+    (click)="$event.stopPropagation()"
+  >
     <div class="flex items-center gap-3 mb-5">
       <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
         <ion-icon name="document-text" class="text-xl"></ion-icon>
       </div>
       <h4 class="text-lg font-bold text-slate-800 m-0">{{'student-details.add_note' | translate}}</h4>
     </div>
-    <div class="bg-slate-50 border border-slate-200 rounded-xl p-2 mb-2 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-      <ion-textarea class="text-sm text-slate-800 bg-transparent font-medium" [(ngModel)]="noteMessage" placeholder="{{'student-details.type_here' | translate}}" rows="4"></ion-textarea>
+    <div
+      class="bg-slate-50 border border-slate-200 rounded-xl p-2 mb-2 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+    >
+      <ion-textarea
+        class="text-sm text-slate-800 bg-transparent font-medium"
+        [(ngModel)]="noteMessage"
+        placeholder="{{'student-details.type_here' | translate}}"
+        rows="4"
+      ></ion-textarea>
     </div>
     <div class="flex justify-between items-center mb-6">
-      <p class="text-xs text-slate-400 font-bold m-0" [ngClass]="{'text-rose-500': (noteMessage?.length || 0) > 45}">{{noteMessage?.length || 0}} / 45</p>
+      <p class="text-xs text-slate-400 font-bold m-0" [ngClass]="{'text-rose-500': (noteMessage?.length || 0) > 45}">
+        {{noteMessage?.length || 0}} / 45
+      </p>
     </div>
     <div class="flex gap-3">
-      <button class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors" (click)="hideNoteModal()">
+      <button
+        class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors"
+        (click)="hideNoteModal()"
+      >
         {{'alertmessages.alert_btn_cancel_text' | translate}}
       </button>
-      <button class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95" (click)="addTextNotesNote()">
+      <button
+        class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95"
+        (click)="addTextNotesNote()"
+      >
         {{'alertmessages.alert_btn_submit_text' | translate}}
       </button>
     </div>
   </div>
   <div class="absolute inset-0" (click)="hideNoteModal()"></div>
 </div>
+}
 
 <!-- نافذة تأكيد حذف الدرجات -->
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity" *ngIf="showDeleteConfirmModal">
-  <div class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10 text-center" dir="rtl" (click)="$event.stopPropagation()">
-    
+@if (showDeleteConfirmModal) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity">
+  <div
+    class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10 text-center"
+    dir="rtl"
+    (click)="$event.stopPropagation()"
+  >
     <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
       <ion-icon name="trash" class="text-3xl"></ion-icon>
     </div>
-    
     <h4 class="text-lg font-bold text-slate-800 mb-2">تأكيد الحذف</h4>
-    <p class="text-sm text-slate-500 mb-6 font-medium">{{lang?.want_to_delete_follow_student || 'هل أنت متأكد من رغبتك في حذف درجات الطلاب؟'}}</p>
-    
+    <p class="text-sm text-slate-500 mb-6 font-medium">
+      {{lang?.want_to_delete_follow_student || 'هل أنت متأكد من رغبتك في حذف درجات الطلاب؟'}}
+    </p>
     <div class="flex gap-3">
-      <button class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors" (click)="hideDeleteConfirmModal()">
+      <button
+        class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors"
+        (click)="hideDeleteConfirmModal()"
+      >
         {{lang?.no || 'لا'}}
       </button>
-      <button class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-rose-200 transition-all active:scale-95" (click)="confirmDeleteMarks()">
+      <button
+        class="flex-1 bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 rounded-xl shadow-lg shadow-rose-200 transition-all active:scale-95"
+        (click)="confirmDeleteMarks()"
+      >
         {{lang?.yes || 'نعم، احذف'}}
       </button>
     </div>
-
   </div>
   <div class="absolute inset-0" (click)="hideDeleteConfirmModal()"></div>
 </div>
+}
 
 <!-- باقي النوافذ المنبثقة (التقويم والصور والتحذير) كما هي -->
 <ion-modal [isOpen]="showImageViewer" (didDismiss)="closeFullscreenImage()" class="fullscreen-image-modal">
@@ -215,9 +313,15 @@
   </ng-template>
 </ion-modal>
 
-<ion-modal [isOpen]="showCalenderModal" (didDismiss)="hideCalenderModal()" class="calendar-modal" [initialBreakpoint]="0.5" [breakpoints]="[0, 0.5, 0.75]">
+<ion-modal
+  [isOpen]="showCalenderModal"
+  (didDismiss)="hideCalenderModal()"
+  class="calendar-modal"
+  [initialBreakpoint]="0.5"
+  [breakpoints]="[0, 0.5, 0.75]"
+>
   <ng-template>
-     <ion-header class="ion-no-border">
+    <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-title>اختر التاريخ</ion-title>
         <ion-buttons slot="end">
@@ -226,7 +330,13 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding flex justify-center">
-      <ion-datetime presentation="date" [value]="dateSelected.toISOString()" (ionChange)="onDaySelect($event)" locale="ar-KW" firstDayOfWeek="0"></ion-datetime>
+      <ion-datetime
+        presentation="date"
+        [value]="dateSelected.toISOString()"
+        (ionChange)="onDaySelect($event)"
+        locale="ar-KW"
+        firstDayOfWeek="0"
+      ></ion-datetime>
     </ion-content>
   </ng-template>
 </ion-modal>

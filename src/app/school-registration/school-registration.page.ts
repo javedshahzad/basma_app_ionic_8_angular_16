@@ -9,15 +9,15 @@ import { GeoServiceProvider } from '../service/geo-service/geo-service';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { IonicSelectableComponent } from 'ionic-selectable';
 
 @Component({
-    selector: 'app-school-registration',
-    templateUrl: './school-registration.page.html',
-    styleUrls: ['./school-registration.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, IonicSelectableComponent, NgClass, TranslatePipe]
+  selector: 'app-school-registration',
+  templateUrl: './school-registration.page.html',
+  styleUrls: ['./school-registration.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, IonicSelectableComponent, NgClass, TranslatePipe]
 })
 export class SchoolRegistrationPage implements OnInit {
   school: any = {

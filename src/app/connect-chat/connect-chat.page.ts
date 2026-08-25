@@ -1,34 +1,31 @@
-import {
-  Component,
-  NgZone,
-  ViewChild,
-  OnDestroy,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef
-} from '@angular/core';
+import { Component, NgZone, ViewChild, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { NavController, AlertController, Platform, IonContent, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
-import { Location, NgIf, NgFor, NgClass } from '@angular/common';
+import { Location, NgClass } from '@angular/common';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
 
 // 🟢 1. استيراد خدمة التخزين الآمنة
 import { StorageService } from '../service/storage.service';
-import { ParentConnectApiService, ParentConnectChat, ChatMessage } from '../service/parent-connect-api/parent-connect-api.service';
+import {
+  ParentConnectApiService,
+  ParentConnectChat,
+  ChatMessage
+} from '../service/parent-connect-api/parent-connect-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { LinkyPipe } from '../pipes/linky.pipe';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 
 @Component({
-    selector: 'app-connect-chat',
-    templateUrl: './connect-chat.page.html',
-    styleUrls: ['./connect-chat.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, FormsModule, LinkyPipe, TranslatePipe]
+  selector: 'app-connect-chat',
+  templateUrl: './connect-chat.page.html',
+  styleUrls: ['./connect-chat.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, FormsModule, LinkyPipe, TranslatePipe]
 })
 export class ConnectChatPage implements OnDestroy {
   @ViewChild('contentArea') private contentArea: IonContent; // 🟢 تعريف صحيح للمحتوى
@@ -87,7 +84,6 @@ export class ConnectChatPage implements OnDestroy {
       this.storageSr.set('connectChatContext', this.navData);
     }
   }
-
 
   // 🟢 4. دورة الحياة المتزامنة الآمنة
   async ionViewWillEnter() {
@@ -181,12 +177,12 @@ export class ConnectChatPage implements OnDestroy {
 
     this.dataProvider
       .run(() => this.parentConnectApi.getParentConnectChatMessages(data))
-      .then((response) => {
+      .then(response => {
         if (response.session) {
           let chat = response.chat || [];
           let length = chat.length;
           if (length > 0) {
-            chat.forEach((message) => {
+            chat.forEach(message => {
               this.messages.push(message);
             });
             this.syncVisibleMessages();
@@ -214,17 +210,17 @@ export class ConnectChatPage implements OnDestroy {
 
     this.parentConnectApi
       .getParentConnectChatMessages(data)
-      .then((response) => {
+      .then(response => {
         if (response.session) {
           let chat = response.chat || [];
           let length = chat.length;
           if (length > 0) {
             let msgLength = this.messages.length;
-            chat.forEach((message) => {
+            chat.forEach(message => {
               if (msgLength > 0 && (message.id ?? 0) < (this.messages[msgLength - 1].id ?? 0)) {
                 this.messages.push(message);
               } else {
-                let msg = this.messages.filter((oldMsg) => oldMsg.id == message.id);
+                let msg = this.messages.filter(oldMsg => oldMsg.id == message.id);
                 if (msg.length == 0) {
                   this.messages.push(message);
                 }
@@ -268,10 +264,7 @@ export class ConnectChatPage implements OnDestroy {
         this.image = '';
 
         let data: Record<string, unknown> = {};
-        if (
-          this.userInfo.user_type == UserType.Parent ||
-          this.userInfo.user_type == UserType.Student
-        ) {
+        if (this.userInfo.user_type == UserType.Parent || this.userInfo.user_type == UserType.Student) {
           data = {
             session_id: this.userDetails.session_id,
             user_no: this.userInfo.user_no,
@@ -303,10 +296,15 @@ export class ConnectChatPage implements OnDestroy {
         this.dataProvider
           .run(() =>
             this.parentConnectApi.sendParentConnectChatMsg(
-              data as { session_id: string; user_no: string | number; user_type: string; chat_msg: Record<string, string | number> }
+              data as {
+                session_id: string;
+                user_no: string | number;
+                user_type: string;
+                chat_msg: Record<string, string | number>;
+              }
             )
           )
-          .then((response) => {
+          .then(response => {
             if (response.session) {
               this.dataProvider.showToast(response.message || '');
               if (this.lastMessageId < Number(response.msg_id)) {

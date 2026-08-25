@@ -1,6 +1,6 @@
 ﻿import { ChangeDetectorRef, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { NavController, Platform, AlertController, ModalController, IonicModule } from '@ionic/angular';
-import { Location, NgIf, NgFor, NgClass, DatePipe } from '@angular/common';
+import { Location, NgClass, DatePipe } from '@angular/common';
 import { DataService } from '../service/data/data.service';
 import { SubscriptionService } from '../service/subscription/subscription.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -17,11 +17,11 @@ import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-    selector: 'app-available-plan',
-    templateUrl: './available-plan.page.html',
-    styleUrls: ['./available-plan.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, NgClass, FormsModule, DatePipe, TranslatePipe]
+  selector: 'app-available-plan',
+  templateUrl: './available-plan.page.html',
+  styleUrls: ['./available-plan.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, NgClass, FormsModule, DatePipe, TranslatePipe]
 })
 export class AvailablePlanPage implements OnInit {
   trackByIndex(index: number): number {

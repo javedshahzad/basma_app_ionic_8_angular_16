@@ -19,14 +19,13 @@ import { LoaderComponent } from '../components/loader/loader.component';
 // 🟢 استيراد خدمة التخزين الموحدة
 import { StorageService } from '../service/storage.service';
 import { CoursesApiService } from '../service/courses-api/courses-api.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-delaylist',
-    templateUrl: './delaylist.page.html',
-    styleUrls: ['./delaylist.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-delaylist',
+  templateUrl: './delaylist.page.html',
+  styleUrls: ['./delaylist.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, TranslatePipe]
 })
 export class DelaylistPage implements OnInit {
   trackByIndex(index: number): number {

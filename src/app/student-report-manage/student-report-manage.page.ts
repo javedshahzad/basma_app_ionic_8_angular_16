@@ -13,11 +13,20 @@ import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { ReportsApiService, StudentReportsSummary, DegreeViolation, DegreeAction, Degree, PledgesReport, LeaveRecord, ExitDayRecord } from '../service/reports-api/reports-api.service';
+import {
+  ReportsApiService,
+  StudentReportsSummary,
+  DegreeViolation,
+  DegreeAction,
+  Degree,
+  PledgesReport,
+  LeaveRecord,
+  ExitDayRecord
+} from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
+import { NgClass, DatePipe } from '@angular/common';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { UserPlan } from '../service/plan-api/plan-api.service';
 import { HasRoleDirective } from '../directives/has-role.directive';
@@ -25,11 +34,11 @@ import { HasRoleDirective } from '../directives/has-role.directive';
 const env = environment;
 
 @Component({
-    selector: 'app-student-report-manage',
-    templateUrl: './student-report-manage.page.html',
-    styleUrls: ['./student-report-manage.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, FormsModule, NgIf, NgClass, NgFor, DatePipe, TranslatePipe, HasRoleDirective]
+  selector: 'app-student-report-manage',
+  templateUrl: './student-report-manage.page.html',
+  styleUrls: ['./student-report-manage.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, FormsModule, NgClass, DatePipe, TranslatePipe, HasRoleDirective]
 })
 export class StudentReportManagePage implements OnInit {
   trackByIndex(index: number): number {
@@ -44,7 +53,16 @@ export class StudentReportManagePage implements OnInit {
   reportType: string;
   selectedDate: string;
 
-  formData: { reportType: string; selectedDate: string; selectedDays: string; note: string; time: string; reason?: string | number; action?: string | number; degree?: string | number } = {
+  formData: {
+    reportType: string;
+    selectedDate: string;
+    selectedDays: string;
+    note: string;
+    time: string;
+    reason?: string | number;
+    action?: string | number;
+    degree?: string | number;
+  } = {
     reportType: '',
     selectedDate: new Date().toISOString(),
     selectedDays: '1',
@@ -341,7 +359,9 @@ export class StudentReportManagePage implements OnInit {
 
   searchViolations(event: Event) {
     const query = (event.target as HTMLInputElement).value.toLowerCase();
-    this.filteredViolations = this.AllDegreesViolations.filter(d => (d.description || '').toLowerCase().indexOf(query) > -1);
+    this.filteredViolations = this.AllDegreesViolations.filter(
+      d => (d.description || '').toLowerCase().indexOf(query) > -1
+    );
   }
 
   searchActions(event: Event) {
@@ -447,7 +467,7 @@ export class StudentReportManagePage implements OnInit {
             let options: PrintOptions = { orientation: 'portrait' };
             this.printer.print(printContent, options).then(
               () => {},
-              (e) => {
+              e => {
                 console.log('printer.print', e);
                 this.dataProvider.showToast(this.lang.report_error);
               }
@@ -492,7 +512,7 @@ export class StudentReportManagePage implements OnInit {
                 let options: PrintOptions = { orientation: 'portrait' };
                 this.printer.print(printContent, options).then(
                   () => {},
-                  (e) => {
+                  e => {
                     console.log('printer.print', e);
                     this.dataProvider.showToast(this.lang.report_error);
                   }
@@ -536,7 +556,7 @@ export class StudentReportManagePage implements OnInit {
                 let options: PrintOptions = { orientation: 'portrait' };
                 this.printer.print(printContent, options).then(
                   () => {},
-                  (e) => {
+                  e => {
                     console.log('printer.print', e);
                     this.dataProvider.showToast(this.lang.report_error);
                   }

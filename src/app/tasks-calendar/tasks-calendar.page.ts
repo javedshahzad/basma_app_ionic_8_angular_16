@@ -12,14 +12,13 @@ import { StorageService } from '../service/storage.service';
 import { SyncService } from '../service/sync/sync.service';
 import { NotesApiService } from '../service/notes-api/notes-api.service';
 import { CoursesApiService } from '../service/courses-api/courses-api.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-tasks-calendar',
-    templateUrl: './tasks-calendar.page.html',
-    styleUrls: ['./tasks-calendar.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-tasks-calendar',
+  templateUrl: './tasks-calendar.page.html',
+  styleUrls: ['./tasks-calendar.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, TranslatePipe]
 })
 export class TasksCalendarPage implements OnInit {
   trackByIndex(index: number): number {

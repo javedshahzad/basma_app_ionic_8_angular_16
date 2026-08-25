@@ -8,14 +8,13 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { AttendanceApiService } from '../service/attendance-api/attendance-api.service';
-import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-    selector: 'app-student-report-list',
-    templateUrl: './student-report-list.page.html',
-    styleUrls: ['./student-report-list.page.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgIf, NgFor, TranslatePipe]
+  selector: 'app-student-report-list',
+  templateUrl: './student-report-list.page.html',
+  styleUrls: ['./student-report-list.page.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [IonicModule, TranslatePipe]
 })
 export class StudentReportListPage implements OnInit {
   trackByIndex(index: number): number {
