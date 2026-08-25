@@ -64,7 +64,7 @@ export class WarningReportPage {
     this.cdr.markForCheck();
   }
 
-  doRefresh(event) {
+  doRefresh(event: any) {
     this.getAllWarning(false);
     this.getStudentCallOfReports();
     setTimeout(() => {
@@ -101,7 +101,7 @@ export class WarningReportPage {
   }
 
   // 🟢 4. تحديث دالة الطباعة لتتوافق مع Capacitor/متصفح
-  async printReport(i) {
+  async printReport(i: number) {
     let data = {
       user_no: this.userDetails.details.user_no,
       session_id: this.userDetails.session_id,

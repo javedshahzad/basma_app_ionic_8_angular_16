@@ -118,7 +118,7 @@ export class AddParentPage implements OnInit {
       this.filteredStudents = [...this.students];
     } else {
       const query = this.studentSearchQuery.toLowerCase();
-      this.filteredStudents = this.students.filter(s => s.name && s.name.toLowerCase().includes(query));
+      this.filteredStudents = this.students.filter((s: any) => s.name && s.name.toLowerCase().includes(query));
     }
   }
 

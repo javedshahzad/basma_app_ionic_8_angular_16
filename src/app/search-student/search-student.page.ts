@@ -149,7 +149,7 @@ export class SearchStudentPage implements OnInit {
     }, 500); // ينتظر نصف ثانية بعد آخر حرف يكتبه المستخدم
   }
 
-  openStudentDetails(student) {
+  openStudentDetails(student: any) {
     const navigation: NavigationExtras = {
       state: {
         student_id: student.sid,

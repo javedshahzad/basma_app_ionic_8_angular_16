@@ -179,7 +179,7 @@ export class ManageStudentPage {
     }, 500); // 🟢 نؤخر الطلب نصف ثانية لحماية السيرفر
   }
 
-  openStudentDetails(student) {
+  openStudentDetails(student: any) {
     // 🟢 هذا السطر مهم جداً للتأكد من المسميات التي تظهر في الكونسول
     console.log('📤 إرسال بيانات الطالب:', student);
 

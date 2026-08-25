@@ -190,7 +190,7 @@ export class NotesApiService {
     });
   }
 
-  createclassNotes(data) {
+  createclassNotes(data: any) {
     let header = new HttpHeaders();
     header.append('Content-Type', 'application/json');
     data.lang_code = environment.lang_code;

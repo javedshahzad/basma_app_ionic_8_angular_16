@@ -17,7 +17,7 @@ export class AboutUsPage {
    * Used to open the weblink
    * @param url
    */
-  async openUrl(url) {
+  async openUrl(url: string) {
     await Browser.open({ url: url });
   }
 

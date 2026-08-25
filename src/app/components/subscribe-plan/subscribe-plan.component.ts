@@ -20,7 +20,7 @@ import { PlanApiService } from '../../service/plan-api/plan-api.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SubscribePlanComponent implements OnInit {
-  plans = [];
+  plans: any[] = [];
   PremiumPlan: any;
   availablePlan: any;
   userDetails: any;
@@ -104,7 +104,7 @@ export class SubscribePlanComponent implements OnInit {
     this.modalController.dismiss();
     this.router.navigate(['/available-plan']);
   }
-  async openUrl(url) {
+  async openUrl(url: string) {
     await Browser.open({ url: url });
   }
 

@@ -67,7 +67,7 @@ export class NewsApiService {
   // own resolve(), so a second resolve() always runs too — harmless since a
   // settled promise ignores later resolve() calls, but it means the failure
   // path really does resolve a different shape than the success path).
-  getNewsJoin(start: number, newsPerPage: number, userDeatils: UserDetails | undefined, countryCode): Promise<News[] | GetNewsJoinHttpResponse> {
+  getNewsJoin(start: number, newsPerPage: number, userDeatils: UserDetails | undefined, countryCode: string): Promise<News[] | GetNewsJoinHttpResponse> {
     return new Promise((resolve, reject) => {
       this.apiClient.getNetworkInformation().then((isNetworkAvailable) => {
         if (isNetworkAvailable) {

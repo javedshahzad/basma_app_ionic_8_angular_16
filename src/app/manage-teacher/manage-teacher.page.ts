@@ -134,7 +134,7 @@ export class ManageTeacherPage {
     }, 500);
   }
 
-  openEditPage(teacher) {
+  openEditPage(teacher: any) {
     const navigation: NavigationExtras = {
       state: {
         user: teacher,

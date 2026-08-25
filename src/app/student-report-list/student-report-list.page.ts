@@ -125,7 +125,7 @@ export class StudentReportListPage implements OnInit {
   }
 
   openStudentDetail(student_id: string) {
-    let studentData = this.attendanceResponse?.students?.find(s => s.sid === student_id);
+    let studentData = this.attendanceResponse?.students?.find((s: any) => s.sid === student_id);
     const navigation: NavigationExtras = {
       state: {
         student_id: student_id,
@@ -142,7 +142,7 @@ export class StudentReportListPage implements OnInit {
     });
   }
 
-  getStudentBehaviour(agg_ranking) {
+  getStudentBehaviour(agg_ranking: number) {
     if (agg_ranking > 0 && agg_ranking < 2.6) return this.lang.warning_behaviour;
     else if (agg_ranking > 2.5 && agg_ranking < 3.6) return this.lang.good_behaviour;
     else if (agg_ranking > 3.5 && agg_ranking < 4.6) return this.lang.very_good_behaviour;

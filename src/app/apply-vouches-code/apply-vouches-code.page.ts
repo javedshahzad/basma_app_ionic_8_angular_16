@@ -17,7 +17,7 @@ export class ApplyVouchesCodePage implements OnInit {
   trackByIndex(index: number): number {
     return index;
   }
-  plans = [];
+  plans: any[] = [];
   plan_id: any;
   code: any;
   userDetails: any;

@@ -49,7 +49,7 @@ export class EditStudentProfileComponent implements OnInit {
 
   async ngOnInit() {
     this.studentName = this.student.name;
-    this.classes.forEach(res => {
+    this.classes.forEach((res: any) => {
       if (res.name == this.student.course_name) {
         this.studentSemester = res.cid;
       }

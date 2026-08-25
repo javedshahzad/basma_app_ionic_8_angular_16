@@ -215,7 +215,7 @@ export class EditTeacherProfilePage {
       });
   }
 
-  portChange(event) {
+  portChange(event: any) {
     // alert(1)
     console.log('event', event);
     if (event) this.teacher.class = event.value;

@@ -193,7 +193,6 @@ export class UserManagementApiService {
       Object.keys(data).forEach(function (key) {
         body = body.append(key, data[key] as string | number | boolean);
       });
-      body['class'] = [];
       // `class` is really an array of {cid, ...} records, iterated here via
       // Object.keys() (works fine on arrays at runtime); typed as unknown
       // and cast here rather than in the public signature.

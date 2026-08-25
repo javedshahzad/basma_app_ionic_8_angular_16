@@ -277,7 +277,7 @@ export class NewsPage implements OnInit {
     }, 500);
   }
 
-  doRefresh(refresher) {
+  doRefresh(refresher: any) {
     this.show_loading = true;
     this.getNews(0, 0, this.country_code, true).then(() => {
       refresher.target.complete();

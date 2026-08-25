@@ -155,7 +155,7 @@ export class UsersListPage implements OnInit {
     this.router.navigate(['add-user']);
   }
 
-  openEditPage(user) {
+  openEditPage(user: any) {
     console.log('nav user1111', user);
     const navigation: NavigationExtras = {
       state: { user: user }

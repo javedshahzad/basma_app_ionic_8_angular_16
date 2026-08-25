@@ -15,8 +15,8 @@ export class RateAppComponent implements OnInit {
   trackByIndex(index: number): number {
     return index;
   }
-  @Input() lang;
-  @Input() data;
+  @Input() lang: any;
+  @Input() data: any;
   noteDescription: any;
   noteMessage: string = '';
   providedStars: any = 1;
@@ -80,7 +80,7 @@ export class RateAppComponent implements OnInit {
   */
   }
 
-  closePopup(data) {
+  closePopup(data: any) {
     this.popoverController.dismiss(data);
   }
   /* for rating */
@@ -101,7 +101,7 @@ export class RateAppComponent implements OnInit {
     this.closePopup(data);
   }
 
-  provideRating(stars, eve) {
+  provideRating(stars: any, eve: any) {
     console.log(eve);
     this.providedStars = stars;
   }

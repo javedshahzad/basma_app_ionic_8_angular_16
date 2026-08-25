@@ -74,7 +74,7 @@ export class AddTeacherPage implements OnInit {
       });
   }
 
-  portChange(event) {
+  portChange(event: any) {
     console.log('ev', event);
     // this.usersDataclass= event.value;
   }

@@ -45,6 +45,6 @@ export class TeacherViewComponent {
   // حساب إجمالي نقاط الطلاب في الصف
   getTotalPoints(): number {
     if (!this.attendanceResponse?.students) return 0;
-    return this.attendanceResponse.students.reduce((sum, student) => sum + (Number(student.student_points) || 0), 0);
+    return this.attendanceResponse.students.reduce((sum: number, student: any) => sum + (Number(student.student_points) || 0), 0);
   }
 }

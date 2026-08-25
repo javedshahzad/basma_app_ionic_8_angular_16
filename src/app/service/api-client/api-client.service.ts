@@ -83,7 +83,7 @@ export class ApiClient {
           header.append('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
           this.http.post<T>(environment.serverURL + slug, body, { headers: header }).subscribe((response) => {
             if (response) {
-              if (response['_body'] != '') {
+              if ((response as any)['_body'] != '') {
                 let resObj = response;
                 resolve(resObj)
               } else {

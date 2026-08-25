@@ -22,7 +22,7 @@ export class MessagingApiService {
     private dataService: DataService
   ) { }
 
-  sendMessage(data, school_id) {
+  sendMessage(data: any, school_id: string | number) {
     let header = new HttpHeaders();
     header.append('Content-Type', 'application/json');
     data.lang_code = environment.lang_code;

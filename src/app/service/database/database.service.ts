@@ -243,7 +243,7 @@ export class DatabaseService {
   /**
    * Get the student list registered for particular course/class
    */
-  async getStudentList(cid): Promise<any> {
+  async getStudentList(cid: any): Promise<any> {
     if (!this.isNative) return Promise.resolve([]);
     try {
       const response = await this.db.query('SELECT * FROM students WHERE cid = ?', [cid]);
@@ -260,7 +260,7 @@ export class DatabaseService {
     }
   }
 
-  async getStudent(sid): Promise<any> {
+  async getStudent(sid: string | number): Promise<any> {
     if (!this.isNative) return Promise.resolve([]);
     try {
       const response = await this.db.query('SELECT * FROM students WHERE sid = ?', [sid]);

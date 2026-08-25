@@ -179,7 +179,7 @@ export class StudentTitlesPage {
     });
   }
 
-  doRefresh(event) {
+  doRefresh(event: any) {
     let sid = this.userDetails.details.stu_id;
     this.loadAllDataSequentially(sid).then(() => {
       event.target.complete();
@@ -302,12 +302,19 @@ export class StudentTitlesPage {
     }
   }
 
+  // SkillData only declares its five known keys, but skillsCardsConfig's
+  // `key` is a plain string — a template-side bracket access needs a
+  // helper rather than a cast, since expressions in .html can't cast.
+  getSkillValue(key: string): number {
+    return (this.studentSkillData as Record<string, number> | null)?.[key] || 0;
+  }
+
   canCraft(cost: ProcessedTitle['cost']): boolean {
     if (!this.studentWallet || Object.keys(this.studentWallet).length === 0) return false;
 
     for (let skill in cost) {
       let spendableAmount = Number(this.studentWallet['spendable_' + skill]) || 0;
-      if (spendableAmount < cost[skill]) return false;
+      if (spendableAmount < (cost as Record<string, number>)[skill]) return false;
     }
     return true;
   }

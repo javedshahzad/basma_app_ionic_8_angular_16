@@ -49,7 +49,7 @@ describe('FollowupStudentListPage', () => {
   });
 
   function makeStudents(count: number) {
-    return Array.from({ length: count }, (_, i) => ({ sid: i, name: `Student ${i}`, sheet: [] }));
+    return Array.from({ length: count }, (_, i) => ({ sid: i, name: `Student ${i}`, sheet: [] as any[] }));
   }
 
   it('only renders the first page of students, not the full list', () => {

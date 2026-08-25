@@ -93,7 +93,7 @@ export class ElearningSchoolsPage {
     this.cdr.markForCheck();
   }
 
-  getSchool(location) {
+  getSchool(location: string) {
     this.schoolDirectoryApi
       .getSchool(location)
       .then(schoolList => {

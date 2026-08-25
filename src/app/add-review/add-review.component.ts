@@ -20,7 +20,7 @@ export class AddReviewComponent implements OnInit {
   }
   ratingStars: number;
   // @Input() lang;
-  @Input() data;
+  @Input() data: any;
   @Input() student: any;
   selections: any[] = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
   postData: any[] = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
@@ -188,7 +188,7 @@ export class AddReviewComponent implements OnInit {
       this.dataProvider.showToast(this.lang.empty_note);
     }
   }
-  OpenDownloadFile(url) {
+  OpenDownloadFile(url: string) {
     window.open(url, '_blank');
   }
 }

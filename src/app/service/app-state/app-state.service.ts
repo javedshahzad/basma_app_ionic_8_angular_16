@@ -44,7 +44,7 @@ export class AppStateService {
     });
   }
 
-  getStatusMessage(event) {
+  getStatusMessage(event: any) {
     let status;
     switch (event.type) {
       case HttpEventType.UploadProgress:

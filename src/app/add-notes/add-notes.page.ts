@@ -200,7 +200,7 @@ export class AddNotesPage {
     document.getElementById('myFileInput')?.click();
   }
 
-  portChange(event) {
+  portChange(event: any) {
     this.notes.studentIds = [];
     this.studentsId = [];
     this.selectedStudent.forEach(res => {

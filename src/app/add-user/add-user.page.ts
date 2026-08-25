@@ -151,7 +151,7 @@ export class AddUserPage implements OnInit {
       this.filteredClasses = [...this.classes];
     } else {
       const query = this.classSearchQuery.toLowerCase();
-      this.filteredClasses = this.classes.filter(c => c.name && c.name.toLowerCase().includes(query));
+      this.filteredClasses = this.classes.filter((c: any) => c.name && c.name.toLowerCase().includes(query));
     }
   }
 

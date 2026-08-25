@@ -78,7 +78,7 @@ export class BulletinsApiService {
     })
   }
 
-  createBulletins(data) {
+  createBulletins(data: any) {
     let header = new HttpHeaders();
     header.append('Content-Type', 'application/json');
     data.lang_code = environment.lang_code;

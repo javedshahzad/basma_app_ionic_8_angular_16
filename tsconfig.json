@@ -15,6 +15,7 @@
       "@constants/*": ["./src/app/constants/*"]
     },
     "strict": false,
+    "noImplicitAny": true,
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
     "noImplicitThis": true,

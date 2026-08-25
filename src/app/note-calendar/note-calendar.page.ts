@@ -96,7 +96,7 @@ export class NoteCalendarPage implements OnInit {
   setupHighlightedDates() {
     let highlights: any[] = [];
     if (this.note && this.note.length > 0) {
-      this.note.forEach(element => {
+      this.note.forEach((element: any) => {
         if (element.send_to == 'exam' && element.examNoteDate) {
           let d = new Date(element.examNoteDate);
 

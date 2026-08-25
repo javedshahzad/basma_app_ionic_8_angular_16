@@ -584,7 +584,7 @@ export class StudentsPage {
     for (var index in this.student_points) {
       let pointValue = this.student_points[index];
       let button = {
-        text: pointValue,
+        text: String(pointValue),
         icon: 'add-circle-outline',
         cssClass: 'text-emerald-600 font-bold',
         handler: () => {

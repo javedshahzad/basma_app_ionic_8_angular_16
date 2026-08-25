@@ -29,14 +29,14 @@ describe('NewsPage', () => {
         {
             provide: GeoServiceProvider,
             useValue: {
-                getAllCountries: () => [],
-                getEnCountries: () => [],
-                getArCountries: () => [],
+                getAllCountries: (): any[] => [],
+                getEnCountries: (): any[] => [],
+                getArCountries: (): any[] => [],
                 get_country_name: () => '',
                 getCountryName: () => '',
                 getCountryDetails: () => ({}),
                 getCountryPhone: () => '',
-                getCountriesData: () => [],
+                getCountriesData: (): any[] => [],
                 getMyLocation: () => Promise.resolve({})
             }
         },

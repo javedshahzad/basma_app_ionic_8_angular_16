@@ -123,7 +123,7 @@ export class ChildrenPage {
             const now = new Date(); // الحصول على الوقت الحالي للمقارنة
 
             // معالجة بيانات الطلاب لإضافة حالة التجميد برمجياً
-            this.students = children.data.map(student => {
+            this.students = children.data.map((student: any) => {
               // إذا كان هناك تاريخ تجميد وهو أكبر من تاريخ اليوم، إذن الطالب مجمد
               if (student.frozen_until) {
                 const freezeDate = new Date(student.frozen_until);

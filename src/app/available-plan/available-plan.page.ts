@@ -91,7 +91,7 @@ export class AvailablePlanPage implements OnInit {
         if (res && res.response) {
           this.plans = res.response;
           const sortOrder = ['Basic Plan: Free', 'Standard Plan', 'Premium Plan'];
-          this.plans = this.plans.sort((a, b) => sortOrder.indexOf(a.name) - sortOrder.indexOf(b.name));
+          this.plans = this.plans.sort((a: any, b: any) => sortOrder.indexOf(a.name) - sortOrder.indexOf(b.name));
         }
         this.ref.markForCheck();
       })

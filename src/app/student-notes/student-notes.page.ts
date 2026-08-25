@@ -108,7 +108,7 @@ export class StudentNotesPage {
     this.cdr.markForCheck();
   }
 
-  doRefresh(event) {
+  doRefresh(event: any) {
     this.getClassNotes();
     setTimeout(() => {
       event.target.complete();

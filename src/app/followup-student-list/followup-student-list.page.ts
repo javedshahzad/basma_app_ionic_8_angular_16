@@ -373,7 +373,7 @@ export class FollowupStudentListPage {
     }
   }
 
-  printReport(type) {
+  printReport(type: string) {
     let planData = { user_no: this.userDetails.details.user_no, report_type: type };
 
     this.dataProvider.showLoading();

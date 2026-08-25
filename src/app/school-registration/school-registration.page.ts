@@ -83,7 +83,7 @@ export class SchoolRegistrationPage implements OnInit {
     this.assignCountry();
   }
 
-  openUrl(url) {
+  openUrl(url: string) {
     window.open(url, '_system');
   }
 
@@ -113,7 +113,7 @@ export class SchoolRegistrationPage implements OnInit {
     }
   }
 
-  async presentAlert(response, pop = true) {
+  async presentAlert(response: string, pop = true) {
     const alert = await this.alertCtrl.create({
       header: 'تنبيه',
       message: response,

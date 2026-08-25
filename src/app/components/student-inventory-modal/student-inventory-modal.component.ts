@@ -106,7 +106,7 @@ export class StudentInventoryModalComponent {
     if (!this.studentWallet) return false;
     for (let skill in cost) {
       let spendableAmount = Number(this.studentWallet['spendable_' + skill]) || 0;
-      if (spendableAmount < cost[skill]) return false;
+      if (spendableAmount < (cost as Record<string, number>)[skill]) return false;
     }
     return true;
   }
