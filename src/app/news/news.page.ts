@@ -165,7 +165,7 @@ export class NewsPage implements OnInit {
       // إعداد الدولة بناءً على بيانات المستخدم (إذا كان لديه دولة)
       if (this.userDetails?.details?.country_code && this.userDetails.details.country_code != '') {
         this.country_code = this.userDetails.details.country_code;
-        this.country = this.countries.find(c => c.code === this.country_code);
+        this.country = this.countries.find(c => c.code === this.country_code) || null;
         this.selected_country = {
           code: this.country_code,
           name: this.geo.get_country_name(this.country_code)
@@ -233,7 +233,7 @@ export class NewsPage implements OnInit {
             this.originalNews = JSON.parse(JSON.stringify(totalNews));
             this.originalNews.forEach(news => {
               news.content = this.urlify(news.content as string);
-              let date = news.ago.split(' ');
+              let date = (news.ago || '').split(' ');
               if (date.length > 20) {
                 news.ago = date[2] + ' ' + date[1] + ' ' + date[0];
               }
@@ -326,9 +326,9 @@ export class NewsPage implements OnInit {
       if (news.already_like == 'true' || news.already_like == true) {
         this.newsApi
           .dislikeNewsPost({
-            session_id: this.userDetails.session_id,
-            news_id: news.id,
-            user_no: this.userDetails?.details?.user_no
+            session_id: this.userDetails.session_id!,
+            news_id: news.id!,
+            user_no: this.userDetails?.details?.user_no!
           })
           .then(response => {
             if (response.session) {
@@ -340,9 +340,9 @@ export class NewsPage implements OnInit {
       } else {
         this.newsApi
           .likeNewsPost({
-            session_id: this.userDetails.session_id,
-            news_id: news.id,
-            user_no: this.userDetails.details.user_no
+            session_id: this.userDetails.session_id!,
+            news_id: news.id!,
+            user_no: this.userDetails.details!.user_no!
           })
           .then(response => {
             if (response.session) {
@@ -382,21 +382,22 @@ export class NewsPage implements OnInit {
 
   async confirmDelete() {
     if (!this.newsToDelete) return;
+    const newsToDelete = this.newsToDelete;
 
     let data = {
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userDetails.details!.user_no,
       session_id: this.userDetails.session_id
     };
 
     try {
-      const response = await this.dataProvider.run(() => this.newsApi.deleteNews(data, this.newsToDelete.id));
+      const response = await this.dataProvider.run(() => this.newsApi.deleteNews(data, newsToDelete.id!));
       if (response.session) {
         this.allNews.splice(this.newsToDeleteIndex, 1);
-        this.dataProvider.showToast(response.message);
+        this.dataProvider.showToast(response.message || '');
         this.closeDeleteModal();
       } else {
         this.authProvider.flushLocalStorage();
-        this.dataProvider.errorALertMessage(response.message);
+        this.dataProvider.errorALertMessage(response.message || '');
         this.closeDeleteModal();
       }
       this.cdr.markForCheck();
@@ -441,10 +442,10 @@ export class NewsPage implements OnInit {
     if (!this.country) return;
 
     this.country = null;
-    this.country_code = null;
+    this.country_code = '';
 
     this.allNews = [];
     this.show_loading = true;
-    this.getNews(0, 0, null, true);
+    this.getNews(0, 0, '', true);
   }
 }
