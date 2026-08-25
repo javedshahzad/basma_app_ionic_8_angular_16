@@ -34,7 +34,7 @@ import { FollowupFieldsApiService, FollowupStudentListResponse, FollowupStudentR
 import { UserType } from '../constants/user-type';
 import { NgIf, NgClass, NgFor, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LoggedInUser } from '../model/logged-in-user.model';
+import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { Course } from '../service/courses-api/courses-api.service';
 
 interface MarkSheetEntry {
@@ -98,6 +98,15 @@ export class FollowupStudentListPage {
   warningMessage: string = '';
   warningType: 'frozen' | 'warning' = 'warning';
   showDeleteConfirmModal: boolean = false;
+
+  // userDetails.details is genuinely optional on LoggedInUser (a real API
+  // response can omit it), but every call site here only runs after
+  // initData()'s `if (userLoggedIn)` guard has already populated it —
+  // the non-null assertion documents that invariant once instead of at
+  // every access site.
+  get userInfo(): UserDetails {
+    return this.userDetails.details!;
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -181,7 +190,7 @@ export class FollowupStudentListPage {
 
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
-      this.userType = this.userDetails.details.user_type;
+      this.userType = this.userInfo.user_type || '';
       this.checkHolidays(loader);
     } else {
       this.show_loading = false;
@@ -192,8 +201,8 @@ export class FollowupStudentListPage {
 
   checkHolidays(loader: boolean) {
     let data = {
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id
     };
 
@@ -201,7 +210,7 @@ export class FollowupStudentListPage {
       .getHolidays(data)
       .then(response => {
         if (response && response.holidays && response.holidays.length > 0) {
-          this.holidayString = response.holiday_string;
+          this.holidayString = response.holiday_string || '';
           let day = this.dateSelected.getDate().toString().padStart(2, '0');
           let month = (this.dateSelected.getMonth() + 1).toString().padStart(2, '0');
           let string_date = `${this.dateSelected.getFullYear()}-${month}-${day}`;
@@ -217,7 +226,7 @@ export class FollowupStudentListPage {
 
   getStudentPoints() {
     this.gamificationApi.getPointsValue().then(res => {
-      this.student_points = res.points;
+      this.student_points = res.points || [];
       this.cdr.markForCheck();
     });
   }
@@ -230,10 +239,10 @@ export class FollowupStudentListPage {
 
     let studentData = {
       date: this.dataProvider.getFormatedDate(this.dateSelected),
-      user_no: this.userDetails.details.user_no,
+      user_no: this.userInfo.user_no,
       session_id: this.userDetails.session_id,
       course_id: course?.cid || course?.course_id || '',
-      school_id: this.userDetails.details.school_id
+      school_id: this.userInfo.school_id
     };
 
     this.followupFieldsApi
@@ -241,11 +250,11 @@ export class FollowupStudentListPage {
       .then(res => {
         this.show_loading = false;
         if (res.session) {
-          this.attendanceResponse = res.data;
+          this.attendanceResponse = res.data || {};
 
           if (this.attendanceResponse.students) {
             this.attendanceResponse.students.forEach((student: FollowupStudentRecord) => {
-              student.sheet.forEach((sheet: FollowupMarkEntry) => {
+              (student.sheet || []).forEach((sheet: FollowupMarkEntry) => {
                 this.markSheet.push({
                   sid: student.sid,
                   cid: student.cid,
@@ -265,7 +274,7 @@ export class FollowupStudentListPage {
           this.resetVisibleStudents();
         } else {
           this.authProvider.flushLocalStorage();
-          this.dataProvider.errorALertMessage(res.message);
+          this.dataProvider.errorALertMessage(res.message || '');
           this.router.navigate(['login'], { replaceUrl: true });
         }
         this.cdr.markForCheck();
@@ -374,7 +383,7 @@ export class FollowupStudentListPage {
   }
 
   printReport(type: string) {
-    let planData = { user_no: this.userDetails.details.user_no, report_type: type };
+    let planData = { user_no: this.userInfo.user_no, report_type: type };
 
     this.dataProvider.showLoading();
     this.planApi
@@ -382,10 +391,10 @@ export class FollowupStudentListPage {
       .then(res => {
         let studentData = {
           date: this.dataProvider.getFormatedDate(this.dateSelected),
-          user_no: this.userDetails.details.user_no,
+          user_no: this.userInfo.user_no,
           session_id: this.userDetails.session_id,
           course_id: this.navData?.cid || this.navData?.course_id,
-          school_id: this.userDetails.details.school_id,
+          school_id: this.userInfo.school_id,
           report_type: type
         };
 
@@ -422,7 +431,7 @@ export class FollowupStudentListPage {
   async presentAlertConfirm() {
     const alert = await this.alertCtrl.create({
       header:
-        this.userDetails.details.is_school_admin == 1 ? this.planLang.not_valid : this.planLang.not_valid_for_others,
+        this.userInfo.is_school_admin == 1 ? this.planLang.not_valid : this.planLang.not_valid_for_others,
       mode: 'ios',
       buttons: [{ text: 'موافق', role: 'cancel', cssClass: 'secondary' }]
     });
@@ -433,10 +442,10 @@ export class FollowupStudentListPage {
     const navigation: NavigationExtras = {
       state: {
         date: this.dataProvider.getFormatedDate(this.dateSelected),
-        user_no: this.userDetails.details.user_no,
+        user_no: this.userInfo.user_no,
         session_id: this.userDetails.session_id,
         course_id: this.navData?.cid || this.navData?.course_id,
-        school_id: this.userDetails.details.school_id,
+        school_id: this.userInfo.school_id,
         course: this.navData
       }
     };
@@ -455,8 +464,8 @@ export class FollowupStudentListPage {
   confirmDeleteMarks() {
     this.showDeleteConfirmModal = false;
     let follwData = {
-      user_no: this.userDetails.details.user_no,
-      school_id: this.userDetails.details.school_id,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
       session_id: this.userDetails.session_id,
       course_id: this.navData?.cid || this.navData?.course_id,
       date: this.dataProvider.getFormatedDate(this.dateSelected)
@@ -466,10 +475,10 @@ export class FollowupStudentListPage {
       .run(() => this.followupFieldsApi.deleteFollowUpStudentList(follwData))
       .then(response => {
         if (response.session) {
-          this.dataProvider.showToast(response.message);
+          this.dataProvider.showToast(response.message || '');
           this.getStudents();
         } else {
-          this.dataProvider.errorALertMessage(response.message);
+          this.dataProvider.errorALertMessage(response.message || '');
         }
       })
       .catch(error => {});
@@ -529,8 +538,8 @@ export class FollowupStudentListPage {
   submitMarks() {
     let isAllComplete = true;
 
-    this.attendanceResponse.students.forEach((student: FollowupStudentRecord) => {
-      student.sheet.forEach((sheet: FollowupMarkEntry) => {
+    (this.attendanceResponse.students || []).forEach((student: FollowupStudentRecord) => {
+      (student.sheet || []).forEach((sheet: FollowupMarkEntry) => {
         if (sheet.marks && parseFloat(String(sheet.marks)) > parseFloat(String(sheet.field_max_marks))) {
           isAllComplete = false;
         }
@@ -539,9 +548,9 @@ export class FollowupStudentListPage {
 
     if (isAllComplete) {
       let data = {
-        user_no: this.userDetails.details.user_no,
-        school_id: this.userDetails.details.school_id,
-        session_id: this.userDetails.session_id,
+        user_no: this.userInfo.user_no!,
+        school_id: this.userInfo.school_id!,
+        session_id: this.userDetails.session_id!,
         course_id: (this.navData?.cid || this.navData?.course_id) as string | number,
         date: this.dataProvider.getFormatedDate(this.dateSelected)
       };
@@ -667,7 +676,7 @@ export class FollowupStudentListPage {
           let data = {
             sid: this.studentData.sid,
             note: this.noteMessage,
-            user_id: this.userDetails.details.user_no,
+            user_id: this.userInfo.user_no,
             rating: this.ratingStars,
             new_rating: JSON.stringify(this.ratingStars)
           };
@@ -700,7 +709,7 @@ export class FollowupStudentListPage {
           let data = {
             sid: this.studentData.sid,
             note: this.noteMessage,
-            user_id: this.userDetails.details.user_no,
+            user_id: this.userInfo.user_no,
             rating: 0,
             new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
           };
@@ -736,7 +745,7 @@ export class FollowupStudentListPage {
   async awardSkillPoints(student: FollowupStudentRecord, skillType: string, point: number) {
     let body = {
       sid: String(student.sid),
-      userId: String(this.userDetails.details.user_no),
+      userId: String(this.userInfo.user_no),
       points: '+' + point,
       skill_type: skillType
     };
@@ -787,12 +796,13 @@ export class FollowupStudentListPage {
     );
   }
 
-  async takePicture(student: FollowupStudentRecord, event?: Event) {
+  async takePicture(student: FollowupStudentRecord, event: Event) {
     this.studentData = student;
     this.cdr.markForCheck();
     const result = await this.studentEngagement.captureAvatarImage(event, this.lang);
     if (result.base64) {
-      this.zone.run(() => this.ChangeStudentProfileAvatar(result.base64));
+      const base64 = result.base64;
+      this.zone.run(() => this.ChangeStudentProfileAvatar(base64));
     } else if (result.action === 'avatar') {
       this.zone.run(() => this.handleAvatarSelection());
     }
@@ -843,9 +853,9 @@ export class FollowupStudentListPage {
     try {
       const result = await this.dataProvider.run(() =>
         this.studentEngagement.uploadAvatar(base64Data, {
-          user_no: this.userDetails.details.user_no,
-          session_id: this.userDetails.session_id,
-          sid: this.studentData.sid
+          user_no: this.userInfo.user_no!,
+          session_id: this.userDetails.session_id!,
+          sid: this.studentData.sid!
         })
       );
 
@@ -866,7 +876,7 @@ export class FollowupStudentListPage {
 
         this.dataProvider.showToast('تم تحديث صورة الطالب بنجاح');
       } else {
-        this.dataProvider.errorALertMessage(result.message);
+        this.dataProvider.errorALertMessage(result.message || '');
       }
     } catch {
       this.dataProvider.errorALertMessage('حدث خطأ في الاتصال');
