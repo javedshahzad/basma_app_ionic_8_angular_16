@@ -91,14 +91,18 @@ export class StudentReportClassesPage implements OnInit {
   }
 
   doRefresh(event) {
-    this.ngOnInit(false);
+    this.refresh(false);
     setTimeout(() => {
       event.target.complete();
     }, 2000);
   }
 
+  ngOnInit() {
+    this.refresh();
+  }
+
   // 🟢 4. جعل الدالة async لاستخدام التخزين الآمن بدلاً من localStorage
-  async ngOnInit(loader: boolean = true) {
+  async refresh(loader: boolean = true) {
     if (loader) this.isLoading = true;
 
     let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة

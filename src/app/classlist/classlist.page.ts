@@ -104,7 +104,7 @@ export class ClasslistPage implements OnInit {
   ) {
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       if (res.changeUser) {
-        this.ngOnInit();
+        this.refresh();
       }
     });
     this.translate.get('alertmessages').subscribe(res => {
@@ -120,7 +120,7 @@ export class ClasslistPage implements OnInit {
       this.translate.get('alertmessages').subscribe(res => {
         this.lang = res;
         this.cdr.markForCheck();
-        this.ngOnInit(false);
+        this.refresh(false);
       });
     });
   }
@@ -213,13 +213,17 @@ export class ClasslistPage implements OnInit {
   }
 
   doRefresh(event) {
-    this.ngOnInit(false);
+    this.refresh(false);
     setTimeout(() => {
       event.target.complete();
     }, 2000);
   }
 
-  async ngOnInit(loader: boolean = true) {
+  ngOnInit() {
+    this.refresh();
+  }
+
+  async refresh(loader: boolean = true) {
     this.editMode = false;
 
     let userLoggedIn = await this.storageSr.get('userloggedin');
