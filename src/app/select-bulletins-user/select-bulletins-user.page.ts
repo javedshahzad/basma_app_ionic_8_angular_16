@@ -1,4 +1,5 @@
-import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
@@ -23,6 +24,7 @@ export class SelectBulletinsUserPage {
   trackByIndex(index: number): number {
     return index;
   }
+  private destroyRef = inject(DestroyRef);
   userdata: any;
   lang: any;
   allUsers: any = [];
@@ -222,7 +224,7 @@ export class SelectBulletinsUserPage {
       if (user && user.user_no !== this.userDetails.details.user_no) {
         this.formData.append('users', user.user_no); // إرسال المستخدم مباشرة
         this.dataProvider.showLoading();
-        this.bulletinsApi.createBulletins(this.formData).subscribe(
+        this.bulletinsApi.createBulletins(this.formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
           res => {
             this.dataProvider.hideLoading();
             this.dataProvider.showToast(res.message || 'تمت المشاركة بنجاح');
