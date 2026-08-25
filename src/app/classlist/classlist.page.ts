@@ -161,7 +161,7 @@ export class ClasslistPage implements OnInit {
     }
   }
 
-  prepareArray(startfrom, endTo) {
+  prepareArray(startfrom: number, endTo: number) {
     if (!this.reorderList.length) {
       this.classes.forEach((res, index) => {
         this.reorderList.push({ cid: res.cid, index: index });
@@ -212,7 +212,7 @@ export class ClasslistPage implements OnInit {
     }, 2000);
   }
 
-  doRefresh(event) {
+  doRefresh(event: any) {
     this.refresh(false);
     setTimeout(() => {
       event.target.complete();
@@ -277,7 +277,7 @@ export class ClasslistPage implements OnInit {
       });
   }
 
-  segmentChanged(event) {
+  segmentChanged(event: any) {
     if (this.canPresentPopover) {
       this.presentPopover();
       const intervel = setInterval(() => {
@@ -435,7 +435,7 @@ export class ClasslistPage implements OnInit {
     }
   }
 
-  openSeminar(seminar) {
+  openSeminar(seminar: any) {
     const navigation: NavigationExtras = {
       state: { seminar: seminar }
     };
@@ -444,7 +444,7 @@ export class ClasslistPage implements OnInit {
     });
   }
 
-  deletClass(course) {
+  deletClass(course: Course) {
     let data = {
       class_id: course.cid,
       school_id: this.userDetails.details.school_id,

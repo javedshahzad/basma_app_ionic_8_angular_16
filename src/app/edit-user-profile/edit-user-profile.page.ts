@@ -191,7 +191,7 @@ export class EditUserProfilePage {
       this.isPopoverOpen = true;
     } else {
       let headerText = '';
-      let buttons = [];
+      let buttons: any[] = [];
 
       if (type === 'status') {
         headerText = this.translate.instant('user_profile.action') || 'الحالة';
@@ -287,7 +287,7 @@ export class EditUserProfilePage {
       this.filteredClasses = [...this.classes];
     } else {
       const query = this.classSearchQuery.toLowerCase();
-      this.filteredClasses = this.classes.filter(c => c.name && c.name.toLowerCase().includes(query));
+      this.filteredClasses = this.classes.filter((c: any) => c.name && c.name.toLowerCase().includes(query));
     }
   }
 
@@ -429,7 +429,7 @@ export class EditUserProfilePage {
     console.log('حالة الزر الحالية:', this.user.attendence_permit);
   }
 
-  portChange(event) {
+  portChange(event: any) {
     this.user.class = JSON.stringify(event.value);
   }
 

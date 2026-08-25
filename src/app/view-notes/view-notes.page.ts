@@ -106,7 +106,7 @@ export class ViewNotesPage implements OnInit {
     this.cdr.markForCheck();
   }
 
-  showPhoto(url) {
+  showPhoto(url: string) {
     console.log(url);
     this.photoViewer.show(url);
   }
@@ -123,11 +123,11 @@ export class ViewNotesPage implements OnInit {
     });
   }
 
-  openPdf(pdf) {
+  openPdf(pdf: string) {
     window.open(pdf, '_system');
   }
 
-  deleteNoteAlert(note, index) {
+  deleteNoteAlert(note: any, index: number) {
     this.noteToDelete = note;
     this.noteIndexToDelete = index;
     this.showDeleteModal = true;

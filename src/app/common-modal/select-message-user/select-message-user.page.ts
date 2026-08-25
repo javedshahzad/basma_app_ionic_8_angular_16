@@ -87,7 +87,7 @@ export class SelectMessageUserPage implements OnInit {
     this.cdr.markForCheck();
   }
 
-  filterList(event) {
+  filterList(event: any) {
     //this.selectTopic=[];
     let input = (<HTMLInputElement>document.getElementById('search')).value;
     console.log(input);
@@ -115,7 +115,7 @@ export class SelectMessageUserPage implements OnInit {
       });
   }
 
-  selectUser(users, eve, id) {
+  selectUser(users: any, eve: any, id: string | number) {
     console.log(users);
     let isPresent = false;
     let ind;

@@ -105,7 +105,7 @@ export class EditCalssPage {
       );
   }
 
-  markTeacher(teacher, type, eve, id) {
+  markTeacher(teacher: any, type: string, eve: any, id: string | number) {
     let is_checked = eve.srcElement.ariaChecked;
     console.log(teacher, type, id, is_checked);
     if (type == 'reg') {

@@ -26,8 +26,8 @@ export class ViewClassNotesPage implements OnInit {
   trackByIndex(index: number): number {
     return index;
   }
-  @Input() data;
-  @Input() state;
+  @Input() data: any;
+  @Input() state: any;
   lang: any;
   userDetails: any;
   userType: any;
@@ -72,7 +72,7 @@ export class ViewClassNotesPage implements OnInit {
   cloeModal() {
     this.modalController.dismiss();
   }
-  showPhoto(url) {
+  showPhoto(url: string) {
     console.log(url);
     this.photoViewer.show(url);
   }
@@ -100,12 +100,12 @@ export class ViewClassNotesPage implements OnInit {
     //this.router.navigate(['add-notes']);
   }
 
-  openPdf(pdf) {
+  openPdf(pdf: string) {
     //  window.open(pdf,'_blank')
     // this.documentService.openPdf(pdf,true);
     window.open(pdf, '_system');
   }
-  async deleteNote(note) {
+  async deleteNote(note: any) {
     const alert = await this.alertCtrl.create({
       header: this.lang.delete_note,
       backdropDismiss: true,

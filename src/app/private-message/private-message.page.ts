@@ -102,7 +102,7 @@ export class PrivateMessagePage {
     this.cdr.markForCheck();
   }
 
-  doRefresh(event) {
+  doRefresh(event: any) {
     this.reloadData();
     setTimeout(() => {
       event.target.complete();
@@ -143,7 +143,7 @@ export class PrivateMessagePage {
     }
   }
 
-  async deleteNotification(notificationId, index) {
+  async deleteNotification(notificationId: string | number, index: number) {
     const alert = await this.alertCtrl.create({
       message: this.lang.want_to_delete || 'هل أنت متأكد من الحذف؟',
       backdropDismiss: false,
@@ -184,7 +184,7 @@ export class PrivateMessagePage {
   }
 
   // 🟢 دوال عرض الصور المحدثة لتتوافق مع تصميم النظام
-  openImageContainer(url) {
+  openImageContainer(url: string) {
     this.viewImageUrl = url;
     this.showImageViewer = true;
   }
@@ -196,7 +196,7 @@ export class PrivateMessagePage {
     }, 300);
   }
 
-  downloadImage(imageUrl) {
+  downloadImage(imageUrl: string) {
     this.dataProvider
       .run(() => this.dataProvider.downloadImage(imageUrl))
       .then(res => {

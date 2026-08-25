@@ -177,7 +177,7 @@ export class SelectBulletinsUserPage {
   }
 
   // 🟢 التخلص من الاعتماد على הـ DOM وتحديث الـ Array فقط
-  selectUser(user, event) {
+  selectUser(user: any, event: any) {
     // إيقاف الانتشار لعدم تفعيل النقر مرتين إذا تم الضغط على السطر بالكامل
     if (event.stopPropagation) event.stopPropagation();
 
@@ -225,9 +225,9 @@ export class SelectBulletinsUserPage {
         this.formData.append('users', user.user_no); // إرسال المستخدم مباشرة
         this.dataProvider.showLoading();
         this.bulletinsApi.createBulletins(this.formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
-          res => {
+          () => {
             this.dataProvider.hideLoading();
-            this.dataProvider.showToast(res.message || 'تمت المشاركة بنجاح');
+            this.dataProvider.showToast('تمت المشاركة بنجاح');
             this.router.navigate(['bulletins']);
           },
           err => {

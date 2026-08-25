@@ -112,18 +112,18 @@ export class BulletinsPage {
     }, 500);
   }
 
-  addBulletin(base64Image) {
+  addBulletin(base64Image: string) {
     let objToSend: NavigationExtras = {
       queryParams: { base64Image: base64Image }
     };
     this.router.navigate(['follow-bulletins'], { state: { cameraImage: objToSend } });
   }
 
-  openImage(image) {
+  openImage(image: string) {
     this.photoViewer.show(image);
   }
 
-  opendoc(pdf) {
+  opendoc(pdf: string) {
     let link = 'https://docs.google.com/viewer?url=' + pdf;
     window.open(link, '_system');
   }
@@ -136,7 +136,7 @@ export class BulletinsPage {
     window.open(pdf + '.pdf', '_system');
   }
 
-  openBulletin(bullet) {
+  openBulletin(bullet: any) {
     const navigation: NavigationExtras = { state: bullet };
     this.zone.run(() => {
       this.router.navigate(['view-bulletin'], navigation);

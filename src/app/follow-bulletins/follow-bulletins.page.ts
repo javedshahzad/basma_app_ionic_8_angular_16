@@ -117,7 +117,7 @@ export class FollowBulletinsPage {
     this.cdr.markForCheck();
   }
 
-  async openImgPreview(image) {
+  async openImgPreview(image: string) {
     const imgSrc = (<any>window).Ionic.WebView.convertFileSrc(image);
     const alert = await this.alertCtrl.create({
       header: 'معاينة الصورة',
@@ -272,7 +272,7 @@ export class FollowBulletinsPage {
     document.getElementById('myFileInput').click();
   }
 
-  removeImage(i) {
+  removeImage(i: number) {
     this.selectedDocument.splice(i, 1);
   }
 
@@ -319,7 +319,7 @@ export class FollowBulletinsPage {
     return true;
   }
 
-  selectUser(user, eve) {
+  selectUser(user: any, eve: any) {
     if (eve.detail.checked == true) {
       if (!this.selectedUsers.includes(user.user_no)) {
         this.selectedUsers.push(user.user_no);

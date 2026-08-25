@@ -7,7 +7,7 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
-import { ParentManagementApiService } from '../service/parent-management-api/parent-management-api.service';
+import { ParentManagementApiService, Parent } from '../service/parent-management-api/parent-management-api.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
@@ -159,12 +159,12 @@ export class RequestedParentPage implements OnInit {
     }, 500);
   }
 
-  toggleAccessMode(list) {
+  toggleAccessMode(list: Parent) {
     list.access_mode = list.access_mode == '1' ? '0' : '1';
   }
 
   // 🟢 5. قبول الطلب بالاعتماد على الـ Model وليس الـ DOM
-  acceptRequest(list) {
+  acceptRequest(list: Parent) {
     let is_permitted = list.isChecked ? true : false;
     let data = {
       user_no: list.user_no,
@@ -189,7 +189,7 @@ export class RequestedParentPage implements OnInit {
       );
   }
 
-  changeStatus(list) {
+  changeStatus(list: Parent) {
     let is_permitted = list.access_mode == '1' ? 1 : 2;
     let data = {
       user_no: list.user_no,
@@ -213,7 +213,7 @@ export class RequestedParentPage implements OnInit {
       );
   }
 
-  deleteRequest(list) {
+  deleteRequest(list: Parent) {
     let data = {
       user_no: list.user_no,
       school_id: this.userDetails.details.school_id
@@ -236,7 +236,7 @@ export class RequestedParentPage implements OnInit {
       );
   }
 
-  async deleteParent(list) {
+  async deleteParent(list: Parent) {
     const alert = await this.alertCtrl.create({
       header: this.lang.delete_parent || 'تأكيد الحذف',
       backdropDismiss: true,
@@ -361,7 +361,7 @@ export class RequestedParentPage implements OnInit {
     await alert.present();
   }
 
-  parentDataValidate(data) {
+  parentDataValidate(data: any) {
     let isValid = true;
     var pattern = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
     if (data.parentName == '' || data.parentName.trim() == '') {

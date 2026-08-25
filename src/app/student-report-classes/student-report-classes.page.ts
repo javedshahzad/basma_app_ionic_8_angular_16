@@ -90,7 +90,7 @@ export class StudentReportClassesPage implements OnInit {
     }, 500);
   }
 
-  doRefresh(event) {
+  doRefresh(event: any) {
     this.refresh(false);
     setTimeout(() => {
       event.target.complete();
@@ -145,7 +145,7 @@ export class StudentReportClassesPage implements OnInit {
           if (courses && courses.length > 0) {
             let i = 0;
             this.classes = courses;
-            this.classes.forEach(course => {
+            this.classes.forEach((course: any) => {
               course.backgroundColor = this.classBackgroundColor[i];
               i++;
               if (i == 9) i = 0;
@@ -168,7 +168,7 @@ export class StudentReportClassesPage implements OnInit {
       });
   }
 
-  openClassStudents(course) {
+  openClassStudents(course: any) {
     const navigation: NavigationExtras = {
       state: { course: course }
     };

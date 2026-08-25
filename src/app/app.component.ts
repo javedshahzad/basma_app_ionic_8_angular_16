@@ -360,7 +360,7 @@ export class AppComponent {
     });
   }
 
-  async presentToast(message) {
+  async presentToast(message: string) {
     const toast = await this.toastController.create({
       message,
       duration: 3000,
@@ -508,7 +508,7 @@ export class AppComponent {
     );
   }
 
-  registerParent(page) {
+  registerParent(page: string) {
     if (page == 'parent_register') {
       this.router.navigate(['parent-register']);
     } else {
@@ -665,11 +665,11 @@ export class AppComponent {
     document.dir = lang === 'ar' ? 'rtl' : 'ltr';
   }
 
-  async openUrl(url) {
+  async openUrl(url: string) {
     await Browser.open({ url });
   }
 
-  changeAccount(event) {
+  changeAccount(event: any) {
     this.dataProvider.switchAccount(event, this.lang.switch_account);
     this.menuCtrl.close();
   }

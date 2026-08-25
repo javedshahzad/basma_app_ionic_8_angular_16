@@ -24,7 +24,7 @@ export class AbsentStudentsPage implements OnInit {
     return index;
   }
   readonly UserType = UserType;
-  classes = [];
+  classes: any[] = [];
   userDetails: any;
   search_payload: any = {
     start_date: new Date()
@@ -48,9 +48,9 @@ export class AbsentStudentsPage implements OnInit {
     { id: 8, name: 'الحصة 8' }
   ];
 
-  StudentsList = [];
+  StudentsList: any[] = [];
   ResponseData: any;
-  AttendanceDataList = [];
+  AttendanceDataList: any[] = [];
 
   constructor(
     public navCtrl: NavController,
@@ -112,7 +112,7 @@ export class AbsentStudentsPage implements OnInit {
       .catch(error => {});
   }
 
-  getStudentsListByCourseId(cid) {
+  getStudentsListByCourseId(cid: string | number) {
     let studentData = {
       date: this.dataProvider.getFormatedDate(new Date()),
       user_no: this.userDetails.details.user_no,
@@ -137,7 +137,7 @@ export class AbsentStudentsPage implements OnInit {
     this.search_payload.class_id = selectedClass.map((element: any) => element.cid);
   }
 
-  onChangeStudent(event) {
+  onChangeStudent(event: any) {
     var selectedStudent = event.value;
     this.search_payload.studentid = selectedStudent.sid;
   }
@@ -201,7 +201,7 @@ export class AbsentStudentsPage implements OnInit {
   }
 
   // 🔴 التعديل الثاني: معالجة نصوص الحصص قبل عرضها في واجهة البطاقات
-  getSemsFromList(sid) {
+  getSemsFromList(sid: string | number) {
     let processedSems: string[] = [];
 
     // استخدام (?.) للحماية من الانهيار

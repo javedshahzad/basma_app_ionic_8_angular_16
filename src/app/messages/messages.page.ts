@@ -121,7 +121,7 @@ export class MessagesPage {
     }
   }
 
-  doRefresh(event) {
+  doRefresh(event: any) {
     this.reloadData();
     setTimeout(() => {
       event.target.complete();
@@ -241,7 +241,7 @@ export class MessagesPage {
       });
   }
 
-  openImageContainer(url) {
+  openImageContainer(url: string) {
     this.imageUrl = url;
     this.imageModal = true;
   }
@@ -254,7 +254,7 @@ export class MessagesPage {
     }, 300);
   }
 
-  downloadImage(imageUrl) {
+  downloadImage(imageUrl: string) {
     this.presentPopover();
     this.dataProvider
       .downloadImage(imageUrl)
