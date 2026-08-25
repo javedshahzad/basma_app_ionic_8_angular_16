@@ -36,7 +36,16 @@
             "style": "camelCase"
           }
         ],
-        "@typescript-eslint/no-explicit-any": "warn"
+        "@typescript-eslint/no-explicit-any": "warn",
+        // New in @angular-eslint v20's recommended preset, defaulting to
+        // "error". This codebase uses constructor-parameter DI everywhere
+        // (~1100 sites) — a real, working, already-tested pattern, not a
+        // bug. Migrating to inject() is a legitimate future improvement
+        // (`ng generate @angular/core:inject` can do it automatically) but
+        // is its own separate piece of work, out of scope for an Angular
+        // version bump. Downgraded to warn so it stays visible without
+        // blocking CI.
+        "@angular-eslint/prefer-inject": "warn"
       }
     },
     {
