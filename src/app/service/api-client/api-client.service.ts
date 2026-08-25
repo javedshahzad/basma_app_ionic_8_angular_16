@@ -98,10 +98,16 @@ export class ApiClient {
             // makes Sentry fall back to a generic "Object captured as
             // exception with keys: ..." title with no message or stack.
             // Wrap it in a real Error so issues are readable and group by
-            // endpoint/status; the original response is kept in `extra`.
+            // endpoint/status. Deliberately do NOT forward the raw
+            // HttpErrorResponse as `extra` — `error.error` is the backend's
+            // response body, which can echo back submitted PII (names,
+            // phone numbers, national IDs) in validation messages, and
+            // `error.url`/`error.headers` can carry identifiers too. Only
+            // status/statusText/slug — already visible in the request URL
+            // itself — are safe, genuinely diagnostic metadata.
             const status = error?.status ?? 'unknown';
             const statusText = error?.statusText || error?.message || 'Unknown Error';
-            Sentry.captureException(new Error(`HTTP ${status} (${statusText}) on ${slug}`), { extra: { slug, httpError: error } });
+            Sentry.captureException(new Error(`HTTP ${status} (${statusText}) on ${slug}`), { extra: { slug, status, statusText } });
             reject(error);
           })
         } else {

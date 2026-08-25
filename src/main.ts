@@ -14,6 +14,12 @@ import { appConfig } from './app/app.config';
 // tracesSampleRate: عيّنة صغيرة (15%) من الجلسات الحقيقية لقياس أداء ميداني
 // حقيقي (RUM) عبر أجهزة وشبكات المستخدمين الفعليين، إلى جانب قياسات Lighthouse
 // المخبرية — راجع خطة العمل الاحترافية لحزمة التحميل الأساسية، المرحلة صفر.
+// Strips a query string off a URL before it reaches Sentry — request URLs
+// can carry identifiers (see beforeSend below for the full rationale).
+function stripQuery(url: string): string {
+  return url.split('?')[0];
+}
+
 if (environment.sentryDsn) {
   Sentry.init(
     {
@@ -21,6 +27,29 @@ if (environment.sentryDsn) {
       environment: environment.production ? 'production' : 'development',
       integrations: [SentryAngular.browserTracingIntegration()],
       tracesSampleRate: 0.15,
+      // Defense-in-depth scrub, independent of what any individual capture
+      // call site attaches: strips query strings (which have carried
+      // user_no/uuid — see finding 3b) from request/breadcrumb URLs, and
+      // drops any `extra.httpError` a call site might attach (api-client.
+      // service.ts used to do exactly this on every failed API call — the
+      // raw HttpErrorResponse, including the backend's response body, which
+      // can echo back submitted PII in validation messages — see finding
+      // 3a). Runs on every event regardless of where it originated.
+      beforeSend(event) {
+        if (event.request?.url) {
+          event.request.url = stripQuery(event.request.url);
+        }
+        event.breadcrumbs?.forEach(breadcrumb => {
+          const url = breadcrumb.data?.['url'];
+          if (typeof url === 'string') {
+            breadcrumb.data!['url'] = stripQuery(url);
+          }
+        });
+        if (event.extra) {
+          delete event.extra['httpError'];
+        }
+        return event;
+      },
     },
     SentryAngular.init
   );
