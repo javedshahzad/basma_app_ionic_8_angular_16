@@ -340,7 +340,7 @@ export class AppComponent {
   initializeDeeppLink() {
     App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
       this.zone.run(() => {
-        const slug = event.url.split('.app').pop();
+        const slug = event.url.split('.app').pop() || '';
         const que = slug.split('&');
         const id = que[0].split('=');
         const un = que[1].split('=');
@@ -800,7 +800,7 @@ export class AppComponent {
       this.deviceApi.CheckDeviceLogInStatus(data).then(
         res => {
           // Only log out on an explicit kick / deactivated account signal.
-          if (res.success && res.data && (res.data.is_logged_out == '1' || res.data.user.status == '0')) {
+          if (res.success && res.data && (res.data.is_logged_out == '1' || res.data.user?.status == '0')) {
             this.logout();
           }
         },

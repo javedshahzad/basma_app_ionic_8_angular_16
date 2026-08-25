@@ -87,9 +87,8 @@ export class AddUserPage implements OnInit {
 
     // 🟢 [التعديل الجوهري]: التقاط التوجيه الذكي لمعرفة من أي صفحة جئنا
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-      if (this.router.getCurrentNavigation()?.extras.state) {
-        let state = this.router.getCurrentNavigation().extras.state;
-
+      let state = this.router.getCurrentNavigation()?.extras.state;
+      if (state) {
         // 1. التقاط مسار العودة (إذا جئنا من manage-teacher سيتم حفظه هنا)
         if (state['returnPath']) {
           this.returnPath = state['returnPath'];

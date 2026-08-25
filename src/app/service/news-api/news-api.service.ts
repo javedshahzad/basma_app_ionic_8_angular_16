@@ -89,12 +89,13 @@ export class NewsApiService {
 
           this.http.get<GetNewsJoinHttpResponse>(url, { headers: header }).subscribe((response) => {
             if (response.success) {
-              if (response.news.length > 20) {
-                this.dbProvider.insertNews(response.news.slice(0, 20));
+              const news = response.news || [];
+              if (news.length > 20) {
+                this.dbProvider.insertNews(news.slice(0, 20));
               } else {
-                this.dbProvider.insertNews(response.news);
+                this.dbProvider.insertNews(news);
               }
-              resolve(response.news);
+              resolve(news);
             }
             resolve(response);
           }, (error) => {

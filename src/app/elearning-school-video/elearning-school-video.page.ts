@@ -87,10 +87,10 @@ export class ElearningSchoolVideoPage {
   }
 
 
-  getElerningMaterials(c_dode: string) {
+  getElerningMaterials(c_dode: string | null) {
     this.show_loading = true;
     this.elearningApi
-      .getElearningMaterials(this.school.id, c_dode)
+      .getElearningMaterials(this.school.id!, c_dode || undefined)
       .then(materialList => {
         this.show_loading = false;
         // 🟢 إضافة متغير 'isOpen' للتحكم بفتح وإغلاق القوائم بطريقة Angular صحيحة بدلاً من DOM

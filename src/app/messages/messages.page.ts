@@ -105,7 +105,7 @@ export class MessagesPage {
           } else {
             this.authProvider.flushLocalStorage();
             this.router.navigate(['login'], { replaceUrl: true });
-            this.dataProvider.errorALertMessage(response.message);
+            this.dataProvider.errorALertMessage(response.message || '');
           }
           this.cdr.markForCheck();
         })
@@ -175,7 +175,7 @@ export class MessagesPage {
           } else {
             this.authProvider.flushLocalStorage();
             this.router.navigate(['login'], { replaceUrl: true });
-            this.dataProvider.errorALertMessage(response.message);
+            this.dataProvider.errorALertMessage(response.message || '');
           }
           this.cdr.markForCheck();
         })
@@ -223,12 +223,12 @@ export class MessagesPage {
       .then(response => {
         this.dissmissPopOver();
         if (response.session) {
-          this.dataProvider.showToast(response.message);
+          this.dataProvider.showToast(response.message || '');
           this.notifications.splice(this.notificationToDeleteIndex, 1);
           this.closeDeleteModal();
         } else {
           this.authProvider.flushLocalStorage();
-          this.dataProvider.errorALertMessage(response.message);
+          this.dataProvider.errorALertMessage(response.message || '');
           this.closeDeleteModal();
         }
         this.cdr.markForCheck();

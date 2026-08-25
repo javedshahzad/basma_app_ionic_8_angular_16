@@ -94,7 +94,7 @@ export class ForgotPasswordPage {
             this.enterOtp = true;
             this.scrollToBottom();
           } else {
-            this.emailError = res.message;
+            this.emailError = res.message || '';
           }
           this.cdr.markForCheck();
         })
@@ -124,7 +124,7 @@ export class ForgotPasswordPage {
             this.step++;
             this.scrollToBottom();
           } else {
-            this.otpError = res.message;
+            this.otpError = res.message || '';
           }
           this.cdr.markForCheck();
         })
@@ -166,14 +166,14 @@ export class ForgotPasswordPage {
           if (res.session) {
             this.step++;
             this.canEditPass = false;
-            this.dataProvider.showToast(res.message);
+            this.dataProvider.showToast(res.message || '');
 
             // توجيه لصفحة تسجيل الدخول بهدوء
             setTimeout(() => {
               this.router.navigate(['login'], { replaceUrl: true });
             }, 1500);
           } else {
-            this.dataProvider.showToast(res.message);
+            this.dataProvider.showToast(res.message || '');
           }
           this.cdr.markForCheck();
         })
