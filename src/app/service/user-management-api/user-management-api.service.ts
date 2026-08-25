@@ -210,7 +210,7 @@ export class UserManagementApiService {
           } else if (response.response == true) {
             resolve({ session: true, data: response.msg });
           } else {
-            resolve(response.msg);
+            resolve(response.msg || '');
           }
         }
       }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
@@ -299,9 +299,9 @@ export class UserManagementApiService {
           this.httpClient.post<RevertSchoolHttpResponse>(environment.serverURL + 'revertDeleteSchool', body, { headers: header }).subscribe(
             (response) => {
               if (!response.session) {
-                resolve({ session: false, message: response.msg, deactive_date: response.response.deactivate_date });
+                resolve({ session: false, message: response.msg, deactive_date: response.response?.deactivate_date });
               } else if (response.success) {
-                resolve({ session: true, message: response.msg, deactive_date: response.response.deactivate_date });
+                resolve({ session: true, message: response.msg, deactive_date: response.response?.deactivate_date });
               } else {
                 reject(response.msg);
               }
@@ -339,7 +339,7 @@ export class UserManagementApiService {
           } else if (response.response == true) {
             resolve({ session: true, data: response.msg });
           } else {
-            resolve(response.msg);
+            resolve(response.msg || '');
           }
         }
       }, (error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));

@@ -65,20 +65,20 @@ export class ConnectNewMessagePage {
       this.dataProvider.showToast(this.lang.max_body);
     } else {
       let data = {
-        user_no: this.userDetails.details.user_no,
-        school_id: this.userDetails.details.school_id,
-        session_id: this.userDetails.session_id,
+        user_no: this.userDetails.details!.user_no!,
+        school_id: this.userDetails.details!.school_id!,
+        session_id: this.userDetails.session_id!,
         message: this.message
       };
 
       try {
         const response = await this.dataProvider.run(() => this.parentConnectApi.createParentConnectChat(data));
         if (response.session) {
-          this.dataProvider.showToast(response.message);
+          this.dataProvider.showToast(response.message || '');
           this.viewCtrl.dismiss(true);
         } else {
           this.authProvider.flushLocalStorage();
-          this.dataProvider.errorALertMessage(response.message);
+          this.dataProvider.errorALertMessage(response.message || '');
           this.viewCtrl.dismiss(true);
           this.router.navigate(['login'], { replaceUrl: true });
         }

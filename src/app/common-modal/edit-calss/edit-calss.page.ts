@@ -88,7 +88,7 @@ export class EditCalssPage {
           if (res.session) {
             this.teacherList = res.data;
             this.selectedTeacher = res.data;
-            if (res.data.length < 1) {
+            if ((res.data || []).length < 1) {
               this.noTeacher = true;
             }
           } else {
@@ -146,10 +146,10 @@ export class EditCalssPage {
         res => {
           console.log('teschers', res);
           if (res.session) {
-            this.dataProvider.showToast(res.data);
+            this.dataProvider.showToast(res.data || '');
             this.router.navigate(['tabs/classlist']);
           } else {
-            this.dataProvider.showToast(res.message);
+            this.dataProvider.showToast(res.message || '');
           }
         },
         error => {
@@ -171,10 +171,10 @@ export class EditCalssPage {
         res => {
           console.log('teschers', res);
           if (res.session) {
-            this.dataProvider.showToast(res.data);
+            this.dataProvider.showToast(res.data || '');
             this.router.navigate(['tabs/classlist']);
           } else {
-            this.dataProvider.showToast(res.message);
+            this.dataProvider.showToast(res.message || '');
           }
         },
         error => {

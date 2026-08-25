@@ -48,7 +48,7 @@ export class StudentEngagementService {
     const action = await this.studentUi.presentImageOptions(event, lang) as 'camera' | 'gallery' | 'avatar' | null;
     if (action === 'camera' || action === 'gallery') {
       const base64 = await this.imageService.takePicture(action);
-      return { action, base64 };
+      return { action, base64: base64 || undefined };
     }
     return { action };
   }

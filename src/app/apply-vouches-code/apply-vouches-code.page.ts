@@ -32,7 +32,7 @@ export class ApplyVouchesCodePage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan'));
+    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan') || '{}');
     this.userDetails = await this.storageSr.get('userloggedin');
     //this.getPlan();
   }
@@ -43,7 +43,7 @@ export class ApplyVouchesCodePage implements OnInit {
     this.planApi
       .getPlan(data)
       .then(res => {
-        this.plans = res.response;
+        this.plans = res.response || [];
       })
       .catch(e => {
         console.log(e);
@@ -51,7 +51,7 @@ export class ApplyVouchesCodePage implements OnInit {
       });
   }
   ApplyCode() {
-    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan'));
+    this.AvailablePlan = JSON.parse(localStorage.getItem('availablePlan') || '{}');
     let data = {
       user_no: this.userDetails.details.user_no,
       school_id: this.userDetails.details.school_id,
@@ -62,10 +62,10 @@ export class ApplyVouchesCodePage implements OnInit {
       res => {
         console.log(res);
         if (res.success) {
-          this.dataProvider.showToast(res.msg);
+          this.dataProvider.showToast(res.msg || '');
           this.navCtrl.navigateRoot('/tabs/classlist');
         } else {
-          this.dataProvider.showToast(res.msg);
+          this.dataProvider.showToast(res.msg || '');
         }
       },
       error => {

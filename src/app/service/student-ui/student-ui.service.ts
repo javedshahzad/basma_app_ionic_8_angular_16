@@ -50,7 +50,7 @@ export class StudentUiService {
   }
 
   // 3. إدارة قائمة إجراءات المشرف
-  async presentAdminActions(event: any, showAdd: boolean): Promise<string> {
+  async presentAdminActions(event: any, showAdd: boolean): Promise<string | null> {
     return new Promise(async (resolve) => {
       if (this.platform.width() >= 768) {
         const { AdminActionsPopoverComponent } = await import('../../components/admin-actions-popover/admin-actions-popover.component');
@@ -113,7 +113,7 @@ export class StudentUiService {
   }
 
   // 6. 🟢 خيارات تغيير الصورة
-  async presentImageOptions(event: Event, lang: Record<string, string>): Promise<string> {
+  async presentImageOptions(event: Event, lang: Record<string, string>): Promise<string | null> {
     return new Promise(async (resolve) => {
       if (this.platform.width() >= 768 && event) {
         const { ImageOptionPopoverComponent } = await import('../../components/image-option-popover/image-option-popover.component');
@@ -151,7 +151,7 @@ export class StudentUiService {
   }
 
   // 8. 🟢 خيارات التقييم والملاحظات للطالب
-  async presentStudentOptions(event: any, student: any, detailsLang: any): Promise<string> {
+  async presentStudentOptions(event: any, student: any, detailsLang: any): Promise<string | null> {
     return new Promise(async (resolve) => {
       if (this.platform.width() >= 768) {
         const { StudentOptionsPopoverComponent } = await import('../../components/student-options-popover/student-options-popover.component');
@@ -178,7 +178,7 @@ export class StudentUiService {
   }
 
   // 9. 🟢 خيارات الطباعة (Excel / PDF)
-  async presentPrintOptions(lang: any): Promise<string> {
+  async presentPrintOptions(lang: any): Promise<string | null> {
     return new Promise(async (resolve) => {
       const alert = await this.alertCtrl.create({
         header: lang.report_option,

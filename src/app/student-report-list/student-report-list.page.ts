@@ -105,14 +105,14 @@ export class StudentReportListPage implements OnInit {
       .then(res => {
         if (loader) this.dataProvider.hideLoading();
         if (res.session) {
-          res.data.students.forEach(student => {
-            student.studentBehaviour = this.getStudentBehaviour(student.agg_ranking);
+          (res.data?.students || []).forEach(student => {
+            student.studentBehaviour = this.getStudentBehaviour(student.agg_ranking || 0);
           });
-          this.attendanceResponse = res.data;
+          this.attendanceResponse = res.data || {};
         } else {
           if (loader) this.dataProvider.hideLoading();
           this.authProvider.flushLocalStorage();
-          this.dataProvider.errorALertMessage(res.message);
+          this.dataProvider.errorALertMessage(res.message || '');
           this.router.navigate(['login'], { replaceUrl: true });
         }
         this.cdr.markForCheck();
