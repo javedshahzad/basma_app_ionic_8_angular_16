@@ -1,3 +1,5 @@
+@use "sass:color";
+
 //variables
 $baseColor: #e74c3c;
 $fontColor: #fff;
@@ -20,7 +22,7 @@ h1 {
   font-size: 34px;
   font-weight: 100;
   text-transform: uppercase;
-  background-color: darken(#e74c3c, 5);
+  background-color: color.adjust(#e74c3c, $lightness: -5%);
   padding: 20px 0;
   b {
     font-weight: 700;
