@@ -706,6 +706,7 @@ export class ListStudentPage {
   openFullscreenImage(url: string) {
     this.viewImageUrl = url;
     this.showImageViewer = true;
+    this.cdr.markForCheck();
   }
 
   closeFullscreenImage() {
