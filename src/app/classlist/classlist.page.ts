@@ -291,7 +291,8 @@ export class ClasslistPage implements OnInit {
   revertSchoolDeletion() {
     let data = {
       school_id: this.userInfo.school_id,
-      user_no: this.userInfo.user_no
+      user_no: this.userInfo.user_no,
+      session_id: this.userDetails.session_id
     };
     this.dataProvider
       .run(() => this.userManagementApi.revertDeletedSchoolSettings(data))
@@ -626,7 +627,8 @@ export class ClasslistPage implements OnInit {
   async checkAndDeleteAccount() {
     let data = {
       school_id: this.userInfo.school_id,
-      user_no: this.userInfo.user_no
+      user_no: this.userInfo.user_no,
+      session_id: this.userDetails.session_id
     };
     try {
       const response = await this.userManagementApi.deleteSchoolPermanentlyRequest(data);

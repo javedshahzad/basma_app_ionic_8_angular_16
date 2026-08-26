@@ -379,7 +379,8 @@ export class SettingsPage {
     this.showDeleteAlert = false;
     let data = {
       school_id: this.userInfo.school_id,
-      user_no: this.userInfo.user_no
+      user_no: this.userInfo.user_no,
+      session_id: this.userDetails.session_id
     };
     try {
       const response = await this.dataProvider.run(() => this.userManagementApi.requestTodeleteSchoolAccount(data));
@@ -403,7 +404,8 @@ export class SettingsPage {
   revertSchoolDeletion() {
     let data = {
       school_id: this.userInfo.school_id,
-      user_no: this.userInfo.user_no
+      user_no: this.userInfo.user_no,
+      session_id: this.userDetails.session_id
     };
     this.dataProvider
       .run(() => this.userManagementApi.revertDeletedSchoolSettings(data))
