@@ -54,10 +54,10 @@
 
           <button
             *appHasRole="[UserType.Admin, UserType.Moderator]"
-            class="absolute -bottom-1 -right-1 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all"
+            class="absolute -bottom-1 -right-1 w-11 h-11 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all"
             (click)="$event.stopPropagation(); takePicture($event)"
           >
-            <ion-icon name="camera" class="text-sm"></ion-icon>
+            <ion-icon name="camera" class="text-base"></ion-icon>
           </button>
         </div>
 
@@ -99,7 +99,7 @@
         <div
           class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex flex-col items-center justify-center text-center transition-all hover:bg-slate-100"
         >
-          <span class="text-4xs font-black text-slate-400 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
+          <span class="text-4xs font-black text-muted mb-1.5 flex items-center gap-1 uppercase tracking-wider">
             <ion-icon name="analytics-outline" class="text-indigo-400 text-sm"></ion-icon> مؤشر الأداء العام
           </span>
           <div class="flex items-center justify-center gap-1.5">
@@ -241,7 +241,7 @@
       } @if (!isLoadingSkills && !studentSkillData) {
       <div class="text-center py-6 bg-slate-50 rounded-xl mt-4 border border-slate-100">
         <ion-icon name="folder-open-outline" class="text-3xl text-slate-300 mb-2"></ion-icon>
-        <p class="text-xs font-bold text-slate-400 m-0">لا توجد مهارات مسجلة حتى الآن</p>
+        <p class="text-xs font-bold text-muted m-0">لا توجد مهارات مسجلة حتى الآن</p>
       </div>
       }
     </div>
@@ -387,7 +387,7 @@
                 <span dir="ltr">{{details.date}}</span>
               </div>
               <div class="flex items-start gap-1.5 bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm w-full">
-                <span class="text-2xs font-bold text-slate-400 mt-0.5 whitespace-nowrap flex items-center gap-1">
+                <span class="text-2xs font-bold text-muted mt-0.5 whitespace-nowrap flex items-center gap-1">
                   <ion-icon name="time-outline"></ion-icon> الحصص:
                 </span>
                 <span
@@ -458,14 +458,14 @@
           @for (edays of callOfStudentsReport; track trackByIndex(i); let i = $index) {
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
             <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-100">
-              <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
+              <span class="text-xs font-bold text-muted bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
               <div class="flex items-center gap-1.5 text-xs font-bold text-slate-600 flex-row-reverse" dir="ltr">
                 <ion-icon name="calendar-outline" class="text-sm"></ion-icon> {{edays.date | date : 'yyyy-MM-dd'}}
-                <span class="text-slate-400 font-medium">({{edays.date | date : 'EEEE'}})</span>
+                <span class="text-muted font-medium">({{edays.date | date : 'EEEE'}})</span>
               </div>
             </div>
             <p class="text-sm font-bold text-slate-800 m-0 leading-relaxed text-right">
-              <span class="text-slate-400 font-medium">{{'manage_report.reason' | translate}}:</span> <br />
+              <span class="text-muted font-medium">{{'manage_report.reason' | translate}}:</span> <br />
               {{edays.reason}}
             </p>
           </div>
@@ -480,20 +480,20 @@
           @for (edays of AllStudentPledgesReports; track trackByIndex(i); let i = $index) {
           <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
             <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-100">
-              <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
+              <span class="text-xs font-bold text-muted bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
               <span class="text-xs font-bold text-slate-600 flex items-center gap-1.5 flex-row-reverse" dir="ltr"
                 ><ion-icon name="calendar-outline" class="text-sm"></ion-icon> {{edays.date}}</span
               >
             </div>
             <div class="space-y-2 text-right">
               <p class="text-sm font-bold text-slate-800 m-0 flex items-center gap-2">
-                <span class="text-slate-400 font-medium">{{'manage_report.degree' | translate}}:</span>
+                <span class="text-muted font-medium">{{'manage_report.degree' | translate}}:</span>
                 <span class="bg-rose-50 text-rose-600 px-2 py-0.5 rounded text-xs border border-rose-100"
                   >{{edays.degree_name}}</span
                 >
               </p>
               <p class="text-sm font-bold text-slate-800 m-0 leading-relaxed">
-                <span class="text-slate-400 font-medium">{{'manage_report.reason' | translate}}:</span> <br />
+                <span class="text-muted font-medium">{{'manage_report.reason' | translate}}:</span> <br />
                 {{edays.violation_desc}}
               </p>
             </div>
@@ -521,14 +521,14 @@
               </span>
               }
             </div>
-            <p class="text-2xs font-bold text-slate-400 m-0 flex items-center gap-1">
+            <p class="text-2xs font-bold text-muted m-0 flex items-center gap-1">
               <ion-icon name="person"></ion-icon> {{notes.total_notes}} تقييم
             </p>
           </div>
           <div class="flex-1 mr-4" dir="ltr">
             @for (rating of ['five', 'four', 'three', 'two', 'one']; track trackByIndex(idx); let idx = $index)
             {
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 mb-1.5">
+            <div class="flex items-center gap-2 text-xs font-bold text-muted mb-1.5">
               <span class="w-2 text-center">{{5 - idx}}</span>
               <div class="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden">
                 <div
@@ -566,7 +566,7 @@
                 />
                 <div class="text-right">
                   <h5 class="text-sm font-bold text-slate-800 m-0">{{note.first_name}} {{note.last_name}}</h5>
-                  <p class="text-3xs font-bold text-slate-400 m-0 mt-1 flex items-center justify-start gap-1">
+                  <p class="text-3xs font-bold text-muted m-0 mt-1 flex items-center justify-start gap-1">
                     <ion-icon name="calendar-outline"></ion-icon> {{note.date}}
                   </p>
                 </div>
@@ -694,7 +694,7 @@
       ></ion-textarea>
     </div>
     <div class="flex justify-between items-center mb-6">
-      <p class="text-xs text-slate-400 font-bold m-0" [ngClass]="{'text-rose-500': (noteMessage?.length || 0) > 45}">
+      <p class="text-xs text-muted font-bold m-0" [ngClass]="{'text-rose-500': (noteMessage?.length || 0) > 45}">
         {{noteMessage?.length || 0}} / 45
       </p>
     </div>

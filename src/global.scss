@@ -34,9 +34,8 @@
 // @import '@ionic/angular/css/ionic-swiper';
 @import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
 *{
-  font-family: "Rubik", serif;
+  font-family: "Rubik", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 300;
   font-style: normal;
 }
 
@@ -654,8 +653,9 @@ ion-menu-button{
   background: var(--blue-color);
   color: var(--light-color);
   border-radius: 10px;
-  height: 35px;
-  width: 40px;
+  /* 44px minimum touch target (docs/ui-audit.md finding #4) */
+  height: 44px;
+  width: 44px;
 }
 ion-calendar{
   .title{
@@ -676,9 +676,8 @@ ion-calendar{
   }
 
 }
-ion-header{
-  border: none !important;
-}
+/* every ion-header in the app now sets ion-no-border directly instead
+   of relying on this override (docs/ui-audit.md finding #3) */
 ion-searchbar{
   --background: var(--light-color) !important;
 }
@@ -694,8 +693,9 @@ ion-item{
     background: var(--blue-color);
     color: #fff;
     border-radius: 30px;
-    height: 34px !important;
-    width: 34px;
+    /* 44px minimum touch target (docs/ui-audit.md finding #4) */
+    height: 44px !important;
+    width: 44px;
     padding-right: 1px;
   }
   .rounded-btn-for-students{

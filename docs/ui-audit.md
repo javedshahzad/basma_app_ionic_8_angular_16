@@ -54,11 +54,12 @@ ion-header{ border: none !important; }
 A global `!important` strips every header's native bottom border, then individual pages manually re-add a Tailwind `border-b` (and separately set `ion-no-border`) to get it back. Two systems overriding each other to reach the same visual result — genuinely fighting the framework, and inconsistent because not every page bothers to re-add the border, so some screens have it and some don't with no visual logic tying that to hierarchy.
 **Fix:** delete the global override; use `ion-no-border` + Tailwind `border-b` (already present) as the single source of truth, applied consistently.
 
-### 4. [MAJOR] `mode="ios"` and `mode="md"` mixed — including within the same page
-**Verified counts:** `mode="md"` — 187 occurrences / 74 files. `mode="ios"` — 20 occurrences / 14 files.
-**Concrete same-file collision:** `src/app/list-student/list-student.page.html:40` (`mode="ios"` on a date control) vs `src/app/list-student/list-student.page.html:100` (`mode="md"` on `ion-content`) — one page renders part of its chrome in each platform style simultaneously.
-Other files with the same internal collision: `add-notes.page.html`, `classlist.page.html`, `manage-student.page.html`, `search-student.page.html`, `select-message-user.page.html`, `student-report-manage.page.html`, `submit-absent-application.page.html`, `settings.page.html`, `edit-teacher-profile.page.html`, `followup-add-fields.page.html`, `follow-bulletins.page.html`, `apply-vouches-code.page.html`.
-**Fix:** pick one mode app-wide (given the RTL Arabic UI and Material-style flat headers already dominant, `md` is the natural choice) and set it once in `ionic.config.json` / `main.ts` (`initialize({ mode: 'md' })`) instead of hardcoding `mode="md"` on ~200 individual elements. Delete the 20 `mode="ios"` overrides.
+### 4. [CORRECTED, Pass 3] `mode="ios"` is a deliberate form-control convention, not accidental mixing
+**Original claim (wrong):** this document originally read the raw counts — `mode="md"` on 187 elements / 74 files, `mode="ios"` on 20 elements / 14 files, including same-file collisions like `list-student.page.html` — as evidence of unintentional inconsistency, and recommended stripping every `mode="ios"` override.
+
+**What Pass 3 actually found:** the global Ionic bootstrap already sets `IonicModule.forRoot({ mode: 'md' })` (`src/app/app.config.ts:38`) — so the ~187 `mode="md"` attributes scattered across templates are harmless, redundant restatements of the default, not evidence of a fight. The real question was only the 19 `mode="ios"` overrides, and checking what element each one actually lands on shows a consistent pattern: `ion-checkbox`, `ion-toggle`, `ion-datetime`, `ion-segment`, and `ion-select`/`ion-searchbar` with popover or action-sheet interfaces — repeated across many unrelated files. That's not random noise; it reads as a deliberate house style (iOS-rendered form controls read as more polished/compact than Ionic's Material defaults for exactly these component types, a common choice in production Ionic apps regardless of overall platform theme).
+
+**Decision (user-confirmed 2026-08-26):** left as-is. Stripping these would be a real, visible redesign of checkboxes/toggles/date-pickers/segments on ~14 pages, not a bug fix — not something to silently unify on the audit's original say-so. The redundant `mode="md"` attributes are unchanged too (harmless, and removing ~187 of them for pure verbosity isn't worth the diff size on its own).
 
 ### 5. [MAJOR] Touch targets under 44×44pt, defined globally
 **File:** `src/global.scss`
@@ -178,12 +179,12 @@ Footers, the logout button, action sheets, and custom modal footers all correctl
 
 | # | Finding | Severity | Effort |
 |---|---|---|---|
-| 1 | Color ramp RGB/shade/tint mismatch | Blocker | Trivial (1 file) |
-| 2 | Global `font-weight:300` + wrong serif fallback | Major | Trivial (1 rule) |
-| 9 | `text-slate-400` contrast failure (2.56:1) | Major | Small (token swap) |
-| 5 | Touch targets <44px (global classes) | Major | Small (4 rules) |
-| 3 | `ion-header` border !important fight | Major | Small (delete 1 rule + reconcile) |
-| 4 | `mode="ios"`/`"md"` mixed | Major | Medium (config change + strip ~200 attrs) |
+| 1 | ✅ Color ramp RGB/shade/tint mismatch | Blocker | Trivial (1 file) — fixed Pass 3, app-wide |
+| 2 | ✅ Global `font-weight:300` + wrong serif fallback | Major | Trivial (1 rule) — fixed Pass 3, app-wide |
+| 9 | ⚠️ `text-slate-400` contrast failure (2.56:1) | Major | Fixed Pass 3 in the 9 files already tokenized (Pass 1+2); still open elsewhere app-wide |
+| 5 | ⚠️ Touch targets <44px (global classes) | Major | Fixed Pass 3: `.rounded-btn`, `ion-menu-button`, the 3 cited modal buttons; not an exhaustive app-wide sweep |
+| 3 | ✅ `ion-header` border !important fight | Major | Fixed Pass 3 — all 76 headers now set `ion-no-border` directly, global override deleted |
+| 4 | ~~`mode="ios"`/`"md"` mixed~~ — corrected: deliberate form-control convention, left as-is | — | None (user-confirmed no action) |
 | 8 | 6 font-weights vs 3-weight system | Major | Medium (systematic reassignment) |
 | 6 | 13 font sizes vs 5-6 target | Major | Large (231+ call sites) |
 | 11 | Missing retry affordance after a failed request (loading skeletons themselves are fine — corrected finding) | Minor | Medium (1 reusable component, roll out) |

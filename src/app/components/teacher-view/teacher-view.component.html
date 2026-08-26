@@ -70,7 +70,7 @@
 
           <div class="flex-1">
             <div class="flex items-center gap-2">
-              <h3 class="text-sm font-bold text-slate-800 m-0 truncate"><span class="text-slate-400 text-sm">{{i+1}}.</span> {{student.name}} </h3>
+              <h3 class="text-sm font-bold text-slate-800 m-0 truncate"><span class="text-muted text-sm">{{i+1}}.</span> {{student.name}} </h3>
               @if (student.current_streak >= 10) {
               <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام"><ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span></span>
               }
@@ -96,7 +96,7 @@
                @if (student.computedTitle) {
                <span class="text-4xs font-black bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded-md flex items-center truncate max-w-[60%] shadow-sm">{{ student.computedTitle }}</span>
                }
-               <p class="text-3xs font-bold text-slate-400 m-0 truncate" [ngClass]="student.computedTitle ? 'mt-0' : 'mt-0.5'">{{student?.student_no}}</p>
+               <p class="text-3xs font-bold text-muted m-0 truncate" [ngClass]="student.computedTitle ? 'mt-0' : 'mt-0.5'">{{student?.student_no}}</p>
             </div>
           </div>
         </div>
