@@ -68,6 +68,14 @@
   --elevation-2: 0 4px 10px -2px rgba(15, 23, 42, 0.1), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
   --elevation-3: 0 12px 24px -6px rgba(15, 23, 42, 0.16), 0 4px 8px -4px rgba(15, 23, 42, 0.08);
   --elevation-inner: inset 0 2px 4px 0 rgba(15, 23, 42, 0.06);
+  /* focus-ring halo, e.g. a focused search field's border glow */
+  --focus-ring: 0 0 0 3px rgba(129, 140, 248, 0.15);
+  /* recurring one-off shadows that don't fit the elevation-1/2/3 scale
+     (different shape: directional or a glow, not a standard drop shadow)
+     but repeat across enough sites to earn their own name */
+  --shadow-lightbox: 0 0 40px rgba(0, 0, 0, 0.3); /* fullscreen image viewer glow */
+  --shadow-sheet-top: 0 -10px 30px -15px rgba(0, 0, 0, 0.1); /* upward shadow on a bottom sheet */
+  --shadow-card-soft: 0 4px 20px -10px rgba(0, 0, 0, 0.05); /* soft under-shadow on stacked cards */
 
   /* ============ Neutral ramp (= Tailwind's default slate scale, */
   /* now token-sourced instead of scattered literal hex) ============ */

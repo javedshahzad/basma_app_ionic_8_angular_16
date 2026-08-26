@@ -24,7 +24,7 @@
 <ion-content class="lineone-content" mode="md">
   <div class="main-container max-w-3xl mx-auto" dir="rtl">
     @if (trimmedTeacher?.length > 0 || selectedTeacher?.length > 0) {
-    <div class="sticky top-0 z-20 bg-[#f8fafc] px-4 pt-4 pb-2">
+    <div class="sticky top-0 z-20 bg-surface-alt px-4 pt-4 pb-2">
       <div
         class="bg-white border border-slate-200 rounded-2xl p-2 flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
       >
@@ -70,13 +70,13 @@
           </div>
           <div class="flex-1 overflow-hidden">
             <h2 class="text-sm font-black text-slate-800 m-0 mb-1 truncate">{{list.first_name}}</h2>
-            <p class="text-[11px] font-bold text-slate-400 m-0 mb-1.5 flex items-center gap-1 truncate">
+            <p class="text-2xs font-bold text-slate-400 m-0 mb-1.5 flex items-center gap-1 truncate">
               <ion-icon name="mail-outline"></ion-icon> {{list.username}}
             </p>
             <div class="flex items-center gap-1.5">
-              <span class="text-[10px] font-bold text-slate-500">{{'edit_teacher.teacher_assign' | translate}}:</span>
+              <span class="text-3xs font-bold text-slate-500">{{'edit_teacher.teacher_assign' | translate}}:</span>
               <span
-                class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded text-[10px] font-black border border-indigo-100"
+                class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded text-3xs font-black border border-indigo-100"
                 >{{list.in_class?.length || 0}}</span
               >
             </div>

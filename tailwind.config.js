@@ -40,6 +40,9 @@ module.exports = {
         xl: "var(--elevation-3)",
         "2xl": "var(--elevation-3)",
         inner: "var(--elevation-inner)",
+        lightbox: "var(--shadow-lightbox)",
+        "sheet-top": "var(--shadow-sheet-top)",
+        "card-soft": "var(--shadow-card-soft)",
       },
       colors: {
         slate: {

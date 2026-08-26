@@ -85,7 +85,7 @@
               />
               @if (student.student_data?.medical_condition) {
                 <div
-                  class="absolute bottom-0 right-0 bg-rose-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white"
+                  class="absolute bottom-0 right-0 bg-rose-500 text-white text-3xs font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white"
                 >
                   M
                 </div>
@@ -99,28 +99,28 @@
                 </h3>
                 @if (student.current_streak >= 10) {
                   <span
-                    class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse"
+                    class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse"
                     title="أسطورة الالتزام"
                     ><ion-icon name="flame"></ion-icon
-                    ><span class="text-[9px] font-bold">{{ student.current_streak }}</span></span
+                    ><span class="text-4xs font-bold">{{ student.current_streak }}</span></span
                   >
                 }
                 @if (student.current_streak >= 5 && student.current_streak < 10) {
                   <span
-                    class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0"
+                    class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0"
                     title="مشتعل"
                     ><ion-icon name="flame"></ion-icon
-                    ><span class="text-[9px] font-bold">{{ student.current_streak }}</span></span
+                    ><span class="text-4xs font-bold">{{ student.current_streak }}</span></span
                   >
                 }
                 @if (student.isFrozen) {
                   <span
-                    class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
+                    class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
                     ><ion-icon name="snow"></ion-icon> مجمد</span
                   >
                 }
               </div>
-              <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1 font-medium">
+              <p class="text-2xs text-slate-500 mt-1 flex items-center gap-1 font-medium">
                 <ion-icon
                   [name]="gamification.getBehaviourIcon(student)"
                   class="text-base {{ gamification.getBehaviourColorClass(student) }}"
@@ -133,12 +133,12 @@
               <div class="flex items-center gap-1.5 mt-1">
                 @if (student.computedTitle) {
                   <span
-                    class="text-[9px] font-black bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded-md flex items-center truncate max-w-[60%] shadow-sm"
+                    class="text-4xs font-black bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded-md flex items-center truncate max-w-[60%] shadow-sm"
                     >{{ student.computedTitle }}</span
                   >
                 }
                 <p
-                  class="text-[10px] font-bold text-slate-400 m-0 truncate"
+                  class="text-3xs font-bold text-slate-400 m-0 truncate"
                   [ngClass]="student.computedTitle ? 'mt-0' : 'mt-0.5'"
                 >
                   {{ student?.student_no }}
@@ -180,7 +180,7 @@
                 <div
                   class="absolute -top-1.5 -right-1.5 bg-slate-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-sm"
                 >
-                  <ion-icon name="lock-closed" class="text-[9px]"></ion-icon>
+                  <ion-icon name="lock-closed" class="text-4xs"></ion-icon>
                 </div>
               }
               @if (getCemStatus(student.sheet, i + 1) === '1') {

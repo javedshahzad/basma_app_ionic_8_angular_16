@@ -2,7 +2,7 @@ app-add-user:host {
 
   /* ضمان تطبيق الخلفية الرمادية الفاتحة على الصفحة */
   ion-content {
-    --background: #f8fafc;
+    --background: var(--color-bg-page);
   }
 
   /* إخفاء خطوط التمرير لشكل أكثر أناقة */
@@ -12,19 +12,20 @@ app-add-user:host {
 
   /* --- الترويسة وأزرار العودة --- */
   .lineone-header {
-    background: #ffffff;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    ion-toolbar { --background: #ffffff; }
-    .text-dark { color: #1e293b; }
-    .fw-bold { font-weight: 700; font-size: 1.1rem; }
+    background: var(--color-surface);
+    box-shadow: var(--elevation-1);
+    ion-toolbar { --background: var(--color-surface); }
+    .text-dark { color: var(--color-text-primary); }
+    .fw-bold { font-weight: 700; font-size: var(--font-size-lg); }
   }
 
   /* تنسيق النافذة الذكية (Modal) لاختيار الفصول */
   ion-modal.smart-class-modal {
-    --border-radius: 20px 20px 0 0; 
-    
+    --border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+
     @media (min-width: 768px) {
-      --border-radius: 20px;
+      --border-radius: var(--radius-2xl);
+      /* fixed desktop modal dimensions, not spacing rhythm — kept literal */
       --width: 450px;
       --height: 600px;
     }

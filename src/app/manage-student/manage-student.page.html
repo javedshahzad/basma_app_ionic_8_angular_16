@@ -13,7 +13,7 @@
     >
   </ion-toolbar>
 
-  <div class="bg-[#f8fafc] px-4 pb-3 pt-2 border-b border-slate-100">
+  <div class="bg-surface-alt px-4 pb-3 pt-2 border-b border-slate-100">
     <!-- 🟢 الاعتماد الكلي على ngModel فقط -->
     <ion-searchbar
       [(ngModel)]="searchtxt"
@@ -59,13 +59,13 @@
         <h4 class="font-bold text-sm text-slate-800 m-0">{{student.name}}</h4>
         <div class="flex flex-wrap items-center gap-2 mt-2">
           <span
-            class="bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1"
+            class="bg-slate-50 text-slate-600 border border-slate-200 px-2 py-0.5 rounded-md text-3xs font-bold flex items-center gap-1"
           >
             <ion-icon name="id-card-outline" class="text-slate-400"></ion-icon>
             {{student.student_id}}
           </span>
           <span
-            class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1"
+            class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2 py-0.5 rounded-md text-3xs font-bold flex items-center gap-1"
           >
             <ion-icon name="library-outline" class="text-indigo-400"></ion-icon>
             {{student.class_name}}
@@ -93,7 +93,7 @@
     </div>
     } } @if (!show_loading && (!allStudents || allStudents?.length === 0)) {
     <div
-      class="py-24 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white shadow-sm mt-4"
+      class="py-24 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-white shadow-sm mt-4"
     >
       <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
         <ion-icon name="people-outline" class="text-4xl text-slate-300"></ion-icon>

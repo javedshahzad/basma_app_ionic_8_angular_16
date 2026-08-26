@@ -18,7 +18,7 @@
 
 <ion-content class="bg-slate-50">
   <div class="p-4 md:p-6 max-w-3xl mx-auto space-y-5 mb-8" dir="rtl">
-    <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100">
+    <div class="bg-white rounded-3xl p-5 shadow-card-soft border border-slate-100">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
           <label class="block text-sm font-bold text-slate-600 mb-2"
@@ -71,7 +71,7 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100">
+    <div class="bg-white rounded-3xl p-5 shadow-card-soft border border-slate-100">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label class="block text-sm font-bold text-slate-600 mb-2"
@@ -107,11 +107,11 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 space-y-4">
+    <div class="bg-white rounded-3xl p-5 shadow-card-soft border border-slate-100 space-y-4">
       <div>
         <label class="block text-sm font-bold text-slate-600 mb-2">{{'user_profile.user_type' | translate}}</label>
         <div
-          class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-[46px] flex items-center"
+          class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all h-12 flex items-center"
         >
           <ion-select
             interface="action-sheet"
@@ -176,7 +176,7 @@
             class="text-sm text-slate-800 bg-transparent font-bold"
           ></ion-input>
         </div>
-        <p class="text-[11px] text-slate-500 mt-2 font-medium flex items-center gap-1">
+        <p class="text-2xs text-slate-500 mt-2 font-medium flex items-center gap-1">
           <ion-icon name="information-circle-outline"></ion-icon> {{'teacher_profile.note'| translate}}:
           {{'teacher_profile.input_time_type'| translate}}
         </p>
@@ -186,7 +186,7 @@
 
     @if (usersData.user_type !== UserType.Admin && usersData.user_type !== UserType.Parent) {
     <div
-      class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 animate__animated animate__fadeIn"
+      class="bg-white rounded-3xl p-5 shadow-card-soft border border-slate-100 animate__animated animate__fadeIn"
     >
       <div>
         <label class="block text-sm font-bold text-slate-600 mb-2">{{'user_profile.class'| translate}}</label>
@@ -203,7 +203,7 @@
   </div>
 </ion-content>
 
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl relative z-10">
+<ion-footer class="ion-no-border bg-white shadow-sheet-top rounded-t-3xl relative z-10">
   <div class="p-5 max-w-3xl mx-auto">
     <button
       class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex justify-center items-center gap-2"

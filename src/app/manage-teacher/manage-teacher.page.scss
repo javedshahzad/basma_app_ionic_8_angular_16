@@ -5,7 +5,7 @@
 app-manage-teacher:host {
 
   ion-content {
-    --background: #f8fafc; /* خلفية Lineone المميزة */
+    --background: var(--color-bg-page); /* خلفية Lineone المميزة */
   }
 
   /* إخفاء خطوط التمرير */
@@ -15,18 +15,18 @@ app-manage-teacher:host {
 
   /* --- تصميم الهيدر --- */
   .lineone-header {
-    background: #ffffff;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-    
-    ion-toolbar { 
-      --background: transparent; 
-      position: relative; 
+    background: var(--color-surface);
+    box-shadow: var(--elevation-1);
+
+    ion-toolbar {
+      --background: transparent;
+      position: relative;
     }
-    
+
     .lineone-title {
-      font-size: 1.125rem;
+      font-size: var(--font-size-lg);
       font-weight: 800;
-      color: #1e293b;
+      color: var(--color-text-primary);
       position: absolute;
       left: 0;
       right: 0;
@@ -35,12 +35,16 @@ app-manage-teacher:host {
       margin: 0;
       padding: 0;
       text-align: center;
-      pointer-events: none; 
+      pointer-events: none;
     }
   }
 
   /* --- حركات الدخول (Animations) --- */
   .animate-fade-in-up {
+    /* 400ms doesn't sit on the fast/base/slow scale, and the overshoot
+       easing is deliberately distinct from --ease-standard — an entrance
+       flourish, not a standard micro-interaction — kept as its own
+       literal value rather than mis-mapped to a nearby token */
     animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0;
   }
@@ -48,7 +52,7 @@ app-manage-teacher:host {
   @keyframes fadeInUp {
     from {
       opacity: 0;
-      transform: translateY(15px);
+      transform: translateY(var(--space-4));
     }
     to {
       opacity: 1;

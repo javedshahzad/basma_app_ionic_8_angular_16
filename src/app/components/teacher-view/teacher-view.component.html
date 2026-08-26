@@ -63,7 +63,7 @@
           <div class="relative" (click)="$event.stopPropagation(); imageClick.emit(student)">
             <img [src]="student.pic ? student.pic : 'assets/imgs/user-avatar.png'" loading="lazy" onerror="this.onerror=null;this.src='assets/imgs/default_avatar.png';" class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 shadow-sm">
             @if (student.student_data?.medical_condition) {
-            <div class="absolute bottom-0 right-0 bg-rose-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white">M</div>
+            <div class="absolute bottom-0 right-0 bg-rose-500 text-white text-3xs font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white">M</div>
             }
             <!-- <img loading="lazy" class="absolute -top-1 -left-1 w-5 h-5" [src]="student.computedIcon" *ngIf="student.agg_ranking > 0" /> -->
           </div>
@@ -72,17 +72,17 @@
             <div class="flex items-center gap-2">
               <h3 class="text-sm font-bold text-slate-800 m-0 truncate"><span class="text-slate-400 text-sm">{{i+1}}.</span> {{student.name}} </h3>
               @if (student.current_streak >= 10) {
-              <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
+              <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام"><ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span></span>
               }
               @if (student.current_streak >= 5 && student.current_streak < 10) {
-              <span class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل"><ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span></span>
+              <span class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل"><ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span></span>
               }
               @if (student.isFrozen) {
-              <span class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"><ion-icon name="snow"></ion-icon> مجمد</span>
+              <span class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"><ion-icon name="snow"></ion-icon> مجمد</span>
               }
               </div>
 
-            <p class="text-[11px] text-slate-500 mt-1 flex items-center gap-1 font-medium">
+            <p class="text-2xs text-slate-500 mt-1 flex items-center gap-1 font-medium">
               <ion-icon
                 [name]="gamification.getBehaviourIcon(student)"
                 class="text-base {{ gamification.getBehaviourColorClass(student) }}">
@@ -94,9 +94,9 @@
             </p>
             <div class="flex items-center gap-1.5 mt-1">
                @if (student.computedTitle) {
-               <span class="text-[9px] font-black bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded-md flex items-center truncate max-w-[60%] shadow-sm">{{ student.computedTitle }}</span>
+               <span class="text-4xs font-black bg-indigo-50 text-indigo-600 border border-indigo-100 px-1.5 py-0.5 rounded-md flex items-center truncate max-w-[60%] shadow-sm">{{ student.computedTitle }}</span>
                }
-               <p class="text-[10px] font-bold text-slate-400 m-0 truncate" [ngClass]="student.computedTitle ? 'mt-0' : 'mt-0.5'">{{student?.student_no}}</p>
+               <p class="text-3xs font-bold text-slate-400 m-0 truncate" [ngClass]="student.computedTitle ? 'mt-0' : 'mt-0.5'">{{student?.student_no}}</p>
             </div>
           </div>
         </div>

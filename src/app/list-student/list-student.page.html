@@ -32,7 +32,7 @@
           <span class="text-xs font-bold text-indigo-700 mt-0.5 pointer-events-none w-full text-center truncate">
             الحصة ({{ currentActivePeriod }})
           </span>
-          <ion-icon name="chevron-down" class="text-slate-400 text-[10px] pointer-events-none"></ion-icon>
+          <ion-icon name="chevron-down" class="text-slate-400 text-3xs pointer-events-none"></ion-icon>
           <ion-select
             [(ngModel)]="currentActivePeriod"
             (ionChange)="selectPeriod($event.detail.value)"
@@ -154,7 +154,7 @@
 </ion-content>
 
 @if (shouldShowFooter()) {
-<ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl">
+<ion-footer class="ion-no-border bg-white shadow-sheet-top rounded-t-3xl">
   <div class="p-5 max-w-6xl mx-auto transition-all duration-300">
     @if (isTeacherUser || editMode || isRestrictedModerator) {
     <div class="flex justify-between items-center mb-4 px-2">
@@ -234,7 +234,7 @@
         <img
           loading="lazy"
           [src]="viewImageUrl"
-          class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300"
+          class="max-w-full max-h-[85vh] rounded-3xl shadow-lightbox object-contain border border-white/10 transition-transform duration-300"
         />
       </div>
     </div>
@@ -247,7 +247,7 @@
   (click)="closeWarningPopup()"
 >
   <div
-    class="bg-white rounded-[24px] w-10/12 max-w-sm p-6 flex flex-col items-center justify-center shadow-2xl animate-fade-in-up border border-slate-100 mx-auto"
+    class="bg-white rounded-3xl w-10/12 max-w-sm p-6 flex flex-col items-center justify-center shadow-2xl animate-fade-in-up border border-slate-100 mx-auto"
     (click)="$event.stopPropagation()"
   >
     @if (warningType === 'frozen') {
