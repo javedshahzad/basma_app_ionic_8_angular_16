@@ -65,7 +65,8 @@ export class StudentDetailsComponent implements OnInit {
       sid: this.student.sid,
       phone_no: this.phone,
       phone_no_two: this.phone_no_two,
-      medical_condition: this.medical_condition
+      medical_condition: this.medical_condition,
+      session_id: this.userDetails?.session_id
     };
 
     try {

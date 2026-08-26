@@ -178,7 +178,8 @@ export class NoteCalendarPage implements OnInit {
       school_id: this.userDetails.details.school_id,
       title: this.viewTitle,
       dates: JSON.stringify(this.dates),
-      is_multi: Array.isArray(this.stateCids) && this.stateCids.length > 1 ? true : false
+      is_multi: Array.isArray(this.stateCids) && this.stateCids.length > 1 ? true : false,
+      session_id: this.userDetails.session_id
     };
 
     this.dataProvider

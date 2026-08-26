@@ -1446,7 +1446,7 @@ export class ListStudentPage {
   }
 
   checkPlanAndRegister() {
-    let data = { school_id: this.userInfo.school_id };
+    let data = { school_id: this.userInfo.school_id, session_id: this.userDetails.session_id };
 
     this.dataProvider
       .run(() => this.schoolDirectoryApi.getCountStudents(data))
@@ -1474,7 +1474,8 @@ export class ListStudentPage {
             student_id: data.student_id,
             user_no: this.userInfo.user_no,
             school_id: this.userInfo.school_id,
-            course_id: this.courseInfo.cid
+            course_id: this.courseInfo.cid,
+            session_id: this.userDetails.session_id
           })
         )
         .then(res => {
@@ -1555,7 +1556,8 @@ export class ListStudentPage {
       rating: 0,
       new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
       date: this.dataProvider.getFormatedDate(this.dateSelected),
-      course_id: this.navData?.cid || ''
+      course_id: this.navData?.cid || '',
+      session_id: this.userDetails.session_id
     };
 
     this.dataProvider
@@ -1576,7 +1578,8 @@ export class ListStudentPage {
       rating: stars,
       new_rating: JSON.stringify(stars),
       date: this.dataProvider.getFormatedDate(this.dateSelected),
-      course_id: this.navData?.cid || ''
+      course_id: this.navData?.cid || '',
+      session_id: this.userDetails.session_id
     };
 
     this.dataProvider

@@ -63,6 +63,7 @@ export class CreateClassPage implements OnInit {
     if (user) {
       this.class['school_id'] = user.details.school_id;
       this.class['user_no'] = user.details.user_no;
+      this.class['session_id'] = user.session_id;
     } else {
       this.viewCtrl.dismiss(false);
     }
@@ -80,7 +81,8 @@ export class CreateClassPage implements OnInit {
       desc: String(this.class.desc || '').trim(),
       semno: String(this.class.semno || '1').trim(),
       school_id: String(this.class.school_id || '').trim(),
-      user_no: String(this.class.user_no || '').trim()
+      user_no: String(this.class.user_no || '').trim(),
+      session_id: this.class.session_id
     };
 
     try {

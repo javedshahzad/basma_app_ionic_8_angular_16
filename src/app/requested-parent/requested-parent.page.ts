@@ -103,7 +103,7 @@ export class RequestedParentPage implements OnInit {
   }
 
   getRequestedParentList() {
-    let data = { school_id: this.userDetails.details.school_id };
+    let data = { school_id: this.userDetails.details.school_id, session_id: this.userDetails.session_id };
 
     this.parentManagementApi.getRequestedParents(data).then(
       res => {
@@ -124,7 +124,7 @@ export class RequestedParentPage implements OnInit {
   }
 
   getAllParents() {
-    let data = { school_id: this.userDetails.details.school_id };
+    let data = { school_id: this.userDetails.details.school_id, session_id: this.userDetails.session_id };
 
     this.parentManagementApi.getAllParents(data).then(
       res => {
@@ -169,7 +169,8 @@ export class RequestedParentPage implements OnInit {
     let data = {
       user_no: list.user_no,
       is_permitted: is_permitted,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
 
     this.dataProvider
@@ -194,7 +195,8 @@ export class RequestedParentPage implements OnInit {
     let data = {
       user_no: list.user_no,
       is_permitted: is_permitted,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
 
     this.dataProvider
@@ -216,7 +218,8 @@ export class RequestedParentPage implements OnInit {
   deleteRequest(list: Parent) {
     let data = {
       user_no: list.user_no,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
 
     this.dataProvider
@@ -289,7 +292,8 @@ export class RequestedParentPage implements OnInit {
     this.searchTimeout = setTimeout(() => {
       let data = {
         school_id: this.userDetails.details.school_id,
-        search_str: input.trim()
+        search_str: input.trim(),
+        session_id: this.userDetails.session_id
       };
 
       this.searchApi

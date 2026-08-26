@@ -80,7 +80,8 @@ export class SelectMessageUserPage implements OnInit {
   }
   async getUsers() {
     let data = {
-      school_id: this.userDetails.details.school_id
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
     try {
       const res = await this.dataProvider.run(() => this.schoolDirectoryApi.getAllSchoolUsers(data));
@@ -103,7 +104,8 @@ export class SelectMessageUserPage implements OnInit {
 
     let data = {
       input: input,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
     this.searchApi
       .searchAllUser(data)

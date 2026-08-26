@@ -107,7 +107,8 @@ export class UserSelectionPage implements OnInit {
   getUsers() {
     let data = {
       school_id: this.userDetails.details.school_id,
-      user_no: this.userDetails.details.user_no
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id
     };
 
     this.schoolDirectoryApi

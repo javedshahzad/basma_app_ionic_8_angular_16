@@ -79,7 +79,8 @@ export class SearchStudentPage implements OnInit {
 
   async getStudents() {
     let data = {
-      school_id: this.userdata.school_id
+      school_id: this.userdata.school_id,
+      session_id: this.userdata.session_id
     };
 
     try {
@@ -120,7 +121,8 @@ export class SearchStudentPage implements OnInit {
     this.searchTimeout = setTimeout(() => {
       let data = {
         school_id: this.userdata.school_id,
-        search_str: input.trim()
+        search_str: input.trim(),
+        session_id: this.userdata.session_id
       };
 
       this.searchApi

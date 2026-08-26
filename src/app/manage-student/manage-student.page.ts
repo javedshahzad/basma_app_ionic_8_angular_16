@@ -77,7 +77,7 @@ export class ManageStudentPage {
     let userLoggedIn = await this.storageSr.get('userloggedin');
     if (userLoggedIn) {
       this.userdata = userLoggedIn;
-      let data = { school_id: this.userdata.details.school_id };
+      let data = { school_id: this.userdata.details.school_id, session_id: this.userdata.session_id };
 
       this.schoolDirectoryApi
         .getSchoolStudents(data)
@@ -101,7 +101,8 @@ export class ManageStudentPage {
 
   getStudents() {
     let data = {
-      school_id: this.userdata.details.school_id
+      school_id: this.userdata.details.school_id,
+      session_id: this.userdata.session_id
     };
 
     this.show_loading = true;
@@ -148,7 +149,8 @@ export class ManageStudentPage {
     this.searchTimeout = setTimeout(() => {
       let data = {
         school_id: this.userdata.details.school_id,
-        search_str: input.trim()
+        search_str: input.trim(),
+        session_id: this.userdata.session_id
       };
 
       this.searchApi

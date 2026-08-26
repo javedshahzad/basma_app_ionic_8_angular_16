@@ -91,7 +91,8 @@ export class ManageTeacherPage {
     let data = {
       class_id: '',
       school_id: this.userDetails.details.school_id,
-      user_no: this.userDetails.details.user_no
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id
     };
 
     if (loader) this.dataProvider.showLoading();
@@ -177,7 +178,8 @@ export class ManageTeacherPage {
       let data = {
         keyword: input.trim(),
         school_id: this.userDetails.details.school_id,
-        pageno: 0
+        pageno: 0,
+        session_id: this.userDetails.session_id
       };
 
       this.searchApi

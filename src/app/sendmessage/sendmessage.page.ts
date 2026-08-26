@@ -159,7 +159,8 @@ export class SendmessagePage {
 
   async getUsers() {
     let data = {
-      school_id: this.userDetails.details.school_id
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
     try {
       const res = await this.dataProvider.run(() => this.schoolDirectoryApi.getAllSchoolUsers(data));

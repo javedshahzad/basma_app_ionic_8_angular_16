@@ -800,7 +800,8 @@ export class StudentDetailPage {
             note: this.noteMessage,
             user_id: this.userInfo.user_no,
             rating: this.ratingStars,
-            new_rating: JSON.stringify(this.ratingStars)
+            new_rating: JSON.stringify(this.ratingStars),
+            session_id: this.userDetails.session_id
           };
           this.dataProvider
             .run(() => this.studentEngagement.addNote(data))
@@ -835,7 +836,8 @@ export class StudentDetailPage {
             user_id: this.editNoteData.user_id,
             rating: 0,
             id: this.id,
-            new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            session_id: this.userDetails.session_id
           };
           this.dataProvider
             .run(() => this.studentEngagement.editNote(data))
@@ -871,7 +873,8 @@ export class StudentDetailPage {
             user_id: this.userInfo.user_no,
             rating: 0,
             user_type: this.userInfo.user_type,
-            new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            session_id: this.userDetails.session_id
           };
           this.dataProvider
             .run(() => this.studentEngagement.addNote(data))
@@ -967,7 +970,8 @@ export class StudentDetailPage {
       rating: data.data,
       new_rating: data.data,
       note: data.noteMessage,
-      updated_by: this.userInfo.user_no
+      updated_by: this.userInfo.user_no,
+      session_id: this.userDetails.session_id
     };
     this.notesApi
       .editAbsentNotes(updates)
@@ -1565,7 +1569,8 @@ export class StudentDetailPage {
     let data = {
       user_no: this.userInfo.user_no,
       student_id: this.navData.student_id,
-      school_id: this.userInfo.school_id
+      school_id: this.userInfo.school_id,
+      session_id: this.userDetails.session_id
     };
     this.reportsApi.GetAllCallOfStudentReport(data).then(
       res => {
@@ -1584,7 +1589,8 @@ export class StudentDetailPage {
     let data = {
       user_no: this.userInfo.user_no,
       student_id: this.navData.student_id,
-      school_id: this.userInfo.school_id
+      school_id: this.userInfo.school_id,
+      session_id: this.userDetails.session_id
     };
     this.reportsApi.GetStudentPledgesReport(data).then(
       res => {
@@ -1604,7 +1610,8 @@ export class StudentDetailPage {
         user_no: this.userInfo.user_no,
         course_id: this.navData.course_id,
         student_id: this.navData.student_id,
-        school_id: this.userInfo.school_id
+        school_id: this.userInfo.school_id,
+        session_id: this.userDetails.session_id
       };
       this.dataProvider
         .run(() => this.reportsApi.generateStudentPledgesReportPDF(data))
@@ -1629,7 +1636,8 @@ export class StudentDetailPage {
         user_no: this.userInfo.user_no,
         course_id: this.navData.course_id,
         student_id: this.navData.student_id,
-        school_id: this.userInfo.school_id
+        school_id: this.userInfo.school_id,
+        session_id: this.userDetails.session_id
       };
       this.dataProvider
         .run(() => this.reportsApi.generateCallOfStudentPDF(data))

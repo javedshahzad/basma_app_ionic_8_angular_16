@@ -702,7 +702,8 @@ export class StudentsPage {
             note: this.noteMessage,
             user_id: this.userInfo.user_no,
             rating: this.ratingStars,
-            new_rating: JSON.stringify(this.ratingStars)
+            new_rating: JSON.stringify(this.ratingStars),
+            session_id: this.userDetails.session_id
           };
           this.studentEngagement
             .addNote(data)
@@ -736,7 +737,8 @@ export class StudentsPage {
             note: this.noteMessage,
             user_id: this.userInfo.user_no,
             rating: 0,
-            new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            session_id: this.userDetails.session_id
           };
           this.dataProvider
             .run(() => this.studentEngagement.addNote(data))

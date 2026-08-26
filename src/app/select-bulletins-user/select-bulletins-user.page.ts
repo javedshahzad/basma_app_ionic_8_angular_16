@@ -106,7 +106,7 @@ export class SelectBulletinsUserPage {
   }
 
   getUsers() {
-    let data = { school_id: this.userDetails.details.school_id };
+    let data = { school_id: this.userDetails.details.school_id, session_id: this.userDetails.session_id };
 
     this.show_loading = true;
     this.schoolDirectoryApi
@@ -144,7 +144,8 @@ export class SelectBulletinsUserPage {
     this.searchTimeout = setTimeout(() => {
       let data = {
         input: input.trim(),
-        school_id: this.userDetails.details.school_id
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id
       };
 
       this.searchApi

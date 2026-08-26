@@ -84,7 +84,8 @@ export class AddParentPage implements OnInit {
   getStudents() {
     this.isFetchingStudents = true;
     let data = {
-      school_id: this.userdata.details.school_id
+      school_id: this.userdata.details.school_id,
+      session_id: this.userdata.session_id
     };
     this.schoolDirectoryApi
       .getSchoolStudents(data)

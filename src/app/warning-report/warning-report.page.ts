@@ -158,7 +158,8 @@ export class WarningReportPage {
     let data = {
       user_no: this.userDetails.details.user_no,
       student_id: this.userDetails.details.stu_id,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
     this.reportsApi
       .GetAllCallOfStudentReport(data)
@@ -178,7 +179,8 @@ export class WarningReportPage {
     let data = {
       user_no: this.userDetails.details.user_no,
       student_id: this.userDetails.details.stu_id,
-      school_id: this.userDetails.details.school_id
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
     this.reportsApi
       .GetStudentPledgesReport(data)

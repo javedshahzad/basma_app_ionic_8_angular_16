@@ -188,7 +188,8 @@ export class FollowBulletinsPage {
 
   getUsers() {
     let data = {
-      school_id: this.userDetails.details.school_id
+      school_id: this.userDetails.details.school_id,
+      session_id: this.userDetails.session_id
     };
     this.show_loading = true;
     this.schoolDirectoryApi
@@ -235,7 +236,8 @@ export class FollowBulletinsPage {
     this.searchTimeout = setTimeout(() => {
       let data = {
         input: input.trim(),
-        school_id: this.userDetails.details.school_id
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id
       };
 
       this.searchApi
@@ -275,6 +277,7 @@ export class FollowBulletinsPage {
     formdata.append('sended_by', this.userDetails.details.user_no);
     formdata.append('sended_to', this.selectedUsers.join(',')); // إرسال كمصفوفة مفصولة بفواصل
     formdata.append('tital', this.tital);
+    formdata.append('session_id', this.userDetails.session_id);
 
     for (let k in this.selectedDocument) {
       const fileEle = this.selectedDocument[k];

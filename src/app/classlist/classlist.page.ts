@@ -477,7 +477,8 @@ export class ClasslistPage implements OnInit {
     let data = {
       class_id: course.cid,
       school_id: this.userInfo.school_id,
-      user_no: this.userInfo.user_no
+      user_no: this.userInfo.user_no,
+      session_id: this.userDetails.session_id
     };
 
     this.dataProvider
@@ -498,7 +499,7 @@ export class ClasslistPage implements OnInit {
 
   openSearchPage() {
     const navigation: NavigationExtras = {
-      state: { userDetails: this.userDetails.details }
+      state: { userDetails: { ...this.userDetails.details, session_id: this.userDetails.session_id } }
     };
     this.zone.run(() => {
       this.router.navigate(['search-student'], navigation);

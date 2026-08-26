@@ -331,7 +331,8 @@ export class StudentReportManagePage implements OnInit {
 
   getAllActionsAndViolations(degreeId: string) {
     let data = {
-      degree_id: degreeId
+      degree_id: degreeId,
+      session_id: this.userDetails.session_id
     };
     this.dataProvider.showLoading();
 
@@ -389,7 +390,8 @@ export class StudentReportManagePage implements OnInit {
       student_id: this.navData.student_id,
       course_id: this.navData.course_id,
       user_no: this.userInfo.user_no,
-      school_id: this.userInfo.school_id
+      school_id: this.userInfo.school_id,
+      session_id: this.userDetails.session_id
     };
 
     this.reportsApi
@@ -454,7 +456,8 @@ export class StudentReportManagePage implements OnInit {
       course_id: this.navData.course_id,
       user_no: this.userInfo.user_no,
       school_id: this.userInfo.school_id,
-      report_type: reportType
+      report_type: reportType,
+      session_id: this.userDetails.session_id
     };
 
     this.dataProvider
@@ -499,7 +502,8 @@ export class StudentReportManagePage implements OnInit {
         user_no: this.userInfo.user_no,
         course_id: this.navData.course_id,
         student_id: this.navData.student_id,
-        school_id: this.userInfo.school_id
+        school_id: this.userInfo.school_id,
+        session_id: this.userDetails.session_id
       };
       this.dataProvider
         .run(() => this.reportsApi.generateStudentPledgesReportPDF(data))
@@ -543,7 +547,8 @@ export class StudentReportManagePage implements OnInit {
         user_no: this.userInfo.user_no,
         course_id: this.navData.course_id,
         student_id: this.navData.student_id,
-        school_id: this.userInfo.school_id
+        school_id: this.userInfo.school_id,
+        session_id: this.userDetails.session_id
       };
       this.dataProvider
         .run(() => this.reportsApi.generateCallOfStudentPDF(data))
@@ -611,7 +616,8 @@ export class StudentReportManagePage implements OnInit {
       user_no: this.userInfo.user_no,
       course_id: this.navData.course_id,
       student_id: this.navData.student_id,
-      school_id: this.userInfo.school_id
+      school_id: this.userInfo.school_id,
+      session_id: this.userDetails.session_id
     };
     this.reportsApi.GetAllCallOfStudentReport(data).then(
       res => {
@@ -632,7 +638,8 @@ export class StudentReportManagePage implements OnInit {
       user_no: this.userInfo.user_no,
       course_id: this.navData.course_id,
       student_id: this.navData.student_id,
-      school_id: this.userInfo.school_id
+      school_id: this.userInfo.school_id,
+      session_id: this.userDetails.session_id
     };
     this.reportsApi.GetStudentPledgesReport(data).then(
       res => {

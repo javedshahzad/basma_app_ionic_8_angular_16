@@ -106,7 +106,8 @@ export class ChildrenPage {
 
       let payload = {
         user_no: this.userDetails.details.user_no,
-        school_id: this.userDetails.details.school_id
+        school_id: this.userDetails.details.school_id,
+        session_id: this.userDetails.session_id
       };
 
       this.schoolDirectoryApi
