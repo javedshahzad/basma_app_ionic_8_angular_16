@@ -63,6 +63,11 @@ export class AppComponent {
   userDetails: any;
   AvailablePlan: any;
   CheckDeviceInterval: any;
+  // Guards against overlapping requests when a tick's own call is still
+  // in flight (e.g. the backend is slow) -- without this, a struggling
+  // network/backend lets requests pile up every 7s indefinitely, since
+  // nothing here waits for the previous one to resolve.
+  private checkingDeviceStatus = false;
   filePath: string = '';
 
   constructor(
@@ -799,6 +804,9 @@ export class AppComponent {
   }
 
   async CheckDeviceLogInStatus() {
+    if (this.checkingDeviceStatus) {
+      return;
+    }
     const userDetails = await this.storageSr.get('userloggedin');
 
     if (userDetails && userDetails.details && userDetails.details.user_no) {
@@ -823,14 +831,17 @@ export class AppComponent {
         session_id: userDetails.session_id
       };
 
+      this.checkingDeviceStatus = true;
       this.deviceApi.CheckDeviceLogInStatus(data).then(
         res => {
+          this.checkingDeviceStatus = false;
           // Only log out on an explicit kick / deactivated account signal.
           if (res.success && res.data && (res.data.is_logged_out == '1' || res.data.user?.status == '0')) {
             this.logout();
           }
         },
         () => {
+          this.checkingDeviceStatus = false;
           // Network hiccup or general error — fail silently.
           this.dataProvider.hideLoading();
         }
