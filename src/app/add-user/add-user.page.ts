@@ -192,6 +192,7 @@ export class AddUserPage implements OnInit {
 
       this.usersData.user_no = this.userDetails.details.user_no;
       this.usersData.school_id = this.userDetails.details.school_id;
+      this.usersData.session_id = this.userDetails.session_id;
 
       // החماية البرمجية: إرسال مصفوفة فارغة في حالة المدير أو ولي الأمر
       if (this.usersData.user_type === UserType.Admin || this.usersData.user_type === UserType.Parent) {
