@@ -1,6 +1,6 @@
 app-student-detail:host {
   ion-content {
-    --background: #f8fafc;
+    --background: var(--color-bg-page);
   }
 
   /* إخفاء خط التمرير لمظهر أكثر احترافية ونظافة */
@@ -17,42 +17,42 @@ app-student-detail:host {
   }
 
   ion-textarea {
-    --padding-top: 5px;
-    --padding-bottom: 5px;
-    --padding-start: 5px;
+    --padding-top: var(--space-1);
+    --padding-bottom: var(--space-1);
+    --padding-start: var(--space-1);
   }
-  
+
 }
 /* ========================================== */
 /* 🌟 تصميم النافذة المنبثقة السفلية (Lineone) */
 /* ========================================== */
 ::ng-deep .lineone-bottom-sheet {
-  --border-radius: 24px 24px 0 0; /* حواف دائرية علوية فقط */
-  --box-shadow: 0 -10px 25px rgba(0, 0, 0, 0.05); /* ظل علوي ناعم */
-  
+  --border-radius: var(--radius-3xl) var(--radius-3xl) 0 0; /* حواف دائرية علوية فقط */
+  --box-shadow: 0 -10px 25px rgba(15, 23, 42, 0.05); /* ظل علوي ناعم */
+
   &::part(content) {
-    background: #f8fafc; /* لون خلفية رمادي فاتح ومريح للعين */
+    background: var(--color-bg-page); /* لون خلفية رمادي فاتح ومريح للعين */
   }
 
-  
+
 
 /* 🌟 إصلاح مشكلة اقتطاع الحرف الأول في الحقول العربية */
 
 // إذا كنت تستخدم <ion-input>
 ion-input {
-  --padding-start: 8px !important; /* مساحة تنفس للحرف الأول من اليمين */
+  --padding-start: var(--space-2) !important; /* مساحة تنفس للحرف الأول من اليمين */
 }
 
 // إذا كنت تستخدم حقول HTML العادية <input>
-input[type="text"], 
-input[type="number"], 
+input[type="text"],
+input[type="number"],
 input[type="email"] {
-  padding-inline-start: 8px !important; /* تعادل padding-right في الواجهات العربية */
+  padding-inline-start: var(--space-2) !important; /* تعادل padding-right في الواجهات العربية */
 }
 
 // إصلاح الـ ion-item الذي قمنا بتصفير حوافه سابقاً
 ion-item.item-has-value {
-  --padding-start: 4px;
+  --padding-start: var(--space-1);
 }
 }
 
@@ -60,35 +60,35 @@ ion-item.item-has-value {
 /* 🎛️ تنسيق شريط التبويبات (Lineone Segment)  */
 /* ========================================== */
 .lineone-segment {
-  background-color: #e2e8f0; /* خلفية رمادية فاتحة */
-  border-radius: 12px;
-  padding: 4px;
+  background-color: var(--color-border); /* خلفية رمادية فاتحة */
+  border-radius: var(--radius-lg);
+  padding: var(--space-1);
   height: auto;
-  min-height: 45px;
+  min-height: var(--space-12); /* was 45px, rounded up to the 48px space step */
 
   ion-segment-button {
-    --indicator-color: #ffffff; /* لون الزر المفعل أبيض */
-    --color: #64748b; /* لون النص العادي */
-    --color-checked: #5f5af0; /* لون النص عند التفعيل (لون Lineone الأساسي) */
-    --border-radius: 8px;
-    margin: 0 2px;
-    font-size: 0.85rem;
-    font-weight: 700;
+    --indicator-color: var(--color-surface); /* لون الزر المفعل أبيض */
+    --color: var(--color-text-muted); /* لون النص العادي */
+    --color-checked: var(--color-accent-alt); /* لون النص عند التفعيل (لون Lineone الأساسي) */
+    --border-radius: var(--radius-sm);
+    margin: 0 var(--space-1);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
     min-width: auto;
     letter-spacing: 0;
 
     &::part(indicator-background) {
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* ظل خفيف للزر المفعل */
+      box-shadow: var(--elevation-1); /* ظل خفيف للزر المفعل */
     }
   }
 }
 
 /* حركة تنقل سلسة للمحتوى */
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn var(--duration-base) ease-out forwards;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
+  from { opacity: 0; transform: translateY(var(--space-1)); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -96,33 +96,33 @@ ion-item.item-has-value {
 /* 🎛️ تنسيق شريط التبويبات (Lineone Segment)  */
 /* ========================================== */
 .lineone-segment {
-  background-color: #e2e8f0; 
-  border-radius: 12px;
-  padding: 4px;
+  background-color: var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-1);
   height: auto;
-  min-height: 45px;
+  min-height: var(--space-12); /* was 45px, rounded up to the 48px space step */
 
   ion-segment-button {
-    --indicator-color: #ffffff; 
-    --color: #64748b; 
-    --color-checked: #5f5af0; 
-    --border-radius: 8px;
-    margin: 0 2px;
-    font-size: 0.85rem;
-    font-weight: 700;
+    --indicator-color: var(--color-surface);
+    --color: var(--color-text-muted);
+    --color-checked: var(--color-accent-alt);
+    --border-radius: var(--radius-sm);
+    margin: 0 var(--space-1);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
     min-width: auto;
     letter-spacing: 0;
 
     &::part(indicator-background) {
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--elevation-1);
     }
   }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn var(--duration-base) ease-out forwards;
 }
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
+  from { opacity: 0; transform: translateY(var(--space-1)); }
   to { opacity: 1; transform: translateY(0); }
 }

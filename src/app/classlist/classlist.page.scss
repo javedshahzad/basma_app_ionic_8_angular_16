@@ -2,93 +2,94 @@ app-classlist:host {
 
   /* خلفية رمادية فاتحة جداً (Slate 50) مطابقة لـ Lineone */
   .lineone-bg {
-    --background: #f8fafc;
+    --background: var(--color-bg-page);
   }
 
   /* هيدر أبيض مسطح ونظيف */
   .lineone-header {
-    background: #ffffff;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* ظل سفلي خفيف جداً */
-    
+    background: var(--color-surface);
+    box-shadow: var(--elevation-1);
+
     ion-toolbar {
-      --background: #ffffff;
+      --background: var(--color-surface);
     }
-    
+
     .text-dark {
-      color: #334155; /* Slate 700 */
+      color: var(--color-neutral-700);
     }
     .fw-bold {
-      font-weight: 600;
-      font-size: 1.15rem;
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-lg);
       letter-spacing: 0.5px;
     }
   }
 
   .main-container {
-    padding: 16px 12px;
+    padding: var(--space-4) var(--space-3);
   }
 
   /* ================= تصميم التبويبات (Tabs/Segments) ================= */
   .segment-wrapper {
     display: flex;
     justify-content: center;
-    margin-bottom: 24px;
-    margin-top: 10px;
+    margin-bottom: var(--space-6);
+    margin-top: var(--space-2-5);
   }
 
   .lineone-segment {
-    background: #f1f5f9; /* Slate 100 */
-    border-radius: 12px;
-    padding: 4px;
+    background: var(--color-neutral-100);
+    border-radius: var(--radius-lg);
+    padding: var(--space-1);
+    /* fixed control width, not a spacing-rhythm value — kept literal */
     max-width: 400px;
     width: 100%;
 
     ion-segment-button {
-      --color: #64748b; /* Slate 500 */
-      --color-checked: #1e293b; /* Slate 800 */
-      --background-checked: #ffffff;
-      --border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.95rem;
+      --color: var(--color-text-muted);
+      --color-checked: var(--color-text-primary);
+      --background-checked: var(--color-surface);
+      --border-radius: var(--radius-md);
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-sm);
       min-height: 42px;
       box-shadow: none;
-      
+
       &.segment-button-checked {
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08); /* ظل خفيف للزر النشط */
+        box-shadow: var(--elevation-1); /* ظل خفيف للزر النشط */
       }
     }
   }
 
   /* ================= البطاقات (Cards) ================= */
   .lineone-card {
-    background: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
-    margin: 8px 4px;
-    padding: 16px;
-    transition: all 0.2s ease;
-    border: 1px solid rgba(226, 232, 240, 0.6); /* إطار خفيف جداً Slate 200 */
+    background: var(--color-surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--elevation-1);
+    margin: var(--space-2) var(--space-1);
+    padding: var(--space-4);
+    transition: all var(--duration-base) var(--ease-standard);
+    border: 1px solid var(--color-border-subtle);
 
     &:active {
       transform: scale(0.98);
-      background: #f8fafc;
+      background: var(--color-surface-alt);
     }
 
     .card-content-flex {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: var(--space-4);
     }
 
     /* الأيقونة داخل مربع ملون بشفافية (أهم ميزة في Lineone) */
     .icon-box {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+      width: var(--space-12); /* 48px */
+      height: var(--space-12);
+      border-radius: var(--radius-lg);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: var(--font-size-2xl);
       flex-shrink: 0;
       position: relative;
       overflow: hidden;
@@ -99,7 +100,7 @@ app-classlist:host {
         opacity: 0.12; /* شفافية اللون 12% */
         border-radius: inherit;
       }
-      
+
       ion-icon {
         z-index: 1;
       }
@@ -110,10 +111,10 @@ app-classlist:host {
       overflow: hidden;
 
       .card-title {
-        margin: 0 0 4px 0;
-        font-size: 1.05rem;
-        font-weight: 600;
-        color: #334155;
+        margin: 0 0 var(--space-1) 0;
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-700);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -121,39 +122,39 @@ app-classlist:host {
 
       .card-subtitle {
         margin: 0;
-        font-size: 0.85rem;
-        color: #64748b;
+        font-size: var(--font-size-sm);
+        color: var(--color-text-muted);
       }
     }
 
     .forward-icon {
-      color: #cbd5e1; /* Slate 300 */
-      font-size: 1.4rem;
+      color: var(--color-neutral-300);
+      font-size: var(--font-size-xl);
     }
   }
 
   /* ================= بطاقة الإحصائيات ================= */
   .dashboard-card {
-    padding: 20px;
+    padding: var(--space-5);
 
     .dash-header {
       display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
+      gap: var(--space-3-5);
+      margin-bottom: var(--space-5);
 
       .icon-box {
-        width: 42px;
-        height: 42px;
-        font-size: 1.3rem;
-        border-radius: 10px;
+        width: var(--space-10); /* 40px — normalized from a one-off 42px */
+        height: var(--space-10);
+        font-size: var(--font-size-xl);
+        border-radius: var(--radius-md);
       }
-      
+
       .card-title {
         margin: 0;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #334155;
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-neutral-700);
       }
     }
 
@@ -161,10 +162,10 @@ app-classlist:host {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #f8fafc;
-      border-radius: 10px;
-      padding: 12px 10px;
-      border: 1px solid #f1f5f9;
+      background: var(--color-bg-page);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-2-5);
+      border: 1px solid var(--color-neutral-100);
 
       .stat-item {
         display: flex;
@@ -173,26 +174,26 @@ app-classlist:host {
         flex: 1;
 
         .stat-value {
-          font-size: 1.15rem;
-          font-weight: 700;
-          margin-bottom: 4px;
+          font-size: var(--font-size-lg);
+          font-weight: var(--font-weight-bold);
+          margin-bottom: var(--space-1);
         }
 
         .stat-label {
-          font-size: 0.75rem;
-          color: #64748b;
-          font-weight: 600;
+          font-size: var(--font-size-xs);
+          color: var(--color-text-muted);
+          font-weight: var(--font-weight-semibold);
         }
 
-        .text-success { color: #10b981; }
-        .text-danger { color: #ef4444; }
-        .text-primary { color: #3b82f6; }
+        .text-success { color: var(--color-success); }
+        .text-danger { color: var(--color-danger); }
+        .text-primary { color: var(--color-accent-text); }
       }
 
       .stat-divider {
         width: 1px;
-        height: 30px;
-        background: #e2e8f0;
+        height: var(--space-8);
+        background: var(--color-border);
       }
     }
   }
@@ -203,70 +204,74 @@ app-classlist:host {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 80px 20px;
+    padding: var(--space-20) var(--space-5);
     text-align: center;
-    color: #94a3b8;
+    color: var(--color-text-faint);
 
     ion-icon {
-      font-size: 65px;
-      margin-bottom: 16px;
-      color: #cbd5e1;
+      font-size: var(--font-size-4xl);
+      /* icon glyph is deliberately larger than the type scale's top step
+         (empty-state focal point, not running text) — kept literal */
+      transform: scale(1.8);
+      margin-bottom: var(--space-4);
+      color: var(--color-neutral-300);
     }
 
     p {
       margin: 0;
-      font-size: 1rem;
-      font-weight: 500;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
     }
   }
 
   /* حركة دخول العناصر */
   .fade-in {
-    animation: fadeIn 0.3s ease-in;
+    animation: fadeIn var(--duration-base) ease-in;
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(var(--space-2-5)); }
     to { opacity: 1; transform: translateY(0); }
   }
 }
 
 /* تنسيق أيقونة القائمة الجانبية لتكون احترافية (Lineone Style) */
 .menu-btn-container {
-  margin-inline-start: 5px;
+  margin-inline-start: var(--space-1);
 
   .custom-menu-btn {
-    --background: #f1f5f9; /* خلفية رمادية فاتحة جداً */
-    --border-radius: 12px; /* زوايا دائرية ناعمة */
-    --padding-start: 8px;
-    --padding-end: 8px;
-    height: 40px;
-    width: 40px;
+    --background: var(--color-neutral-100);
+    --border-radius: var(--radius-lg);
+    --padding-start: var(--space-2);
+    --padding-end: var(--space-2);
+    height: var(--space-10);
+    width: var(--space-10);
     margin: 0;
-    transition: all 0.2s ease;
+    transition: all var(--duration-base) var(--ease-standard);
 
     ion-icon {
-      font-size: 1.6rem;
-      color: #334155; /* لون الأيقونة (Slate 700) */
+      font-size: var(--font-size-2xl);
+      color: var(--color-neutral-700);
     }
 
     &:active {
-      --background: #e2e8f0; /* تتغير الخلفية عند النقر */
+      --background: var(--color-border);
       transform: scale(0.95);
     }
   }
 
   /* =========================================
-     🪟 تنسيق الـ Popover الذكي للتابلت 
+     🪟 تنسيق الـ Popover الذكي للتابلت
   ========================================= */
   ion-popover.custom-popover {
-    --background: #ffffff;
-    --border-radius: 20px;
-    --box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
-    --width: 250px; /* 🔴 تم إضافة هذا السطر لإجبار النافذة على عرض ثابت يمنع التمرير */
-    
+    --background: var(--color-surface);
+    --border-radius: var(--radius-2xl);
+    --box-shadow: var(--elevation-3);
+    /* fixed popover width, not a spacing-rhythm value — kept literal */
+    --width: 250px;
+
     &::part(content) {
-      border-radius: 20px;
+      border-radius: var(--radius-2xl);
       overflow: hidden; /* إخفاء أي محتوى زائد */
       padding: 0;
     }
@@ -278,6 +283,6 @@ app-classlist:host {
 }
 
 .animate-fade-in {
-  animation: slideDown 0.3s ease-out forwards;
+  animation: slideDown var(--duration-base) ease-out forwards;
 }
 }
