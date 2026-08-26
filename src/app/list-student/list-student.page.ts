@@ -486,7 +486,7 @@ export class ListStudentPage {
     let isPastDate = this.isTeacher && !this.checkCurrentDate(this.dateSelected);
 
     // 1. استثناء التأخير
-    let isDelayed = currentStatus === '3' || sheet.absentDueToDelay == '1';
+    let isDelayed = currentStatus === '3' || String(sheet.absentDueToDelay) === '1';
     if (isDelayed) return 'delayed';
 
     // 2. الفحص السحري للتعديلات المحلية (يعمل فقط لليوم الحالي)
@@ -838,7 +838,7 @@ export class ListStudentPage {
           let enteredBy = sheet['entered_by-' + i];
           let currentStatus = String(val).trim();
 
-          let isDelayed = currentStatus === '3' || sheet.absentDueToDelay == '1';
+          let isDelayed = currentStatus === '3' || String(sheet.absentDueToDelay) === '1';
           let isUnmarked =
             val === undefined ||
             val === null ||
@@ -915,7 +915,7 @@ export class ListStudentPage {
           let currentStatus = String(val).trim();
           let enteredBy = sheet['entered_by-' + i];
 
-          let isDelayed = currentStatus === '3' || sheet.absentDueToDelay == '1';
+          let isDelayed = currentStatus === '3' || String(sheet.absentDueToDelay) === '1';
           let isUnmarked =
             val == null || currentStatus === '' || currentStatus === 'undefined' || currentStatus === 'null';
 
@@ -1037,7 +1037,7 @@ export class ListStudentPage {
       let val = sheet[semKey];
       let currentStatus = String(val).trim();
 
-      let isDelayed = currentStatus === '3' || sheet.absentDueToDelay == '1';
+      let isDelayed = currentStatus === '3' || String(sheet.absentDueToDelay) === '1';
       let isUnmarked = val == null || currentStatus === '' || currentStatus === 'undefined' || currentStatus === 'null';
 
       let isSavedInDb = enteredBy && enteredBy !== 'null' && enteredBy !== '0' && !isUnmarked;
@@ -1073,7 +1073,7 @@ export class ListStudentPage {
 
     // 🟢 السحر هنا: منع تعديل التأخير نهائياً لأي مستخدم!
     let currentStatus = sheet['cem-' + (sem + 1)];
-    if (String(currentStatus) === '3' || sheet.absentDueToDelay == '1') {
+    if (String(currentStatus) === '3' || String(sheet.absentDueToDelay) === '1') {
       this.dataProvider.showToast('لا يمكن تعديل التأخير من هنا. يرجى تعديله من سجل التأخير.');
       return;
     }
@@ -1135,7 +1135,7 @@ export class ListStudentPage {
 
     // 🟢 السحر هنا: استثناء الطالب المتأخر من التغيير الجماعي
     let currentStatus = sheet['cem-' + (sem + 1)];
-    if (String(currentStatus) === '3' || sheet.absentDueToDelay == '1') {
+    if (String(currentStatus) === '3' || String(sheet.absentDueToDelay) === '1') {
       return; // تجاهل هذا الطالب وابقه متأخراً
     }
 

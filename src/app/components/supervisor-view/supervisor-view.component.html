@@ -165,18 +165,13 @@
                   student.sheet &&
                   student.sheet['entered_by-' + (i + 1)],
                 'bg-emerald-500 text-white shadow-emerald-100 scale-105':
-                  student.sheet && student.sheet['cem-' + (i + 1)] == '1',
+                  getCemStatus(student.sheet, i + 1) === '1',
                 'bg-rose-500 text-white shadow-rose-100 scale-105':
-                  student.sheet && student.sheet['cem-' + (i + 1)] == '0',
+                  getCemStatus(student.sheet, i + 1) === '0',
                 'bg-orange-500 text-white shadow-orange-100 scale-105':
-                  student.sheet && student.sheet['cem-' + (i + 1)] == '3',
+                  getCemStatus(student.sheet, i + 1) === '3',
                 'bg-white border border-slate-200 text-slate-400 hover:bg-slate-100':
-                  !student.sheet ||
-                  student.sheet['cem-' + (i + 1)] === undefined ||
-                  student.sheet['cem-' + (i + 1)] === null ||
-                  student.sheet['cem-' + (i + 1)] === '' ||
-                  student.sheet['cem-' + (i + 1)] === 'undefined' ||
-                  student.sheet['cem-' + (i + 1)] === 'null'
+                  getCemStatus(student.sheet, i + 1) === ''
               }"
             >
               @if (
@@ -188,23 +183,16 @@
                   <ion-icon name="lock-closed" class="text-[9px]"></ion-icon>
                 </div>
               }
-              @if (student.sheet && student.sheet['cem-' + (i + 1)] == '1') {
+              @if (getCemStatus(student.sheet, i + 1) === '1') {
                 <ion-icon name="checkmark" class="text-lg"></ion-icon>
               }
-              @if (student.sheet && student.sheet['cem-' + (i + 1)] == '0') {
+              @if (getCemStatus(student.sheet, i + 1) === '0') {
                 <ion-icon name="close" class="text-lg"></ion-icon>
               }
-              @if (student.sheet && student.sheet['cem-' + (i + 1)] == '3') {
+              @if (getCemStatus(student.sheet, i + 1) === '3') {
                 <ion-icon name="remove" class="text-lg"></ion-icon>
               }
-              @if (
-                !student.sheet ||
-                student.sheet['cem-' + (i + 1)] === undefined ||
-                student.sheet['cem-' + (i + 1)] === null ||
-                student.sheet['cem-' + (i + 1)] === '' ||
-                student.sheet['cem-' + (i + 1)] === 'undefined' ||
-                student.sheet['cem-' + (i + 1)] === 'null'
-              ) {
+              @if (getCemStatus(student.sheet, i + 1) === '') {
                 <span class="text-xs">{{ i + 1 }}</span>
               }
             </div>

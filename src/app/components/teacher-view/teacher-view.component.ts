@@ -42,6 +42,18 @@ export class TeacherViewComponent {
     return index;
   }
 
+  // 🟢 توحيد القيمة كنص دائماً — الـ API الجديد يرجع رقم أحياناً بدل النص
+  getCemStatus(sheet: any, period: number): string {
+    if (!sheet) return '';
+    const val = sheet['cem-' + period];
+    if (val === undefined || val === null || val === '' || val === 'undefined' || val === 'null') return '';
+    return String(val);
+  }
+
+  isAbsentDueToDelay(sheet: any): boolean {
+    return !!sheet && String(sheet.absentDueToDelay) === '1';
+  }
+
   // حساب إجمالي نقاط الطلاب في الصف
   getTotalPoints(): number {
     if (!this.attendanceResponse?.students) return 0;
