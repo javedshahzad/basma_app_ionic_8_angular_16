@@ -76,7 +76,11 @@ TypeScript path aliases (`tsconfig.json`) are available and preferred over relat
 
 ### Backend & auth
 
-The backend is a REST API at `{serverURL}` (PHP-style endpoints, not OpenAPI-documented anywhere in this repo). All requests go through `ApiClient` (`service/api-client`), which the ~40 `*-api.service.ts` files wrap per domain (e.g. `auth.service.ts`, `reports-api.service.ts`, `student-engagement.service.ts`). `MyInterceptor` attaches `uuid`/`user_no` to authenticated POST requests, applies a 30s timeout, and retries `429`/`503` with exponential backoff (deliberately **not** retrying on `status === 0`, since that also fires on navigation-cancelled requests, not just real connectivity loss).
+The backend is a REST API at `{serverURL}` — currently `staging.basmapp.com/api/v1/` in every environment (dev/staging/prod), a Node.js rewrite of the legacy PHP `BasmaCP/app_service_new.php` backend, kept legacy-compatible: same `POST /{methodName}` shape, `application/x-www-form-urlencoded` body, `{success, session, msg, ...}` envelope. OpenAPI docs at `staging.basmapp.com/api-docs/v1/`. Every endpoint requires `session_id` in the body (not just `uuid`/`user_no`, see below) — the legacy PHP backend was more lenient about this for some endpoints, which is why several frontend call sites were missing it until it started mattering.
+
+**Known gap:** three school-deletion-management endpoints the frontend still calls (`RequestdeleteSchool`, `deleteSchoolPermanentlyRequest`, `revertDeleteSchool` — see `user-management-api.service.ts` and `classlist.page.ts`'s `checkAndDeleteAccount()`, called on every classlist load for admin/moderator/viewer/teacher) aren't in the new API's OpenAPI spec yet. They 404 (caught, non-fatal) until the backend implements them.
+
+All requests go through `ApiClient` (`service/api-client`), which the ~40 `*-api.service.ts` files wrap per domain (e.g. `auth.service.ts`, `reports-api.service.ts`, `student-engagement.service.ts`). `MyInterceptor` attaches `uuid`/`user_no` to authenticated POST requests, applies a 30s timeout, and retries `429`/`503` with exponential backoff (deliberately **not** retrying on `status === 0`, since that also fires on navigation-cancelled requests, not just real connectivity loss).
 
 Session state lives in `StorageService` (a thin wrapper over `@ionic/storage-angular`'s `Storage` — note this re-exports `@ionic/storage`'s `Storage` class under the hood, they're the same DI token). `AuthService` and `DataService` are the two root-provided services most pages depend on.
 
