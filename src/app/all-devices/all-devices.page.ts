@@ -49,7 +49,10 @@ export class AllDevicesPage implements OnInit {
     this.cdr.markForCheck();
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
+    if (!this.userDetails) {
+      this.userDetails = await this.storageSr.get('userloggedin');
+    }
     this.GetAlldevices();
   }
 

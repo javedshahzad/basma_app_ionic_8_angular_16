@@ -24,7 +24,8 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './absent-students.page.html',
   styleUrls: ['./absent-students.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, IonicSelectableComponent, DatePipe, TranslatePipe]
+  imports: [IonicModule, IonicSelectableComponent, DatePipe, TranslatePipe],
+  providers: [DatePipe]
 })
 export class AbsentStudentsPage implements OnInit {
   trackByIndex(index: number): number {

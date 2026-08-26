@@ -24,7 +24,8 @@ import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
   templateUrl: './all-application-list.page.html',
   styleUrls: ['./all-application-list.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, NgClass, DatePipe, TranslatePipe]
+  imports: [IonicModule, NgClass, DatePipe, TranslatePipe],
+  providers: [DatePipe]
 })
 export class AllApplicationListPage implements OnInit {
   trackByIndex(index: number): number {
