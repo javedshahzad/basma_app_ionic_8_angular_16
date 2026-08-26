@@ -264,7 +264,8 @@ export class StudentDetailPage {
       sid: String(this.studentDetails.sid),
       userId: String(this.userInfo.user_no),
       points: formattedPoint,
-      skill_type: skillType
+      skill_type: skillType,
+      session_id: this.userDetails.session_id
     };
 
     try {

@@ -75,7 +75,7 @@ export class GamificationApiService {
     });
   }
 
-  addStudentPoints(data: { sid?: string | number; userId?: string | number; points?: string | number }): Promise<ApiResponse> {
+  addStudentPoints(data: { sid?: string | number; userId?: string | number; points?: string | number; skill_type?: string; session_id?: string }): Promise<ApiResponse> {
     return new Promise((resolve, reject) => {
       this.apiClient
         .postRequest<ApiResponse>(data, 'addStudentPoints')

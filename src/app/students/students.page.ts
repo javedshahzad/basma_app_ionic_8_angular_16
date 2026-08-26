@@ -644,7 +644,8 @@ export class StudentsPage {
     let body = {
       sid: student.sid,
       userId: this.userInfo.user_no,
-      points: point
+      points: point,
+      session_id: this.userDetails.session_id
     };
     this.studentEngagement.awardSkillPoints(body).then(res => {
       if (res.success) {

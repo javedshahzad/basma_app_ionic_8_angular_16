@@ -752,7 +752,8 @@ export class FollowupStudentListPage {
       sid: String(student.sid),
       userId: String(this.userInfo.user_no),
       points: '+' + point,
-      skill_type: skillType
+      skill_type: skillType,
+      session_id: this.userDetails.session_id
     };
 
     try {

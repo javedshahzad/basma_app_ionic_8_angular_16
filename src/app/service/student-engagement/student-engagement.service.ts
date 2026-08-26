@@ -96,7 +96,7 @@ export class StudentEngagementService {
   }
 
   /** Awards (or deducts) skill points for a student. */
-  awardSkillPoints(body: { sid?: string | number; userId?: string | number; points?: string | number }): Promise<ApiResponse> {
+  awardSkillPoints(body: { sid?: string | number; userId?: string | number; points?: string | number; skill_type?: string; session_id?: string }): Promise<ApiResponse> {
     return this.gamificationApi.addStudentPoints(body);
   }
 
