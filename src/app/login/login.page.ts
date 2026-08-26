@@ -156,7 +156,7 @@ export class LoginPage {
         await this.credentialStorage.set('earlyLogin', this.loggedinUser);
 
         // 🟢 1. تسجيل الجهاز في السيرفر فوراً لمنع الطرد
-        await this.LogInDevice(response.details.user_no);
+        await this.LogInDevice(response.details.user_no, response.session_id);
 
         // 🟢 2. إضافة manual: true لمنع التوجيه المزدوج
         this.authProvider.publishEvent({ loggedin: true, details: response.details, manual: true });
@@ -261,10 +261,11 @@ export class LoginPage {
   }
 
   // 🟢 دالة مصيرية: تسجيل الجهاز لتفعيل أمان (Single Device Login)
-  async LogInDevice(user_no: string) {
+  async LogInDevice(user_no: string, session_id?: string) {
     let data = {
       user_no: user_no,
-      device_id: this.uniqueDeviceId
+      device_id: this.uniqueDeviceId,
+      session_id: session_id
     };
 
     this.deviceApi

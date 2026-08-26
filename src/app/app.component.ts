@@ -819,7 +819,8 @@ export class AppComponent {
 
       const data = {
         user_no: userDetails.details.user_no,
-        device_id: currentDeviceId
+        device_id: currentDeviceId,
+        session_id: userDetails.session_id
       };
 
       this.deviceApi.CheckDeviceLogInStatus(data).then(
@@ -858,7 +859,8 @@ export class AppComponent {
 
       const data = {
         user_no: userDetails.details.user_no,
-        device_id: currentDeviceId
+        device_id: currentDeviceId,
+        session_id: userDetails.session_id
       };
 
       this.deviceApi.LogInSingleDevice(data).then(

@@ -58,7 +58,8 @@ export class AllDevicesPage implements OnInit {
 
   GetAlldevices() {
     let data = {
-      user_no: this.userDetails.details?.user_no
+      user_no: this.userDetails.details?.user_no,
+      session_id: this.userDetails.session_id
     };
     this.dataProvider
       .run(() => this.deviceApi.GetAllDevices(data))
@@ -104,7 +105,8 @@ export class AllDevicesPage implements OnInit {
   executeDeleteDevice(device: UserDevice) {
     let data = {
       user_no: this.userDetails.details?.user_no,
-      device_id: device.device_id
+      device_id: device.device_id,
+      session_id: this.userDetails.session_id
     };
     this.dataProvider
       .run(() => this.deviceApi.Delete_device(data))
@@ -142,7 +144,8 @@ export class AllDevicesPage implements OnInit {
   // عملية الخروج من الجميع الفعلية
   executeLogoutAll() {
     let data = {
-      user_no: this.userDetails.details?.user_no
+      user_no: this.userDetails.details?.user_no,
+      session_id: this.userDetails.session_id
     };
 
     this.dataProvider
