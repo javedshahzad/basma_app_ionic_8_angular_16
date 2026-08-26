@@ -396,7 +396,7 @@ export class StudentDetailPage {
   async ionViewWillEnter() {
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
       if ((await Network.getStatus()).connected) {
-        this.checkProfile();
+        await this.checkProfile();
       } else {
         if (this.navData.student_id) {
           this.getOfflineNote();
@@ -427,7 +427,7 @@ export class StudentDetailPage {
         }
       }
     } else {
-      this.checkProfile();
+      await this.checkProfile();
     }
     this.getStudentPoints();
 
