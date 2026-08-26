@@ -94,28 +94,15 @@ export class GamificationApiService {
     });
   }
 
-  // 🔴 دالة جلب بيانات شجرة المهارات للطالب (تم حل مشكلة CORS)
+  // Was previously sent as multipart/form-data to work around a CORS issue
+  // against the legacy PHP backend. The new Node.js API only parses
+  // application/x-www-form-urlencoded bodies (per its OpenAPI spec) -- a
+  // multipart body reaches the server but never populates req.body, so every
+  // call silently failed with "Please fill all required fields." regardless
+  // of which fields were sent. Every other endpoint in this app already
+  // posts url-encoded via ApiClient successfully against this same host, so
+  // the CORS workaround is no longer needed either.
   getStudentSkillTree(data: { sid?: string | number; session_id?: string }): Promise<unknown> {
-    return new Promise((resolve, reject) => {
-      // 1. تحويل البيانات إلى FormData لتتطابق مع سياسة السيرفر وتتجاوز الـ CORS
-      let formData = new FormData();
-      formData.append('sid', String(data.sid));
-      // The new Node.js API requires session_id (not just uuid/user_no,
-      // which MyInterceptor auto-attaches) to authorize this endpoint.
-      formData.append('session_id', String(data.session_id ?? ''));
-
-      // 2. تجهيز الرابط (تأكد أن تستخدم environment.serverURL أو this.serverURL حسب ما يعمل لديك)
-      let url = environment.serverURL + 'getStudentSkillTree';
-
-      // 3. إرسال الـ formData بدلاً من كائن الـ data العادي
-      this.http.post(url, formData).subscribe(
-        (res) => {
-          resolve(res);
-        },
-        err => {
-          reject(err);
-        }
-      );
-    });
+    return this.apiClient.postRequest(data, 'getStudentSkillTree');
   }
 }
