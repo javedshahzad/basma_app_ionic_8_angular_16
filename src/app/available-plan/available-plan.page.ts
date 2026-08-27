@@ -211,7 +211,7 @@ export class AvailablePlanPage implements OnInit {
   // --- دالة تطبيق الكود السحرية والمحصنة ---
   async applyVoucherCode() {
     if (!this.voucherCode || this.voucherCode.trim() === '') {
-      this.dataProvider.showToast('الرجاء إدخال كود التفعيل');
+      this.dataProvider.showToast(this.lang.enter_activation_code || 'الرجاء إدخال كود التفعيل');
       return;
     }
 
@@ -237,7 +237,7 @@ export class AvailablePlanPage implements OnInit {
         }
       })
       .catch(error => {
-        this.dataProvider.showToast('حدث خطأ في الاتصال، حاول مرة أخرى.');
+        this.dataProvider.showToast(this.lang.connection_error_try_again || 'حدث خطأ في الاتصال، حاول مرة أخرى.');
       });
   }
 
@@ -257,12 +257,12 @@ export class AvailablePlanPage implements OnInit {
       .purchase(data)
       .then((res: any) => {
         if (res.success) {
-          this.dataProvider.showToast('تم تفعيل الباقة الأساسية المجانية بنجاح');
+          this.dataProvider.showToast(this.lang.free_plan_activated_success || 'تم تفعيل الباقة الأساسية المجانية بنجاح');
           this.getUserPlan(); // تحديث الواجهة بدلاً من الانتقال المباشر
         }
       })
       .catch(e => {
-        this.dataProvider.showToast('حدث خطأ في عملية الاشتراك');
+        this.dataProvider.showToast(this.lang.subscription_process_error || 'حدث خطأ في عملية الاشتراك');
       });
   }
 }

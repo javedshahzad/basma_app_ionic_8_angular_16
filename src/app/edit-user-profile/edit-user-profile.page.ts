@@ -180,7 +180,7 @@ export class EditUserProfilePage {
 
   async openPermissionMenu(event: any, type: string) {
     if (this.user.status === '0' && (type === 'absent' || type === 'application')) {
-      this.dataProvider.showToast('لا يمكن تعديل هذه الصلاحية والحساب غير نشط');
+      this.dataProvider.showToast(this.lang.cannot_edit_permission_inactive_account || 'لا يمكن تعديل هذه الصلاحية والحساب غير نشط');
       return;
     }
 

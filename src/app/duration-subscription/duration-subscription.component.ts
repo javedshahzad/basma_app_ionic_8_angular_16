@@ -24,12 +24,17 @@ export class DurationSubscriptionComponent implements OnInit {
 
   readonly standard_yearly_price: number = 94.99;
   readonly premium_yearly_price: number = 139.99;
+  lang: Record<string, string> = {};
 
   constructor(
     private modalCtrl: ModalController, // تم تصحيح الاسم
     public translate: TranslateService,
     public dataProvider: DataService
-  ) {}
+  ) {
+    this.translate.get('alertmessages').subscribe(res => {
+      this.lang = res;
+    });
+  }
 
   ngOnInit() {
     // 🟢 حماية صلبة ضد أخطاء السيرفر عند تحويل الـ JSON
@@ -76,7 +81,7 @@ export class DurationSubscriptionComponent implements OnInit {
         selectedPlan: this.choosePlan
       });
     } else {
-      this.dataProvider.showToast('الرجاء اختيار مدة الاشتراك أولاً!');
+      this.dataProvider.showToast(this.lang.select_subscription_duration_first || 'الرجاء اختيار مدة الاشتراك أولاً!');
     }
   }
 

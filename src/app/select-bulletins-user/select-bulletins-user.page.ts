@@ -206,7 +206,7 @@ export class SelectBulletinsUserPage {
   uplaodBullentin(user: any = null) {
     if (this.bulletinId && this.type !== 'create') {
       if (this.selectedUsers.length === 0) {
-        this.dataProvider.showToast('الرجاء اختيار مستخدم واحد على الأقل');
+        this.dataProvider.showToast(this.lang.select_at_least_one_user || 'الرجاء اختيار مستخدم واحد على الأقل');
         return;
       }
       this.data.users = this.selectedUsers.join(','); // تحويل المصفوفة لنص مفصول بفواصل حسب المتطلبات الشائعة
@@ -229,7 +229,7 @@ export class SelectBulletinsUserPage {
           .subscribe(
             () => {
               this.dataProvider.hideLoading();
-              this.dataProvider.showToast('تمت المشاركة بنجاح');
+              this.dataProvider.showToast(this.lang.shared_successfully || 'تمت المشاركة بنجاح');
               this.router.navigate(['bulletins']);
             },
             err => {

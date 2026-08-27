@@ -30,6 +30,7 @@ export class WarningReportPage {
   AllStudentPledgesReports: any = [];
 
   show_loading: boolean = false;
+  lang: Record<string, string> = {};
 
   constructor(
     public navCtrl: NavController,
@@ -46,7 +47,12 @@ export class WarningReportPage {
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين الجديدة
     private reportsApi: ReportsApiService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.translate.get('alertmessages').subscribe(res => {
+      this.lang = res;
+      this.cdr.markForCheck();
+    });
+  }
 
   // 🟢 3. التخلص من localStorage واستخدام async/await
   async ionViewWillEnter() {
@@ -128,10 +134,10 @@ export class WarningReportPage {
           this.openHtmlInBrowser(htmlContent);
         }
       } else {
-        this.dataProvider.showToast('تعذر جلب التقرير من السيرفر');
+        this.dataProvider.showToast(this.lang.report_fetch_error_server || 'تعذر جلب التقرير من السيرفر');
       }
     } catch (error) {
-      this.dataProvider.showToast('حدث خطأ في الاتصال أثناء جلب التقرير');
+      this.dataProvider.showToast(this.lang.report_fetch_connection_error || 'حدث خطأ في الاتصال أثناء جلب التقرير');
       console.log(error);
     }
   }
@@ -149,7 +155,7 @@ export class WarningReportPage {
         printWindow.print();
       }, 1000);
     } else {
-      this.dataProvider.showToast('يرجى السماح بالنوافذ المنبثقة (Pop-ups) لعرض التقرير');
+      this.dataProvider.showToast(this.lang.allow_popups_for_report || 'يرجى السماح بالنوافذ المنبثقة (Pop-ups) لعرض التقرير');
     }
   }
 

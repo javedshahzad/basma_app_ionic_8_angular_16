@@ -202,7 +202,7 @@ export class SeminarListPage implements OnInit {
     const printSection = document.getElementById('printSection');
 
     if (!printSection) {
-      this.dataProvider.showToast('تعذر العثور على محتوى للطباعة');
+      this.dataProvider.showToast(this.lang.no_print_content_found || 'تعذر العثور على محتوى للطباعة');
       return;
     }
 
@@ -217,7 +217,7 @@ export class SeminarListPage implements OnInit {
             (onSuccess: any) => console.log('printer.print', onSuccess),
             (e: any) => {
               console.log('printer.print error', e);
-              this.dataProvider.showToast('تعذرت الطباعة من الجهاز');
+              this.dataProvider.showToast(this.lang.device_print_failed || 'تعذرت الطباعة من الجهاز');
             }
           );
         } else {
@@ -242,13 +242,13 @@ export class SeminarListPage implements OnInit {
             printWindow.focus();
             setTimeout(() => printWindow.print(), 500);
           } else {
-            this.dataProvider.showToast('يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
+            this.dataProvider.showToast(this.lang.allow_popups_for_print || 'يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
           }
         }
       })
       .catch(error => {
         console.error('oops, something went wrong!', error);
-        this.dataProvider.showToast('تعذر إنشاء صورة للطباعة');
+        this.dataProvider.showToast(this.lang.print_image_creation_failed || 'تعذر إنشاء صورة للطباعة');
       });
   }
 

@@ -100,7 +100,7 @@ export class CreateClassPage implements OnInit {
         this.dataProvider.errorALertMessage(response.msg || response.message || 'فشل في تسجيل البيانات');
       }
     } catch (error) {
-      this.dataProvider.errorALertMessage('خطأ في الاتصال بقاعدة البيانات.');
+      this.dataProvider.errorALertMessage(this.lang.database_connection_error || 'خطأ في الاتصال بقاعدة البيانات.');
     }
   }
 

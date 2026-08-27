@@ -292,12 +292,12 @@ export class FollowBulletinsPage {
     this.bulletinsApi.createBulletins(formdata).subscribe(
       res => {
         this.dataProvider.hideLoading();
-        this.dataProvider.showToast('تم الإرسال بنجاح');
+        this.dataProvider.showToast(this.lang.sent_successfully || 'تم الإرسال بنجاح');
         this.router.navigate(['bulletins']);
       },
       e => {
         this.dataProvider.hideLoading();
-        this.dataProvider.showToast('حدث خطأ أثناء الإرسال');
+        this.dataProvider.showToast(this.lang.error_while_sending || 'حدث خطأ أثناء الإرسال');
       }
     );
   }

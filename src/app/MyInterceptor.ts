@@ -14,6 +14,7 @@ import { Observable, throwError, timer, TimeoutError } from 'rxjs';
 import { tap, retry, catchError, timeout } from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
 import { DataService } from '@services/data/data.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class MyInterceptor implements HttpInterceptor {
@@ -21,7 +22,8 @@ export class MyInterceptor implements HttpInterceptor {
     public alertController: AlertController,
     private dataProvider: DataService,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -109,13 +111,19 @@ export class MyInterceptor implements HttpInterceptor {
       catchError((error: any) => {
         if (error instanceof TimeoutError) {
           this.dataProvider.hideLoading();
-          this.dataProvider.showToast('استغرق الطلب وقتاً طويلاً، يرجى المحاولة مرة أخرى.');
+          this.dataProvider.showToast(
+            this.translate.instant('alertmessages.request_timeout_retry') || 'استغرق الطلب وقتاً طويلاً، يرجى المحاولة مرة أخرى.'
+          );
         } else if (error.status === 429 || error.status === 503) {
           this.dataProvider.hideLoading();
-          this.dataProvider.showToast('الشبكة مزدحمة حالياً، يرجى المحاولة بعد قليل.');
+          this.dataProvider.showToast(
+            this.translate.instant('alertmessages.network_busy_retry_later') || 'الشبكة مزدحمة حالياً، يرجى المحاولة بعد قليل.'
+          );
         } else if (error.status === 0) {
           this.dataProvider.hideLoading();
-          this.dataProvider.showToast('تعذر الاتصال بالخادم. تأكد من اتصالك بالإنترنت.');
+          this.dataProvider.showToast(
+            this.translate.instant('alertmessages.cannot_connect_check_internet') || 'تعذر الاتصال بالخادم. تأكد من اتصالك بالإنترنت.'
+          );
         }
 
         return throwError(() => error);

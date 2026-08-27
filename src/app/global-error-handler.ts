@@ -1,6 +1,7 @@
 import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import * as Sentry from '@sentry/angular';
 import { DataService } from '@services/data/data.service';
+import { TranslateService } from '@ngx-translate/core';
 
 // معالج أخطاء موحّد على مستوى التطبيق: يرسل كل خطأ غير مُعالَج محلياً إلى
 // Sentry (لا شيء يُرسَل إن كان environment.sentryDsn فارغاً — راجع main.ts)،
@@ -21,7 +22,10 @@ export class GlobalErrorHandler implements ErrorHandler {
 
     try {
       const dataProvider = this.injector.get(DataService);
-      dataProvider.showToast('حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.');
+      const translate = this.injector.get(TranslateService);
+      dataProvider.showToast(
+        translate.instant('alertmessages.unexpected_error_retry') || 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.'
+      );
     } catch {
       // تجاهل أي فشل في عرض التنبيه نفسه لتفادي حلقة أعطال
     }

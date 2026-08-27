@@ -185,7 +185,7 @@ export class AddParentPage implements OnInit {
     this.submitted = true;
 
     if (this.parentForm.invalid || this.f['selected_student'].value.length === 0) {
-      this.dataProvider.showToast('الرجاء تعبئة جميع الحقول المطلوبة');
+      this.dataProvider.showToast(this.lang.fill_all_required_fields || 'الرجاء تعبئة جميع الحقول المطلوبة');
       return;
     } else {
       this.signUpData = {

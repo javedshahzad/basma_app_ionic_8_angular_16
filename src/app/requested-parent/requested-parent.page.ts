@@ -204,13 +204,13 @@ export class RequestedParentPage implements OnInit {
       .then(
         res => {
           if (res.session) {
-            this.dataProvider.showToast('تم حفظ التعديلات لولي الأمر بنجاح');
+            this.dataProvider.showToast(this.lang.parent_changes_saved_success || 'تم حفظ التعديلات لولي الأمر بنجاح');
           } else {
             this.dataProvider.showToast(res.msg || 'حدث خطأ أثناء حفظ التعديلات');
           }
         },
         error => {
-          this.dataProvider.showToast('حدث خطأ في الاتصال بالسيرفر');
+          this.dataProvider.showToast(this.lang.server_connection_error_short || 'حدث خطأ في الاتصال بالسيرفر');
         }
       );
   }
@@ -264,7 +264,7 @@ export class RequestedParentPage implements OnInit {
               .then((res: any) => {
                 this.dataProvider.showToast(res.msg);
                 this.getAllParents();
-                this.dataProvider.showToast('تم الحذف بنجاح');
+                this.dataProvider.showToast(this.lang.deleted_successfully || 'تم الحذف بنجاح');
               })
               .catch(error => {
                 console.log(error);

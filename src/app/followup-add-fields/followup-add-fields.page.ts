@@ -93,7 +93,7 @@ export class FollowupAddFieldsPage {
 
     if (!courseId) {
       this.show_loading = false;
-      this.dataProvider.showToast('عفواً، لم يتم التعرف على الفصل.');
+      this.dataProvider.showToast(this.lang.class_not_recognized || 'عفواً، لم يتم التعرف على الفصل.');
       this.cdr.markForCheck();
       return;
     }
@@ -172,7 +172,7 @@ export class FollowupAddFieldsPage {
       .run(() => this.followupFieldsApi.deleteFollowupFields(data))
       .then((res: any) => {
         this.fields.splice(index, 1);
-        this.dataProvider.showToast('تم الحذف بنجاح');
+        this.dataProvider.showToast(this.lang.deleted_successfully || 'تم الحذف بنجاح');
         this.cdr.markForCheck();
       })
       .catch(() => {});
@@ -209,7 +209,7 @@ export class FollowupAddFieldsPage {
 
   checkField(): boolean {
     if (this.fields.length === 0) {
-      this.dataProvider.showToast('يرجى إضافة حقل واحد على الأقل');
+      this.dataProvider.showToast(this.lang.add_at_least_one_field || 'يرجى إضافة حقل واحد على الأقل');
       return false;
     }
     for (let field of this.fields) {
@@ -217,11 +217,11 @@ export class FollowupAddFieldsPage {
       field.absent_marks = field.absent_marks === true || field.absent_marks == 1 ? 1 : 0;
 
       if (!field.field_name?.trim()) {
-        this.dataProvider.showToast('اسم الحقل مطلوب');
+        this.dataProvider.showToast(this.lang.field_name_required || 'اسم الحقل مطلوب');
         return false;
       }
       if (!field.field_max_marks) {
-        this.dataProvider.showToast('الدرجة العظمى مطلوبة');
+        this.dataProvider.showToast(this.lang.max_grade_required || 'الدرجة العظمى مطلوبة');
         return false;
       }
     }
