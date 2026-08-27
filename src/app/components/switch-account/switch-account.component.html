@@ -28,7 +28,7 @@
             />
             <div>
               <h4
-                class="font-bold text-[13px] sm:text-sm flex items-center gap-1.5"
+                class="font-bold text-sm sm:text-sm flex items-center gap-1.5"
                 [ngClass]="
                   oldUser.email_id === currentUser ||
                   oldUser.email_id === currentUserEmail ||
@@ -43,11 +43,11 @@
                   oldUser.email_id === currentUserEmail ||
                   oldUser.user_no === user_no
                 ) {
-                  <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-500 text-white font-bold">الحالي</span>
+                  <span class="text-4xs px-1.5 py-0.5 rounded-full bg-indigo-500 text-white font-bold">الحالي</span>
                 }
               </h4>
               <p
-                class="text-[11px] sm:text-xs font-medium mt-0.5 leading-tight"
+                class="text-2xs sm:text-xs font-medium mt-0.5 leading-tight"
                 [ngClass]="
                   oldUser.email_id === currentUser ||
                   oldUser.email_id === currentUserEmail ||

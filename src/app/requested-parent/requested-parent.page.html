@@ -44,7 +44,7 @@
         >
           {{'parent_request_list.requested' | translate}} @if (parentList?.length > 0) {
           <span
-            class="inline-flex items-center justify-center w-5 h-5 mr-1 text-[10px] text-white bg-rose-500 rounded-full animate-pulse"
+            class="inline-flex items-center justify-center w-5 h-5 mr-1 text-3xs text-white bg-rose-500 rounded-full animate-pulse"
             >{{parentList.length}}</span
           >
           }
@@ -76,7 +76,7 @@
             </div>
             <div class="flex-1 overflow-hidden">
               <h3 class="text-base font-bold text-slate-800 m-0 mb-1 truncate">{{list.name}}</h3>
-              <p class="text-[11px] font-bold text-slate-400 m-0 flex items-center gap-1">
+              <p class="text-2xs font-bold text-slate-400 m-0 flex items-center gap-1">
                 <ion-icon name="time-outline"></ion-icon> {{list.datetime}}
               </p>
             </div>
@@ -165,12 +165,12 @@
             </div>
             <div class="flex-1 overflow-hidden">
               <h3 class="text-base font-bold text-slate-800 m-0 mb-1 truncate">{{list.first_name}}</h3>
-              <p class="text-[11px] font-bold text-slate-400 m-0 mb-2 truncate" dir="ltr">{{list.username}}</p>
+              <p class="text-2xs font-bold text-slate-400 m-0 mb-2 truncate" dir="ltr">{{list.username}}</p>
               @if (list.student_info?.length > 0) {
               <div class="flex flex-wrap gap-1.5">
                 @for (st of list.student_info; track trackByIndex($index)) {
                 <span
-                  class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-lg text-[10px] font-bold border border-indigo-100 flex items-center gap-1"
+                  class="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-lg text-3xs font-bold border border-indigo-100 flex items-center gap-1"
                 >
                   <ion-icon name="person-outline"></ion-icon> {{st.name}}
                 </span>

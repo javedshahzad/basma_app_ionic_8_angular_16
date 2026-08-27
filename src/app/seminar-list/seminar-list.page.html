@@ -33,7 +33,7 @@
           <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
         </div>
         <div>
-          <h3 class="text-[10px] font-bold text-slate-400 mb-0.5">تاريخ الكشف</h3>
+          <h3 class="text-3xs font-bold text-slate-400 mb-0.5">تاريخ الكشف</h3>
           <p class="text-sm font-bold text-slate-800 m-0">{{dateSelected | date: 'mediumDate'}}</p>
         </div>
       </div>
@@ -54,7 +54,7 @@
           <ion-icon name="checkmark-circle" class="text-2xl"></ion-icon>
         </div>
         <span class="text-2xl font-black text-slate-800">{{seminarList.all_present_total}}</span>
-        <span class="text-[11px] font-bold text-slate-500 mt-1">{{'seminar_list.present' | translate}}</span>
+        <span class="text-2xs font-bold text-slate-500 mt-1">{{'seminar_list.present' | translate}}</span>
       </div>
       <div
         class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
@@ -63,7 +63,7 @@
           <ion-icon name="close-circle" class="text-2xl"></ion-icon>
         </div>
         <span class="text-2xl font-black text-slate-800">{{seminarList.all_absent_total}}</span>
-        <span class="text-[11px] font-bold text-slate-500 mt-1">{{'seminar_list.absent' | translate}}</span>
+        <span class="text-2xs font-bold text-slate-500 mt-1">{{'seminar_list.absent' | translate}}</span>
       </div>
       <div
         class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
@@ -72,7 +72,7 @@
           <ion-icon name="people" class="text-2xl"></ion-icon>
         </div>
         <span class="text-2xl font-black text-slate-800">{{seminarList.all_student_total}}</span>
-        <span class="text-[11px] font-bold text-slate-500 mt-1">{{'seminar_list.total' | translate}}</span>
+        <span class="text-2xs font-bold text-slate-500 mt-1">{{'seminar_list.total' | translate}}</span>
       </div>
       <div
         class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
@@ -81,7 +81,7 @@
           <ion-icon name="pie-chart" class="text-2xl"></ion-icon>
         </div>
         <span class="text-2xl font-black text-slate-800" dir="ltr">{{seminarList.total_per_sent}}%</span>
-        <span class="text-[11px] font-bold text-slate-500 mt-1">{{'seminar_list.total_percent' | translate}}</span>
+        <span class="text-2xs font-bold text-slate-500 mt-1">{{'seminar_list.total_percent' | translate}}</span>
       </div>
     </div>
     <!-- تفاصيل الفصول -->
@@ -97,7 +97,7 @@
               <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
               <span class="text-sm font-bold text-slate-700">{{class.class_name}}</span>
             </div>
-            <div class="flex gap-2 text-[11px] font-bold">
+            <div class="flex gap-2 text-2xs font-bold">
               <span class="text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-1 rounded-md"
                 >{{'seminar_list.present' | translate}}: {{class.present}}</span
               >

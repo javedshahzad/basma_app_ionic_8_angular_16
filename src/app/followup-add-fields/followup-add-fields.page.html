@@ -14,7 +14,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+<ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <div class="p-4 max-w-3xl mx-auto pb-24">
     <!-- شاشة التحميل الوهمية -->
     @if (show_loading) {
@@ -49,7 +49,7 @@
                 >{{'followUp_student.field_name' | translate}} <span class="text-rose-500">*</span></label
               >
               <span
-                class="text-[10px] font-bold"
+                class="text-3xs font-bold"
                 [ngClass]="f.field_name?.length >= 30 ? 'text-rose-500' : 'text-slate-400'"
                 >{{f.field_name?.length || 0}} / 30</span
               >

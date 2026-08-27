@@ -14,12 +14,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+<ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <div class="max-w-2xl mx-auto p-4 pb-24">
     <!-- 🟢 الخطوة 1: رفع الملفات وكتابة العنوان -->
     @if (inputText) {
     <div class="animate-fade-in-up">
-      <div class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-200 mb-6">
+      <div class="bg-white rounded-4xl p-5 shadow-sm border border-slate-200 mb-6">
         <label class="block text-sm font-bold text-slate-600 mb-2 px-1"
           >{{'bulletin.input_title' | translate}} <span class="text-rose-500">*</span></label
         >
@@ -66,7 +66,7 @@
               />
               }
               <div
-                class="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm p-1.5 truncate text-white text-[10px] font-medium text-center"
+                class="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm p-1.5 truncate text-white text-3xs font-medium text-center"
               >
                 {{doc.name}}
               </div>

@@ -22,7 +22,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+<ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <div class="px-4 py-8 max-w-lg mx-auto">
     <!-- 🟢 أيقونة النجاح -->
     @if (isSuccessBool) {
@@ -51,7 +51,7 @@
 
     <!-- 🟢 كارت الفاتورة الاحترافي -->
     <div
-      class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 space-y-4 relative overflow-hidden animate-fade-in-up"
+      class="bg-white rounded-4xl p-5 shadow-sm border border-slate-100 space-y-4 relative overflow-hidden animate-fade-in-up"
       style="animation-delay: 0.1s"
     >
       <!-- شريط ملون علوي حسب الحالة -->
@@ -80,7 +80,7 @@
       <div class="flex justify-between items-center py-2 border-b border-slate-50">
         <span class="text-xs font-bold text-slate-400">{{ 'plan.status' | translate }}</span>
         <span
-          class="text-[11px] font-bold px-3 py-1 rounded-lg"
+          class="text-2xs font-bold px-3 py-1 rounded-lg"
           [ngClass]="
             isSuccessBool
               ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'

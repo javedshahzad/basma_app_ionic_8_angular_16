@@ -23,7 +23,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg-[#f8fafc]" mode="md">
+<ion-content class="bg-surface-alt" mode="md">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -44,7 +44,7 @@
           <div class="flex justify-between items-center mb-3">
             <div class="flex flex-col gap-1">
               <h3 class="font-bold text-slate-800 text-sm md:text-base leading-none">إشعار إداري</h3>
-              <span class="text-[10px] md:text-xs font-medium text-slate-400"> {{notification.date}} </span>
+              <span class="text-3xs md:text-xs font-medium text-slate-400"> {{notification.date}} </span>
             </div>
             @if (userType===UserType.Admin) {
             <button
@@ -112,7 +112,7 @@
   dir="rtl"
 >
   <div
-    class="relative w-11/12 max-w-sm bg-white rounded-[2rem] shadow-2xl overflow-hidden transform transition-all scale-100 opacity-100"
+    class="relative w-11/12 max-w-sm bg-white rounded-4xl shadow-2xl overflow-hidden transform transition-all scale-100 opacity-100"
     (click)="$event.stopPropagation()"
   >
     <div class="flex justify-center pt-8 pb-4">

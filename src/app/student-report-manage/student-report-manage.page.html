@@ -14,7 +14,7 @@
 <ion-content class="lineone-bg" mode="md" dir="rtl">
   <div class="px-4 py-6 max-w-2xl mx-auto space-y-6 pb-16">
     <div
-      class="bg-white rounded-[2rem] p-4 sm:p-5 shadow-sm border border-slate-100 flex items-center gap-4 animate-fade-in-up"
+      class="bg-white rounded-4xl p-4 sm:p-5 shadow-sm border border-slate-100 flex items-center gap-4 animate-fade-in-up"
     >
       <div class="relative shrink-0">
         <img
@@ -39,7 +39,7 @@
     </div>
 
     <div
-      class="bg-white rounded-[2rem] p-5 sm:p-6 shadow-sm shadow-slate-200/50 border border-slate-100 animate-fade-in-up"
+      class="bg-white rounded-4xl p-5 sm:p-6 shadow-sm shadow-slate-200/50 border border-slate-100 animate-fade-in-up"
       style="animation-delay: 0.1s"
     >
       <div class="flex items-center gap-3 mb-5">
@@ -582,15 +582,15 @@
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-orange-500 rounded-r-2xl"></div>
             <div class="flex justify-between items-start pl-1 pr-3">
               <div>
-                <span class="text-[10px] font-bold text-slate-400"
+                <span class="text-3xs font-bold text-slate-400"
                   >{{'manage_report.start_date' | translate}} - {{'manage_report.end_date' | translate}}</span
                 >
-                <div class="font-bold text-[13px] text-slate-800 mt-0.5">
+                <div class="font-bold text-sm text-slate-800 mt-0.5">
                   {{sdays.start_date}} <span class="text-slate-400 mx-1">إلى</span> {{sdays.end_date}}
                 </div>
               </div>
               <div class="bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-center shrink-0">
-                <span class="block text-[10px] font-bold text-slate-500">{{'manage_report.days' | translate}}</span>
+                <span class="block text-3xs font-bold text-slate-500">{{'manage_report.days' | translate}}</span>
                 <span class="block font-black text-orange-500 text-lg leading-tight">{{sdays.amount_days}}</span>
               </div>
             </div>
@@ -627,15 +627,15 @@
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-emerald-500 rounded-r-2xl"></div>
             <div class="flex justify-between items-start pl-1 pr-3">
               <div>
-                <span class="text-[10px] font-bold text-slate-400"
+                <span class="text-3xs font-bold text-slate-400"
                   >{{'manage_report.start_date' | translate}} - {{'manage_report.end_date' | translate}}</span
                 >
-                <div class="font-bold text-[13px] text-slate-800 mt-0.5">
+                <div class="font-bold text-sm text-slate-800 mt-0.5">
                   {{mdays.start_date}} <span class="text-slate-400 mx-1">إلى</span> {{mdays.end_date}}
                 </div>
               </div>
               <div class="bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-center shrink-0">
-                <span class="block text-[10px] font-bold text-slate-500">{{'manage_report.days' | translate}}</span>
+                <span class="block text-3xs font-bold text-slate-500">{{'manage_report.days' | translate}}</span>
                 <span class="block font-black text-emerald-600 text-lg leading-tight">{{mdays.amount_days}}</span>
               </div>
             </div>
@@ -672,10 +672,10 @@
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-cyan-500 rounded-r-2xl"></div>
             <div class="flex justify-between items-center pl-1 pr-3">
               <div>
-                <span class="text-[10px] font-bold text-slate-400"
+                <span class="text-3xs font-bold text-slate-400"
                   >{{'manage_report.date' | translate}} / {{'manage_report.time' | translate}}</span
                 >
-                <div class="font-bold text-[13px] text-slate-800 mt-0.5">
+                <div class="font-bold text-sm text-slate-800 mt-0.5">
                   {{edays.date}} <span class="text-slate-300 mx-2">|</span>
                   <span class="text-cyan-600">{{edays.time}}</span>
                 </div>
@@ -713,9 +713,9 @@
           >
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-indigo-500 rounded-r-2xl"></div>
             <div class="pl-1 pr-3">
-              <span class="text-[10px] font-bold text-slate-400">{{'manage_report.date' | translate}}</span>
-              <div class="font-bold text-[13px] text-slate-800 mb-2">{{edays.date}}</div>
-              <span class="text-[10px] font-bold text-slate-400">{{'manage_report.reason' | translate}}</span>
+              <span class="text-3xs font-bold text-slate-400">{{'manage_report.date' | translate}}</span>
+              <div class="font-bold text-sm text-slate-800 mb-2">{{edays.date}}</div>
+              <span class="text-3xs font-bold text-slate-400">{{'manage_report.reason' | translate}}</span>
               <div
                 class="font-bold text-sm text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100 leading-relaxed"
               >
@@ -754,18 +754,18 @@
             <div class="pl-1 pr-3">
               <div class="flex items-center justify-between mb-3">
                 <div>
-                  <span class="text-[10px] font-bold text-slate-400">{{'manage_report.date' | translate}}</span>
-                  <div class="font-bold text-[13px] text-slate-800">{{edays.date}}</div>
+                  <span class="text-3xs font-bold text-slate-400">{{'manage_report.date' | translate}}</span>
+                  <div class="font-bold text-sm text-slate-800">{{edays.date}}</div>
                 </div>
                 <div class="text-left">
-                  <span class="text-[10px] font-bold text-slate-400">{{'manage_report.degree' | translate}}</span>
+                  <span class="text-3xs font-bold text-slate-400">{{'manage_report.degree' | translate}}</span>
                   <div class="font-bold text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-md">
                     {{edays.degree_name}}
                   </div>
                 </div>
               </div>
               <div class="mb-3">
-                <span class="text-[10px] font-bold text-slate-400">{{'manage_report.reason' | translate}}</span>
+                <span class="text-3xs font-bold text-slate-400">{{'manage_report.reason' | translate}}</span>
                 <div
                   class="font-bold text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 leading-relaxed"
                 >
@@ -774,7 +774,7 @@
                 </div>
               </div>
               <div>
-                <span class="text-[10px] font-bold text-slate-400">{{'manage_report.action' | translate}}</span>
+                <span class="text-3xs font-bold text-slate-400">{{'manage_report.action' | translate}}</span>
                 <div
                   class="font-bold text-sm text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 leading-relaxed"
                 >
@@ -800,7 +800,7 @@
 
 <ion-modal [isOpen]="isDeleteModalOpen" (didDismiss)="isDeleteModalOpen = false" class="lineone-delete-modal">
   <ng-template>
-    <div class="bg-white p-6 flex flex-col items-center justify-center text-center h-full rounded-[1.5rem]">
+    <div class="bg-white p-6 flex flex-col items-center justify-center text-center h-full rounded-3xl">
       <div class="w-20 h-20 rounded-full bg-rose-50 flex items-center justify-center mb-5 relative">
         <div
           class="absolute inset-0 bg-rose-100 rounded-full animate-ping opacity-40"

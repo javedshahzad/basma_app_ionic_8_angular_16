@@ -57,11 +57,11 @@
             <div class="flex-shrink-0 mt-1">
               @if (application.application_status === '1') {
               <span
-                class="bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-1 rounded-lg text-[10px] font-bold"
+                class="bg-emerald-50 text-emerald-600 border border-emerald-100 px-2 py-1 rounded-lg text-3xs font-bold"
                 >{{'absent_students.accepted' | translate}}</span
               >
               } @if (application.application_status === '2') {
-              <span class="bg-rose-50 text-rose-600 border border-rose-100 px-2 py-1 rounded-lg text-[10px] font-bold"
+              <span class="bg-rose-50 text-rose-600 border border-rose-100 px-2 py-1 rounded-lg text-3xs font-bold"
                 >{{'absent_students.rejected' | translate}}</span
               >
               }

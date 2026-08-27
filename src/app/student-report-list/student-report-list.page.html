@@ -13,7 +13,7 @@
     >
   </ion-toolbar>
 
-  <div class="bg-[#f8fafc] px-4 pb-3 pt-2 text-center border-b border-slate-100">
+  <div class="bg-surface-alt px-4 pb-3 pt-2 text-center border-b border-slate-100">
     <span
       class="inline-block bg-indigo-50 text-indigo-700 font-bold text-xs px-4 py-1.5 rounded-full border border-indigo-100 shadow-sm"
       >{{courseInfo.name}}</span
@@ -54,7 +54,7 @@
             <span class="text-slate-400 text-xs">{{sno+1}}.</span> {{student.name}}
           </h4>
           @if (student.studentBehaviour !== '') {
-          <p class="text-[11px] font-bold text-slate-500 mt-1 mb-0">{{student.studentBehaviour}}</p>
+          <p class="text-2xs font-bold text-slate-500 mt-1 mb-0">{{student.studentBehaviour}}</p>
           }
         </div>
         <ion-icon name="chevron-back-outline" class="text-slate-300 text-lg shrink-0"></ion-icon>
@@ -63,7 +63,7 @@
     </div>
     } @if (attendanceResponse.students?.length === 0) {
     <div
-      class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white mt-4 shadow-sm"
+      class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-white mt-4 shadow-sm"
     >
       <ion-icon name="folder-open-outline" class="text-5xl text-slate-300 mb-3"></ion-icon>
       <h4 class="text-slate-500 font-bold text-sm m-0">{{noDataFound || 'لا يوجد طلاب مسجلين'}}</h4>

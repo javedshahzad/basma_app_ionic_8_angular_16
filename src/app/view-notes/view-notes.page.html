@@ -100,7 +100,7 @@
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 pr-1 gap-4">
         <div class="flex flex-wrap items-center gap-2">
           <span
-            class="bg-slate-50 text-slate-600 border border-slate-200 px-2.5 py-1 rounded-md text-[10px] font-bold flex items-center gap-1.5"
+            class="bg-slate-50 text-slate-600 border border-slate-200 px-2.5 py-1 rounded-md text-3xs font-bold flex items-center gap-1.5"
           >
             <ion-icon name="calendar-outline" class="text-slate-400"></ion-icon>
             {{note.send_to !== 'exam' ? note.datetime : note.examNoteDate}}
@@ -108,7 +108,7 @@
           @if (userType===UserType.Admin || userType===UserType.Teacher ||
           note.profile?.user_no===userDetails?.details?.user_no) {
           <span
-            class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2.5 py-1 rounded-md text-[10px] font-bold flex items-center gap-1.5"
+            class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2.5 py-1 rounded-md text-3xs font-bold flex items-center gap-1.5"
           >
             <ion-icon name="send-outline" class="text-indigo-400"></ion-icon>
             {{'student_notes.sendTO' | translate}}: {{note.send_to==='exam' ? 'اختبار' : note.send_to}}
@@ -130,7 +130,7 @@
     </div>
     } } @if (!data || data.length === 0) {
     <div
-      class="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white shadow-sm mt-4"
+      class="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-white shadow-sm mt-4"
     >
       <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
         <ion-icon name="document-text-outline" class="text-3xl text-slate-300"></ion-icon>
@@ -150,7 +150,7 @@
   (click)="cancelDelete()"
 >
   <div
-    class="relative w-11/12 max-w-sm bg-white rounded-[2rem] shadow-2xl overflow-hidden transform transition-all scale-100 opacity-100 p-6 text-center"
+    class="relative w-11/12 max-w-sm bg-white rounded-4xl shadow-2xl overflow-hidden transform transition-all scale-100 opacity-100 p-6 text-center"
     (click)="$event.stopPropagation()"
   >
     <div

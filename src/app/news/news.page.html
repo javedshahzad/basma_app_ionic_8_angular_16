@@ -21,7 +21,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+<ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -102,7 +102,7 @@
               />
               <div>
                 <h3 class="text-sm font-bold text-slate-800 m-0">{{news.school_name}}</h3>
-                <div class="flex items-center gap-1.5 mt-1 text-slate-400 text-[11px] font-medium">
+                <div class="flex items-center gap-1.5 mt-1 text-slate-400 text-2xs font-medium">
                   <ion-icon name="time-outline"></ion-icon>
                   <span dir="ltr">{{news.ago}}</span>
                 </div>
@@ -175,7 +175,7 @@
       @if (allNews?.length === 0) {
       <div class="flex flex-col items-center justify-center py-20">
         <div
-          class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center text-slate-400 mb-5 shadow-sm"
+          class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-4xl flex items-center justify-center text-slate-400 mb-5 shadow-sm"
         >
           <ion-icon name="newspaper-outline" class="text-5xl"></ion-icon>
         </div>

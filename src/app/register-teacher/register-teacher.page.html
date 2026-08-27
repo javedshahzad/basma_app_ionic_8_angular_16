@@ -15,7 +15,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+<ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <div class="px-4 py-8 max-w-lg mx-auto h-full flex flex-col justify-center">
     <div class="text-center mb-8">
       <div
@@ -29,7 +29,7 @@
 
     <form
       #registerForm="ngForm"
-      class="bg-white rounded-[2rem] p-6 shadow-xl shadow-slate-200/50 border border-slate-100"
+      class="bg-white rounded-4xl p-6 shadow-xl shadow-slate-200/50 border border-slate-100"
     >
       <div class="space-y-5">
         <div>
@@ -49,7 +49,7 @@
             ></ion-input>
           </div>
           @if (teacherID.invalid && (teacherID.touched)) {
-          <div class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
+          <div class="text-2xs text-rose-500 font-bold mt-1.5 px-1">
             @if (teacherID.errors?.required) {
             <span>{{'validations.required' | translate}}</span>
             } @if (teacherID.errors?.pattern) {
@@ -74,7 +74,7 @@
             ></ion-input>
           </div>
           @if (teacherName.invalid && (teacherName.touched)) {
-          <div class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
+          <div class="text-2xs text-rose-500 font-bold mt-1.5 px-1">
             @if (teacherName.errors?.required) {
             <span>{{'validations.required' | translate}}</span>
             }
@@ -99,7 +99,7 @@
             ></ion-input>
           </div>
           @if (teacherPassword.invalid && (teacherPassword.touched)) {
-          <div class="text-[11px] text-rose-500 font-bold mt-1.5 px-1">
+          <div class="text-2xs text-rose-500 font-bold mt-1.5 px-1">
             @if (teacherPassword.errors?.required) {
             <span>{{'validations.required' | translate}}</span>
             }

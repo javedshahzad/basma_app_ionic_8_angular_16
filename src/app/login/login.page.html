@@ -1,8 +1,8 @@
-﻿<ion-content class="bg-[#f8fafc]" mode="md">
+﻿<ion-content class="bg-surface-alt" mode="md">
   <div class="min-h-screen flex flex-col justify-center items-center p-5" dir="rtl">
     <div class="mb-8 text-center w-full max-w-md">
       <div
-        class="w-24 h-24 mx-auto mb-5 bg-white rounded-[2rem] shadow-xl shadow-indigo-100/50 border border-slate-100 overflow-hidden flex items-center justify-center p-2"
+        class="w-24 h-24 mx-auto mb-5 bg-white rounded-4xl shadow-xl shadow-indigo-100/50 border border-slate-100 overflow-hidden flex items-center justify-center p-2"
       >
         <img src="assets/icons/icon-512.webp" alt="شعار التطبيق" class="w-full h-full object-contain" />
       </div>
@@ -27,13 +27,13 @@
           "
           class="w-12 h-12 rounded-full object-cover border border-slate-100 shadow-inner mb-2 bg-slate-50"
         />
-        <span class="text-[11px] font-bold text-slate-700 truncate w-full text-center">{{u.name || 'مستخدم'}}</span>
+        <span class="text-2xs font-bold text-slate-700 truncate w-full text-center">{{u.name || 'مستخدم'}}</span>
       </div>
       }
     </div>
     }
 
-    <div class="bg-white w-full max-w-md rounded-[2rem] shadow-sm border border-slate-200 p-6 md:p-8">
+    <div class="bg-white w-full max-w-md rounded-4xl shadow-sm border border-slate-200 p-6 md:p-8">
       <form #loginform="ngForm">
         <div class="mb-4">
           <label class="block text-xs font-bold text-slate-700 mb-2 px-1">{{'login.username' | translate}}</label>

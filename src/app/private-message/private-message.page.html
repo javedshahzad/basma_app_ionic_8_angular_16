@@ -10,7 +10,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+<ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -25,7 +25,7 @@
         <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-indigo-500"></div>
         <div class="flex items-start justify-between mb-3 pl-1 pr-3">
           <div
-            class="flex items-center gap-1.5 text-slate-400 text-[11px] font-medium bg-slate-50 px-2 py-1 rounded-lg border border-slate-100"
+            class="flex items-center gap-1.5 text-slate-400 text-2xs font-medium bg-slate-50 px-2 py-1 rounded-lg border border-slate-100"
           >
             <ion-icon name="time-outline"></ion-icon>
             <span dir="ltr">{{notification.date}}</span>
@@ -68,7 +68,7 @@
     @if (notifications?.length === 0) {
     <div class="flex flex-col items-center justify-center py-24">
       <div
-        class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center text-slate-400 mb-5 shadow-sm"
+        class="w-24 h-24 bg-slate-100 border border-slate-200 rounded-4xl flex items-center justify-center text-slate-400 mb-5 shadow-sm"
       >
         <ion-icon name="mail-unread-outline" class="text-5xl"></ion-icon>
       </div>

@@ -14,9 +14,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+<ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <div class="p-4 max-w-3xl mx-auto pb-24">
-    <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden animate-fade-in-up">
+    <div class="bg-white rounded-4xl shadow-sm border border-slate-200 overflow-hidden animate-fade-in-up">
       <div class="p-5 border-b border-slate-50 flex items-center gap-4 bg-slate-50/50">
         <div
           class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-100"
@@ -25,7 +25,7 @@
         </div>
         <div>
           <h2 class="text-base font-black text-slate-800 m-0">{{bulletin?.tital}}</h2>
-          <p class="text-[11px] font-bold text-slate-400 m-0 mt-1 flex items-center gap-1">
+          <p class="text-2xs font-bold text-slate-400 m-0 mt-1 flex items-center gap-1">
             <ion-icon name="calendar-outline"></ion-icon>
             {{$safeNavigationMigration(bulletin?.created_at) | date:'mediumDate'}}
           </p>
@@ -60,7 +60,7 @@
               </div>
               <div class="overflow-hidden flex-1">
                 <p class="text-xs font-bold text-slate-700 truncate m-0">{{file.file_name}}</p>
-                <p class="text-[10px] font-medium text-slate-400 m-0">اضغط للعرض</p>
+                <p class="text-3xs font-medium text-slate-400 m-0">اضغط للعرض</p>
               </div>
               <ion-icon name="chevron-back" class="text-slate-300"></ion-icon>
             </div>

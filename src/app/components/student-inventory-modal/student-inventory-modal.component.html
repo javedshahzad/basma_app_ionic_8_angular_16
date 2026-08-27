@@ -49,7 +49,7 @@
             >
               <div>
                 <h4 class="text-sm font-black text-slate-700 m-0">اللقب الديناميكي (التلقائي)</h4>
-                <p class="text-[10px] text-slate-400 m-0">يتغير تلقائياً حسب أعلى مهارة.</p>
+                <p class="text-3xs text-slate-400 m-0">يتغير تلقائياً حسب أعلى مهارة.</p>
               </div>
               @if (activeCraftedTitle !== null) {
                 <button
@@ -88,17 +88,17 @@
                         {{ title.name }}
                         @if (activeCraftedTitle === title.code) {
                           <span
-                            class="text-[9px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-200"
+                            class="text-4xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-200"
                             >مُفعل</span
                           >
                         }
                       </h4>
-                      <p class="text-[10px] text-slate-500 m-0 mt-0.5 leading-tight">{{ title.desc }}</p>
+                      <p class="text-3xs text-slate-500 m-0 mt-0.5 leading-tight">{{ title.desc }}</p>
                       @if (!title.isUnlocked) {
                         <div class="flex gap-1 mt-2 flex-wrap">
                           @if (title.cost.cognitive) {
                             <span
-                              class="text-[9px] font-bold bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded border border-amber-100"
+                              class="text-4xs font-bold bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded border border-amber-100"
                               ><ion-icon name="bulb"></ion-icon> {{ studentWallet?.spendable_cognitive || 0 }}/{{
                                 title.cost.cognitive
                               }}</span
@@ -106,7 +106,7 @@
                           }
                           @if (title.cost.practical) {
                             <span
-                              class="text-[9px] font-bold bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded border border-purple-100"
+                              class="text-4xs font-bold bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded border border-purple-100"
                               ><ion-icon name="laptop"></ion-icon> {{ studentWallet?.spendable_practical || 0 }}/{{
                                 title.cost.practical
                               }}</span
@@ -114,7 +114,7 @@
                           }
                           @if (title.cost.social) {
                             <span
-                              class="text-[9px] font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100"
+                              class="text-4xs font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100"
                               ><ion-icon name="chatbubbles"></ion-icon> {{ studentWallet?.spendable_social || 0 }}/{{
                                 title.cost.social
                               }}</span
@@ -122,14 +122,14 @@
                           }
                           @if (title.cost.discipline) {
                             <span
-                              class="text-[9px] font-bold bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded border border-emerald-100"
+                              class="text-4xs font-bold bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded border border-emerald-100"
                               ><ion-icon name="shield-checkmark"></ion-icon>
                               {{ studentWallet?.spendable_discipline || 0 }}/{{ title.cost.discipline }}</span
                             >
                           }
                           @if (title.cost.emotional) {
                             <span
-                              class="text-[9px] font-bold bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded border border-rose-100"
+                              class="text-4xs font-bold bg-rose-50 text-rose-600 px-1.5 py-0.5 rounded border border-rose-100"
                               ><ion-icon name="heart"></ion-icon> {{ studentWallet?.spendable_emotional || 0 }}/{{
                                 title.cost.emotional
                               }}</span
@@ -171,7 +171,7 @@
         @if (inventoryTab === 'badges') {
           <div>
             <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl mb-4 text-center">
-              <p class="text-[11px] text-indigo-600 font-bold m-0">
+              <p class="text-2xs text-indigo-600 font-bold m-0">
                 اكتشف الأسرار المخفية! قم بأفعال مميزة داخل المدرسة لفك شفرة هذه الأوسمة النادرة.
               </p>
             </div>
@@ -185,7 +185,7 @@
                     <div class="opacity-40 grayscale flex flex-col items-center justify-center h-full">
                       <div class="text-4xl mb-1">❓</div>
                       <h4 class="text-xs font-black text-slate-800 m-0 mb-1">وسام سري</h4>
-                      <p class="text-[9px] text-slate-500 m-0 italic whitespace-normal break-words leading-relaxed">
+                      <p class="text-4xs text-slate-500 m-0 italic whitespace-normal break-words leading-relaxed">
                         "{{ badge.hint }}"
                       </p>
                     </div>
@@ -194,7 +194,7 @@
                     <div class="animate-fade-in-up flex flex-col items-center justify-center h-full">
                       <div class="text-4xl mb-1 drop-shadow-md">{{ badge.icon }}</div>
                       <h4 class="text-xs font-black text-amber-600 m-0 mb-1">{{ badge.name }}</h4>
-                      <p class="text-[9px] text-slate-600 m-0 leading-relaxed whitespace-normal break-words">
+                      <p class="text-4xs text-slate-600 m-0 leading-relaxed whitespace-normal break-words">
                         {{ badge.unlockedDesc }}
                       </p>
                     </div>

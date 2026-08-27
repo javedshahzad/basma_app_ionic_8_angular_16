@@ -15,7 +15,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="bg-[#f8fafc]" mode="md" dir="rtl">
+<ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <div class="p-4 max-w-2xl mx-auto pb-6">
     <!-- النصوص التعريفية (تم إخراجها لتظهر دائماً) -->
     <div class="mb-5 px-1">
@@ -53,7 +53,7 @@
               {{classItem.courses.name}}
             </h4>
             <p
-              class="text-[11px] font-bold m-0 truncate transition-colors"
+              class="text-2xs font-bold m-0 truncate transition-colors"
               [ngClass]="classItem.is_selected ? 'text-indigo-500' : 'text-slate-400'"
             >
               {{classItem.courses.desc || 'لا يوجد وصف متاح لهذا الفصل'}}
@@ -84,7 +84,7 @@
     @if (!classes || classes.length === 0) {
     <div class="text-center py-20">
       <div
-        class="w-20 h-20 bg-slate-100 border border-slate-200 rounded-[2rem] flex items-center justify-center mx-auto mb-4 text-slate-400 shadow-sm"
+        class="w-20 h-20 bg-slate-100 border border-slate-200 rounded-4xl flex items-center justify-center mx-auto mb-4 text-slate-400 shadow-sm"
       >
         <ion-icon name="business-outline" class="text-4xl"></ion-icon>
       </div>

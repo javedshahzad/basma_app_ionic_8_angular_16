@@ -54,7 +54,7 @@
       >
         <div class="bg-indigo-600 text-white p-3 rounded-2xl rounded-tr-sm max-w-[85%] shadow-sm self-end">
           @if (message.message && message.message !== '') {
-          <div class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
+          <div class="text-sm leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
           } @if (message.attachment_url && message.attachment_url !== '') {
           <div class="mt-2 relative">
             <img
@@ -65,7 +65,7 @@
             />
           </div>
           }
-          <div class="text-[9px] text-indigo-200 text-left mt-1 font-medium" dir="ltr">{{message.message_time}}</div>
+          <div class="text-4xs text-indigo-200 text-left mt-1 font-medium" dir="ltr">{{message.message_time}}</div>
         </div>
       </div>
       }
@@ -79,9 +79,9 @@
           class="bg-white text-slate-700 p-3 rounded-2xl rounded-tl-sm border border-slate-100 max-w-[85%] shadow-sm self-start"
         >
           @if (message.sender_name && message.sender_name !== '') {
-          <div class="text-[10px] font-bold text-slate-400 mb-1">{{message.sender_name}}</div>
+          <div class="text-3xs font-bold text-slate-400 mb-1">{{message.sender_name}}</div>
           } @if (message.message && message.message !== '') {
-          <div class="text-[13px] leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
+          <div class="text-sm leading-relaxed break-words" [innerHTML]="message.message | linky"></div>
           } @if (message.attachment_url && message.attachment_url !== '') {
           <div class="mt-2 relative">
             <img
@@ -98,7 +98,7 @@
             </button>
           </div>
           }
-          <div class="text-[9px] text-slate-400 text-right mt-1 font-medium" dir="ltr">{{message.message_time}}</div>
+          <div class="text-4xs text-slate-400 text-right mt-1 font-medium" dir="ltr">{{message.message_time}}</div>
         </div>
       </div>
       }

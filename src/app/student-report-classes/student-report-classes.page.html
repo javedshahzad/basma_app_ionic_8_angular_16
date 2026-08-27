@@ -46,7 +46,7 @@
           <div class="text-content flex-1 pr-4">
             <h3 class="card-title font-bold text-slate-800 text-base m-0">{{course.name}}</h3>
             @if (course.desc) {
-            <p class="card-subtitle text-[11px] sm:text-xs font-bold text-slate-500 mt-1 mb-0">{{course.desc}}</p>
+            <p class="card-subtitle text-2xs sm:text-xs font-bold text-slate-500 mt-1 mb-0">{{course.desc}}</p>
             }
           </div>
           <ion-icon name="chevron-back-outline" class="forward-icon text-slate-400 text-xl"></ion-icon>
@@ -55,7 +55,7 @@
     </div>
     } } @else { @if (!isLoading) {
     <div
-      class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-[2rem] bg-white mt-4 shadow-sm"
+      class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-white mt-4 shadow-sm"
     >
       <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
         <ion-icon name="folder-open-outline" class="text-4xl text-slate-300"></ion-icon>

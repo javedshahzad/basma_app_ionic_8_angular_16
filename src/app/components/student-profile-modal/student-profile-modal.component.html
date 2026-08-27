@@ -42,17 +42,17 @@
       <div
         class="bg-slate-50 border border-slate-100 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-sm transition-all hover:bg-slate-100"
       >
-        <span class="text-[9px] font-black text-muted mb-1.5 flex items-center gap-1 uppercase tracking-wider">
+        <span class="text-4xs font-black text-muted mb-1.5 flex items-center gap-1 uppercase tracking-wider">
           <ion-icon name="analytics-outline" class="text-indigo-400 text-sm"></ion-icon>
           مؤشر الأداء العام
         </span>
-        <p class="text-slate-700 font-bold text-[11px] m-0 text-center leading-tight">
+        <p class="text-slate-700 font-bold text-2xs m-0 text-center leading-tight">
           <ion-icon
             [name]="gamification.getBehaviourIcon(student)"
             class="text-xs {{ gamification.getBehaviourColorClass(student) }}"
           >
           </ion-icon>
-          <span class="text-[11px] font-black {{ gamification.getBehaviourColorClass(student) }}">
+          <span class="text-2xs font-black {{ gamification.getBehaviourColorClass(student) }}">
             {{ gamification.getStudentBehaviourText(student) }}
           </span>
         </p>
@@ -62,11 +62,11 @@
         <div
           class="bg-gradient-to-b from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-2.5 flex flex-col items-center justify-center shadow-sm transition-all hover:border-amber-200"
         >
-          <span class="text-[9px] font-black text-amber-500 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
+          <span class="text-4xs font-black text-amber-500 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
             <ion-icon name="star-outline" class="text-amber-500 text-sm"></ion-icon>
             مؤشر التميز المهاري
           </span>
-          <p class="text-amber-700 font-black text-[11px] m-0 text-center leading-tight">{{ studentTitle }}</p>
+          <p class="text-amber-700 font-black text-2xs m-0 text-center leading-tight">{{ studentTitle }}</p>
         </div>
       }
     </div>
@@ -82,20 +82,20 @@
       <div class="grid grid-cols-4 divide-x divide-x-reverse divide-slate-200 text-center">
         <div>
           <p class="text-xl font-bold text-rose-500">{{ student?.unacceptable_absent_days || 0 }}</p>
-          <p class="text-[9px] text-slate-500 font-bold mt-1">{{ 'list-student.unacceptable_absence' | translate }}</p>
+          <p class="text-4xs text-slate-500 font-bold mt-1">{{ 'list-student.unacceptable_absence' | translate }}</p>
         </div>
         <div>
           <p class="text-xl font-bold text-orange-500">{{ student?.suspend_days || 0 }}</p>
-          <p class="text-[9px] text-slate-500 font-bold mt-1">{{ 'list-student.suspension_days' | translate }}</p>
+          <p class="text-4xs text-slate-500 font-bold mt-1">{{ 'list-student.suspension_days' | translate }}</p>
         </div>
         <div>
           <p class="text-xl font-bold text-emerald-500">{{ student?.medical_days || 0 }}</p>
-          <p class="text-[9px] text-slate-500 font-bold mt-1">{{ 'list-student.medical_days' | translate }}</p>
+          <p class="text-4xs text-slate-500 font-bold mt-1">{{ 'list-student.medical_days' | translate }}</p>
         </div>
         <div>
           @if (!isLoadingSkills) {
             <p class="text-xl font-black text-amber-500">{{ studentTotalPoints || 0 }}</p>
-            <p class="text-[9px] text-slate-500 font-bold mt-1">إجمالي النقاط</p>
+            <p class="text-4xs text-slate-500 font-bold mt-1">إجمالي النقاط</p>
           }
           @if (isLoadingSkills) {
             <ion-spinner name="dots" color="warning" class="h-5 mt-1"></ion-spinner>
@@ -118,7 +118,7 @@
     @if (!isLoadingSkills && studentSkillData) {
       <div class="space-y-3" dir="rtl">
         <div>
-          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+          <div class="flex justify-between text-2xs font-bold mb-1.5">
             <span class="text-slate-600"
               ><ion-icon name="bulb" class="text-amber-500 text-sm"></ion-icon> العبقرية العلمية</span
             ><span class="text-amber-500">{{ studentSkillData.cognitive || 0 }}</span>
@@ -131,7 +131,7 @@
           </div>
         </div>
         <div>
-          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+          <div class="flex justify-between text-2xs font-bold mb-1.5">
             <span class="text-slate-600"
               ><ion-icon name="chatbubbles" class="text-blue-500 text-sm"></ion-icon> التواصل والتعاون</span
             ><span class="text-blue-500">{{ studentSkillData.social || 0 }}</span>
@@ -144,7 +144,7 @@
           </div>
         </div>
         <div>
-          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+          <div class="flex justify-between text-2xs font-bold mb-1.5">
             <span class="text-slate-600"
               ><ion-icon name="shield-checkmark" class="text-emerald-500 text-sm"></ion-icon> الانضباط والمسؤولية</span
             ><span class="text-emerald-500">{{ studentSkillData.discipline || 0 }}</span>
@@ -157,7 +157,7 @@
           </div>
         </div>
         <div>
-          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+          <div class="flex justify-between text-2xs font-bold mb-1.5">
             <span class="text-slate-600"
               ><ion-icon name="heart" class="text-rose-500 text-sm"></ion-icon> الذكاء العاطفي</span
             ><span class="text-rose-500">{{ studentSkillData.emotional || 0 }}</span>
@@ -170,7 +170,7 @@
           </div>
         </div>
         <div>
-          <div class="flex justify-between text-[11px] font-bold mb-1.5">
+          <div class="flex justify-between text-2xs font-bold mb-1.5">
             <span class="text-slate-600"
               ><ion-icon name="laptop" class="text-purple-500 text-sm"></ion-icon> المهارات العملية</span
             ><span class="text-purple-500">{{ studentSkillData.practical || 0 }}</span>

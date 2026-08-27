@@ -60,7 +60,7 @@
       <!-- Empty State: No Date Selected -->
       @if (dates.length === 0) {
       <div
-        class="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-200 rounded-[2rem] py-14 shadow-sm"
+        class="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-200 rounded-4xl py-14 shadow-sm"
       >
         <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
           <ion-icon name="calendar-outline" class="text-3xl text-slate-300"></ion-icon>
@@ -72,7 +72,7 @@
       <!-- Empty State: Date Selected but No Notes -->
       @if (dates.length > 0 && selectedNotes.length === 0) {
       <div
-        class="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-200 rounded-[2rem] py-14 shadow-sm"
+        class="flex flex-col items-center justify-center bg-white border-2 border-dashed border-slate-200 rounded-4xl py-14 shadow-sm"
       >
         <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
           <ion-icon name="document-text-outline" class="text-3xl text-slate-300"></ion-icon>
@@ -94,9 +94,9 @@
             </p>
             <div class="flex items-center gap-2 mt-3 pt-3 border-t border-slate-50">
               <div class="w-6 h-6 rounded-md bg-slate-50 flex items-center justify-center border border-slate-100">
-                <ion-icon name="calendar-clear-outline" class="text-slate-400 text-[10px]"></ion-icon>
+                <ion-icon name="calendar-clear-outline" class="text-slate-400 text-3xs"></ion-icon>
               </div>
-              <span class="text-slate-500 font-bold text-[11px]"
+              <span class="text-slate-500 font-bold text-2xs"
                 >{{ item.examNoteDate | date:'fullDate':'':'ar-KW' }}</span
               >
             </div>

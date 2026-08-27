@@ -20,7 +20,7 @@
       @for (student of students; track trackByIndex($index)) {
       <div
         (click)="openStudentDetail(student)"
-        class="bg-white rounded-[2rem] p-5 shadow-sm border border-slate-100 relative overflow-hidden active:scale-[0.97] transition-all cursor-pointer"
+        class="bg-white rounded-4xl p-5 shadow-sm border border-slate-100 relative overflow-hidden active:scale-[0.97] transition-all cursor-pointer"
       >
         <div class="absolute -left-10 -top-10 w-32 h-32 bg-indigo-50/40 rounded-full blur-2xl z-0"></div>
         <div class="flex items-start gap-4 relative z-10">
@@ -33,39 +33,39 @@
               <h2 class="text-slate-800 font-black text-lg leading-tight mb-2">{{student?.name}}</h2>
               @if (student.current_streak >= 10) {
               <span
-                class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse"
+                class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse"
                 title="أسطورة الالتزام"
                 ><ion-icon name="flame"></ion-icon
-                ><span class="text-[9px] font-bold">{{student.current_streak}}</span></span
+                ><span class="text-4xs font-bold">{{student.current_streak}}</span></span
               >
               } @if (student.current_streak >= 5 && student.current_streak < 10) {
               <span
-                class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0"
+                class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0"
                 title="مشتعل"
                 ><ion-icon name="flame"></ion-icon
-                ><span class="text-[9px] font-bold">{{student.current_streak}}</span></span
+                ><span class="text-4xs font-bold">{{student.current_streak}}</span></span
               >
               } @if (student.isFrozen) {
               <span
-                class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
+                class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
                 ><ion-icon name="snow"></ion-icon> مجمد</span
               >
               }
             </div>
             <div class="space-y-1.5">
               <div class="flex items-center gap-1">
-                <span class="text-slate-500 text-[11px] font-bold">المستوى: </span>
+                <span class="text-slate-500 text-2xs font-bold">المستوى: </span>
                 <span
-                  class="text-[11px] font-black uppercase tracking-wider"
+                  class="text-2xs font-black uppercase tracking-wider"
                   [ngClass]="getStudentBehaviourColor(student)"
                 >
                   {{ getStudentBehaviourText(student) }}
                 </span>
               </div>
               <div class="flex items-center gap-1.5 mt-1">
-                <span class="text-slate-500 text-[10px] font-bold">اللقب: </span>
+                <span class="text-slate-500 text-3xs font-bold">اللقب: </span>
                 <span
-                  class="text-amber-600 text-[11px] font-black italic tracking-wide bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100/50"
+                  class="text-amber-600 text-2xs font-black italic tracking-wide bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100/50"
                 >
                   {{ getStudentTitle(student) }}
                 </span>
@@ -79,12 +79,12 @@
         <div class="mt-5 pt-4 border-t border-slate-50 flex justify-between items-center relative z-10">
           <div class="flex items-center gap-2">
             <ion-icon name="calendar-outline" class="text-slate-400 text-sm"></ion-icon>
-            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider"
+            <span class="text-3xs text-slate-500 font-bold uppercase tracking-wider"
               >إجمالي الغياب: {{student?.attendance || 0}}</span
             >
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-[10px] text-rose-500 font-black bg-rose-50 px-2 py-1 rounded-lg border border-rose-100">
+            <span class="text-3xs text-rose-500 font-black bg-rose-50 px-2 py-1 rounded-lg border border-rose-100">
               {{student?.unacceptable_absent_days || 0}} غياب بدون عذر مقبول
             </span>
           </div>

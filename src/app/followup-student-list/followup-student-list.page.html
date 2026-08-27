@@ -46,7 +46,7 @@
     <div class="flex items-center justify-center gap-2 h-8">
       <!-- رسالة الحالة (تتحول للأخضر إذا تم الحفظ، وللبرتقالي إذا لم يتم) -->
       <div
-        class="text-[11px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-colors border"
+        class="text-2xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 transition-colors border"
         [ngClass]="(!attendanceResponse.submittedMsg.includes('لم يتم') && !attendanceResponse.submittedMsg.includes('Not')) ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-orange-50 text-orange-600 border-orange-100'"
       >
         <ion-icon
@@ -98,29 +98,29 @@
                   class="flex items-center gap-0.5 bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-200 shadow-sm animate-pulse"
                   title="أسطورة الالتزام"
                 >
-                  <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span>
+                  <ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span>
                 </span>
                 } @if ((student.current_streak || 0) >= 5 && (student.current_streak || 0) < 10) {
                 <span
                   class="flex items-center gap-0.5 bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded border border-orange-200 shadow-sm"
                   title="مشتعل"
                 >
-                  <ion-icon name="flame"></ion-icon><span class="text-[9px] font-bold">{{student.current_streak}}</span>
+                  <ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span>
                 </span>
                 } @if (student.isFrozen) {
                 <span
-                  class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-[9px] font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
+                  class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
                 >
                   <ion-icon name="snow"></ion-icon> مجمد
                 </span>
                 }
               </h4>
-              <p class="text-[11px] text-slate-500 mt-1 font-medium m-0 truncate max-w-[200px]">
+              <p class="text-2xs text-slate-500 mt-1 font-medium m-0 truncate max-w-[200px]">
                 <ion-icon
                   [name]="gamification.getBehaviourIcon(student)"
                   class="text-xs {{ gamification.getBehaviourColorClass(student) }}"
                 ></ion-icon>
-                <span class="text-[10px] font-black {{ gamification.getBehaviourColorClass(student) }}">
+                <span class="text-3xs font-black {{ gamification.getBehaviourColorClass(student) }}">
                   {{ gamification.getStudentBehaviourText(student) }}
                 </span>
               </p>
@@ -143,7 +143,7 @@
             @for (sheet of student.sheet; track trackByIndex($index)) {
             <div class="flex flex-col">
               <label
-                class="text-[10px] font-bold text-slate-500 mb-1 text-center leading-tight px-1 h-7 flex items-end justify-center break-words line-clamp-2"
+                class="text-3xs font-bold text-slate-500 mb-1 text-center leading-tight px-1 h-7 flex items-end justify-center break-words line-clamp-2"
                 title="{{sheet.field_name}}"
                 >{{sheet.field_name}}</label
               >
