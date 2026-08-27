@@ -14,9 +14,4 @@ app-students:host {
     --inner-padding-end: 0;
     --padding-start: 0;
   }
-  
-  /* تحسين عرض المودال على الجوال */
-  .custom-modal-main {
-    backdrop-filter: blur(4px);
-  }
 }
