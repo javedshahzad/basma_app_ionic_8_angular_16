@@ -1,5 +1,6 @@
 import { Injectable, Signal } from '@angular/core';
 import { ModalController, PopoverController, ActionSheetController, AlertController, Platform } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import type { GenerateProgress } from '../../components/generate-students-progress-modal/generate-students-progress-modal.component';
 
 // الاستيرادات أدناه ديناميكية عمداً (داخل كل دالة، لا في أعلى الملف): هذه
@@ -18,7 +19,8 @@ export class StudentUiService {
     private popoverCtrl: PopoverController,
     private actionSheetCtrl: ActionSheetController,
     private alertCtrl: AlertController,
-    private platform: Platform
+    private platform: Platform,
+    private translate: TranslateService
   ) { }
 
   // 1. إدارة نافذة شجرة المهارات
@@ -65,12 +67,12 @@ export class StudentUiService {
         resolve(data?.selectedAction ?? null);
       } else {
         const actionSheet = await this.actionSheetCtrl.create({
-          header: 'إضافة طالب',
+          header: this.translate.instant('popovers.add_student_header'),
           cssClass: 'custom-action-sheet',
           buttons: [
-            { text: 'تسجيل طالب جديد', icon: 'person-add-outline', handler: () => resolve('single') },
-            { text: 'إنشاء عدة طلاب', icon: 'people-outline', handler: () => resolve('multiple') },
-            { text: 'إلغاء', icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) }
+            { text: this.translate.instant('popovers.register_new_student'), icon: 'person-add-outline', handler: () => resolve('single') },
+            { text: this.translate.instant('popovers.generate_multiple_students'), icon: 'people-outline', handler: () => resolve('multiple') },
+            { text: this.translate.instant('popovers.cancel'), icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) }
           ]
         });
         await actionSheet.present();
@@ -123,13 +125,13 @@ export class StudentUiService {
         resolve(data?.selectedAction);
       } else {
         let buttons = [];
-        if (showAdd) buttons.push({ text: 'تسجيل طالب جديد', icon: 'person-add-outline', handler: () => resolve('add') });
-        if (showAdd) buttons.push({ text: 'إنشاء عدة طلاب', icon: 'people-outline', handler: () => resolve('generate') });
-        buttons.push({ text: 'عرض الملاحظات', icon: 'document-text-outline', handler: () => resolve('notes') });
-        buttons.push({ text: 'إلغاء', icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) });
+        if (showAdd) buttons.push({ text: this.translate.instant('popovers.register_new_student'), icon: 'person-add-outline', handler: () => resolve('add') });
+        if (showAdd) buttons.push({ text: this.translate.instant('popovers.generate_multiple_students'), icon: 'people-outline', handler: () => resolve('generate') });
+        buttons.push({ text: this.translate.instant('popovers.view_notes'), icon: 'document-text-outline', handler: () => resolve('notes') });
+        buttons.push({ text: this.translate.instant('popovers.cancel'), icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) });
 
         const actionSheet = await this.actionSheetCtrl.create({
-          header: 'إجراءات المشرف', cssClass: 'custom-action-sheet', buttons: buttons
+          header: this.translate.instant('popovers.admin_actions_header'), cssClass: 'custom-action-sheet', buttons: buttons
         });
         await actionSheet.present();
       }
