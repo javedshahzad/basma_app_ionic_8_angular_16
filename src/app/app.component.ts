@@ -7,7 +7,7 @@ import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from './service/auth/auth.service';
 import { DataService } from './service/data/data.service';
 import { DatabaseService } from './service/database/database.service';
-import { Network } from '@capacitor/network';
+import { OfflineBannerComponent } from './components/offline-banner/offline-banner.component';
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { Share } from '@capacitor/share';
 import { Router, ActivatedRoute, NavigationExtras, NavigationStart } from '@angular/router';
@@ -37,7 +37,7 @@ declare var cordova: any;
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, FormsModule, TranslatePipe]
+  imports: [IonicModule, FormsModule, TranslatePipe, OfflineBannerComponent]
 })
 export class AppComponent {
   private destroyRef = inject(DestroyRef);
@@ -58,7 +58,6 @@ export class AppComponent {
   changedLanguage = 'العربية';
 
   checked = false;
-  runNetwork = false;
   isSchoolAdmin: any;
   routeDone = false;
   userDetails: any;
@@ -312,36 +311,8 @@ export class AppComponent {
           .then(() => {})
           .catch(() => {});
 
-        setTimeout(async () => {
-          if (!(await Network.getStatus()).connected) {
-            // no-op: initial check, handled by the networkStatusChange listener below
-          }
-        }, 1000);
-
-        Network.addListener('networkStatusChange', status => {
-          if (status.connected) {
-            if (!this.runNetwork) {
-              this.runNetwork = true;
-              this.cdr.markForCheck();
-            }
-          } else {
-            // Delay so we don't show a false-positive during brief network blips.
-            setTimeout(async () => {
-              if (!(await Network.getStatus()).connected) {
-                this.dataProvider.showToast(this.lang.alertmessages.not_online);
-              }
-            }, 2000);
-          }
-        });
-
-        this.platform.resume.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-          setTimeout(async () => {
-            if ((await Network.getStatus()).connected) {
-              this.runNetwork = true;
-              this.cdr.markForCheck();
-            }
-          }, 1000);
-        });
+        // Connectivity detection + the offline banner now live in
+        // ConnectivityService/OfflineBannerComponent (see enterprise-offline-mode-plan.md).
       }
 
       this.auth.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(data => {

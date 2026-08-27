@@ -1,0 +1,10 @@
+@if (!connectivity.isOnline()) {
+  <div
+    class="fixed top-0 inset-x-0 z-[9999] bg-amber-500 text-white text-xs font-bold flex items-center justify-center gap-2 py-2 px-3 shadow-md"
+    style="padding-top: calc(0.5rem + env(safe-area-inset-top));"
+    dir="rtl"
+  >
+    <ion-icon name="cloud-offline-outline" class="text-sm"></ion-icon>
+    <span>{{ 'alertmessages.offline' | translate }}</span>
+  </div>
+}
