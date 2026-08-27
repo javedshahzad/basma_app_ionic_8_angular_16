@@ -23,8 +23,8 @@
       >
         <ion-icon name="people-outline" class="text-4xl text-indigo-500"></ion-icon>
       </div>
-      <h2 class="text-xl font-black text-slate-800 mb-1">تسجيل ولي أمر جديد</h2>
-      <p class="text-sm font-bold text-slate-500">أدخل البيانات المطلوبة لإنشاء حساب وربطه بالطالب.</p>
+      <h2 class="text-xl font-black text-slate-800 mb-1">{{'reg_parent.pagetitle' | translate}}</h2>
+      <p class="text-sm font-bold text-slate-500">{{'reg_parent.subtitle' | translate}}</p>
     </div>
 
     <form
@@ -57,7 +57,7 @@
 
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-2"
-            >{{'reg_parent.parentid' | translate}} (الهوية)</label
+            >{{'reg_parent.parentid' | translate}} {{'reg_parent.id_suffix' | translate}}</label
           >
           <div
             class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"

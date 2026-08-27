@@ -60,7 +60,7 @@
           } @if (classCode.errors?.pattern) {
           <div class="flex items-center gap-1">
             <ion-icon name="alert-circle-outline"></ion-icon>
-            <span>المسموح هو استخدام الاحرف الانجليزية والارقام فقط بدون رموز او مسافات</span>
+            <span>{{'createClass.code_pattern_error' | translate}}</span>
           </div>
           }
         </div>
@@ -149,7 +149,7 @@
           (click)="registerClass()"
         >
           <ion-icon name="checkmark-circle-outline" class="text-xl"></ion-icon>
-          {{ lang.create_btn || 'إنشاء صف جديد' }}
+          {{ 'createClass.create_btn' | translate }}
         </button>
       </div>
     </form>

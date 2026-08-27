@@ -21,9 +21,9 @@
     <div class="mb-5 px-1">
       <h3 class="text-lg font-black text-slate-800 m-0 mb-1 flex items-center gap-2">
         <ion-icon name="library-outline" class="text-indigo-600"></ion-icon>
-        الفصول الدراسية
+        {{'followUp_student.classes_title' | translate}}
       </h3>
-      <p class="text-xs font-bold text-slate-400 m-0">قم بتحديد الفصول التي ترغب في إضافتها أو إدارتها في قائمتك.</p>
+      <p class="text-xs font-bold text-slate-400 m-0">{{'followUp_student.classes_subtitle' | translate}}</p>
     </div>
 
     <!-- قائمة الفصول -->
@@ -56,7 +56,7 @@
               class="text-2xs font-bold m-0 truncate transition-colors"
               [ngClass]="classItem.is_selected ? 'text-indigo-500' : 'text-slate-400'"
             >
-              {{classItem.courses.desc || 'لا يوجد وصف متاح لهذا الفصل'}}
+              {{classItem.courses.desc || ('followUp_student.no_class_desc' | translate)}}
             </p>
           </div>
           <!-- الـ Checkbox -->
@@ -88,9 +88,9 @@
       >
         <ion-icon name="business-outline" class="text-4xl"></ion-icon>
       </div>
-      <p class="text-slate-600 font-bold text-sm">لا توجد فصول دراسية متاحة حالياً</p>
+      <p class="text-slate-600 font-bold text-sm">{{'followUp_student.no_classes_available' | translate}}</p>
       <p class="text-slate-400 font-medium text-xs mt-1 max-w-xs mx-auto">
-        لم يتم إسناد فصول إضافية لك من قبل الإدارة بعد.
+        {{'followUp_student.no_classes_assigned_hint' | translate}}
       </p>
     </div>
     }

@@ -20,7 +20,7 @@
   <div class="p-4 md:p-6 max-w-3xl mx-auto space-y-5 mb-8" dir="rtl">
     <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100">
       <h3 class="font-bold text-slate-800 text-base mb-5 flex items-center gap-2">
-        <ion-icon name="person-circle-outline" class="text-indigo-600 text-xl"></ion-icon> البيانات الأساسية
+        <ion-icon name="person-circle-outline" class="text-indigo-600 text-xl"></ion-icon> {{'user_profile.basic_info_title' | translate}}
       </h3>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -94,7 +94,7 @@
         @if (user.user_type === UserType.Teacher) {
         <div class="mb-4 animate-fade-in-up">
           <label class="block text-sm font-bold text-slate-700 mb-2"
-            >نوع المعلم <span class="text-rose-500">*</span></label
+            >{{'user_profile.teacher_type_label' | translate}} <span class="text-rose-500">*</span></label
           >
           <div class="bg-slate-100/70 border border-slate-200 rounded-xl p-1.5 flex gap-1.5">
             <button
@@ -150,7 +150,7 @@
     @if (user.user_type !== UserType.Admin && user.user_type !== UserType.Parent) {
     <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100">
       <h3 class="font-bold text-slate-800 text-base mb-5 flex items-center gap-2">
-        <ion-icon name="settings-outline" class="text-indigo-600 text-xl"></ion-icon> إعدادات النظام
+        <ion-icon name="settings-outline" class="text-indigo-600 text-xl"></ion-icon> {{'user_profile.system_settings_title' | translate}}
       </h3>
       <div class="space-y-3">
         @if (user.user_type !== UserType.Register && user.user_type !== UserType.Medical) {
@@ -217,7 +217,7 @@
 
     <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100">
       <h3 class="font-bold text-slate-800 text-base mb-5 flex items-center gap-2">
-        <ion-icon name="shield-checkmark-outline" class="text-indigo-600 text-xl"></ion-icon> الصلاحيات والحالة
+        <ion-icon name="shield-checkmark-outline" class="text-indigo-600 text-xl"></ion-icon> {{'user_profile.permissions_status_title' | translate}}
       </h3>
 
       <div class="space-y-3">
@@ -328,10 +328,10 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
         <div>
           <h3 class="font-bold text-rose-600 text-base mb-2 flex items-center gap-2">
-            <ion-icon name="warning-outline" class="text-xl"></ion-icon> منطقة الخطر
+            <ion-icon name="warning-outline" class="text-xl"></ion-icon> {{'user_profile.danger_zone_title' | translate}}
           </h3>
           <p class="text-xs font-bold text-rose-400 m-0">
-            بمجرد حذف هذا المستخدم، لا يمكن التراجع عن هذا الإجراء نهائياً.
+            {{'user_profile.delete_warning_text' | translate}}
           </p>
         </div>
         <button
@@ -387,7 +387,7 @@
             type="text"
             [(ngModel)]="classSearchQuery"
             (input)="filterClasses()"
-            placeholder="ابحث عن صف..."
+            [placeholder]="'add_users.search_class_placeholder' | translate"
             class="w-full bg-transparent border-none outline-none text-sm font-bold text-slate-700 placeholder-slate-400"
           />
           @if (classSearchQuery) {
@@ -410,7 +410,7 @@
           >
             <ion-icon name="search-outline" class="text-3xl"></ion-icon>
           </div>
-          <p class="text-slate-600 font-bold text-sm">لا توجد نتائج</p>
+          <p class="text-slate-600 font-bold text-sm">{{'search.no_results' | translate}}</p>
         </div>
         } @for (cls of filteredClasses; track trackByIndex($index)) {
         <div
@@ -462,9 +462,9 @@
       </div>
     </div>
     <div class="text-center px-6 pb-8">
-      <h3 class="text-xl font-bold text-slate-800 mb-2">تأكيد الحذف</h3>
+      <h3 class="text-xl font-bold text-slate-800 mb-2">{{'user_profile.confirm_delete_title' | translate}}</h3>
       <p class="text-sm text-slate-500 font-medium leading-relaxed">
-        هل أنت متأكد من رغبتك في حذف هذا المستخدم نهائياً؟
+        {{'user_profile.confirm_delete_text' | translate}}
       </p>
     </div>
     <div class="flex border-t border-slate-100 bg-slate-50 p-4 gap-3">
@@ -479,7 +479,7 @@
         (click)="confirmDelete()"
       >
         <ion-icon name="trash" class="text-xl"></ion-icon>
-        نعم، احذف
+        {{'user_profile.yes_delete_btn' | translate}}
       </button>
     </div>
   </div>

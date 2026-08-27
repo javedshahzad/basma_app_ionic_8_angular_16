@@ -125,7 +125,9 @@
     "registered_children_title": "الأبناء المسجلين",
     "search_student_placeholder": "ابحث عن طالب...",
     "loading_students": "جاري تحميل قائمة الطلاب...",
-    "confirm_selection": "تأكيد الاختيار"
+    "confirm_selection": "تأكيد الاختيار",
+    "subtitle": "أدخل البيانات المطلوبة لإنشاء حساب وربطه بالطالب.",
+    "id_suffix": "(الهوية)"
   },
   "manage_student": {
     "no_students_text": "لا يوجد طلاب لعرضهم"
@@ -270,7 +272,9 @@
     "class_name": "اسم الصف",
     "class_desc": "وصف الصف",
     "seminar": "عدد حصص الصف",
-    "reg_btn": "إنشاء"
+    "reg_btn": "إنشاء",
+    "code_pattern_error": "المسموح هو استخدام الاحرف الانجليزية والارقام فقط بدون رموز او مسافات",
+    "create_btn": "إنشاء صف جديد"
   },
   "list-student": {
     "student": "الطالب",
@@ -442,7 +446,9 @@
     "search_parent": "البحث عن ولي امر",
     "search_user": "البحث عن مستخدم",
     "no_results": "لا توجد نتائج",
-    "no_results_hint": "حاول البحث باسم آخر أو تأكد من إملاء الكلمة بشكل صحيح."
+    "no_results_hint": "حاول البحث باسم آخر أو تأكد من إملاء الكلمة بشكل صحيح.",
+    "no_matching_results": "لا يوجد نتائج مطابقة لبحثك",
+    "search_hint_text": "اكتب اسم الطالب أو رمز الطالب للبحث"
   },
 
   "user_selection": {
@@ -556,7 +562,19 @@
     "seminar": "تحديد الحصة",
     "date": "تحديد التاريخ",
     "individual_plan":"خطة متابعة فردية",
-    "group_councling":"خطة ارشاد جماعي"
+    "group_councling":"خطة ارشاد جماعي",
+    "select_exam_date": "حدد تاريخ الاختبار",
+    "select_exam_date_title": "تحديد تاريخ الاختبار",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "select_period_placeholder": "تحديد الحصة",
+    "select_student_label": "اختر الطالب",
+    "search_student_placeholder": "ابحث عن اسم الطالب...",
+    "student_list_title": "قائمة الطلاب",
+    "no_matching_student_text": "لم نتمكن من العثور على طالب يطابق بحثك.",
+    "image_attached": "صورة مرفقة",
+    "file_attached": "ملف مرفق",
+    "uploading_text": "جاري الرفع..."
   },
 
   "edit_student": {
@@ -566,7 +584,17 @@
     "id": "رمز الطالب",
     "delete_class": "حذف صف الطالب",
     "delete": "حذف الطالب",
-    "save": "حفظ التعديلات"
+    "save": "حفظ التعديلات",
+    "update_title": "تحديث بيانات الطالب",
+    "name_placeholder": "أدخل اسم الطالب",
+    "id_placeholder": "أدخل رقم الهوية",
+    "cancel": "إلغاء",
+    "ok": "تأكيد",
+    "loading_class": "جاري جلب الصف...",
+    "confirm_title": "هل أنت متأكد؟",
+    "delete_warning_prefix": "سيتم حذف بيانات الطالب",
+    "delete_warning_suffix": "نهائياً ولن تتمكن من التراجع عن هذا الإجراء.",
+    "yes_delete_btn": "نعم، احذف"
   },
 
   "edit_teacher": {
@@ -732,7 +760,12 @@
     "add_field": "إضافة حقل جديد",
     "submit": "حفظ",
     "no_classes_added": "لا توجد فصول مضافة",
-    "no_classes_fallback": "لم يتم العثور على فصول مسجلة حتى الآن. انقر على زر الإضافة للبدء."
+    "no_classes_fallback": "لم يتم العثور على فصول مسجلة حتى الآن. انقر على زر الإضافة للبدء.",
+    "classes_title": "الفصول الدراسية",
+    "classes_subtitle": "قم بتحديد الفصول التي ترغب في إضافتها أو إدارتها في قائمتك.",
+    "no_class_desc": "لا يوجد وصف متاح لهذا الفصل",
+    "no_classes_available": "لا توجد فصول دراسية متاحة حالياً",
+    "no_classes_assigned_hint": "لم يتم إسناد فصول إضافية لك من قبل الإدارة بعد."
   },
   "manage_report": {
     "title": "التحكم في التقارير",
@@ -853,7 +886,16 @@
     "delete": "حذف المستخدم",
     "User_type": "نوع المستخدم",
     "regular": "معلم صف واحد",
-    "split": "معلم صفوف مقسمة"
+    "split": "معلم صفوف مقسمة",
+    "basic_info_title": "البيانات الأساسية",
+    "teacher_type_label": "نوع المعلم",
+    "system_settings_title": "إعدادات النظام",
+    "permissions_status_title": "الصلاحيات والحالة",
+    "danger_zone_title": "منطقة الخطر",
+    "delete_warning_text": "بمجرد حذف هذا المستخدم، لا يمكن التراجع عن هذا الإجراء نهائياً.",
+    "confirm_delete_title": "تأكيد الحذف",
+    "confirm_delete_text": "هل أنت متأكد من رغبتك في حذف هذا المستخدم نهائياً؟",
+    "yes_delete_btn": "نعم، احذف"
   },
 
   "alertmessages": {

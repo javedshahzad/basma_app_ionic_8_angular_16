@@ -77,7 +77,7 @@
         <ion-icon name="search-outline" class="text-4xl text-slate-300"></ion-icon>
       </div>
       <h4 class="text-slate-500 font-bold text-sm m-0 text-center px-4 leading-relaxed">
-        @if (searchtxt) { لا يوجد نتائج مطابقة لبحثك } @if (!searchtxt) { اكتب اسم الطالب أو رمز الطالب للبحث }
+        @if (searchtxt) { {{'search.no_matching_results' | translate}} } @if (!searchtxt) { {{'search.search_hint_text' | translate}} }
       </h4>
     </div>
     }

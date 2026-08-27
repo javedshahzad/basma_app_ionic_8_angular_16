@@ -128,7 +128,9 @@
     "search_parent": "Search parent",
     "search_user": "Search User",
     "no_results": "No results found",
-    "no_results_hint": "Try a different name or check the spelling."
+    "no_results_hint": "Try a different name or check the spelling.",
+    "no_matching_results": "No results matching your search",
+    "search_hint_text": "Type a student's name or ID to search"
   },
 
   "user_selection": {
@@ -192,7 +194,9 @@
     "registered_children_title": "Registered Children",
     "search_student_placeholder": "Search for a student...",
     "loading_students": "Loading student list...",
-    "confirm_selection": "Confirm Selection"
+    "confirm_selection": "Confirm Selection",
+    "subtitle": "Enter the required information to create an account linked to the student.",
+    "id_suffix": "(ID)"
   },
   "manage_student": {
     "no_students_text": "No students to display"
@@ -379,7 +383,9 @@
     "class_name": "Class name",
     "class_desc": "Class description",
     "seminar": "Number of Seminar",
-    "reg_btn": "Create Class"
+    "reg_btn": "Create Class",
+    "code_pattern_error": "Only English letters and numbers are allowed, without symbols or spaces",
+    "create_btn": "Create New Class"
   },
   "list-student": {
     "student": "Student",
@@ -690,7 +696,19 @@
     "seminar": "Select Seminar",
     "date": "Select Date",
     "individual_plan":"Individual Follow-up Plan",
-    "group_councling":"Group Counseling Session"
+    "group_councling":"Group Counseling Session",
+    "select_exam_date": "Select exam date",
+    "select_exam_date_title": "Select Exam Date",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "select_period_placeholder": "Select Period",
+    "select_student_label": "Select Student",
+    "search_student_placeholder": "Search for a student's name...",
+    "student_list_title": "Student List",
+    "no_matching_student_text": "We couldn't find a student matching your search.",
+    "image_attached": "Image attached",
+    "file_attached": "File attached",
+    "uploading_text": "Uploading..."
   },
   "edit_student": {
     "title": "Edit Student",
@@ -699,7 +717,17 @@
     "id": "Student Id",
     "delete_class": "Remove student class",
     "delete": "Delete Student",
-    "save": "Save"
+    "save": "Save",
+    "update_title": "Update Student Information",
+    "name_placeholder": "Enter student name",
+    "id_placeholder": "Enter ID number",
+    "cancel": "Cancel",
+    "ok": "OK",
+    "loading_class": "Loading class...",
+    "confirm_title": "Are you sure?",
+    "delete_warning_prefix": "The data for student",
+    "delete_warning_suffix": "will be permanently deleted and cannot be undone.",
+    "yes_delete_btn": "Yes, Delete"
   },
   "followUp_student": {
     "title": "Follow-Up Teacher",
@@ -716,7 +744,12 @@
     "add_field": "Add field",
     "submit": "Submit",
     "no_classes_added": "No classes added",
-    "no_classes_fallback": "No registered classes have been found yet. Tap the add button to get started."
+    "no_classes_fallback": "No registered classes have been found yet. Tap the add button to get started.",
+    "classes_title": "Classes",
+    "classes_subtitle": "Select the classes you'd like to add or manage in your list.",
+    "no_class_desc": "No description available for this class",
+    "no_classes_available": "No classes available right now",
+    "no_classes_assigned_hint": "No additional classes have been assigned to you by the administration yet."
   },
   "manage_report": {
     "title": "Manage Report",
@@ -837,7 +870,16 @@
     "delete": "Delete user",
     "User_type": "user type",
     "regular": "Regular",
-    "split": "Split"
+    "split": "Split",
+    "basic_info_title": "Basic Information",
+    "teacher_type_label": "Teacher Type",
+    "system_settings_title": "System Settings",
+    "permissions_status_title": "Permissions & Status",
+    "danger_zone_title": "Danger Zone",
+    "delete_warning_text": "Once this user is deleted, this action cannot be undone.",
+    "confirm_delete_title": "Confirm Delete",
+    "confirm_delete_text": "Are you sure you want to permanently delete this user?",
+    "yes_delete_btn": "Yes, Delete"
   },
 
   "alertmessages": {
