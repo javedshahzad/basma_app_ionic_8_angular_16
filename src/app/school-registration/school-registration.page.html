@@ -110,7 +110,7 @@
             @if (userName.errors?.required) {
             <span>{{'validations.required' | translate}}</span>
             } @if (userName.errors?.pattern) {
-            <span>يسمح فقط بالأحرف الإنجليزية، الأرقام، وعلامة (_) بدون مسافات.</span>
+            <span>{{'reg_school.username_pattern_error' | translate}}</span>
             }
           </div>
           }

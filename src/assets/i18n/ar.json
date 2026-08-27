@@ -41,7 +41,18 @@
     "reset_password": "اعاده تعيين كلمه المرور",
     "eneter_password": "ادخل كلمه المرور",
     "confirn_password": "تاكيد كلمه المرور",
-    "submit": "ارسل"
+    "submit": "ارسل",
+    "enter_email_desc": "أدخل بريدك الإلكتروني المسجل وسنرسل لك رمز التحقق.",
+    "enter_email": "البريد الإلكتروني",
+    "send_otp": "إرسال الرمز",
+    "enter_otp": "أدخل الرمز",
+    "verify_otp": "تأكيد الرمز",
+    "confirm_password": "تأكيد كلمة المرور",
+    "reset_btn": "حفظ كلمة المرور",
+    "otp_title": "رمز التحقق",
+    "otp_sent_text": "تم إرسال رمز التحقق إلى بريدك الإلكتروني.",
+    "new_password_title": "كلمة المرور الجديدة",
+    "new_password_desc": "أدخل كلمة المرور الجديدة وتأكيدها."
   },
   "switch_account": {
     "login_as": "تسجيل الدخول بواسطه",
@@ -90,14 +101,17 @@
     "inputemail": "البريد الإلكتروني",
     "inputtitle": "عنوان الرسالة",
     "inputmessage": "نص الرسالة",
-    "submit": "أرسل"
+    "submit": "أرسل",
+    "welcome_title": "نسعد بتواصلك معنا",
+    "welcome_subtitle": "الرجاء تعبئة النموذج وسنقوم بالرد عليك قريباً"
   },
   "reg_teacher": {
     "pagetitle": "تسجيل معلم جديد",
     "teacherid": "رمز المعلم",
     "teachername": "اسم المعلم",
     "teacherpassword": "كلمة المرور",
-    "reg_btn": "تسجيل"
+    "reg_btn": "تسجيل",
+    "subtitle": "أدخل بيانات المعلم لإنشاء حساب جديد له في المنظومة."
   },
   "reg_parent": {
     "pagetitle": "تسجيل ولي أمر جديد",
@@ -128,7 +142,8 @@
     "picture": "شعار المؤسسة",
     "logo": "شعار المؤسسة التعليمية",
     "register_btn": "تسجيل",
-    "country": "الدولة"
+    "country": "الدولة",
+    "username_pattern_error": "يسمح فقط بالأحرف الإنجليزية، الأرقام، وعلامة (_) بدون مسافات."
   },
   "reg_student": {
     "title": "إضافة طالب جديد",
@@ -188,7 +203,15 @@
     "device_id": "معرف الجهاز",
     "logout": "تم تسجيل الخروج",
     "active": "نشيط",
-    "delete": "حذف الجهاز"
+    "delete": "حذف الجهاز",
+    "status_label": "الحالة:",
+    "confirm_delete_title": "تأكيد الحذف",
+    "confirm_delete_text": "هل أنت متأكد من رغبتك في حذف هذا الجهاز وتسجيل الخروج منه نهائياً؟",
+    "cancel_btn": "إلغاء",
+    "yes_delete_btn": "نعم، احذف",
+    "logout_all_title": "خروج من الجميع",
+    "logout_all_text": "سيتم تسجيل خروج حسابك من كافة الأجهزة المرتبطة به. هل تود الاستمرار؟",
+    "yes_logout_btn": "نعم، خروج"
   },
  "absent_students": {
     "absent_students": "غياب الطلاب",
@@ -340,7 +363,10 @@
     "medical_condition":"الحالة الصحية",
     "close":"إغلاق",
     "phone_one":"هاتف رقم1",
-    "phone_two":"هاتف رقم2"
+    "phone_two":"هاتف رقم2",
+    "personal_info_title": "البيانات الشخصية",
+    "security_title": "الأمان وكلمة المرور",
+    "school_settings_title": "إعدادات المدرسة"
   },
   "eLearning": {
     "title": "المحتوى التعليمي"

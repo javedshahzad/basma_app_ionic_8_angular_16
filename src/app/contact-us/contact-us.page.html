@@ -26,8 +26,8 @@
       >
         <ion-icon name="mail-unread-outline" class="text-4xl"></ion-icon>
       </div>
-      <h2 class="text-lg font-black text-slate-800">نسعد بتواصلك معنا</h2>
-      <p class="text-xs font-bold text-slate-400 mt-1">الرجاء تعبئة النموذج وسنقوم بالرد عليك قريباً</p>
+      <h2 class="text-lg font-black text-slate-800">{{'contact.welcome_title' | translate}}</h2>
+      <p class="text-xs font-bold text-slate-400 mt-1">{{'contact.welcome_subtitle' | translate}}</p>
     </div>
 
     <form #contactForm="ngForm" (ngSubmit)="submitContactusForm(contactForm)" class="space-y-4">

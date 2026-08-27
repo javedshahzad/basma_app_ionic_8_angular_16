@@ -41,7 +41,18 @@
     "reset_password": "Reset your password",
     "eneter_password": "Enter password",
     "confirn_password": "Confirm password",
-    "submit": "Submit"
+    "submit": "Submit",
+    "enter_email_desc": "Enter your registered email and we'll send you a verification code.",
+    "enter_email": "Email address",
+    "send_otp": "Send Code",
+    "enter_otp": "Enter code",
+    "verify_otp": "Verify Code",
+    "confirm_password": "Confirm Password",
+    "reset_btn": "Save Password",
+    "otp_title": "Verification Code",
+    "otp_sent_text": "A verification code has been sent to your email.",
+    "new_password_title": "New Password",
+    "new_password_desc": "Enter your new password and confirm it."
   },
   "news": {
     "pagetitle": "News",
@@ -157,14 +168,17 @@
     "inputemail": "Email",
     "inputtitle": "Title",
     "inputmessage": "Message description",
-    "submit": "Submit"
+    "submit": "Submit",
+    "welcome_title": "We're glad you reached out",
+    "welcome_subtitle": "Please fill out the form and we'll get back to you soon"
   },
   "reg_teacher": {
     "pagetitle": "Register Teacher",
     "teacherid": "Teacher ID",
     "teachername": "Teacher Name",
     "teacherpassword": "Password",
-    "reg_btn": "Register"
+    "reg_btn": "Register",
+    "subtitle": "Enter the teacher's information to create a new account for them in the system."
   },
   "reg_parent": {
     "pagetitle": "Register Parent",
@@ -195,7 +209,8 @@
     "picture": "Ministry Logo",
     "logo": "School Logo",
     "register_btn": "Register",
-    "country": "Country"
+    "country": "Country",
+    "username_pattern_error": "Only English letters, numbers, and the (_) character are allowed, without spaces."
   },
   "reg_student": {
     "title": "Register Student",
@@ -259,7 +274,15 @@
     "device_id":"Device Id",
     "logout":"Logged Out",
     "active":"Active",
-    "delete":"Delete Device"
+    "delete":"Delete Device",
+    "status_label": "Status:",
+    "confirm_delete_title": "Confirm Delete",
+    "confirm_delete_text": "Are you sure you want to delete this device and log it out permanently?",
+    "cancel_btn": "Cancel",
+    "yes_delete_btn": "Yes, Delete",
+    "logout_all_title": "Log Out Everywhere",
+    "logout_all_text": "Your account will be logged out of all connected devices. Do you want to continue?",
+    "yes_logout_btn": "Yes, Log Out"
   },
   "absent_students":{
     "absent_students":"Absent Students",
@@ -450,7 +473,10 @@
     "medical_condition":"Medical Condition",
     "close":"Close",
     "phone_one":"Phone #1",
-    "phone_two":"Phone #2"
+    "phone_two":"Phone #2",
+    "personal_info_title": "Personal Information",
+    "security_title": "Security & Password",
+    "school_settings_title": "School Settings"
   },
   "eLearning": {
     "title": "eLearning Material"

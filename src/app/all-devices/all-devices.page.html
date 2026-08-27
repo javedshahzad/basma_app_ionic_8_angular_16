@@ -60,7 +60,7 @@
         </div>
         <div class="card-body-area">
           <div class="detail-item-row" style="display: flex; justify-content: space-between; width: 100%">
-            <span class="detail-label-text">الحالة:</span>
+            <span class="detail-label-text">{{'device.status_label' | translate}}</span>
             @if (device.device_id === deviceSr.uuid) {
             <span class="status-badge online">
               <span class="status-dot"></span>
@@ -103,9 +103,9 @@
         </div>
       </div>
       <div class="text-center px-6 pb-8">
-        <h3 class="text-xl font-bold text-slate-800 mb-2">تأكيد الحذف</h3>
+        <h3 class="text-xl font-bold text-slate-800 mb-2">{{'device.confirm_delete_title' | translate}}</h3>
         <p class="text-sm text-slate-500 font-medium leading-relaxed">
-          هل أنت متأكد من رغبتك في حذف هذا الجهاز وتسجيل الخروج منه نهائياً؟
+          {{'device.confirm_delete_text' | translate}}
         </p>
       </div>
       <div class="flex border-t border-slate-100 bg-slate-50 p-4 gap-3">
@@ -113,13 +113,13 @@
           class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none"
           (click)="closeDeleteModal()"
         >
-          إلغاء
+          {{'device.cancel_btn' | translate}}
         </button>
         <button
           class="flex-1 py-3.5 rounded-xl font-bold text-white bg-rose-500 shadow-md shadow-rose-500/20 hover:bg-rose-600 active:scale-95 transition-all focus:outline-none"
           (click)="confirmDelete()"
         >
-          نعم، احذف
+          {{'device.yes_delete_btn' | translate}}
         </button>
       </div>
     </div>
@@ -141,9 +141,9 @@
         </div>
       </div>
       <div class="text-center px-6 pb-8">
-        <h3 class="text-xl font-bold text-slate-800 mb-2">خروج من الجميع</h3>
+        <h3 class="text-xl font-bold text-slate-800 mb-2">{{'device.logout_all_title' | translate}}</h3>
         <p class="text-sm text-slate-500 font-medium leading-relaxed">
-          سيتم تسجيل خروج حسابك من كافة الأجهزة المرتبطة به. هل تود الاستمرار؟
+          {{'device.logout_all_text' | translate}}
         </p>
       </div>
       <div class="flex border-t border-slate-100 bg-slate-50 p-4 gap-3">
@@ -151,13 +151,13 @@
           class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none"
           (click)="closeLogoutAllModal()"
         >
-          إلغاء
+          {{'device.cancel_btn' | translate}}
         </button>
         <button
           class="flex-1 py-3.5 rounded-xl font-bold text-white bg-orange-500 shadow-md shadow-orange-500/20 hover:bg-orange-600 active:scale-95 transition-all focus:outline-none"
           (click)="confirmLogoutAll()"
         >
-          نعم، خروج
+          {{'device.yes_logout_btn' | translate}}
         </button>
       </div>
     </div>
