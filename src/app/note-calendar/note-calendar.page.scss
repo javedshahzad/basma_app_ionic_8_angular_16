@@ -47,10 +47,16 @@ app-note-calendar:host {
             color: #ffffff !important;
         }
 
-        /* Today's Date Styling */
+        /* Today's Date Styling: a ring instead of colored text. A forced text
+           color here would collide with (and hide) the white text
+           highlightedDates already applies whenever today is also a
+           selected/noted day -- currentColor reuses whatever text color is
+           already correctly chosen for contrast against that day's own
+           background, so the ring stays visible in every case. */
         &::part(today) {
-            color: #4f46e5 !important;
             font-weight: 900;
+            box-shadow: inset 0 0 0 2px currentColor;
+            border-radius: 50%;
         }
     }
 }

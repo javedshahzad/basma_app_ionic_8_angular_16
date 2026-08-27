@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 import { ModalController, Platform, IonicModule } from '@ionic/angular';
@@ -17,7 +17,7 @@ import { DatePipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [IonicModule, DatePipe]
 })
-export class NoteCalendarPage implements OnInit {
+export class NoteCalendarPage implements OnInit, OnDestroy {
   trackByIndex(index: number): number {
     return index;
   }
@@ -45,6 +45,17 @@ export class NoteCalendarPage implements OnInit {
   private noteHighlights: any[] = []; // أيام الملاحظات المحفوظة (برتقالي)
 
   viewTitle: string = 'تقويم الامتحانات';
+
+  // 🟢 هذه الصفحة تعرض محتوى عربياً ثابتاً دائماً بغض النظر عن لغة التطبيق
+  // المختارة (لا تستخدم أي translate pipe). عند اختيار الإنجليزية يصبح
+  // document.dir = 'ltr' على مستوى التطبيق (app.component.ts)، بينما تبقى
+  // هذه الصفحة نفسها rtl -- ion-datetime يعتمد داخلياً على document.dir
+  // (وليس فقط اتجاه العنصر المحسوب) لحساب التنقل بين الأشهر، فيتوقف زرا
+  // التالي/السابق عن العمل تماماً عند هذا التعارض (تم تأكيده مباشرة: حتى
+  // استدعاء .click() برمجياً على الزر لا يُغيّر الشهر عندما document.dir='ltr').
+  // إجبار اتجاه المستند على rtl طوال بقاء هذه الصفحة، مع إعادته كما كان عند
+  // مغادرتها، يحل المشكلة دون التأثير على بقية التطبيق.
+  private previousDocumentDir = '';
 
   constructor(
     private modalctrl: ModalController,
@@ -74,6 +85,9 @@ export class NoteCalendarPage implements OnInit {
 
   // 🟢 تأمين البيانات من الضياع وجلب المستخدم بأمان
   async ngOnInit() {
+    this.previousDocumentDir = document.dir;
+    document.dir = 'rtl';
+
     let userLoggedIn = await this.storageSr.get('userloggedin'); // 👈 القراءة الآمنة
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
@@ -251,5 +265,9 @@ export class NoteCalendarPage implements OnInit {
       .catch(er => {
         this.dataProvider.showToast(er);
       });
+  }
+
+  ngOnDestroy() {
+    document.dir = this.previousDocumentDir;
   }
 }

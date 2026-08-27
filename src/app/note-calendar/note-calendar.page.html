@@ -35,7 +35,7 @@
           mode="md"
           presentation="date"
           size="cover"
-          locale="ar-KW"
+          locale="ar-KW-u-nu-latn"
           firstDayOfWeek="0"
           [highlightedDates]="highlightedDates"
           (ionChange)="onDateChange($event)"
@@ -97,7 +97,7 @@
                 <ion-icon name="calendar-clear-outline" class="text-slate-400 text-3xs"></ion-icon>
               </div>
               <span class="text-slate-500 font-bold text-2xs"
-                >{{ item.examNoteDate | date:'fullDate':'':'ar-KW' }}</span
+                >{{ item.examNoteDate | date:'fullDate':'':'ar-KW-u-nu-latn' }}</span
               >
             </div>
           </div>
