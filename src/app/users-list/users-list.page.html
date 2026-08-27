@@ -93,7 +93,7 @@
     <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
       <ion-infinite-scroll-content
         loadingSpinner="bubbles"
-        loadingText="جاري تحميل المزيد..."
+        [loadingText]="'edit_user.loading_more' | translate"
       ></ion-infinite-scroll-content>
     </ion-infinite-scroll>
   </div>

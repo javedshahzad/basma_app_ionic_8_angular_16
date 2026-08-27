@@ -2,7 +2,7 @@
 import { NavController, AlertController, ModalController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
@@ -16,7 +16,7 @@ import { NgClass } from '@angular/common';
   templateUrl: './user-selection.page.html',
   styleUrls: ['./user-selection.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, FormsModule, NgClass]
+  imports: [IonicModule, FormsModule, NgClass, TranslatePipe]
 })
 // 🟢 إصلاح اسم الكلاس ليكون UserSelectionPage
 export class UserSelectionPage implements OnInit {

@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-buttons slot="start" class="menu-btn-container w-10"></ion-buttons>
 
-    <ion-title class="ion-text-center fw-bold text-dark"> اختيار المستخدمين </ion-title>
+    <ion-title class="ion-text-center fw-bold text-dark"> {{'user_selection.title' | translate}} </ion-title>
 
     <ion-buttons slot="end" class="mr-2 w-10 menu-btn-container">
       <ion-button color="dark" class="custom-menu-btn" (click)="dismiss()">
@@ -18,7 +18,7 @@
       <ion-icon name="search-outline" class="text-slate-400 text-xl"></ion-icon>
       <ion-input
         type="text"
-        placeholder="ابحث عن اسم المستخدم..."
+        [placeholder]="'user_selection.search_placeholder' | translate"
         [(ngModel)]="searchQuery"
         (ngModelChange)="searchUser()"
         class="text-slate-700 font-medium mr-2"
@@ -57,7 +57,7 @@
       }
     </div>
     } @if (filteredUsers.length === 0) {
-    <div class="text-center py-10 text-slate-400 font-medium">لا يوجد مستخدم بهذا الاسم</div>
+    <div class="text-center py-10 text-slate-400 font-medium">{{'user_selection.no_users_found' | translate}}</div>
     }
   </div>
 </ion-content>
@@ -69,7 +69,7 @@
       class="w-full py-4 text-white font-bold rounded-2xl shadow-lg transition-all active:scale-[0.98]"
       [ngClass]="selectedUsers.length > 0 ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' : 'bg-slate-300 pointer-events-none'"
     >
-      تأكيد الاختيار ({{selectedUsers.length}})
+      {{'user_selection.confirm_selection' | translate}} ({{selectedUsers.length}})
     </button>
   </div>
 </ion-footer>

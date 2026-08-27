@@ -21,7 +21,7 @@
     <form [formGroup]="parentForm" (ngSubmit)="onSubmit()">
       <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100 mb-5">
         <h3 class="font-bold text-slate-800 text-base mb-5 flex items-center gap-2">
-          <ion-icon name="person-circle-outline" class="text-indigo-600 text-xl"></ion-icon> بيانات ولي الأمر
+          <ion-icon name="person-circle-outline" class="text-indigo-600 text-xl"></ion-icon> {{'reg_parent.parent_data_title' | translate}}
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -98,7 +98,7 @@
 
       <div class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-slate-100">
         <h3 class="font-bold text-slate-800 text-base mb-5 flex items-center gap-2">
-          <ion-icon name="people-outline" class="text-indigo-600 text-xl"></ion-icon> الأبناء المسجلين
+          <ion-icon name="people-outline" class="text-indigo-600 text-xl"></ion-icon> {{'reg_parent.registered_children_title' | translate}}
         </h3>
 
         <div>
@@ -191,7 +191,7 @@
             type="text"
             [(ngModel)]="studentSearchQuery"
             (input)="filterStudents()"
-            placeholder="ابحث عن طالب..."
+            [placeholder]="'reg_parent.search_student_placeholder' | translate"
             class="w-full bg-transparent border-none outline-none text-sm font-bold text-slate-700 placeholder-slate-400"
           />
           @if (studentSearchQuery) {
@@ -210,7 +210,7 @@
         @if (isFetchingStudents) {
         <div class="text-center py-10">
           <ion-spinner name="crescent" color="primary"></ion-spinner>
-          <p class="text-sm font-bold text-slate-500 mt-3">جاري تحميل قائمة الطلاب...</p>
+          <p class="text-sm font-bold text-slate-500 mt-3">{{'reg_parent.loading_students' | translate}}</p>
         </div>
         } @if (!isFetchingStudents && filteredStudents?.length === 0) {
         <div class="text-center py-12">
@@ -219,7 +219,7 @@
           >
             <ion-icon name="search-outline" class="text-3xl"></ion-icon>
           </div>
-          <p class="text-slate-600 font-bold text-sm">لا توجد نتائج</p>
+          <p class="text-slate-600 font-bold text-sm">{{'search.no_results' | translate}}</p>
         </div>
         } @for (student of filteredStudents; track trackByIndex($index)) {
         <div
@@ -247,7 +247,7 @@
           class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95"
           (click)="isStudentModalOpen = false"
         >
-          تأكيد الاختيار
+          {{'reg_parent.confirm_selection' | translate}}
         </button>
       </div>
     </ion-content>

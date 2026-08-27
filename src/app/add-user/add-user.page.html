@@ -54,7 +54,7 @@
 
         <div>
           <label class="block text-sm font-bold text-slate-600 mb-2"
-            >{{'add_users.Email' | translate}} <span class="text-slate-400 text-xs">(اختياري)</span></label
+            >{{'add_users.Email' | translate}} <span class="text-slate-400 text-xs">{{'add_users.optional' | translate}}</span></label
           >
           <div
             class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
@@ -144,7 +144,7 @@
             <ion-icon name="create-outline" class="text-2xl"></ion-icon>
           </div>
           <div>
-            <h4 class="font-bold text-slate-800 text-sm m-0">السماح بتعديل الغياب</h4>
+            <h4 class="font-bold text-slate-800 text-sm m-0">{{'add_users.allow_edit_attendance' | translate}}</h4>
             <p
               class="text-xs mt-1 font-bold transition-colors"
               [ngClass]="usersData.attendence_permit ? 'text-indigo-500' : 'text-slate-500'"
@@ -165,14 +165,14 @@
       <div
         class="bg-indigo-50/50 border border-indigo-100 rounded-xl p-4 transition-all duration-300 animate__animated animate__fadeIn"
       >
-        <label class="block text-sm font-bold text-indigo-700 mb-2">الوقت المسموح للتعديل (بالدقيقة)</label>
+        <label class="block text-sm font-bold text-indigo-700 mb-2">{{'add_users.allowed_edit_time_label' | translate}}</label>
         <div
           class="bg-white border border-indigo-200 rounded-xl px-3 py-1 focus-within:border-indigo-400 transition-all"
         >
           <ion-input
             [(ngModel)]="usersData.time"
             type="number"
-            placeholder="أدخل الوقت..."
+            [placeholder]="'add_users.enter_time_placeholder' | translate"
             class="text-sm text-slate-800 bg-transparent font-bold"
           ></ion-input>
         </div>
@@ -248,7 +248,7 @@
             type="text"
             [(ngModel)]="classSearchQuery"
             (input)="filterClasses()"
-            placeholder="بحث عن صف..."
+            [placeholder]="'add_users.search_class_placeholder' | translate"
             class="w-full bg-transparent border-none outline-none text-sm font-bold text-slate-700 placeholder-slate-400"
           />
           @if (classSearchQuery) {
@@ -271,7 +271,7 @@
           >
             <ion-icon name="search-outline" class="text-3xl"></ion-icon>
           </div>
-          <p class="text-slate-600 font-bold text-sm">لا توجد نتائج</p>
+          <p class="text-slate-600 font-bold text-sm">{{'search.no_results' | translate}}</p>
         </div>
         } @for (cls of filteredClasses; track trackByIndex($index)) {
         <div

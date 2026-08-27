@@ -119,6 +119,13 @@
     "no_results": "No results found",
     "no_results_hint": "Try a different name or check the spelling."
   },
+
+  "user_selection": {
+    "title": "Select Users",
+    "search_placeholder": "Search by username...",
+    "no_users_found": "No user found with this name",
+    "confirm_selection": "Confirm Selection"
+  },
   "student_notes": {
     "pagetitle": "Class Notes",
     "sendTO": "Send to",
@@ -166,7 +173,15 @@
     "parentpassword": "Password",
     "studentid": "Student ID",
     "studentname": "Student Name",
-    "reg_btn": "Register"
+    "reg_btn": "Register",
+    "parent_data_title": "Parent Information",
+    "registered_children_title": "Registered Children",
+    "search_student_placeholder": "Search for a student...",
+    "loading_students": "Loading student list...",
+    "confirm_selection": "Confirm Selection"
+  },
+  "manage_student": {
+    "no_students_text": "No students to display"
   },
   "reg_school": {
     "pagetitle": "School Registration",
@@ -561,7 +576,9 @@
     "delete_class": "Delet this class",
     "delete": "Delete this class",
     "delete_warning": "Are you sure you want to delete this class",
-    "no_data": "No teachers available"
+    "no_data": "No teachers available",
+    "no_teachers_text": "No teachers have been added to the system yet.",
+    "add_teacher_btn": "Add New Teacher"
   },
   "teacher_profile": {
     "title": "Edit profile",
@@ -610,7 +627,10 @@
     "parents": "Parents",
     "change": "Change",
     "delete": "Delete",
-    "id": "ID"
+    "id": "ID",
+    "no_pending_requests_text": "There are no pending registration requests at the moment.",
+    "no_parents_title": "No Data",
+    "no_parents_text": "No parents were found."
   },
   "seminar_list": {
     "title": "Statistical Daily Absent",
@@ -741,7 +761,12 @@
     "user_id": "Username",
     "Password": "Password",
     "confirm_password": "Confirm password",
-    "Submit": "Submit"
+    "Submit": "Submit",
+    "optional": "(optional)",
+    "allow_edit_attendance": "Allow Attendance Editing",
+    "allowed_edit_time_label": "Allowed Editing Time (minutes)",
+    "enter_time_placeholder": "Enter time...",
+    "search_class_placeholder": "Search for a class..."
   },
   "edit_user": {
     "title": "Manage User",
@@ -755,7 +780,8 @@
     "delete_class": "Delet this class",
     "delete": "Delete this class",
     "delete_warning": "Are you sure you want to delete this class",
-    "no_data": "No user available"
+    "no_data": "No user available",
+    "loading_more": "Loading more..."
   },
   "user_profile": {
     "title": "Edit profile",

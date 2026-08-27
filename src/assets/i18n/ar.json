@@ -106,7 +106,15 @@
     "parentpassword": "كلمه المرور",
     "studentid": "رمز الطالب",
     "studentname": "اسم الطالب",
-    "reg_btn": "تسجيل"
+    "reg_btn": "تسجيل",
+    "parent_data_title": "بيانات ولي الأمر",
+    "registered_children_title": "الأبناء المسجلين",
+    "search_student_placeholder": "ابحث عن طالب...",
+    "loading_students": "جاري تحميل قائمة الطلاب...",
+    "confirm_selection": "تأكيد الاختيار"
+  },
+  "manage_student": {
+    "no_students_text": "لا يوجد طلاب لعرضهم"
   },
   "reg_school": {
     "pagetitle": "تسجيل مؤسسة تعليمية جديدة",
@@ -411,6 +419,13 @@
     "no_results_hint": "حاول البحث باسم آخر أو تأكد من إملاء الكلمة بشكل صحيح."
   },
 
+  "user_selection": {
+    "title": "اختيار المستخدمين",
+    "search_placeholder": "ابحث عن اسم المستخدم...",
+    "no_users_found": "لا يوجد مستخدم بهذا الاسم",
+    "confirm_selection": "تأكيد الاختيار"
+  },
+
   "post_news": {
     "title": "إضافة خبر جديد",
     "edit_title": "تعديل الخبر",
@@ -472,7 +487,10 @@
     "parents": "اولياء الامور",
     "change": "حفظ التعديلات",
     "delete": "حذف",
-    "id": "رمز ولي الامر"
+    "id": "رمز ولي الامر",
+    "no_pending_requests_text": "لا توجد أي طلبات تسجيل معلقة حالياً.",
+    "no_parents_title": "لا توجد بيانات",
+    "no_parents_text": "لم يتم العثور على أي أولياء أمور."
   },
 
   "seminar_list": {
@@ -537,7 +555,9 @@
     "delete_class": "حذف هذا الصف",
     "delete": "حذف هذا الصف",
     "delete_warning": "هل انت متأكد من حذف الصف ؟",
-    "no_data": "لا يوجد معلمين"
+    "no_data": "لا يوجد معلمين",
+    "no_teachers_text": "لم يتم العثور على أي معلمين مضافين في النظام.",
+    "add_teacher_btn": "إضافة معلم جديد"
   },
 
   "teacher_profile": {
@@ -757,7 +777,12 @@
     "user_id": "اسم المستخدم",
     "Password": "كلمه السر",
     "confirm_password": "تأكيد كلمة المرور",
-    "Submit": "حفظ"
+    "Submit": "حفظ",
+    "optional": "(اختياري)",
+    "allow_edit_attendance": "السماح بتعديل الغياب",
+    "allowed_edit_time_label": "الوقت المسموح للتعديل (بالدقيقة)",
+    "enter_time_placeholder": "أدخل الوقت...",
+    "search_class_placeholder": "بحث عن صف..."
   },
   "edit_user": {
     "title": "إدارة المستخدمين",
@@ -771,7 +796,8 @@
     "delete_class": "حذف هذا الصف",
     "delete": "حذف هذا الصف",
     "delete_warning": "هل انت متأكد من حذف الصف ؟",
-    "no_data": "لا يوجد بيانات"
+    "no_data": "لا يوجد بيانات",
+    "loading_more": "جاري تحميل المزيد..."
   },
   "user_profile": {
     "title": "تعديل البيانات",

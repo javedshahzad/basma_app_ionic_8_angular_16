@@ -124,7 +124,7 @@
           <ion-icon name="mail-open-outline" class="text-5xl"></ion-icon>
         </div>
         <h3 class="text-lg font-black text-slate-800 m-0 mb-1">{{'parent_request_list.no_data' | translate}}</h3>
-        <p class="text-sm font-bold text-slate-500 m-0">لا توجد أي طلبات تسجيل معلقة حالياً.</p>
+        <p class="text-sm font-bold text-slate-500 m-0">{{'parent_request_list.no_pending_requests_text' | translate}}</p>
       </div>
       }
     </div>
@@ -219,8 +219,8 @@
         >
           <ion-icon name="people-outline" class="text-5xl"></ion-icon>
         </div>
-        <h3 class="text-lg font-black text-slate-800 m-0 mb-1">لا توجد بيانات</h3>
-        <p class="text-sm font-bold text-slate-500 m-0">لم يتم العثور على أي أولياء أمور.</p>
+        <h3 class="text-lg font-black text-slate-800 m-0 mb-1">{{'parent_request_list.no_parents_title' | translate}}</h3>
+        <p class="text-sm font-bold text-slate-500 m-0">{{'parent_request_list.no_parents_text' | translate}}</p>
       </div>
       }
       <ion-infinite-scroll (ionInfinite)="doInfinite($event)" class="mt-4">
