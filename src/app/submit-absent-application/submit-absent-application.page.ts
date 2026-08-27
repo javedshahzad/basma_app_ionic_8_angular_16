@@ -134,6 +134,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
       school_id: this.userDetails.details.school_id,
       student_id: this.UserData.student_id,
       student_name: this.UserData.student_name,
+      user_no: this.userDetails.details.user_no,
       submitted_by: this.userDetails.details.user_no,
       imageData: this.ImgData,
       session_id: this.userDetails.session_id

@@ -193,6 +193,8 @@ export class AbsentStudentsPage implements OnInit {
       let data = this.search_payload;
       data.end_date = data.start_date;
       data.school_id = this.userDetails.details.school_id;
+      data.user_no = this.userDetails.details.user_no;
+      data.session_id = this.userDetails.session_id;
       try {
         const res = await this.dataProvider.run(() => this.absentApplicationApi.GetAbsentStudents(data));
         if (res.success) {
