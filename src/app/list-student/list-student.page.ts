@@ -32,6 +32,10 @@ import { GamificationApiService } from '../service/gamification-api/gamification
 import { FollowupFieldsApiService } from '../service/followup-fields-api/followup-fields-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
 import { RegistrationApiService } from '../service/registration-api/registration-api.service';
+import {
+  AbsentApplicationApiService,
+  AbsentApplication
+} from '../service/absent-application-api/absent-application-api.service';
 import { NgClass, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SupervisorViewComponent } from '../components/supervisor-view/supervisor-view.component';
@@ -150,6 +154,10 @@ export class ListStudentPage {
   warningMessage: string = '';
   warningType: 'frozen' | 'warning' = 'warning';
 
+  // 🟢 خرائط طلبات تحويل الغياب المعتمدة، مفتاحها `sid-period` — تُستخدم
+  // لتمييز خلايا الحضور الناتجة عن قبول طلب تحويل غياب عن الحضور العادي
+  acceptedApplicationsBySeminar: Map<string, AbsentApplication[]> = new Map();
+
   // 🟢 اختصارات الصلاحيات (Getters)
   get isAdmin(): boolean {
     return this.userRole === UserRole.Admin;
@@ -211,7 +219,8 @@ export class ListStudentPage {
     private gamificationApi: GamificationApiService,
     private followupFieldsApi: FollowupFieldsApiService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
-    private registrationApi: RegistrationApiService
+    private registrationApi: RegistrationApiService,
+    private absentApplicationApi: AbsentApplicationApiService
   ) {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const navigation = this.router.getCurrentNavigation();
@@ -294,6 +303,7 @@ export class ListStudentPage {
         });
 
       this.getStudents();
+      this.fetchAcceptedApplications();
     } else {
       this.show_loading = false;
       this.authProvider.flushLocalStorage();
@@ -444,6 +454,69 @@ export class ListStudentPage {
         this.attendanceLoadFailed = true;
         this.cdr.markForCheck();
       });
+  }
+
+  // 🟢 جلب طلبات تحويل الغياب المعتمدة لهذا الصف والتاريخ، وبناء خريطة
+  // بحث سريعة مفتاحها `sid-period` لتمييزها في شبكة الحضور
+  fetchAcceptedApplications() {
+    const data = {
+      user_no: this.userInfo.user_no,
+      session_id: this.userDetails.session_id,
+      school_id: this.userInfo.school_id,
+      datetime: this.dataProvider.getFormatedDate(this.dateSelected)
+    };
+
+    this.absentApplicationApi
+      .getAbsentApplication(data)
+      .then(res => {
+        const map = new Map<string, AbsentApplication[]>();
+        const cid = this.navData?.cid;
+
+        (res?.data || [])
+          .filter(app => app.application_status === '1' && String(app.cid) === String(cid))
+          .forEach(app => {
+            this.parseSeminarPeriods(app.absent_seminars).forEach(period => {
+              const key = `${app.sid}-${period}`;
+              const list = map.get(key) || [];
+              list.push(app);
+              map.set(key, list);
+            });
+          });
+
+        this.acceptedApplicationsBySeminar = map;
+        this.cdr.markForCheck();
+      })
+      .catch(() => {
+        this.acceptedApplicationsBySeminar = new Map();
+        this.cdr.markForCheck();
+      });
+  }
+
+  // 🟢 تحليل دفاعي لأرقام الحصص المرسلة كنص مفصول بفواصل (قد تأتي بصيغة
+  // "1,2,3" أو "sem-1, sem-2") — نفس أسلوب processSeminars في
+  // view-application-details.page.ts
+  private parseSeminarPeriods(raw: unknown): number[] {
+    if (raw === undefined || raw === null || raw === '') return [];
+    return String(raw)
+      .split(',')
+      .map(part => part.replace(/[^\d]/g, '').trim())
+      .filter(part => part !== '')
+      .map(Number)
+      .filter(n => !isNaN(n));
+  }
+
+  // 🟢 يفتح نافذة معلومات تحويل الغياب (مقدّم الطلب، السبب، وموافق الطلب
+  // إن توفر) عند النقر على شارة الخلية المحوّلة عبر طلب معتمد
+  async presentApplicationInfoPopover(payload: { event: Event; sid: string | number; period: number }) {
+    const key = `${payload.sid}-${payload.period}`;
+    const applications = this.acceptedApplicationsBySeminar.get(key) || [];
+    const application = applications[0];
+
+    await this.studentUi.presentAbsenceConversionInfo(payload.event, {
+      submittedByName: application?.submitted_by_Obj?.first_name || '',
+      reason: application?.absent_notes || '',
+      approvedByName: application?.accepted_by_Obj?.first_name || ''
+    });
   }
 
   // semteacher's declared type is a union with unknown[] (the backend
@@ -757,6 +830,7 @@ export class ListStudentPage {
     this.isHoliday = false;
     this.hideCalenderModal();
     this.getStudents();
+    this.fetchAcceptedApplications();
   }
 
   enableEditingMode() {

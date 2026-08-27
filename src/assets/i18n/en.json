@@ -1,4 +1,15 @@
 {
+  "absence_conversion": {
+    "title": "Absence Conversion Details",
+    "submitted_by": "Submitted By",
+    "approved_by": "Approved By",
+    "reason": "Reason / Notes",
+    "unknown": "Unknown",
+    "not_available_yet": "Not available yet",
+    "no_reason": "No reason recorded",
+    "close": "Close",
+    "badge_tooltip": "Converted from absent to present via an approved application"
+  },
   "gamification": {
     "overall_performance_label": "Overall Performance",
     "skill_excellence_label": "Skill Excellence",
@@ -1111,6 +1122,8 @@
     "marks_added_error": "Error in adding marks",
     "class_limit": "classes could not be greater then",
     "no_marks_added": "Please insert some value",
+    "marks_not_submitted": "Marks not submitted",
+    "marks_submitted": "Marks submitted successfully",
     "report_error": "Unable to generate report",
     "report_generated": "Report generated",
     "report_deleted": "Report deleted",

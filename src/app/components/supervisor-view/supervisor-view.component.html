@@ -183,6 +183,15 @@
                   <ion-icon name="lock-closed" class="text-4xs"></ion-icon>
                 </div>
               }
+              @if (getCemStatus(student.sheet, i + 1) === '1' && hasAcceptedApplication(student.sid, i + 1)) {
+                <div
+                  class="absolute -bottom-1.5 -left-1.5 bg-indigo-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-sm"
+                  [title]="'absence_conversion.badge_tooltip' | translate"
+                  (click)="$event.stopPropagation(); applicationInfoClick.emit({ event: $event, sid: student.sid, period: i + 1 })"
+                >
+                  <ion-icon name="document-text" class="text-4xs"></ion-icon>
+                </div>
+              }
               @if (getCemStatus(student.sheet, i + 1) === '1') {
                 <ion-icon name="checkmark" class="text-lg"></ion-icon>
               }

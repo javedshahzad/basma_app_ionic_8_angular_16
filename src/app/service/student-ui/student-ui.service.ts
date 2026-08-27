@@ -206,4 +206,22 @@ export class StudentUiService {
       await alert.present();
     });
   }
+
+  // 11. 🟢 معلومات تحويل الغياب إلى حضور عبر طلب معتمد (مقدّم الطلب، السبب، وموافق الطلب إن توفر)
+  async presentAbsenceConversionInfo(
+    event: Event,
+    data: { submittedByName: string; reason: string; approvedByName: string }
+  ): Promise<void> {
+    const { AbsenceConversionPopoverComponent } = await import(
+      '../../components/absence-conversion-popover/absence-conversion-popover.component'
+    );
+    const popover = await this.popoverCtrl.create({
+      component: AbsenceConversionPopoverComponent,
+      event: event,
+      componentProps: data,
+      mode: 'ios',
+      translucent: true
+    });
+    await popover.present();
+  }
 }

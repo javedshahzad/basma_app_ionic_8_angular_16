@@ -1,4 +1,15 @@
 {
+  "absence_conversion": {
+    "title": "تفاصيل تحويل الغياب",
+    "submitted_by": "مقدّم الطلب",
+    "approved_by": "اعتمد الطلب",
+    "reason": "السبب / الملاحظات",
+    "unknown": "غير معروف",
+    "not_available_yet": "غير متاح حالياً",
+    "no_reason": "لا يوجد سبب مسجل",
+    "close": "إغلاق",
+    "badge_tooltip": "تم تحويلها من غياب إلى حضور عبر طلب معتمد"
+  },
   "gamification": {
     "overall_performance_label": "مؤشر الأداء العام",
     "skill_excellence_label": "مؤشر التميز المهاري",
@@ -1127,6 +1138,8 @@
     "marks_added_error": "خطأ في إضافة الدرجة",
     "class_limit": "إسناد الصف لا يمكن أن يكون آكبر من",
     "no_marks_added": "برجاء إدخال القيمة",
+    "marks_not_submitted": "لم يتم إرسال الدرجات",
+    "marks_submitted": "تم إرسال الدرجات بنجاح",
     "report_error": "لا يمكن إصدار التقرير",
     "report_generated": "تم إصدار التقرير بنجاح",
     "report_deleted": "تم حذف التقرير",

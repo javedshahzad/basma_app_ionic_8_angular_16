@@ -33,12 +33,16 @@ export class SupervisorViewComponent {
   @Input() classAll: any[] = [];
   @Input() editMode: boolean = false;
   @Input() canEdit: boolean = false;
+  // خريطة طلبات تحويل الغياب المعتمدة، مفتاحها `sid-period` — تُستخدم فقط
+  // لمعرفة ما إذا كانت خلية حضور معينة ناتجة عن طلب معتمد (عبر hasAcceptedApplication)
+  @Input() appliedApplications: Map<string, unknown[]> = new Map();
 
   @Output() changeAttendanceStatusAll = new EventEmitter<number>();
   @Output() studentClick = new EventEmitter<string>();
   @Output() imageClick = new EventEmitter<any>();
   @Output() noteClick = new EventEmitter<{ event: any; student: any }>();
   @Output() changeAttendanceStatus = new EventEmitter<{ student: any; sem: number; index: number }>();
+  @Output() applicationInfoClick = new EventEmitter<{ event: Event; sid: string | number; period: number }>();
 
   constructor(public gamification: GamificationEngineService) {}
 
@@ -66,5 +70,10 @@ export class SupervisorViewComponent {
       (sum: number, student: any) => sum + (Number(student.student_points) || 0),
       0
     );
+  }
+
+  // 🟢 هل هذه الخلية (طالب + حصة) ناتجة عن قبول طلب تحويل غياب معتمد؟
+  hasAcceptedApplication(sid: string | number, period: number): boolean {
+    return !!this.appliedApplications?.has(`${sid}-${period}`);
   }
 }

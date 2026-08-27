@@ -23,6 +23,9 @@ export class TeacherViewComponent {
   @Input() isToday: boolean = false;
   @Input() hasSubmitted: boolean = false;
   @Input() totalSemArray: any[] = [];
+  // خريطة طلبات تحويل الغياب المعتمدة، مفتاحها `sid-period` — تُستخدم فقط
+  // لمعرفة ما إذا كانت خلية حضور معينة ناتجة عن طلب معتمد (عبر hasAcceptedApplication)
+  @Input() appliedApplications: Map<string, unknown[]> = new Map();
 
   @Output() periodSelect = new EventEmitter<number>();
   @Output() setAllStatus = new EventEmitter<string>();
@@ -30,6 +33,7 @@ export class TeacherViewComponent {
   @Output() imageClick = new EventEmitter<any>();
   @Output() noteClick = new EventEmitter<{ event: any; student: any }>();
   @Output() setStudentStatus = new EventEmitter<{ student: any; status: string }>();
+  @Output() applicationInfoClick = new EventEmitter<{ event: Event; sid: string | number; period: number }>();
 
   constructor(public gamification: GamificationEngineService) {}
 
@@ -59,5 +63,10 @@ export class TeacherViewComponent {
   getTotalPoints(): number {
     if (!this.attendanceResponse?.students) return 0;
     return this.attendanceResponse.students.reduce((sum: number, student: any) => sum + (Number(student.student_points) || 0), 0);
+  }
+
+  // 🟢 هل هذه الخلية (طالب + حصة) ناتجة عن قبول طلب تحويل غياب معتمد؟
+  hasAcceptedApplication(sid: string | number, period: number): boolean {
+    return !!this.appliedApplications?.has(`${sid}-${period}`);
   }
 }

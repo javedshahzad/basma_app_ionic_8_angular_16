@@ -7,8 +7,17 @@ export interface AbsentApplication {
   cid?: string | number;
   sid?: string | number;
   application_status?: string;
+  absent_date?: string;
+  absent_seminars?: string;
+  absent_notes?: string;
   studentObj?: { name?: string };
   courseObj?: { name?: string };
+  submitted_by_Obj?: { user_no?: string | number; first_name?: string };
+  // Not sent by the backend yet — getAbsentApplication only enriches with
+  // submitted_by_Obj today. Optional so the frontend can render a
+  // "not available yet" placeholder until the backend adds this field
+  // (see absent-application-icon-plan.md's backend requirements section).
+  accepted_by_Obj?: { user_no?: string | number; first_name?: string };
 }
 
 @Injectable({

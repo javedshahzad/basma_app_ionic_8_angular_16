@@ -114,8 +114,17 @@
              since @switch only permits @case/@default as direct children. -->
         @if (student.currentLockStatus === 'locked_mine' || student.currentLockStatus === 'locked_other') {
            @if (getCemStatus(student.sheet, currentActivePeriod) === '1') {
-              <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-600 opacity-80 cursor-not-allowed">
+              <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-600 opacity-80 cursor-not-allowed relative">
                 <ion-icon name="checkmark-circle" class="text-xl"></ion-icon> {{'teacher_view.present_saved' | translate}}
+                @if (hasAcceptedApplication(student.sid, currentActivePeriod)) {
+                <button
+                  class="absolute -top-2 -left-2 bg-indigo-600 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm cursor-pointer"
+                  [title]="'absence_conversion.badge_tooltip' | translate"
+                  (click)="$event.stopPropagation(); applicationInfoClick.emit({ event: $event, sid: student.sid, period: currentActivePeriod })"
+                >
+                  <ion-icon name="document-text" class="text-xs"></ion-icon>
+                </button>
+                }
               </div>
               }
               @if (getCemStatus(student.sheet, currentActivePeriod) === '0') {

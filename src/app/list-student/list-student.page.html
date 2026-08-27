@@ -122,11 +122,13 @@
       [classAll]="classAll"
       [editMode]="editMode"
       [canEdit]="canEdit"
+      [appliedApplications]="acceptedApplicationsBySeminar"
       (changeAttendanceStatusAll)="changeAttendanceStatusAll($event)"
       (studentClick)="openStudentDetail($event)"
       (imageClick)="openUserImageModal($event)"
       (noteClick)="presentNoteActionSheet($event.event, $event.student)"
       (changeAttendanceStatus)="changeAttendanceStatus($event.student, $event.sem, $event.index)"
+      (applicationInfoClick)="presentApplicationInfoPopover($event)"
     >
     </app-supervisor-view>
     } @if (isTeacherUser) {
@@ -142,12 +144,14 @@
       [isToday]="checkCurrentDate(dateSelected)"
       [hasSubmitted]="hasSubmittedTodayInThisClass()"
       [totalSemArray]="totalSemArray"
+      [appliedApplications]="acceptedApplicationsBySeminar"
       (periodSelect)="selectPeriod($event)"
       (setAllStatus)="setAllStudentsStatusForTeacher($event)"
       (studentClick)="openStudentDetail($event)"
       (imageClick)="openUserImageModal($event)"
       (noteClick)="presentNoteActionSheet($event.event, $event.student)"
       (setStudentStatus)="setTeacherAttendance($event.student, $event.status)"
+      (applicationInfoClick)="presentApplicationInfoPopover($event)"
     >
     </app-teacher-view>
     } }
