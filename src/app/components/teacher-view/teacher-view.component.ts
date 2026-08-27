@@ -3,13 +3,14 @@ import { IonicModule } from '@ionic/angular';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
 import { NgClass, DecimalPipe } from '@angular/common';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-teacher-view',
     templateUrl: './teacher-view.component.html',
     styleUrl: './teacher-view.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgClass, DecimalPipe, ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf]
+    imports: [IonicModule, NgClass, DecimalPipe, ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf, TranslatePipe]
 })
 export class TeacherViewComponent {
   @Input() attendanceResponse: any = {};

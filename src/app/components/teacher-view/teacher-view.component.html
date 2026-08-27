@@ -5,7 +5,7 @@
   <div class="bg-amber-500 text-white px-4 py-2.5 flex justify-between items-center shadow-md mb-4 rounded-2xl mx-1 flex-shrink-0" dir="rtl">
     <div class="flex items-center gap-2">
       <ion-icon name="time-outline" class="text-2xl animate-pulse"></ion-icon>
-      <span class="font-bold text-sm">متبقي لتعديل غيابك:</span>
+      <span class="font-bold text-sm">{{'teacher_view.time_remaining_edit' | translate}}</span>
     </div>
     <div class="font-bold text-lg tracking-widest bg-black/20 px-3 py-1 rounded-lg dir-ltr">{{ formattedTimeLeft }}</div>
   </div>
@@ -20,22 +20,22 @@
           <ion-icon name="star" class="text-xl"></ion-icon>
         </div>
         <div class="flex flex-col">
-          <span class="text-sm text-slate-500 font-bold uppercase tracking-wider">قوة الصف التراكمية <span class="text-sm font-black text-indigo-800">{{ getTotalPoints() | number }} <span class="text-xs font-bold text-slate-500">نقطة</span></span></span>
+          <span class="text-sm text-slate-500 font-bold uppercase tracking-wider">{{'teacher_view.cumulative_class_strength' | translate}} <span class="text-sm font-black text-indigo-800">{{ getTotalPoints() | number }} <span class="text-xs font-bold text-slate-500">{{'teacher_view.points_suffix' | translate}}</span></span></span>
         </div>
       </div>
     </div>
 
     <p class="text-indigo-800 font-bold mb-3 text-sm flex items-center gap-2" dir="rtl">
       <ion-icon name="create-outline" class="text-lg"></ion-icon>
-      تسجيل حضور صف {{ courseInfo?.name }} - الحصة ({{ currentActivePeriod }})
+      {{'teacher_view.recording_attendance_for' | translate}} {{ courseInfo?.name }} - {{'teacher_view.period_label' | translate}} ({{ currentActivePeriod }})
     </p>
     @if (!lockedPeriods.includes(currentActivePeriod)) {
     <div class="flex justify-between items-center gap-2" dir="rtl">
   <button class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 flex justify-center items-center gap-1" (click)="setAllStatus.emit('1')">
-    <ion-icon name="checkmark-circle"></ion-icon> الكل حاضر
+    <ion-icon name="checkmark-circle"></ion-icon> {{'teacher_view.all_present' | translate}}
   </button>
   <button class="flex-1 bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 flex justify-center items-center gap-1" (click)="setAllStatus.emit('0')">
-    <ion-icon name="close-circle"></ion-icon> الكل غائب
+    <ion-icon name="close-circle"></ion-icon> {{'teacher_view.all_absent' | translate}}
   </button>
   <button class="w-10 h-10 shrink-0 bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl flex items-center justify-center shadow-sm transition-all active:scale-95" (click)="setAllStatus.emit('-1')">
     <ion-icon name="refresh"></ion-icon>
@@ -45,7 +45,7 @@
 @if (currentActivePeriod && lockedPeriods.includes(currentActivePeriod)) {
 <div class="bg-slate-100 rounded-2xl p-3 mb-1 border border-slate-200 flex items-center gap-1 justify-center">
     <ion-icon name="eye-outline" class="text-slate-500 text-lg"></ion-icon>
-    <span class="text-slate-600 font-bold text-xs">أنت الآن في وضع المعاينة للحصة ({{ currentActivePeriod }})</span>
+    <span class="text-slate-600 font-bold text-xs">{{'teacher_view.preview_mode_for_period' | translate}} ({{ currentActivePeriod }})</span>
 </div>
 }
   </div>
@@ -72,13 +72,13 @@
             <div class="flex items-center gap-2">
               <h3 class="text-sm font-bold text-slate-800 m-0 truncate"><span class="text-muted text-sm">{{i+1}}.</span> {{student.name}} </h3>
               @if (student.current_streak >= 10) {
-              <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" title="أسطورة الالتزام"><ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span></span>
+              <span class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse" [title]="'followup_student_list.commitment_legend_tooltip' | translate"><ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span></span>
               }
               @if (student.current_streak >= 5 && student.current_streak < 10) {
-              <span class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" title="مشتعل"><ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span></span>
+              <span class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0" [title]="'followup_student_list.on_fire_tooltip' | translate"><ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span></span>
               }
               @if (student.isFrozen) {
-              <span class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"><ion-icon name="snow"></ion-icon> مجمد</span>
+              <span class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"><ion-icon name="snow"></ion-icon> {{'followup_student_list.frozen_label' | translate}}</span>
               }
               </div>
 
@@ -115,35 +115,35 @@
         @if (student.currentLockStatus === 'locked_mine' || student.currentLockStatus === 'locked_other') {
            @if (getCemStatus(student.sheet, currentActivePeriod) === '1') {
               <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-600 opacity-80 cursor-not-allowed">
-                <ion-icon name="checkmark-circle" class="text-xl"></ion-icon> حاضر (محفوظ)
+                <ion-icon name="checkmark-circle" class="text-xl"></ion-icon> {{'teacher_view.present_saved' | translate}}
               </div>
               }
               @if (getCemStatus(student.sheet, currentActivePeriod) === '0') {
               <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-rose-50 border border-rose-200 text-rose-600 opacity-80 cursor-not-allowed">
-                <ion-icon name="close-circle" class="text-xl"></ion-icon> غائب (محفوظ)
+                <ion-icon name="close-circle" class="text-xl"></ion-icon> {{'teacher_view.absent_saved' | translate}}
               </div>
               }
               @if (getCemStatus(student.sheet, currentActivePeriod) === '3' || isAbsentDueToDelay(student.sheet)) {
               <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-amber-50 border border-amber-200 text-amber-600 opacity-80 cursor-not-allowed">
-                <ion-icon name="time" class="text-xl"></ion-icon> متأخر (محفوظ)
+                <ion-icon name="time" class="text-xl"></ion-icon> {{'teacher_view.late_saved' | translate}}
               </div>
               }
               @if (getCemStatus(student.sheet, currentActivePeriod) === '') {
               <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-slate-100 border border-slate-200 text-slate-400 opacity-80 cursor-not-allowed">
-                <ion-icon name="remove-circle-outline" class="text-xl"></ion-icon> لم يُرصد
+                <ion-icon name="remove-circle-outline" class="text-xl"></ion-icon> {{'teacher_view.not_recorded' | translate}}
               </div>
               }
         } @else if (student.currentLockStatus === 'delayed') {
            <div class="w-full bg-orange-100 text-orange-600 py-2.5 rounded-xl text-center text-sm font-bold flex justify-center items-center gap-2">
-               <ion-icon name="time" class="text-lg"></ion-icon> مسجل تأخير
+               <ion-icon name="time" class="text-lg"></ion-icon> {{'teacher_view.marked_late' | translate}}
            </div>
         } @else if (student.currentLockStatus === 'open') {
            <div class="flex gap-2 w-full">
               <button class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all" [ngClass]="(student.sheet && getCemStatus(student.sheet, currentActivePeriod) === '1') ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200 scale-[1.02]' : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'" (click)="setStudentStatus.emit({student: student, status: '1'})">
-                <ion-icon [name]="(student.sheet && getCemStatus(student.sheet, currentActivePeriod) === '1') ? 'checkmark-circle' : 'checkmark-circle-outline'" class="text-xl"></ion-icon> حاضر
+                <ion-icon [name]="(student.sheet && getCemStatus(student.sheet, currentActivePeriod) === '1') ? 'checkmark-circle' : 'checkmark-circle-outline'" class="text-xl"></ion-icon> {{'teacher_view.present' | translate}}
               </button>
               <button class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 transition-all" [ngClass]="(student.sheet && getCemStatus(student.sheet, currentActivePeriod) === '0') ? 'bg-rose-500 text-white shadow-lg shadow-rose-200 scale-[1.02]' : 'bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100'" (click)="setStudentStatus.emit({student: student, status: '0'})">
-                <ion-icon [name]="(student.sheet && getCemStatus(student.sheet, currentActivePeriod) === '0') ? 'close-circle' : 'close-circle-outline'" class="text-xl"></ion-icon> غائب
+                <ion-icon [name]="(student.sheet && getCemStatus(student.sheet, currentActivePeriod) === '0') ? 'close-circle' : 'close-circle-outline'" class="text-xl"></ion-icon> {{'teacher_view.absent' | translate}}
               </button>
            </div>
         }

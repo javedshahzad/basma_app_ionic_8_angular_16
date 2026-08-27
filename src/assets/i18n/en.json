@@ -630,7 +630,15 @@
     "select_time":"Select Time",
     "reports":"Reports",
     "no_reports":"No Reports",
-    "day_name":"Day"
+    "day_name":"Day",
+    "student_data_unavailable": "Student data unavailable",
+    "class_data_unavailable": "Class data unavailable",
+    "add_report": "Add Report",
+    "search_violation_placeholder": "Search for a violation...",
+    "search_action_placeholder": "Search for an action...",
+    "no_matching_results": "No matching search results",
+    "print": "Print",
+    "to_separator": "to"
   },
   "add_teacher": {
     "title": "Add teacher",
@@ -891,5 +899,57 @@
     "merge_title_btn": "Merge Title",
     "secret_badges_hint": "Discover hidden secrets! Perform exceptional deeds at school to unlock these rare badges.",
     "secret_badge": "Secret Badge"
+  },
+
+  "followup_student_list": {
+    "add_fields_tooltip": "Add Fields",
+    "export_file_tooltip": "Export File",
+    "delete_today_marks_tooltip": "Delete Today's Grades",
+    "commitment_legend_tooltip": "Commitment Legend",
+    "on_fire_tooltip": "On Fire",
+    "frozen_label": "Frozen",
+    "no_students_heading": "No Students",
+    "no_students_hint": "No students were found in this class.",
+    "confirm_delete_title": "Confirm Deletion"
+  },
+
+  "student_detail": {
+    "general_performance_indicator": "General Performance Indicator",
+    "skill_excellence_indicator": "Skill Excellence Indicator",
+    "skills_analysis": "Skills Analysis",
+    "titles_badges_vault": "Titles & Badges Vault",
+    "cognitive_genius": "Cognitive Genius",
+    "communication_cooperation": "Communication & Cooperation",
+    "discipline_responsibility": "Discipline & Responsibility",
+    "emotional_intelligence": "Emotional Intelligence",
+    "practical_skills": "Practical Skills",
+    "no_skills_recorded": "No skills recorded yet",
+    "periods_label": "Periods:",
+    "add_absence_note": "Add Absence Note",
+    "ratings_suffix": "Reviews",
+    "add_review_points_notes": "Add a Review, Points, or Notes",
+    "frozen_student_title": "Frozen Student ❄️",
+    "wait_title": "Wait!",
+    "ok_got_it": "OK, Got It",
+    "absence_note_placeholder": "Write the note details or absence excuse here...",
+    "fetching_absence_stats": "Fetching absence statistics accurately..."
+  },
+
+  "teacher_view": {
+    "time_remaining_edit": "Time remaining to edit your attendance:",
+    "cumulative_class_strength": "Cumulative Class Strength",
+    "points_suffix": "points",
+    "recording_attendance_for": "Recording attendance for class",
+    "period_label": "Period",
+    "all_present": "All Present",
+    "all_absent": "All Absent",
+    "preview_mode_for_period": "You are now in preview mode for period",
+    "present_saved": "Present (Saved)",
+    "absent_saved": "Absent (Saved)",
+    "late_saved": "Late (Saved)",
+    "not_recorded": "Not Recorded",
+    "marked_late": "Marked Late",
+    "present": "Present",
+    "absent": "Absent"
   }
 }

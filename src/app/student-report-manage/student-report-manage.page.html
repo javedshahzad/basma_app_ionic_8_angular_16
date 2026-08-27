@@ -29,11 +29,11 @@
       </div>
       <div class="flex-1">
         <h4 class="font-black text-slate-800 text-sm sm:text-base m-0">
-          {{ navData?.student_name || navData?.name || navData?.studentName || 'بيانات الطالب غير متوفرة' }}
+          {{ navData?.student_name || navData?.name || navData?.studentName || ('manage_report.student_data_unavailable' | translate) }}
         </h4>
         <p class="text-xs font-bold text-slate-500 m-0 mt-1.5 flex items-center gap-1.5">
           <ion-icon name="business" class="text-indigo-400 text-sm"></ion-icon>
-          {{ navData?.course_name || navData?.className || 'بيانات الصف غير متوفرة' }}
+          {{ navData?.course_name || navData?.className || ('manage_report.class_data_unavailable' | translate) }}
         </p>
       </div>
     </div>
@@ -48,7 +48,7 @@
         >
           <ion-icon name="document-text" class="text-xl"></ion-icon>
         </div>
-        <h3 class="text-base font-black text-slate-800 m-0">إضافة تقرير</h3>
+        <h3 class="text-base font-black text-slate-800 m-0">{{'manage_report.add_report' | translate}}</h3>
       </div>
 
       <div class="space-y-4">
@@ -62,7 +62,7 @@
             <ion-select
               mode="md"
               interface="action-sheet"
-              cancelText="إلغاء"
+              [cancelText]="'action_icons.cancel' | translate"
               [(ngModel)]="formData.reportType"
               placeholder="{{'manage_report.report_type' |translate}}"
               (ionChange)="$any($event.target).offsetWidth > 0 ? changeReportType($event) : null"
@@ -185,8 +185,8 @@
                       [ngModelOptions]="{standalone: true}"
                       max="2030-10-31"
                       [showDefaultButtons]="true"
-                      doneText="تأكيد"
-                      cancelText="إلغاء"
+                      [doneText]="'seminar_list.confirm' | translate"
+                      [cancelText]="'action_icons.cancel' | translate"
                       class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm"
                       color="primary"
                     ></ion-datetime>
@@ -275,8 +275,8 @@
                       [ngModelOptions]="{standalone: true}"
                       max="2030-10-31"
                       [showDefaultButtons]="true"
-                      doneText="تأكيد"
-                      cancelText="إلغاء"
+                      [doneText]="'seminar_list.confirm' | translate"
+                      [cancelText]="'action_icons.cancel' | translate"
                       class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm"
                       color="primary"
                     ></ion-datetime>
@@ -323,8 +323,8 @@
                       [(ngModel)]="formData.time"
                       [ngModelOptions]="{standalone: true}"
                       [showDefaultButtons]="true"
-                      doneText="تأكيد"
-                      cancelText="إلغاء"
+                      [doneText]="'seminar_list.confirm' | translate"
+                      [cancelText]="'action_icons.cancel' | translate"
                       class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm"
                       color="primary"
                     ></ion-datetime>
@@ -356,7 +356,7 @@
               <ion-select
                 mode="md"
                 interface="action-sheet"
-                cancelText="إلغاء"
+                [cancelText]="'action_icons.cancel' | translate"
                 [(ngModel)]="formData.degree"
                 placeholder="{{'manage_report.select_degree' |translate}}"
                 (ionChange)="$any($event.target).offsetWidth > 0 ? OnselectDegree($event) : null"
@@ -426,7 +426,7 @@
                       <ion-icon name="search" class="text-slate-400 text-lg ml-2"></ion-icon>
                       <input
                         type="text"
-                        placeholder="بحث عن مخالفة..."
+                        placeholder="{{'manage_report.search_violation_placeholder' | translate}}"
                         (input)="searchViolations($event)"
                         class="bg-transparent border-none outline-none text-sm font-bold text-slate-800 w-full placeholder:text-slate-400"
                       />
@@ -449,7 +449,7 @@
                     } @if (filteredViolations.length === 0) {
                     <div class="text-center py-8">
                       <ion-icon name="search-outline" class="text-4xl text-slate-300 mb-2"></ion-icon>
-                      <p class="text-sm font-bold text-slate-500">لا توجد نتائج مطابقة للبحث</p>
+                      <p class="text-sm font-bold text-slate-500">{{'manage_report.no_matching_results' | translate}}</p>
                     </div>
                     }
                   </div>
@@ -503,7 +503,7 @@
                       <ion-icon name="search" class="text-slate-400 text-lg ml-2"></ion-icon>
                       <input
                         type="text"
-                        placeholder="بحث عن إجراء..."
+                        placeholder="{{'manage_report.search_action_placeholder' | translate}}"
                         (input)="searchActions($event)"
                         class="bg-transparent border-none outline-none text-sm font-bold text-slate-800 w-full placeholder:text-slate-400"
                       />
@@ -526,7 +526,7 @@
                     } @if (filteredActions.length === 0) {
                     <div class="text-center py-8">
                       <ion-icon name="search-outline" class="text-4xl text-slate-300 mb-2"></ion-icon>
-                      <p class="text-sm font-bold text-slate-500">لا توجد نتائج مطابقة للبحث</p>
+                      <p class="text-sm font-bold text-slate-500">{{'manage_report.no_matching_results' | translate}}</p>
                     </div>
                     }
                   </div>
@@ -571,7 +571,7 @@
             class="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-orange-100"
             (click)="printReport('suspend')"
           >
-            <ion-icon name="print-outline"></ion-icon> طباعة
+            <ion-icon name="print-outline"></ion-icon> {{'manage_report.print' | translate}}
           </button>
         </div>
         <div class="space-y-3">
@@ -586,7 +586,7 @@
                   >{{'manage_report.start_date' | translate}} - {{'manage_report.end_date' | translate}}</span
                 >
                 <div class="font-bold text-sm text-slate-800 mt-0.5">
-                  {{sdays.start_date}} <span class="text-slate-400 mx-1">إلى</span> {{sdays.end_date}}
+                  {{sdays.start_date}} <span class="text-slate-400 mx-1">{{'manage_report.to_separator' | translate}}</span> {{sdays.end_date}}
                 </div>
               </div>
               <div class="bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-center shrink-0">
@@ -616,7 +616,7 @@
             class="bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-emerald-100"
             (click)="printReport('medical')"
           >
-            <ion-icon name="print-outline"></ion-icon> طباعة
+            <ion-icon name="print-outline"></ion-icon> {{'manage_report.print' | translate}}
           </button>
         </div>
         <div class="space-y-3">
@@ -631,7 +631,7 @@
                   >{{'manage_report.start_date' | translate}} - {{'manage_report.end_date' | translate}}</span
                 >
                 <div class="font-bold text-sm text-slate-800 mt-0.5">
-                  {{mdays.start_date}} <span class="text-slate-400 mx-1">إلى</span> {{mdays.end_date}}
+                  {{mdays.start_date}} <span class="text-slate-400 mx-1">{{'manage_report.to_separator' | translate}}</span> {{mdays.end_date}}
                 </div>
               </div>
               <div class="bg-slate-50 border border-slate-100 rounded-lg px-3 py-1.5 text-center shrink-0">
@@ -661,7 +661,7 @@
             class="bg-cyan-50 text-cyan-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-cyan-100"
             (click)="printReport('exit')"
           >
-            <ion-icon name="print-outline"></ion-icon> طباعة
+            <ion-icon name="print-outline"></ion-icon> {{'manage_report.print' | translate}}
           </button>
         </div>
         <div class="space-y-3">
@@ -684,7 +684,7 @@
                 (click)="openDeleteConfirm(edays.id || '','exit')"
                 class="bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center justify-center gap-1.5 border border-rose-100"
               >
-                <ion-icon name="trash-outline"></ion-icon> حذف
+                <ion-icon name="trash-outline"></ion-icon> {{'manage_report.delete' | translate}}
               </button>
             </div>
           </div>
@@ -703,7 +703,7 @@
             class="bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-indigo-100"
             (click)="printReports('callOfParent')"
           >
-            <ion-icon name="print-outline"></ion-icon> طباعة
+            <ion-icon name="print-outline"></ion-icon> {{'manage_report.print' | translate}}
           </button>
         </div>
         <div class="space-y-3">
@@ -742,7 +742,7 @@
             class="bg-purple-50 text-purple-600 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all border border-purple-100"
             (click)="printReports('pledges')"
           >
-            <ion-icon name="print-outline"></ion-icon> طباعة
+            <ion-icon name="print-outline"></ion-icon> {{'manage_report.print' | translate}}
           </button>
         </div>
         <div class="space-y-3">
@@ -809,7 +809,7 @@
         <ion-icon name="trash-outline" class="text-4xl text-rose-500 relative z-10"></ion-icon>
       </div>
 
-      <h3 class="text-xl font-black text-slate-800 mb-2">تأكيد الحذف</h3>
+      <h3 class="text-xl font-black text-slate-800 mb-2">{{'followup_student_list.confirm_delete_title' | translate}}</h3>
       <p class="text-sm font-bold text-slate-500 mb-8 leading-relaxed px-2">
         {{lang?.want_to_delete || 'هل أنت متأكد من رغبتك في حذف هذا التقرير؟ لا يمكن التراجع عن هذه الخطوة.'}}
       </p>

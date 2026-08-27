@@ -646,7 +646,15 @@
     "select_time":"تحديد الوقت",
     "reports":"التقارير",
     "no_reports":"لا توجد تقارير",
-     "day_name":"اليوم"
+     "day_name":"اليوم",
+    "student_data_unavailable": "بيانات الطالب غير متوفرة",
+    "class_data_unavailable": "بيانات الصف غير متوفرة",
+    "add_report": "إضافة تقرير",
+    "search_violation_placeholder": "بحث عن مخالفة...",
+    "search_action_placeholder": "بحث عن إجراء...",
+    "no_matching_results": "لا توجد نتائج مطابقة للبحث",
+    "print": "طباعة",
+    "to_separator": "إلى"
   },
   "add_teacher": {
     "title": "إضافة معلم جديد",
@@ -907,5 +915,57 @@
     "merge_title_btn": "دمج اللقب",
     "secret_badges_hint": "اكتشف الأسرار المخفية! قم بأفعال مميزة واستثنائية داخل المدرسة لفك شفرة هذه الأوسمة النادرة.",
     "secret_badge": "وسام سري"
+  },
+
+  "followup_student_list": {
+    "add_fields_tooltip": "إضافة حقول",
+    "export_file_tooltip": "تصدير كملف",
+    "delete_today_marks_tooltip": "حذف درجات اليوم",
+    "commitment_legend_tooltip": "أسطورة الالتزام",
+    "on_fire_tooltip": "مشتعل",
+    "frozen_label": "مجمد",
+    "no_students_heading": "لا يوجد طلاب",
+    "no_students_hint": "لم يتم العثور على طلاب في هذا الفصل.",
+    "confirm_delete_title": "تأكيد الحذف"
+  },
+
+  "student_detail": {
+    "general_performance_indicator": "مؤشر الأداء العام",
+    "skill_excellence_indicator": "مؤشر التميز المهاري",
+    "skills_analysis": "تحليل المهارات",
+    "titles_badges_vault": "خزانة الألقاب والأوسمة",
+    "cognitive_genius": "العبقرية العلمية",
+    "communication_cooperation": "التواصل والتعاون",
+    "discipline_responsibility": "الانضباط والمسؤولية",
+    "emotional_intelligence": "الذكاء العاطفي",
+    "practical_skills": "المهارات العملية",
+    "no_skills_recorded": "لا توجد مهارات مسجلة حتى الآن",
+    "periods_label": "الحصص:",
+    "add_absence_note": "إضافة ملاحظة غياب",
+    "ratings_suffix": "تقييم",
+    "add_review_points_notes": "إضافة تقييم، نقاط أو ملاحظات",
+    "frozen_student_title": "طالب مجمد ❄️",
+    "wait_title": "مهلاً!",
+    "ok_got_it": "حسناً، فهمت",
+    "absence_note_placeholder": "اكتب تفاصيل الملاحظة أو عذر الغياب هنا...",
+    "fetching_absence_stats": "جاري جلب إحصائيات الغياب بدقة..."
+  },
+
+  "teacher_view": {
+    "time_remaining_edit": "متبقي لتعديل غيابك:",
+    "cumulative_class_strength": "قوة الصف التراكمية",
+    "points_suffix": "نقطة",
+    "recording_attendance_for": "تسجيل حضور صف",
+    "period_label": "الحصة",
+    "all_present": "الكل حاضر",
+    "all_absent": "الكل غائب",
+    "preview_mode_for_period": "أنت الآن في وضع المعاينة للحصة",
+    "present_saved": "حاضر (محفوظ)",
+    "absent_saved": "غائب (محفوظ)",
+    "late_saved": "متأخر (محفوظ)",
+    "not_recorded": "لم يُرصد",
+    "marked_late": "مسجل تأخير",
+    "present": "حاضر",
+    "absent": "غائب"
   }
 }

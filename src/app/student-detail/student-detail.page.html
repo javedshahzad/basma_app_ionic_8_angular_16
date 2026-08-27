@@ -67,7 +67,7 @@
             @if ((studentDetails?.current_streak || 0) >= 10) {
             <span
               class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse"
-              title="أسطورة الالتزام"
+              [title]="'followup_student_list.commitment_legend_tooltip' | translate"
             >
               <ion-icon name="flame"></ion-icon
               ><span class="text-4xs font-bold">{{studentDetails?.current_streak}}</span>
@@ -75,7 +75,7 @@
             } @if ((studentDetails?.current_streak || 0) >= 5 && (studentDetails?.current_streak || 0) < 10) {
             <span
               class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0"
-              title="مشتعل"
+              [title]="'followup_student_list.on_fire_tooltip' | translate"
             >
               <ion-icon name="flame"></ion-icon
               ><span class="text-4xs font-bold">{{studentDetails?.current_streak}}</span>
@@ -84,7 +84,7 @@
             <span
               class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
             >
-              <ion-icon name="snow"></ion-icon> مجمد
+              <ion-icon name="snow"></ion-icon> {{'followup_student_list.frozen_label' | translate}}
             </span>
             }
           </div>
@@ -100,7 +100,7 @@
           class="bg-slate-50 border border-slate-100 rounded-2xl p-3 flex flex-col items-center justify-center text-center transition-all hover:bg-slate-100"
         >
           <span class="text-4xs font-black text-muted mb-1.5 flex items-center gap-1 uppercase tracking-wider">
-            <ion-icon name="analytics-outline" class="text-indigo-400 text-sm"></ion-icon> مؤشر الأداء العام
+            <ion-icon name="analytics-outline" class="text-indigo-400 text-sm"></ion-icon> {{'student_detail.general_performance_indicator' | translate}}
           </span>
           <div class="flex items-center justify-center gap-1.5">
             <ion-icon
@@ -119,7 +119,7 @@
           class="bg-gradient-to-b from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-3 flex flex-col items-center justify-center text-center transition-all hover:border-amber-200"
         >
           <span class="text-4xs font-black text-amber-500 mb-1.5 flex items-center gap-1 uppercase tracking-wider">
-            <ion-icon name="star-outline" class="text-amber-500 text-sm"></ion-icon> مؤشر التميز المهاري
+            <ion-icon name="star-outline" class="text-amber-500 text-sm"></ion-icon> {{'student_detail.skill_excellence_indicator' | translate}}
           </span>
           <p class="text-amber-700 font-black text-2xs sm:text-xs m-0 leading-tight">
             {{ getStudentTitle(studentDetails) }}
@@ -139,7 +139,7 @@
           >
             <ion-icon name="flash" class="text-amber-500 text-sm animate-pulse"></ion-icon>
             <span class="text-2xs font-black tracking-wide"
-              >إجمالي الخبرة: {{ studentDetails.student_points || 0 }} XP</span
+              >{{'student_titles.total_xp' | translate}}: {{ studentDetails.student_points || 0 }} XP</span
             >
           </div>
 
@@ -147,7 +147,7 @@
             <div class="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center shadow-sm">
               <ion-icon name="analytics" class="text-indigo-600 text-lg"></ion-icon>
             </div>
-            تحليل المهارات
+            {{'student_detail.skills_analysis' | translate}}
           </h3>
         </div>
 
@@ -156,7 +156,7 @@
           (click)="openInventoryModal()"
           class="text-2xs font-bold bg-white text-indigo-600 px-3 py-2 rounded-xl border-2 border-indigo-50 hover:bg-indigo-50 hover:border-indigo-100 transition-all flex items-center gap-1.5 shadow-sm shrink-0"
         >
-          <ion-icon name="flask" class="text-sm"></ion-icon> خزانة الألقاب والأوسمة
+          <ion-icon name="flask" class="text-sm"></ion-icon> {{'student_detail.titles_badges_vault' | translate}}
         </button>
         }
       </div>
@@ -170,7 +170,7 @@
         <div>
           <div class="flex justify-between items-center text-2xs font-bold mb-1.5">
             <span class="text-slate-700 flex items-center gap-1"
-              ><ion-icon name="bulb" class="text-amber-500 text-sm"></ion-icon> العبقرية العلمية</span
+              ><ion-icon name="bulb" class="text-amber-500 text-sm"></ion-icon> {{'student_detail.cognitive_genius' | translate}}</span
             >
             <span class="text-amber-500 bg-amber-50 px-2 py-0.5 rounded">{{studentSkillData.cognitive || 0}}</span>
           </div>
@@ -184,7 +184,7 @@
         <div>
           <div class="flex justify-between items-center text-2xs font-bold mb-1.5">
             <span class="text-slate-700 flex items-center gap-1"
-              ><ion-icon name="chatbubbles" class="text-blue-500 text-sm"></ion-icon> التواصل والتعاون</span
+              ><ion-icon name="chatbubbles" class="text-blue-500 text-sm"></ion-icon> {{'student_detail.communication_cooperation' | translate}}</span
             >
             <span class="text-blue-500 bg-blue-50 px-2 py-0.5 rounded">{{studentSkillData.social || 0}}</span>
           </div>
@@ -198,7 +198,7 @@
         <div>
           <div class="flex justify-between items-center text-2xs font-bold mb-1.5">
             <span class="text-slate-700 flex items-center gap-1"
-              ><ion-icon name="shield-checkmark" class="text-emerald-500 text-sm"></ion-icon> الانضباط والمسؤولية</span
+              ><ion-icon name="shield-checkmark" class="text-emerald-500 text-sm"></ion-icon> {{'student_detail.discipline_responsibility' | translate}}</span
             >
             <span class="text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded">{{studentSkillData.discipline || 0}}</span>
           </div>
@@ -212,7 +212,7 @@
         <div>
           <div class="flex justify-between items-center text-2xs font-bold mb-1.5">
             <span class="text-slate-700 flex items-center gap-1"
-              ><ion-icon name="heart" class="text-rose-500 text-sm"></ion-icon> الذكاء العاطفي</span
+              ><ion-icon name="heart" class="text-rose-500 text-sm"></ion-icon> {{'student_detail.emotional_intelligence' | translate}}</span
             >
             <span class="text-rose-500 bg-rose-50 px-2 py-0.5 rounded">{{studentSkillData.emotional || 0}}</span>
           </div>
@@ -226,7 +226,7 @@
         <div>
           <div class="flex justify-between items-center text-2xs font-bold mb-1.5">
             <span class="text-slate-700 flex items-center gap-1"
-              ><ion-icon name="laptop" class="text-purple-500 text-sm"></ion-icon> المهارات العملية</span
+              ><ion-icon name="laptop" class="text-purple-500 text-sm"></ion-icon> {{'student_detail.practical_skills' | translate}}</span
             >
             <span class="text-purple-500 bg-purple-50 px-2 py-0.5 rounded">{{studentSkillData.practical || 0}}</span>
           </div>
@@ -241,7 +241,7 @@
       } @if (!isLoadingSkills && !studentSkillData) {
       <div class="text-center py-6 bg-slate-50 rounded-xl mt-4 border border-slate-100">
         <ion-icon name="folder-open-outline" class="text-3xl text-slate-300 mb-2"></ion-icon>
-        <p class="text-xs font-bold text-muted m-0">لا توجد مهارات مسجلة حتى الآن</p>
+        <p class="text-xs font-bold text-muted m-0">{{'student_detail.no_skills_recorded' | translate}}</p>
       </div>
       }
     </div>
@@ -296,7 +296,7 @@
         @if (!isAbsenceLoaded) {
         <div class="text-center py-12">
           <ion-spinner name="crescent" color="primary"></ion-spinner>
-          <p class="text-slate-500 text-sm mt-3 font-medium">جاري جلب إحصائيات الغياب بدقة...</p>
+          <p class="text-slate-500 text-sm mt-3 font-medium">{{'student_detail.fetching_absence_stats' | translate}}</p>
         </div>
         } @if (isAbsenceLoaded) {
         <div class="animate-fade-in">
@@ -388,7 +388,7 @@
               </div>
               <div class="flex items-start gap-1.5 bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm w-full">
                 <span class="text-2xs font-bold text-muted mt-0.5 whitespace-nowrap flex items-center gap-1">
-                  <ion-icon name="time-outline"></ion-icon> الحصص:
+                  <ion-icon name="time-outline"></ion-icon> {{'student_detail.periods_label' | translate}}
                 </span>
                 <span
                   class="text-xs font-bold text-indigo-600 leading-relaxed text-right"
@@ -421,7 +421,7 @@
                 (click)="addAbsentNote(details.notes || [], details.date || '')"
                 *appHasRole="[UserType.Admin, UserType.Moderator]"
               >
-                <ion-icon name="add-circle" class="text-lg"></ion-icon> إضافة ملاحظة غياب
+                <ion-icon name="add-circle" class="text-lg"></ion-icon> {{'student_detail.add_absence_note' | translate}}
               </button>
             </div>
           </div>
@@ -432,7 +432,7 @@
             >
               <ion-icon name="calendar-clear-outline" class="text-3xl"></ion-icon>
             </div>
-            <p class="text-slate-500 font-bold text-sm">{{noAbsenceFound || 'لا توجد غيابات مسجلة'}}</p>
+            <p class="text-slate-500 font-bold text-sm">{{noAbsenceFound || ('alertmessages.no_absent' | translate)}}</p>
           </div>
           }
         </div>
@@ -522,7 +522,7 @@
               }
             </div>
             <p class="text-2xs font-bold text-muted m-0 flex items-center gap-1">
-              <ion-icon name="person"></ion-icon> {{notes.total_notes}} تقييم
+              <ion-icon name="person"></ion-icon> {{notes.total_notes}} {{'student_detail.ratings_suffix' | translate}}
             </p>
           </div>
           <div class="flex-1 mr-4" dir="ltr">
@@ -546,7 +546,7 @@
           (click)="presentNoteActionSheet($event, 'add', '', '')"
         >
           <ion-icon name="sparkles-outline" class="text-xl"></ion-icon>
-          إضافة تقييم، نقاط أو ملاحظات
+          {{'student_detail.add_review_points_notes' | translate}}
         </button>
         }
         <div class="space-y-3">
@@ -603,7 +603,7 @@
             >
               <ion-icon name="chatbubbles-outline" class="text-3xl"></ion-icon>
             </div>
-            <p class="text-slate-500 font-bold text-sm">{{noNotesFound || 'لا توجد ملاحظات'}}</p>
+            <p class="text-slate-500 font-bold text-sm">{{noNotesFound || ('alertmessages.no_note' | translate)}}</p>
           </div>
           }
         </div>
@@ -628,14 +628,14 @@
     >
       <ion-icon name="snow" class="text-3xl text-cyan-500 animate-pulse"></ion-icon>
     </div>
-    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">طالب مجمد ❄️</h3>
+    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">{{'student_detail.frozen_student_title' | translate}}</h3>
     } @if (warningType === 'warning') {
     <div
       class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-4 border border-amber-100 shadow-inner"
     >
       <ion-icon name="warning-outline" class="text-3xl text-amber-500 animate-pulse"></ion-icon>
     </div>
-    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">مهلاً!</h3>
+    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">{{'student_detail.wait_title' | translate}}</h3>
     }
     <p class="text-sm text-slate-500 text-center font-medium leading-relaxed mb-6">{{ warningMessage }}</p>
     <button
@@ -643,7 +643,7 @@
       [ngClass]="warningType === 'frozen' ? 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
       class="w-full py-3 rounded-xl font-bold transition-colors"
     >
-      حسناً، فهمت
+      {{'student_detail.ok_got_it' | translate}}
     </button>
   </div>
 </div>
@@ -726,7 +726,7 @@
       <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
         <ion-icon name="document-text" class="text-xl"></ion-icon>
       </div>
-      <h4 class="text-lg font-bold text-slate-800 m-0">إضافة ملاحظة غياب</h4>
+      <h4 class="text-lg font-bold text-slate-800 m-0">{{'student_detail.add_absence_note' | translate}}</h4>
     </div>
     <div
       class="bg-slate-50 border border-slate-200 rounded-xl p-2 mb-6 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
@@ -734,7 +734,7 @@
       <ion-textarea
         class="text-sm text-slate-800 bg-transparent font-medium"
         [(ngModel)]="absenceNoteText"
-        placeholder="اكتب تفاصيل الملاحظة أو عذر الغياب هنا..."
+        placeholder="{{'student_detail.absence_note_placeholder' | translate}}"
         rows="4"
       ></ion-textarea>
     </div>
@@ -766,7 +766,7 @@
     <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
       <ion-icon name="trash" class="text-3xl"></ion-icon>
     </div>
-    <h4 class="text-lg font-bold text-slate-800 mb-2">تأكيد الحذف</h4>
+    <h4 class="text-lg font-bold text-slate-800 mb-2">{{'followup_student_list.confirm_delete_title' | translate}}</h4>
     <p class="text-sm text-slate-500 mb-6 font-medium">
       {{lang?.want_to_delete || 'هل أنت متأكد من رغبتك في حذف هذا العنصر؟'}}
     </p>

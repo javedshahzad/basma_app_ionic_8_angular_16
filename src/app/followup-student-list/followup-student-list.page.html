@@ -22,14 +22,14 @@
       <button
         class="w-9 h-9 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center shadow-sm"
         (click)="addFields()"
-        title="إضافة حقول"
+        [title]="'followup_student_list.add_fields_tooltip' | translate"
       >
         <ion-icon name="add" class="text-lg"></ion-icon>
       </button>
       <button
         class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all flex items-center justify-center shadow-sm"
         (click)="presentPrintOption()"
-        title="تصدير كملف"
+        [title]="'followup_student_list.export_file_tooltip' | translate"
       >
         <ion-icon name="print-outline" class="text-lg"></ion-icon>
       </button>
@@ -59,7 +59,7 @@
       <button
         class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 border border-rose-100 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-95"
         (click)="deleteStudentMarks()"
-        title="حذف درجات اليوم"
+        [title]="'followup_student_list.delete_today_marks_tooltip' | translate"
       >
         <ion-icon name="trash" class="text-base"></ion-icon>
       </button>
@@ -96,14 +96,14 @@
                 0) >= 10) {
                 <span
                   class="flex items-center gap-0.5 bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-200 shadow-sm animate-pulse"
-                  title="أسطورة الالتزام"
+                  [title]="'followup_student_list.commitment_legend_tooltip' | translate"
                 >
                   <ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span>
                 </span>
                 } @if ((student.current_streak || 0) >= 5 && (student.current_streak || 0) < 10) {
                 <span
                   class="flex items-center gap-0.5 bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded border border-orange-200 shadow-sm"
-                  title="مشتعل"
+                  [title]="'followup_student_list.on_fire_tooltip' | translate"
                 >
                   <ion-icon name="flame"></ion-icon><span class="text-4xs font-bold">{{student.current_streak}}</span>
                 </span>
@@ -111,7 +111,7 @@
                 <span
                   class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
                 >
-                  <ion-icon name="snow"></ion-icon> مجمد
+                  <ion-icon name="snow"></ion-icon> {{'followup_student_list.frozen_label' | translate}}
                 </span>
                 }
               </h4>
@@ -202,8 +202,8 @@
       >
         <ion-icon name="folder-open-outline" class="text-4xl"></ion-icon>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-1">لا يوجد طلاب</h3>
-      <p class="text-sm font-medium text-slate-500">{{noDataFound || 'لم يتم العثور على طلاب في هذا الفصل.'}}</p>
+      <h3 class="text-lg font-bold text-slate-800 mb-1">{{'followup_student_list.no_students_heading' | translate}}</h3>
+      <p class="text-sm font-medium text-slate-500">{{noDataFound || ('followup_student_list.no_students_hint' | translate)}}</p>
     </div>
     }
   </div>
@@ -283,7 +283,7 @@
     <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
       <ion-icon name="trash" class="text-3xl"></ion-icon>
     </div>
-    <h4 class="text-lg font-bold text-slate-800 mb-2">تأكيد الحذف</h4>
+    <h4 class="text-lg font-bold text-slate-800 mb-2">{{'followup_student_list.confirm_delete_title' | translate}}</h4>
     <p class="text-sm text-slate-500 mb-6 font-medium">
       {{lang?.want_to_delete_follow_student || 'هل أنت متأكد من رغبتك في حذف درجات الطلاب؟'}}
     </p>
@@ -323,9 +323,9 @@
   <ng-template>
     <ion-header class="ion-no-border">
       <ion-toolbar>
-        <ion-title>اختر التاريخ</ion-title>
+        <ion-title>{{'delay_stu_list.choose_date' | translate}}</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="hideCalenderModal()" color="medium">إلغاء</ion-button>
+          <ion-button (click)="hideCalenderModal()" color="medium">{{'action_icons.cancel' | translate}}</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
