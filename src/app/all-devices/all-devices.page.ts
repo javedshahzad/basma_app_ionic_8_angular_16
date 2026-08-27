@@ -7,7 +7,7 @@ import { Device } from '@capacitor/device';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
 import { NgClass } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { LoggedInUser } from '../model/logged-in-user.model';
 import { Device as UserDevice } from '../service/device-api/device-api.service';
 
@@ -32,6 +32,7 @@ export class AllDevicesPage implements OnInit {
   showDeleteModal: boolean = false;
   deviceToDelete: UserDevice | null = null;
   showLogoutAllModal: boolean = false;
+  lang: Record<string, string> = {};
 
   constructor(
     public navCtrl: NavController,
@@ -40,12 +41,17 @@ export class AllDevicesPage implements OnInit {
     private router: Router,
     private deviceApi: DeviceApiService,
     private storageSr: StorageService,
+    private translate: TranslateService,
     private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
     this.userDetails = await this.storageSr.get('userloggedin');
     this.deviceSr.uuid = (await Device.getId()).identifier;
+    this.translate.get('alertmessages').subscribe(res => {
+      this.lang = res;
+      this.cdr.markForCheck();
+    });
     this.cdr.markForCheck();
   }
 
@@ -75,7 +81,7 @@ export class AllDevicesPage implements OnInit {
         error => {
           // 🔴 تأمين المتغير أيضاً في حال حدوث خطأ في الاتصال
           this.All_available_devices = [];
-          this.dataProvider.showToast('حدث خطأ في جلب الأجهزة');
+          this.dataProvider.showToast(this.lang.devices_fetch_error || 'حدث خطأ في جلب الأجهزة');
           this.cdr.markForCheck();
         }
       );
@@ -154,7 +160,7 @@ export class AllDevicesPage implements OnInit {
         this.GetAlldevices();
       })
       .catch(error => {
-        this.dataProvider.showToast('حدث خطأ أثناء تسجيل الخروج من الجميع');
+        this.dataProvider.showToast(this.lang.logout_all_error || 'حدث خطأ أثناء تسجيل الخروج من الجميع');
       });
   }
 

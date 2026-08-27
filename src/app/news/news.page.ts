@@ -358,7 +358,7 @@ export class NewsPage implements OnInit {
           });
       }
     } else {
-      this.dataProvider.showToast('الرجاء تسجيل الدخول أولاً');
+      this.dataProvider.showToast(this.lang.please_login_first || 'الرجاء تسجيل الدخول أولاً');
     }
   }
 

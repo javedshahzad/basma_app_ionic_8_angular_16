@@ -330,7 +330,7 @@ export class ListStudentPage {
       if (teacherName) {
         this.dataProvider.showToast(`تم رصدها بواسطة: ${teacherName} (للمعاينة فقط)`);
       } else {
-        this.dataProvider.showToast('هذه الحصة محفوظة (للمعاينة فقط)');
+        this.dataProvider.showToast(this.lang.session_saved_preview_only || 'هذه الحصة محفوظة (للمعاينة فقط)');
       }
     }
 
@@ -1000,7 +1000,7 @@ export class ListStudentPage {
     let isSavedInDb = enteredBy && enteredBy !== 'null' && enteredBy !== '0' && !isUnmarked;
 
     if (isSavedInDb && String(enteredBy) !== String(this.userInfo.user_no) && !this.canEdit) {
-      this.dataProvider.showToast('عفواً، تم تسجيل هذا الطالب مسبقاً.');
+      this.dataProvider.showToast(this.lang.student_already_registered || 'عفواً، تم تسجيل هذا الطالب مسبقاً.');
       return;
     }
 
@@ -1079,25 +1079,25 @@ export class ListStudentPage {
     // 🟢 السحر هنا: منع تعديل التأخير نهائياً لأي مستخدم!
     let currentStatus = sheet['cem-' + (sem + 1)];
     if (String(currentStatus) === '3' || String(sheet.absentDueToDelay) === '1') {
-      this.dataProvider.showToast('لا يمكن تعديل التأخير من هنا. يرجى تعديله من سجل التأخير.');
+      this.dataProvider.showToast(this.lang.delay_edit_wrong_place || 'لا يمكن تعديل التأخير من هنا. يرجى تعديله من سجل التأخير.');
       return;
     }
 
     if (this.isRestrictedModerator && !this.checkCurrentDate(this.dateSelected)) {
-      this.dataProvider.showToast('يسمح برصد الغياب لليوم الحالي فقط');
+      this.dataProvider.showToast(this.lang.attendance_today_only || 'يسمح برصد الغياب لليوم الحالي فقط');
       return;
     }
 
     if (this.isRestrictedModerator) {
       if (this.selectedSem !== -1 && this.selectedSem !== sem) {
-        this.dataProvider.showToast('الرجاء حفظ غياب الحصة المحددة قبل الانتقال');
+        this.dataProvider.showToast(this.lang.save_current_period_before_moving || 'الرجاء حفظ غياب الحصة المحددة قبل الانتقال');
         return;
       }
       this.selectedSem = sem;
     }
 
     if (this.isModeratorWithEdit && !this.isTodayOrYesterday(this.dateSelected)) {
-      this.dataProvider.showToast('يسمح بالتعديل لليوم الحالي أو الأمس فقط');
+      this.dataProvider.showToast(this.lang.edit_today_or_yesterday_only || 'يسمح بالتعديل لليوم الحالي أو الأمس فقط');
       return;
     }
 
@@ -1107,7 +1107,7 @@ export class ListStudentPage {
     }
 
     if (this.isRestrictedModerator && sheet['entered_by-' + (sem + 1)]) {
-      this.dataProvider.showToast('لا تملك صلاحية لتعديل غياب تم رصده مسبقاً');
+      this.dataProvider.showToast(this.lang.no_permission_edit_recorded_attendance || 'لا تملك صلاحية لتعديل غياب تم رصده مسبقاً');
       return;
     }
 
@@ -1182,20 +1182,20 @@ export class ListStudentPage {
     }
 
     if (this.isRestrictedModerator && !this.checkCurrentDate(this.dateSelected)) {
-      this.dataProvider.showToast('يسمح برصد الغياب لليوم الحالي فقط');
+      this.dataProvider.showToast(this.lang.attendance_today_only || 'يسمح برصد الغياب لليوم الحالي فقط');
       return;
     }
 
     if (this.isRestrictedModerator) {
       if (this.selectedSem !== -1 && this.selectedSem !== sem) {
-        this.dataProvider.showToast('الرجاء حفظ غياب الحصة المحددة حالياً قبل الانتقال لحصة أخرى');
+        this.dataProvider.showToast(this.lang.save_current_period_before_switching || 'الرجاء حفظ غياب الحصة المحددة حالياً قبل الانتقال لحصة أخرى');
         return;
       }
       this.selectedSem = sem;
     }
 
     if (this.isModeratorWithEdit && !this.isTodayOrYesterday(this.dateSelected)) {
-      this.dataProvider.showToast('يسمح بالتعديل لليوم الحالي أو الأمس فقط');
+      this.dataProvider.showToast(this.lang.edit_today_or_yesterday_only || 'يسمح بالتعديل لليوم الحالي أو الأمس فقط');
       return;
     }
 
@@ -1288,7 +1288,7 @@ export class ListStudentPage {
         })
         .catch(err => {
           this.dataProvider.hideLoading();
-          this.dataProvider.errorALertMessage('تعذر معالجة الصورة الرمزية، حاول مجدداً.');
+          this.dataProvider.errorALertMessage(this.lang.avatar_processing_error_retry || 'تعذر معالجة الصورة الرمزية، حاول مجدداً.');
         });
     }
   }
@@ -1335,7 +1335,7 @@ export class ListStudentPage {
           if (this.cdr) this.cdr.detectChanges();
         });
 
-        this.dataProvider.showToast('تم تحديث الصورة بنجاح');
+        this.dataProvider.showToast(this.lang.image_updated_success || 'تم تحديث الصورة بنجاح');
       } else {
         this.authProvider.flushLocalStorage();
         this.dataProvider.errorALertMessage(result.message || '');
@@ -1350,11 +1350,11 @@ export class ListStudentPage {
 
     if (this.isAdmin || this.isModerator) {
       if (!hasChanges) {
-        this.dataProvider.showToast('لا توجد تعديلات جديدة لحفظها.');
+        this.dataProvider.showToast(this.lang.no_new_changes_to_save || 'لا توجد تعديلات جديدة لحفظها.');
         return;
       }
       if (this.isModerator && this.isAnyModifiedPeriodIncomplete()) {
-        this.dataProvider.showToast('عذراً، يجب إكمال الحصة بالكامل قبل الحفظ.');
+        this.dataProvider.showToast(this.lang.complete_period_before_save || 'عذراً، يجب إكمال الحصة بالكامل قبل الحفظ.');
         return;
       }
       this.executeSaveAttendance();
@@ -1629,7 +1629,7 @@ export class ListStudentPage {
 
   toggleEditModeWithValidation() {
     if (this.isModeratorWithEdit && !this.isTodayOrYesterday(this.dateSelected)) {
-      this.dataProvider.showToast('عذراً، يسمح لك بالتعديل لليوم الحالي أو الأمس فقط');
+      this.dataProvider.showToast(this.lang.edit_today_or_yesterday_only_apology || 'عذراً، يسمح لك بالتعديل لليوم الحالي أو الأمس فقط');
       return;
     }
     this.toggleEditMode();
@@ -1640,7 +1640,7 @@ export class ListStudentPage {
     if (!this.editMode) {
       this.attendanceSheet = {};
       this.removeSheet = {};
-      this.dataProvider.showToast('تم إلغاء التعديلات بنجاح');
+      this.dataProvider.showToast(this.lang.changes_cancelled_success || 'تم إلغاء التعديلات بنجاح');
       this.getStudents(false);
     } else {
       this.dataProvider.showToast(this.lang.edit_mode_enabled || 'تم تفعيل وضع التعديل');

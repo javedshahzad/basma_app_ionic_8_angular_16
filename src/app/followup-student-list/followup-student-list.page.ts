@@ -574,10 +574,10 @@ export class FollowupStudentListPage {
             this.dataProvider.errorALertMessage(error);
           });
       } else {
-        this.dataProvider.showToast('لا توجد تعديلات لحفظها');
+        this.dataProvider.showToast(this.lang.no_changes_to_save || 'لا توجد تعديلات لحفظها');
       }
     } else {
-      this.dataProvider.showToast('الرجاء مراجعة الدرجات، بعض القيم تتجاوز الحد الأقصى.');
+      this.dataProvider.showToast(this.lang.review_grades_exceed_max || 'الرجاء مراجعة الدرجات، بعض القيم تتجاوز الحد الأقصى.');
     }
   }
 
@@ -852,7 +852,7 @@ export class FollowupStudentListPage {
         })
         .catch(err => {
           this.dataProvider.hideLoading();
-          this.dataProvider.errorALertMessage('تعذر معالجة الصورة الرمزية.');
+          this.dataProvider.errorALertMessage(this.lang.avatar_processing_error_short || 'تعذر معالجة الصورة الرمزية.');
         });
     }
   }
@@ -886,12 +886,12 @@ export class FollowupStudentListPage {
           this.cdr.detectChanges();
         });
 
-        this.dataProvider.showToast('تم تحديث صورة الطالب بنجاح');
+        this.dataProvider.showToast(this.lang.student_image_updated_success || 'تم تحديث صورة الطالب بنجاح');
       } else {
         this.dataProvider.errorALertMessage(result.message || '');
       }
     } catch {
-      this.dataProvider.errorALertMessage('حدث خطأ في الاتصال');
+      this.dataProvider.errorALertMessage(this.lang.connection_error_generic || 'حدث خطأ في الاتصال');
     }
   }
 

@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { NgClass } from '@angular/common';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DataService } from '../../service/data/data.service';
 import { GamificationApiService, SkillData } from '../../service/gamification-api/gamification-api.service';
 import {
@@ -45,14 +45,21 @@ export class StudentInventoryModalComponent {
   unlockedBadges: string[] = [];
   processedTitles: ProcessedTitle[] = [];
   processedBadges: ProcessedBadge[] = [];
+  lang: Record<string, string> = {};
 
   constructor(
     private dataProvider: DataService,
     private gamificationApi: GamificationApiService,
     public gamification: GamificationEngineService,
     private studentEngagement: StudentEngagementService,
+    private translate: TranslateService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.translate.get('alertmessages').subscribe(res => {
+      this.lang = res;
+      this.cdr.markForCheck();
+    });
+  }
 
   trackByTitleCode(index: number, title: { code?: string }): string | number {
     return title?.code ?? index;
@@ -120,7 +127,7 @@ export class StudentInventoryModalComponent {
 
   async craftTitle(title: ProcessedTitle) {
     if (!this.canCraft(title.cost)) {
-      this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.');
+      this.dataProvider.showToast(this.lang.insufficient_points_merge_title || 'عفواً، نقاطك لا تكفي لدمج هذا اللقب.');
       return;
     }
 

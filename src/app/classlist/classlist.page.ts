@@ -450,7 +450,7 @@ export class ClasslistPage implements OnInit {
           if (response.session) {
             this.getCourse(false);
             this.editingClass = {};
-            this.dataProvider.showToast('تم تحديث بيانات الصف بنجاح');
+            this.dataProvider.showToast(this.lang.class_data_updated_success || 'تم تحديث بيانات الصف بنجاح');
             this.cdr.markForCheck();
           } else {
             this.authProvider.flushLocalStorage();
@@ -494,7 +494,7 @@ export class ClasslistPage implements OnInit {
       })
       .catch(error => {
         console.error('Delete Error:', error);
-        this.dataProvider.errorALertMessage('حدث خطأ في الاتصال بالسيرفر، يرجى المحاولة لاحقاً.');
+        this.dataProvider.errorALertMessage(this.lang.server_connection_error_retry_later || 'حدث خطأ في الاتصال بالسيرفر، يرجى المحاولة لاحقاً.');
       });
   }
 

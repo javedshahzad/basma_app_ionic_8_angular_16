@@ -275,7 +275,7 @@ export class StudentsPage {
         // إذا قام بإلغاء التعديل، نصفر التغييرات ونعيد تحميل البيانات
         this.attendanceSheet = {};
         this.attMarkBegin = false;
-        this.dataProvider.showToast('تم إلغاء التعديلات');
+        this.dataProvider.showToast(this.lang.changes_cancelled || 'تم إلغاء التعديلات');
         this.getStudents(false);
       } else {
         this.dataProvider.showToast(this.lang.edit_mode_enabled || 'تم تفعيل وضع التعديل');
@@ -301,7 +301,7 @@ export class StudentsPage {
       if (this.editMode) {
         this.toggleAttendance(student);
       } else {
-        this.dataProvider.showToast('يرجى تفعيل وضع التعديل من الزر بالأسفل أولاً');
+        this.dataProvider.showToast(this.lang.enable_edit_mode_first || 'يرجى تفعيل وضع التعديل من الزر بالأسفل أولاً');
       }
     } else if (this.userType == UserType.Moderator && this.checkDateSelected(new Date())) {
       // 🟢 المشرف الإداري لا يحتاج لتفعيل نمط التعديل
@@ -472,7 +472,7 @@ export class StudentsPage {
                 this.editMode = false;
                 this.attMarkBegin = false;
                 this.getStudents(false);
-                this.dataProvider.showToast('تم الحفظ بنجاح');
+                this.dataProvider.showToast(this.lang.saved_successfully || 'تم الحفظ بنجاح');
               }
               this.cdr.markForCheck();
             })
@@ -503,7 +503,7 @@ export class StudentsPage {
               this.editMode = false;
               this.attMarkBegin = false;
               this.getStudents(false);
-              this.dataProvider.showToast('تم الحفظ بنجاح');
+              this.dataProvider.showToast(this.lang.saved_successfully || 'تم الحفظ بنجاح');
             }
             this.cdr.markForCheck();
           })
@@ -880,7 +880,7 @@ export class StudentsPage {
         })
         .catch(err => {
           this.dataProvider.hideLoading();
-          this.dataProvider.errorALertMessage('تعذر معالجة الصورة، يرجى المحاولة مجدداً.');
+          this.dataProvider.errorALertMessage(this.lang.image_processing_error_retry || 'تعذر معالجة الصورة، يرجى المحاولة مجدداً.');
         });
     }
   }
@@ -902,7 +902,7 @@ export class StudentsPage {
         this.ChangeStudentProfileAvatar(pureBase64);
       } catch (e) {
         this.dataProvider.hideLoading();
-        this.dataProvider.errorALertMessage('إعدادات المتصفح تمنع قراءة الصورة. يرجى التجربة من الجوال.');
+        this.dataProvider.errorALertMessage(this.lang.browser_blocks_image_read || 'إعدادات المتصفح تمنع قراءة الصورة. يرجى التجربة من الجوال.');
       }
     };
     img.onerror = error => {
@@ -914,7 +914,7 @@ export class StudentsPage {
         }
       } else {
         this.dataProvider.hideLoading();
-        this.dataProvider.errorALertMessage('المتصفح يمنع تحميل الصورة. يرجى التجربة من التطبيق.');
+        this.dataProvider.errorALertMessage(this.lang.browser_blocks_image_upload || 'المتصفح يمنع تحميل الصورة. يرجى التجربة من التطبيق.');
       }
     };
     img.src = url + '?t=' + new Date().getTime();
@@ -986,7 +986,7 @@ export class StudentsPage {
           this.cdr.detectChanges();
         });
 
-        this.dataProvider.showToast('تم تحديث صورة الطالب بنجاح');
+        this.dataProvider.showToast(this.lang.student_image_updated_success || 'تم تحديث صورة الطالب بنجاح');
       } else {
         this.authProvider.flushLocalStorage();
         this.dataProvider.errorALertMessage(result.message || '');
@@ -994,7 +994,7 @@ export class StudentsPage {
       }
     } catch (error) {
       this.dataProvider.hideLoading();
-      this.dataProvider.errorALertMessage('حدث خطأ في الاتصال بالخادم.');
+      this.dataProvider.errorALertMessage(this.lang.connection_error_with_server || 'حدث خطأ في الاتصال بالخادم.');
     }
   }
 

@@ -483,7 +483,7 @@ export class StudentReportManagePage implements OnInit {
               printWindow.focus();
               setTimeout(() => printWindow.print(), 500);
             } else {
-              this.dataProvider.showToast('يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
+              this.dataProvider.showToast(this.lang.allow_popups_for_print || 'يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
             }
           }
         } else {
@@ -529,7 +529,7 @@ export class StudentReportManagePage implements OnInit {
                   printWindow.focus();
                   setTimeout(() => printWindow.print(), 500);
                 } else {
-                  this.dataProvider.showToast('يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
+                  this.dataProvider.showToast(this.lang.allow_popups_for_print || 'يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
                 }
               }
             } else {
@@ -574,7 +574,7 @@ export class StudentReportManagePage implements OnInit {
                   printWindow.focus();
                   setTimeout(() => printWindow.print(), 500);
                 } else {
-                  this.dataProvider.showToast('يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
+                  this.dataProvider.showToast(this.lang.allow_popups_for_print || 'يرجى السماح بالنوافذ المنبثقة (Pop-ups) للطباعة');
                 }
               }
             } else {

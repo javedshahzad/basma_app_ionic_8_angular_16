@@ -335,7 +335,7 @@ export class StudentTitlesPage {
 
   async craftTitle(title: AlchemyTitle) {
     if (!this.canCraft(title.cost)) {
-      this.dataProvider.showToast('عفواً، نقاطك لا تكفي لدمج هذا اللقب.');
+      this.dataProvider.showToast(this.lang.insufficient_points_merge_title || 'عفواً، نقاطك لا تكفي لدمج هذا اللقب.');
       return;
     }
     let sid = this.userInfo.stu_id!;
@@ -361,7 +361,7 @@ export class StudentTitlesPage {
         this.dataProvider.errorALertMessage(res.msg || '');
       }
     } catch (e) {
-      this.dataProvider.showToast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
+      this.dataProvider.showToast(this.lang.connection_error_retry_later || 'حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
     }
     this.cdr.markForCheck();
   }
@@ -384,7 +384,7 @@ export class StudentTitlesPage {
         this.updateStudentTitle();
       }
     } catch (e) {
-      this.dataProvider.showToast('حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
+      this.dataProvider.showToast(this.lang.connection_error_retry_later || 'حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.');
     }
     this.cdr.markForCheck();
   }

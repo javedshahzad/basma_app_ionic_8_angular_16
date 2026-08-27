@@ -1083,7 +1083,7 @@ export class StudentDetailPage {
           })
           .catch(err => {
             this.dataProvider.hideLoading();
-            this.dataProvider.errorALertMessage('تعذر معالجة الصورة الرمزية، يرجى المحاولة مرة أخرى.');
+            this.dataProvider.errorALertMessage(this.lang.avatar_processing_error || 'تعذر معالجة الصورة الرمزية، يرجى المحاولة مرة أخرى.');
           });
       }
     });
@@ -1107,7 +1107,7 @@ export class StudentDetailPage {
 
       if (result.success) {
         this.studentDetails.pic = result.url;
-        this.dataProvider.showToast('تم تحديث الصورة بنجاح');
+        this.dataProvider.showToast(this.lang.image_updated_success || 'تم تحديث الصورة بنجاح');
       } else {
         this.authProvider.flushLocalStorage();
         this.dataProvider.errorALertMessage(result.message || '');
@@ -1398,12 +1398,12 @@ export class StudentDetailPage {
                   this.openHtmlInBrowser(htmlContent);
                 }
               } else {
-                this.dataProvider.showToast('تعذر جلب بيانات التقرير من الخادم');
+                this.dataProvider.showToast(this.lang.report_fetch_error || 'تعذر جلب بيانات التقرير من الخادم');
               }
             })
             .catch(e => {
               this.dataProvider.hideLoading();
-              this.dataProvider.showToast('خطأ في الاتصال بسيرفر التقارير');
+              this.dataProvider.showToast(this.lang.report_server_connection_error || 'خطأ في الاتصال بسيرفر التقارير');
             });
         } else {
           this.reportsApi.getStudentReport(studentData).then(
@@ -1444,7 +1444,7 @@ export class StudentDetailPage {
         printWindow.print();
       }, 1000);
     } else {
-      this.dataProvider.showToast('يرجى السماح بالنوافذ المنبثقة (Pop-ups) لعرض التقرير');
+      this.dataProvider.showToast(this.lang.allow_popups_for_report || 'يرجى السماح بالنوافذ المنبثقة (Pop-ups) لعرض التقرير');
     }
   }
 

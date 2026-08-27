@@ -121,7 +121,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
 
   async submitApplication() {
     if (!this.selectedDate || this.selectedSeminar.length === 0) {
-      this.dataProvider.showToast('يجب تحديد التاريخ والحصص لتقديم الطلب!');
+      this.dataProvider.showToast(this.lang.select_date_and_periods_required || 'يجب تحديد التاريخ والحصص لتقديم الطلب!');
       return;
     }
 
@@ -152,7 +152,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
         }, 1000);
       }
     } catch (error) {
-      this.dataProvider.showToast('حدث خطأ أثناء الاتصال بالخادم');
+      this.dataProvider.showToast(this.lang.server_connection_error || 'حدث خطأ أثناء الاتصال بالخادم');
     }
   }
 

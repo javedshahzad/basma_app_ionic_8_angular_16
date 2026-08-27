@@ -246,7 +246,7 @@ export class AddUserPage implements OnInit {
       this.usersData.email_id.trim() !== '' &&
       !this.usersData.email_id.match(this.validRegex)
     ) {
-      this.dataProvider.showToast('صيغة البريد الإلكتروني غير صحيحة');
+      this.dataProvider.showToast(this.lang.invalid_email_format || 'صيغة البريد الإلكتروني غير صحيحة');
       this.email_validation = true;
       is_validate = false;
     }
@@ -267,14 +267,14 @@ export class AddUserPage implements OnInit {
 
     // 4. كلمة المرور (إلزامي)
     if (!this.usersData.password || this.usersData.password == '') {
-      this.dataProvider.showToast('كلمة المرور مطلوبة');
+      this.dataProvider.showToast(this.lang.password_required || 'كلمة المرور مطلوبة');
       this.password_validation = true;
       is_validate = false;
     }
 
     // 5. تأكيد كلمة المرور (إلزامي ومتطابق)
     if (!this.usersData.confirm_password || this.usersData.confirm_password != this.usersData.password) {
-      this.dataProvider.showToast('كلمات المرور غير متطابقة');
+      this.dataProvider.showToast(this.lang.passwords_do_not_match || 'كلمات المرور غير متطابقة');
       this.confirm_password_validation = true;
       is_validate = false;
     }
