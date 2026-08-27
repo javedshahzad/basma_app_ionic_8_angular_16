@@ -32,7 +32,7 @@
         >
           <ion-icon name="checkmark-circle" class="text-5xl"></ion-icon>
         </div>
-        <h2 class="text-lg font-black text-slate-800">تمت العملية بنجاح</h2>
+        <h2 class="text-lg font-black text-slate-800">{{'plan.success_title' | translate}}</h2>
       </div>
     }
 
@@ -44,8 +44,8 @@
         >
           <ion-icon name="receipt-outline" class="text-5xl"></ion-icon>
         </div>
-        <h2 class="text-lg font-black text-slate-800">مراجعة الطلب</h2>
-        <p class="text-xs text-slate-500 font-bold mt-1">الرجاء مراجعة تفاصيل الخطة قبل التأكيد</p>
+        <h2 class="text-lg font-black text-slate-800">{{'plan.review_request_title' | translate}}</h2>
+        <p class="text-xs text-slate-500 font-bold mt-1">{{'plan.review_request_subtitle' | translate}}</p>
       </div>
     }
 
@@ -87,7 +87,7 @@
               : 'bg-amber-50 text-amber-600 border border-amber-100'
           "
         >
-          {{ isSuccessBool ? 'Approved' : 'Pending' }}
+          {{ isSuccessBool ? ('plan.approved' | translate) : ('plan.pending' | translate) }}
         </span>
       </div>
 
@@ -110,7 +110,7 @@
         class="w-full py-4 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all active:scale-95 hover:bg-indigo-700 flex items-center justify-center gap-2"
       >
         <ion-icon name="checkmark-done-outline" class="text-xl"></ion-icon>
-        تأكيد الطلب
+        {{'plan.confirm_request_btn' | translate}}
       </button>
     }
 
@@ -120,7 +120,7 @@
         class="w-full py-4 rounded-xl font-black text-white text-sm bg-emerald-500 shadow-md shadow-emerald-200 transition-all active:scale-95 hover:bg-emerald-600 flex items-center justify-center gap-2"
       >
         <ion-icon name="checkmark-outline" class="text-xl"></ion-icon>
-        إنهاء
+        {{'plan.finish_btn' | translate}}
       </button>
     }
   </div>

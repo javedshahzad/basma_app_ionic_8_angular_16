@@ -34,27 +34,27 @@
               @if (student.current_streak >= 10) {
               <span
                 class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse"
-                title="أسطورة الالتزام"
+                [title]="'children.streak_legend_title' | translate"
                 ><ion-icon name="flame"></ion-icon
                 ><span class="text-4xs font-bold">{{student.current_streak}}</span></span
               >
               } @if (student.current_streak >= 5 && student.current_streak < 10) {
               <span
                 class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0"
-                title="مشتعل"
+                [title]="'children.streak_fire_title' | translate"
                 ><ion-icon name="flame"></ion-icon
                 ><span class="text-4xs font-bold">{{student.current_streak}}</span></span
               >
               } @if (student.isFrozen) {
               <span
                 class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
-                ><ion-icon name="snow"></ion-icon> مجمد</span
+                ><ion-icon name="snow"></ion-icon> {{'children.frozen_label' | translate}}</span
               >
               }
             </div>
             <div class="space-y-1.5">
               <div class="flex items-center gap-1">
-                <span class="text-slate-500 text-2xs font-bold">المستوى: </span>
+                <span class="text-slate-500 text-2xs font-bold">{{'children.level_label' | translate}}</span>
                 <span
                   class="text-2xs font-black uppercase tracking-wider"
                   [ngClass]="getStudentBehaviourColor(student)"
@@ -63,7 +63,7 @@
                 </span>
               </div>
               <div class="flex items-center gap-1.5 mt-1">
-                <span class="text-slate-500 text-3xs font-bold">اللقب: </span>
+                <span class="text-slate-500 text-3xs font-bold">{{'children.title_label' | translate}}</span>
                 <span
                   class="text-amber-600 text-2xs font-black italic tracking-wide bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100/50"
                 >
@@ -80,12 +80,12 @@
           <div class="flex items-center gap-2">
             <ion-icon name="calendar-outline" class="text-slate-400 text-sm"></ion-icon>
             <span class="text-3xs text-slate-500 font-bold uppercase tracking-wider"
-              >إجمالي الغياب: {{student?.attendance || 0}}</span
+              >{{'children.total_absence_prefix' | translate}}{{student?.attendance || 0}}</span
             >
           </div>
           <div class="flex items-center gap-2">
             <span class="text-3xs text-rose-500 font-black bg-rose-50 px-2 py-1 rounded-lg border border-rose-100">
-              {{student?.unacceptable_absent_days || 0}} غياب بدون عذر مقبول
+              {{student?.unacceptable_absent_days || 0}} {{'children.unexcused_absence_suffix' | translate}}
             </span>
           </div>
         </div>

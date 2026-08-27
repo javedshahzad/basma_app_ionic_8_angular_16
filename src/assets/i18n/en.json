@@ -86,6 +86,13 @@
     "endOn": "End On",
     "status": "Status",
     "orderId":"Order ID",
+    "success_title": "Successfully Completed",
+    "review_request_title": "Review Request",
+    "review_request_subtitle": "Please review the plan details before confirming",
+    "approved": "Approved",
+    "pending": "Pending",
+    "confirm_request_btn": "Confirm Request",
+    "finish_btn": "Finish",
     "available": "Available",
     "expired": "Expired",
     "noPlan": "No plan subscribed yet",
@@ -452,7 +459,14 @@
   "children": {
     "title": "Children",
     "a_d": "A/D",
-    "student_name": "Student Names"
+    "student_name": "Student Names",
+    "streak_legend_title": "Consistency Legend",
+    "streak_fire_title": "On Fire",
+    "frozen_label": "Frozen",
+    "level_label": "Level: ",
+    "title_label": "Title: ",
+    "total_absence_prefix": "Total absences: ",
+    "unexcused_absence_suffix": "unexcused absences"
   },
   "private_msg": {
     "title": "Notifications",
@@ -509,7 +523,12 @@
     "school_settings_title": "School Settings"
   },
   "eLearning": {
-    "title": "eLearning Material"
+    "title": "eLearning Material",
+    "no_schools_title": "No Schools",
+    "no_lessons_text": "No lessons available in this section right now",
+    "no_content_title": "No Content",
+    "no_content_text": "Educational content for this school is not available right now.",
+    "related_videos_title": "Related Videos"
   },
   "delaylist": {
     "title": "Delay List",
@@ -559,7 +578,11 @@
   },
   "parentconnect": {
     "pagetitle": "Parent Connect",
-    "pagetitlestudent": "School Connect"
+    "pagetitlestudent": "School Connect",
+    "view_attachment_btn": "View Attachment",
+    "no_messages_title": "No Messages",
+    "no_messages_fallback": "No conversations or inquiries have been recorded yet.",
+    "download_attachment_btn": "Download Attachment"
   },
   "parentconnect_chat": {
     "pagetitle": "Connect Chat",

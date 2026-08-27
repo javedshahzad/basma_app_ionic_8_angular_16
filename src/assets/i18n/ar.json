@@ -326,7 +326,14 @@
   "children": {
     "title": "ولي الأمر",
     "a_d": "إجمالي الغياب",
-    "student_name": "قائمة الطلاب"
+    "student_name": "قائمة الطلاب",
+    "streak_legend_title": "أسطورة الالتزام",
+    "streak_fire_title": "مشتعل",
+    "frozen_label": "مجمد",
+    "level_label": "المستوى: ",
+    "title_label": "اللقب: ",
+    "total_absence_prefix": "إجمالي الغياب: ",
+    "unexcused_absence_suffix": "غياب بدون عذر مقبول"
   },
   "private_msg": {
     "title": "إشعارات",
@@ -383,7 +390,12 @@
     "school_settings_title": "إعدادات المدرسة"
   },
   "eLearning": {
-    "title": "المحتوى التعليمي"
+    "title": "المحتوى التعليمي",
+    "no_schools_title": "لا توجد مدارس",
+    "no_lessons_text": "لا توجد دروس متوفرة في هذا القسم حالياً",
+    "no_content_title": "لا يوجد محتوى",
+    "no_content_text": "المحتوى التعليمي لهذه المدرسة غير متاح حالياً.",
+    "related_videos_title": "مقاطع ذات صلة"
   },
   "delaylist": {
     "title": "قائمة التأخير",
@@ -433,7 +445,11 @@
   },
   "parentconnect": {
     "pagetitle": "تواصل",
-    "pagetitlestudent": "تواصل"
+    "pagetitlestudent": "تواصل",
+    "view_attachment_btn": "عرض المرفق",
+    "no_messages_title": "لا توجد رسائل",
+    "no_messages_fallback": "لا يوجد أي تواصل أو استفسارات مسجلة حتى الآن.",
+    "download_attachment_btn": "تحميل المرفق"
   },
   "parentconnect_chat": {
     "pagetitle": "المحادثة المباشرة",
@@ -732,6 +748,13 @@
     "endOn": "ينتهي في",
     "orderId":"معرف الطلب",
     "status": "حالة",
+    "success_title": "تمت العملية بنجاح",
+    "review_request_title": "مراجعة الطلب",
+    "review_request_subtitle": "الرجاء مراجعة تفاصيل الخطة قبل التأكيد",
+    "approved": "تمت الموافقة",
+    "pending": "قيد المراجعة",
+    "confirm_request_btn": "تأكيد الطلب",
+    "finish_btn": "إنهاء",
     "available": "متاح",
     "expired": "تاريخ الانتهاء",
     "noPlan": "لم يتم الاشتراك في أي خطة حتى الآن",

@@ -79,7 +79,7 @@
               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 text-2xs font-bold transition-colors hover:bg-indigo-100 border border-indigo-100"
               (click)="$event.stopPropagation(); openImageContainer(chatuser.message_image)"
             >
-              <ion-icon name="image-outline" class="text-sm"></ion-icon> عرض المرفق
+              <ion-icon name="image-outline" class="text-sm"></ion-icon> {{'parentconnect.view_attachment_btn' | translate}}
             </button>
             }
           </div>
@@ -128,9 +128,9 @@
       >
         <ion-icon name="chatbubbles-outline" class="text-5xl"></ion-icon>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">لا توجد رسائل</h3>
+      <h3 class="text-lg font-bold text-slate-800 mb-2">{{'parentconnect.no_messages_title' | translate}}</h3>
       <p class="text-sm font-medium text-slate-500 text-center max-w-xs leading-relaxed">
-        {{noDataFound || 'لا يوجد أي تواصل أو استفسارات مسجلة حتى الآن.'}}
+        {{noDataFound || ('parentconnect.no_messages_fallback' | translate)}}
       </p>
     </div>
     }
@@ -152,7 +152,7 @@
     class="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-200 transition-all active:scale-95"
     (click)="$event.stopPropagation(); downloadImage(imageUrl)"
   >
-    <ion-icon name="download-outline" class="text-xl"></ion-icon> تحميل المرفق
+    <ion-icon name="download-outline" class="text-xl"></ion-icon> {{'parentconnect.download_attachment_btn' | translate}}
   </button>
   <div
     class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto"
