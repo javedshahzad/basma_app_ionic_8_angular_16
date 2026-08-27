@@ -18,7 +18,7 @@
   <div class="p-4 max-w-2xl mx-auto space-y-4 pb-8">
     @if (notifications?.length > 0) {
     <div class="space-y-4">
-      @for (notification of notifications; track notification; let i = $index) {
+      @for (notification of notifications; track notification.ID; let i = $index) {
       <div
         class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 transition-all hover:shadow-md hover:border-indigo-100 relative overflow-hidden"
       >

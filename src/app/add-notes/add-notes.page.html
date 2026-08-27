@@ -122,7 +122,7 @@
                 placeholder="تحديد الحصة"
                 class="w-full text-sm font-bold text-slate-800 py-2"
               >
-                @for (seminar of getSeminars(); track seminar; let i = $index) {
+                @for (seminar of getSeminars(); track $index; let i = $index) {
                 <ion-select-option [value]="(i+1)">{{i+1}}</ion-select-option>
                 }
               </ion-select>

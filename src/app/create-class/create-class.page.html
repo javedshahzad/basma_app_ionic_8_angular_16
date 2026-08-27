@@ -133,7 +133,7 @@
             class="w-full text-sm font-bold text-slate-700 m-0 py-0 outline-none"
             required
           >
-            @for (seminar of getSeminars(); track seminar; let i = $index) {
+            @for (seminar of getSeminars(); track $index; let i = $index) {
             <ion-select-option [value]="(i+1)">{{i+1}}</ion-select-option>
             }
           </ion-select>
