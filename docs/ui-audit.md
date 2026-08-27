@@ -185,15 +185,22 @@ Footers, the logout button, action sheets, and custom modal footers all correctl
 | 5 | ⚠️ Touch targets <44px (global classes) | Major | Fixed Pass 3: `.rounded-btn`, `ion-menu-button`, the 3 cited modal buttons; not an exhaustive app-wide sweep |
 | 3 | ✅ `ion-header` border !important fight | Major | Fixed Pass 3 — all 76 headers now set `ion-no-border` directly, global override deleted |
 | 4 | ~~`mode="ios"`/`"md"` mixed~~ — corrected: deliberate form-control convention, left as-is | — | None (user-confirmed no action) |
-| 8 | 6 font-weights vs 3-weight system | Major | Medium (systematic reassignment) |
-| 6 | 13 font sizes vs 5-6 target | Major | Large (231+ call sites) |
+| 8 | 6 font-weights vs 3-weight system | Major | Medium (systematic reassignment) — not started |
+| 6 | ✅ Arbitrary font sizes consolidated onto the token scale | Major | Fixed Pass 4, app-wide (231+ call sites) — 3 genuine one-offs left disclosed |
 | 11 | Missing retry affordance after a failed request (loading skeletons themselves are fine — corrected finding) | Minor | Medium (1 reusable component, roll out) |
-| 7 | 11 radius values | Minor | Large (376+ call sites) |
+| 7 | ✅ Arbitrary radius values consolidated onto the token scale | Minor | Fixed Pass 4, app-wide (376+ call sites) — 1 genuine one-off left disclosed |
 | 10 | `!important`/raw-hex override culture | Minor | Ongoing discipline, not a one-time fix |
 | 12 | Transition duration inconsistency | Minor | Low priority, document only |
 | 13 | Legacy custom-modal-main system | Minor | Medium (trace usages, migrate) |
 | 15 | `/uploads/default_avatar.png` 404 on every page load | Minor | Trivial (1 binding or 1 backend field) |
+| 16 | ✅ Opacity modifiers (`bg-slate-900/40`, `bg-surface-alt/90`) silently resolved fully transparent | Blocker | Fixed Pass 4 — regression introduced by Pass 1 itself, not in the original audit |
 | 14 | Safe-area handling | — | None (already good) |
+
+## Addendum — Pass 1 regression found and fixed during Pass 4
+
+Not in the original audit — introduced by Pass 1's own token work and only surfaced during Pass 4's verification. `tailwind.config.js`'s `slate`/`indigo`/`surface`/`surface-alt`/`muted` color overrides were defined as plain `var(--color-x)` references. That renders correctly for solid classes (`bg-slate-50`) but any Tailwind opacity modifier on those colors (`bg-slate-900/40`, `bg-surface-alt/90` — 66+ sites app-wide, including modal/popup backdrops) silently computed to fully transparent instead of the intended translucent color. The underlying cause: Tailwind's opacity-modifier syntax needs `rgb(var(...) / <alpha-value>)`, and the CSS variables backing these colors used comma-separated triplets (`248, 250, 252`) rather than the space-separated form that syntax requires — an invalid combination that browsers discard silently rather than erroring, so it never showed up in any build or lint output.
+
+Found via a git-stash before/after pixel-diff on `users-list` coming back non-trivial (2.7%) instead of the expected near-zero, then confirmed directly against real DOM elements' computed `background-color` (not synthetic test nodes — those aren't scanned by Tailwind's JIT compiler and produce false negatives). Fixed by adding space-separated R-G-B custom properties for every affected color. This means every backdrop/overlay dimming effect using these color names has been rendering as fully transparent (no visible dimming at all) since Pass 1 shipped — worth specifically re-checking any modal/popup that looked "off" between then and this fix.
 
 ## Addendum — full 5-role screenshot pass (follow-up)
 
