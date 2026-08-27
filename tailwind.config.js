@@ -45,30 +45,37 @@ module.exports = {
         "card-soft": "var(--shadow-card-soft)",
       },
       colors: {
+        // rgb(var(...) / <alpha-value>) — NOT a plain var() reference —
+        // is required so opacity modifiers keep working, e.g.
+        // bg-slate-900/40 or bg-surface-alt/90. A plain var() reference
+        // silently resolves to fully transparent under any /NN modifier
+        // instead of erroring, so this was caught late (Pass 4) via a
+        // live computed-style check, not a build error. See
+        // src/theme/tokens.scss's *-rgb triplets.
         slate: {
-          50: "var(--color-neutral-50)",
-          100: "var(--color-neutral-100)",
-          200: "var(--color-neutral-200)",
-          300: "var(--color-neutral-300)",
-          400: "var(--color-neutral-400)",
-          500: "var(--color-neutral-500)",
-          600: "var(--color-neutral-600)",
-          700: "var(--color-neutral-700)",
-          800: "var(--color-neutral-800)",
-          900: "var(--color-neutral-900)",
+          50: "rgb(var(--color-neutral-50-rgb) / <alpha-value>)",
+          100: "rgb(var(--color-neutral-100-rgb) / <alpha-value>)",
+          200: "rgb(var(--color-neutral-200-rgb) / <alpha-value>)",
+          300: "rgb(var(--color-neutral-300-rgb) / <alpha-value>)",
+          400: "rgb(var(--color-neutral-400-rgb) / <alpha-value>)",
+          500: "rgb(var(--color-neutral-500-rgb) / <alpha-value>)",
+          600: "rgb(var(--color-neutral-600-rgb) / <alpha-value>)",
+          700: "rgb(var(--color-neutral-700-rgb) / <alpha-value>)",
+          800: "rgb(var(--color-neutral-800-rgb) / <alpha-value>)",
+          900: "rgb(var(--color-neutral-900-rgb) / <alpha-value>)",
         },
         indigo: {
-          50: "var(--color-accent-50)",
-          100: "var(--color-accent-100)",
-          400: "var(--color-accent-400)",
-          500: "var(--color-accent-500)",
-          600: "var(--color-accent-600)",
-          700: "var(--color-accent-700)",
+          50: "rgb(var(--color-accent-50-rgb) / <alpha-value>)",
+          100: "rgb(var(--color-accent-100-rgb) / <alpha-value>)",
+          400: "rgb(var(--color-accent-400-rgb) / <alpha-value>)",
+          500: "rgb(var(--color-accent-500-rgb) / <alpha-value>)",
+          600: "rgb(var(--color-accent-600-rgb) / <alpha-value>)",
+          700: "rgb(var(--color-accent-700-rgb) / <alpha-value>)",
         },
         // semantic aliases for the neutral/accent roles pages actually reach for
-        surface: "var(--color-surface)",
-        "surface-alt": "var(--color-surface-alt)",
-        muted: "var(--color-text-muted)",
+        surface: "rgb(var(--color-surface-rgb) / <alpha-value>)",
+        "surface-alt": "rgb(var(--color-surface-alt-rgb) / <alpha-value>)",
+        muted: "rgb(var(--color-text-muted-rgb) / <alpha-value>)",
       },
     },
   },
