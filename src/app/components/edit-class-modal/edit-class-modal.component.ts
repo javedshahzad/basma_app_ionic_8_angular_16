@@ -2,12 +2,13 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ModalController, IonicModule } from '@ionic/angular';
 import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-edit-class-modal',
     templateUrl: './edit-class-modal.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [IonicModule, NgClass, FormsModule]
+    imports: [IonicModule, NgClass, FormsModule, TranslatePipe]
 })
 export class EditClassModalComponent {
   // 📥 استقبال بيانات الصف والقوائم المنسدلة من الصفحة الرئيسية

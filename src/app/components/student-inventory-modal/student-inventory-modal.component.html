@@ -11,7 +11,7 @@
       <div class="flex flex-col px-4 pb-2 border-b border-slate-100">
         <div class="flex justify-between items-center mb-3">
           <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
-            <ion-icon name="flask" class="text-indigo-500 text-xl"></ion-icon> خزانة الطالب
+            <ion-icon name="flask" class="text-indigo-500 text-xl"></ion-icon> {{'gamification.student_inventory_title' | translate}}
           </h3>
           <button
             (click)="close()"
@@ -27,14 +27,14 @@
             [ngClass]="inventoryTab === 'titles' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'"
             (click)="inventoryTab = 'titles'"
           >
-            🧪 دمج الألقاب
+            {{'gamification.merge_titles_tab' | translate}}
           </button>
           <button
             class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all"
             [ngClass]="inventoryTab === 'badges' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'"
             (click)="inventoryTab = 'badges'"
           >
-            🥷 الإنجازات السرية
+            {{'gamification.secret_achievements_tab' | translate}}
           </button>
         </div>
       </div>
@@ -48,25 +48,25 @@
               class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between mb-4"
             >
               <div>
-                <h4 class="text-sm font-black text-slate-700 m-0">اللقب الديناميكي (التلقائي)</h4>
-                <p class="text-3xs text-slate-400 m-0">يتغير تلقائياً حسب أعلى مهارة.</p>
+                <h4 class="text-sm font-black text-slate-700 m-0">{{'gamification.dynamic_title_label' | translate}}</h4>
+                <p class="text-3xs text-slate-400 m-0">{{'gamification.dynamic_title_desc' | translate}}</p>
               </div>
               @if (activeCraftedTitle !== null) {
                 <button
                   (click)="toggleTitle(null)"
                   class="text-xs font-bold bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg active:scale-95"
                 >
-                  تفعيل الافتراضي
+                  {{'gamification.activate_default_btn' | translate}}
                 </button>
               }
               @if (activeCraftedTitle === null) {
                 <span
                   class="text-xs font-bold bg-emerald-50 text-emerald-600 px-3 py-1 border border-emerald-200 rounded-lg"
-                  >✅ مفعل حالياً</span
+                  >{{'gamification.currently_active_label' | translate}}</span
                 >
               }
             </div>
-            <h3 class="text-xs font-bold text-slate-500 mb-3 px-1">الألقاب المتاحة للدمج (الوصفات)</h3>
+            <h3 class="text-xs font-bold text-slate-500 mb-3 px-1">{{'gamification.available_titles_label' | translate}}</h3>
             <div class="grid grid-cols-1 gap-3">
               @for (title of processedTitles; track trackByTitleCode($index, title)) {
                 <div
@@ -89,7 +89,7 @@
                         @if (activeCraftedTitle === title.code) {
                           <span
                             class="text-4xs bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-200"
-                            >مُفعل</span
+                            >{{'gamification.active_badge_label' | translate}}</span
                           >
                         }
                       </h4>
@@ -145,7 +145,7 @@
                         (click)="toggleTitle(title.code)"
                         class="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-lg active:scale-95"
                       >
-                        تفعيل اللقب
+                        {{'gamification.activate_title_btn' | translate}}
                       </button>
                     }
                     @if (!title.isUnlocked) {
@@ -158,7 +158,7 @@
                             : 'bg-slate-100 text-slate-400 pointer-events-none'
                         "
                       >
-                        <ion-icon name="color-wand" class="mr-1"></ion-icon> دمج اللقب
+                        <ion-icon name="color-wand" class="mr-1"></ion-icon> {{'gamification.craft_title_btn' | translate}}
                       </button>
                     }
                   </div>
@@ -172,7 +172,7 @@
           <div>
             <div class="bg-indigo-50 border border-indigo-100 p-3 rounded-xl mb-4 text-center">
               <p class="text-2xs text-indigo-600 font-bold m-0">
-                اكتشف الأسرار المخفية! قم بأفعال مميزة داخل المدرسة لفك شفرة هذه الأوسمة النادرة.
+                {{'gamification.badges_intro_text' | translate}}
               </p>
             </div>
             <div class="grid grid-cols-2 gap-3">
@@ -184,7 +184,7 @@
                   @if (!badge.isUnlocked) {
                     <div class="opacity-40 grayscale flex flex-col items-center justify-center h-full">
                       <div class="text-4xl mb-1">❓</div>
-                      <h4 class="text-xs font-black text-slate-800 m-0 mb-1">وسام سري</h4>
+                      <h4 class="text-xs font-black text-slate-800 m-0 mb-1">{{'gamification.secret_badge_label' | translate}}</h4>
                       <p class="text-4xs text-slate-500 m-0 italic whitespace-normal break-words leading-relaxed">
                         "{{ badge.hint }}"
                       </p>

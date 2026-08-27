@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center px-4 pb-2 border-b border-slate-100">
     <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
       <ion-icon name="medal" class="text-amber-500 text-xl"></ion-icon>
-      تقييم مهارات الطالب
+      {{'gamification.skill_evaluation_title' | translate}}
     </h3>
     <button (click)="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-rose-100 hover:text-rose-500 flex items-center justify-center transition-all">
       <ion-icon name="close" class="text-xl"></ion-icon>
@@ -14,15 +14,15 @@
   <div class="p-4 space-y-3 pb-8" dir="rtl">
     
     <div class="text-center mb-4">
-      <h2 class="text-sm font-bold text-slate-600 m-0">كيف أبدع <span class="text-indigo-600 font-black">{{student?.name}}</span> اليوم؟</h2>
+      <h2 class="text-sm font-bold text-slate-600 m-0">{{'gamification.how_did_excel_prefix' | translate}} <span class="text-indigo-600 font-black">{{student?.name}}</span> {{'gamification.how_did_excel_suffix' | translate}}</h2>
     </div>
 
     <div class="flex items-center justify-between p-3 bg-amber-50 border border-slate-100 shadow-sm rounded-2xl transition-all hover:border-amber-300">
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 border border-amber-100 shrink-0"><ion-icon name="bulb" class="text-2xl"></ion-icon></div>
         <div>
-          <h4 class="text-sm font-black text-slate-800 m-0">العبقرية العلمية</h4>
-          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">إجابة ذكية، مشاركة مميزة</p>
+          <h4 class="text-sm font-black text-slate-800 m-0">{{'gamification.cognitive_label' | translate}}</h4>
+          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">{{'gamification.cognitive_hint' | translate}}</p>
         </div>
       </div>
       <div class="flex items-center gap-1.5 shrink-0" dir="ltr">
@@ -36,8 +36,8 @@
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 border border-blue-100 shrink-0"><ion-icon name="chatbubbles" class="text-2xl"></ion-icon></div>
         <div>
-          <h4 class="text-sm font-black text-slate-800 m-0">التواصل والتعاون</h4>
-          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">مساعدة الزملاء، روح الفريق</p>
+          <h4 class="text-sm font-black text-slate-800 m-0">{{'gamification.social_label' | translate}}</h4>
+          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">{{'gamification.social_hint' | translate}}</p>
         </div>
       </div>
       <div class="flex items-center gap-1.5 shrink-0" dir="ltr">
@@ -51,8 +51,8 @@
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 border border-emerald-100 shrink-0"><ion-icon name="shield-checkmark" class="text-2xl"></ion-icon></div>
         <div>
-          <h4 class="text-sm font-black text-slate-800 m-0">الانضباط والمسؤولية</h4>
-          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">حل الواجب، الهدوء، الترتيب</p>
+          <h4 class="text-sm font-black text-slate-800 m-0">{{'gamification.discipline_label' | translate}}</h4>
+          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">{{'gamification.discipline_hint' | translate}}</p>
         </div>
       </div>
       <div class="flex items-center gap-1.5 shrink-0" dir="ltr">
@@ -66,8 +66,8 @@
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500 border border-rose-100 shrink-0"><ion-icon name="heart" class="text-2xl"></ion-icon></div>
         <div>
-          <h4 class="text-sm font-black text-slate-800 m-0">الذكاء العاطفي</h4>
-          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">التعاطف، التحكم في الغضب</p>
+          <h4 class="text-sm font-black text-slate-800 m-0">{{'gamification.emotional_label' | translate}}</h4>
+          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">{{'gamification.emotional_hint' | translate}}</p>
         </div>
       </div>
       <div class="flex items-center gap-1.5 shrink-0" dir="ltr">
@@ -81,8 +81,8 @@
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500 border border-purple-100 shrink-0"><ion-icon name="laptop" class="text-2xl"></ion-icon></div>
         <div>
-          <h4 class="text-sm font-black text-slate-800 m-0">المهارات العملية</h4>
-          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">الإبداع، التنظيم، الفنون</p>
+          <h4 class="text-sm font-black text-slate-800 m-0">{{'gamification.practical_label' | translate}}</h4>
+          <p class="text-3xs font-bold text-slate-400 m-0 mt-0.5">{{'gamification.practical_hint' | translate}}</p>
         </div>
       </div>
       <div class="flex items-center gap-1.5 shrink-0" dir="ltr">

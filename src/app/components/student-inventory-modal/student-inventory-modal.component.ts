@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { NgClass } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { DataService } from '../../service/data/data.service';
 import { GamificationApiService, SkillData } from '../../service/gamification-api/gamification-api.service';
 import {
@@ -21,7 +22,7 @@ import { StudentEngagementService } from '../../service/student-engagement/stude
 @Component({
   selector: 'app-student-inventory-modal',
   templateUrl: './student-inventory-modal.component.html',
-  imports: [IonicModule, NgClass],
+  imports: [IonicModule, NgClass, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudentInventoryModalComponent {
