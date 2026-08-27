@@ -8,7 +8,10 @@
     "remember_me": "Remember login info",
     "register_school": "School Registration",
     "or": "OR",
-    "forgot": "Forgot Password ?"
+    "forgot": "Forgot Password ?",
+    "app_logo_alt": "App Logo",
+    "welcome_back_subtitle": "Welcome back, please log in to continue",
+    "user_fallback": "User"
   },
   "tos_pp":{
     "and":"and",
@@ -93,6 +96,10 @@
     "pending": "Pending",
     "confirm_request_btn": "Confirm Request",
     "finish_btn": "Finish",
+    "active_plan_label": "Your active plan",
+    "activate_features_subtitle": "Enter the code to activate additional features.",
+    "enter_code_placeholder": "Enter code...",
+    "activate_now_btn": "Activate Now",
     "available": "Available",
     "expired": "Expired",
     "noPlan": "No plan subscribed yet",
@@ -280,7 +287,10 @@
     "DeleteAccount":"Delete Account",
     "apply_voucher_code":"Apply Voucher Code",
     "devices": "Devices",
-    "absent_students":"Absent Student"
+    "absent_students":"Absent Student",
+    "main_menu_section": "Main Menu",
+    "management_section": "Management & Settings",
+    "legal_section": "Legal"
   },
   "switch_account": {
     "login_as": "Login as",
@@ -398,7 +408,16 @@
     "total_student": "Total Students #",
     "present_pecent": "Total Present",
     "no_classes_title": "No Classes",
-    "no_classes_fallback": "No registered classes have been found yet."
+    "no_classes_fallback": "No registered classes have been found yet.",
+    "edit_mode_banner": "You are now in edit mode",
+    "finish_edit_btn": "Finish Editing",
+    "reorder_mode_banner": "You are now in class reorder mode",
+    "save_order_btn": "Save Order",
+    "no_classes_assigned_fallback": "No classes have been assigned to you yet.",
+    "present_label": "Present",
+    "absent_label": "Absent",
+    "percentage_label": "Percentage",
+    "no_stats_today_text": "No statistics were found for today."
   },
   "student_report_list": {
     "no_students_fallback": "No registered students"

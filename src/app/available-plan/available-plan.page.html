@@ -30,12 +30,12 @@
           <ion-icon name="shield-checkmark"></ion-icon>
         </div>
         <div class="texts">
-          <p class="subtitle">باقتك الفعالة حالياً</p>
+          <p class="subtitle">{{'plan.active_plan_label' | translate}}</p>
           <h3 class="title">{{ availablePlan.plan?.name || ('plan.currentPlan' | translate) }}</h3>
         </div>
       </div>
       <div class="plan-expiry border-r border-white/20 pr-4">
-        <p class="subtitle">تاريخ الانتهاء</p>
+        <p class="subtitle">{{'plan.expired' | translate}}</p>
         <p class="date" dir="ltr">{{ availablePlan.exp_date | date : 'yyyy-MM-dd' }}</p>
       </div>
     </div>
@@ -214,8 +214,8 @@
           <ion-icon name="ticket" class="text-3xl"></ion-icon>
         </div>
         <div>
-          <h3 class="text-xl font-black text-slate-800 m-0 leading-tight">تفعيل المميزات الاضافية</h3>
-          <p class="text-xs font-bold text-slate-500 m-0 mt-1">أدخل الكود لتفعيل المميزات الاضافية.</p>
+          <h3 class="text-xl font-black text-slate-800 m-0 leading-tight">{{'sidemenu.Plans' | translate}}</h3>
+          <p class="text-xs font-bold text-slate-500 m-0 mt-1">{{'plan.activate_features_subtitle' | translate}}</p>
         </div>
       </div>
 
@@ -225,7 +225,7 @@
         <ion-input
           type="text"
           [(ngModel)]="voucherCode"
-          placeholder="أدخل كود..."
+          [placeholder]="'plan.enter_code_placeholder' | translate"
           class="text-base font-black text-slate-800 text-center tracking-[0.2em] uppercase"
         >
         </ion-input>
@@ -243,7 +243,7 @@
           (click)="applyVoucherCode()"
           [disabled]="!voucherCode || voucherCode.trim() === ''"
         >
-          <ion-icon name="checkmark-circle" class="text-lg"></ion-icon> تفعيل الآن
+          <ion-icon name="checkmark-circle" class="text-lg"></ion-icon> {{'plan.activate_now_btn' | translate}}
         </button>
       </div>
     </div>

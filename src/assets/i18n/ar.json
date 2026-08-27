@@ -8,7 +8,10 @@
     "remember_me": "حفظ بيانات الدخول",
     "register_school": "ليس لديك حساب ؟ أنشئ حساب جديد",
     "or": "أو",
-    "forgot": "نسيت كلمه المرور ؟"
+    "forgot": "نسيت كلمه المرور ؟",
+    "app_logo_alt": "شعار التطبيق",
+    "welcome_back_subtitle": "مرحباً بك مجدداً، يرجى تسجيل الدخول للمتابعة",
+    "user_fallback": "مستخدم"
   },
   "tos_pp":{
     "and":"و",
@@ -195,7 +198,10 @@
     "DeleteAccount": "حذف الحساب",
     "apply_voucher_code": "تطبيق رمز القسيمة",
     "devices": "الأجهزة",
-    "absent_students": "قائمة طلب تعديل غياب"
+    "absent_students": "قائمة طلب تعديل غياب",
+    "main_menu_section": "القائمة الرئيسية",
+    "management_section": "إدارة وإعدادات",
+    "legal_section": "قانوني"
   },
   "device": {
     "devices_all": "جميع الأجهزة",
@@ -266,7 +272,16 @@
     "total_student": "اجمالي الطلاب",
     "present_pecent": "نسبه الحضور",
     "no_classes_title": "لا توجد فصول",
-    "no_classes_fallback": "لم يتم العثور على فصول مسجلة حتى الآن."
+    "no_classes_fallback": "لم يتم العثور على فصول مسجلة حتى الآن.",
+    "edit_mode_banner": "أنت الآن في وضع التعديل",
+    "finish_edit_btn": "إنهاء التعديل",
+    "reorder_mode_banner": "أنت الآن في وضع ترتيب الصفوف",
+    "save_order_btn": "حفظ الترتيب",
+    "no_classes_assigned_fallback": "لم يتم إسناد أي فصول لك حتى الآن.",
+    "present_label": "حضور",
+    "absent_label": "غياب",
+    "percentage_label": "النسبة",
+    "no_stats_today_text": "لم يتم العثور على أي إحصائيات لهذا اليوم."
   },
   "student_report_list": {
     "no_students_fallback": "لا يوجد طلاب مسجلين"
@@ -755,6 +770,10 @@
     "pending": "قيد المراجعة",
     "confirm_request_btn": "تأكيد الطلب",
     "finish_btn": "إنهاء",
+    "active_plan_label": "باقتك الفعالة حالياً",
+    "activate_features_subtitle": "أدخل الكود لتفعيل المميزات الاضافية.",
+    "enter_code_placeholder": "أدخل كود...",
+    "activate_now_btn": "تفعيل الآن",
     "available": "متاح",
     "expired": "تاريخ الانتهاء",
     "noPlan": "لم يتم الاشتراك في أي خطة حتى الآن",

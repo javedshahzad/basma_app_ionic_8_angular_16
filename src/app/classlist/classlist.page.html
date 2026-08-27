@@ -8,7 +8,7 @@
       </ion-menu-toggle>
     </ion-buttons>
 
-    <ion-title class="ion-text-center fw-bold text-dark"> الصفحة الرئيسية </ion-title>
+    <ion-title class="ion-text-center fw-bold text-dark"> {{'sidemenu.class_list' | translate}} </ion-title>
 
     <ion-buttons slot="end" class="mr-2">
       @if (userType === UserType.Teacher) {
@@ -41,13 +41,13 @@
 >
   <div class="flex items-center gap-2">
     <ion-icon name="create-outline" class="text-xl"></ion-icon>
-    <span class="font-bold text-sm">أنت الآن في وضع التعديل</span>
+    <span class="font-bold text-sm">{{'classlist.edit_mode_banner' | translate}}</span>
   </div>
   <button
     (click)="enableEditMode()"
     class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30"
   >
-    إنهاء التعديل
+    {{'classlist.finish_edit_btn' | translate}}
   </button>
 </div>
 } @if (!canReorder) {
@@ -57,13 +57,13 @@
 >
   <div class="flex items-center gap-2">
     <ion-icon name="swap-vertical-outline" class="text-xl"></ion-icon>
-    <span class="font-bold text-sm">أنت الآن في وضع ترتيب الصفوف</span>
+    <span class="font-bold text-sm">{{'classlist.reorder_mode_banner' | translate}}</span>
   </div>
   <button
     (click)="toogleReorder()"
     class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm"
   >
-    حفظ الترتيب
+    {{'classlist.save_order_btn' | translate}}
   </button>
 </div>
 }
@@ -151,7 +151,7 @@
           } @else {
           <div class="empty-state">
             <ion-icon name="school-outline"></ion-icon>
-            <p>{{noDataFound || 'لم يتم إسناد أي فصول لك حتى الآن.'}}</p>
+            <p>{{noDataFound || ('classlist.no_classes_assigned_fallback' | translate)}}</p>
           </div>
           }
         </ion-grid>
@@ -177,17 +177,17 @@
                 <div class="dash-stats">
                   <div class="stat-item">
                     <span class="stat-value text-success">{{seminar.present}}</span>
-                    <span class="stat-label">حضور</span>
+                    <span class="stat-label">{{'classlist.present_label' | translate}}</span>
                   </div>
                   <div class="stat-divider"></div>
                   <div class="stat-item">
                     <span class="stat-value text-danger">{{seminar.absent}}</span>
-                    <span class="stat-label">غياب</span>
+                    <span class="stat-label">{{'classlist.absent_label' | translate}}</span>
                   </div>
                   <div class="stat-divider"></div>
                   <div class="stat-item">
                     <span class="stat-value text-primary">{{seminar.total_per_sent}}</span>
-                    <span class="stat-label">النسبة</span>
+                    <span class="stat-label">{{'classlist.percentage_label' | translate}}</span>
                   </div>
                 </div>
               </ion-card>
@@ -197,7 +197,7 @@
           } @else {
           <div class="empty-state">
             <ion-icon name="analytics-outline"></ion-icon>
-            <p>لم يتم العثور على أي إحصائيات لهذا اليوم.</p>
+            <p>{{'classlist.no_stats_today_text' | translate}}</p>
           </div>
           }
         </ion-grid>

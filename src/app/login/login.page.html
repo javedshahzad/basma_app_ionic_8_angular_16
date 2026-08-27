@@ -4,10 +4,10 @@
       <div
         class="w-24 h-24 mx-auto mb-5 bg-white rounded-4xl shadow-xl shadow-indigo-100/50 border border-slate-100 overflow-hidden flex items-center justify-center p-2"
       >
-        <img src="assets/icons/icon-512.webp" alt="شعار التطبيق" class="w-full h-full object-contain" />
+        <img src="assets/icons/icon-512.webp" [attr.alt]="'login.app_logo_alt' | translate" class="w-full h-full object-contain" />
       </div>
       <h1 class="text-2xl font-extrabold text-slate-800 mb-2">{{'login.pagetitle' | translate}}</h1>
-      <p class="text-sm font-medium text-slate-500 m-0">مرحباً بك مجدداً، يرجى تسجيل الدخول للمتابعة</p>
+      <p class="text-sm font-medium text-slate-500 m-0">{{'login.welcome_back_subtitle' | translate}}</p>
     </div>
 
     <!-- 🟢 قسم الحسابات المحفوظة (يظهر فقط إذا كان هناك حسابات سابقة) -->
@@ -27,7 +27,7 @@
           "
           class="w-12 h-12 rounded-full object-cover border border-slate-100 shadow-inner mb-2 bg-slate-50"
         />
-        <span class="text-2xs font-bold text-slate-700 truncate w-full text-center">{{u.name || 'مستخدم'}}</span>
+        <span class="text-2xs font-bold text-slate-700 truncate w-full text-center">{{u.name || ('login.user_fallback' | translate)}}</span>
       </div>
       }
     </div>

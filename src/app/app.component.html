@@ -54,7 +54,7 @@
             </ion-col>
           </ion-row>
 
-          <div class="menu-section-title">القائمة الرئيسية</div>
+          <div class="menu-section-title">{{ 'sidemenu.main_menu_section' | translate }}</div>
 
           @for (page of pages; track trackByIndex(i); let i = $index) {
             <ion-row class="menu-item" [class.active-item]="getActivePage(page)" menuClose (click)="openPage(page)">
@@ -75,7 +75,7 @@
             }
           }
 
-          <div class="menu-section-title">إدارة وإعدادات</div>
+          <div class="menu-section-title">{{ 'sidemenu.management_section' | translate }}</div>
 
           @if (activeLink.teacher_link === '1' && permissionService.hasRole(UserType.Admin)) {
             <ion-row class="menu-item" (click)="shareRegistrationLink()">
@@ -138,7 +138,7 @@
             </ion-row>
           }
 
-          <div class="menu-section-title">قانوني</div>
+          <div class="menu-section-title">{{ 'sidemenu.legal_section' | translate }}</div>
 
           <ion-row class="menu-item" (click)="opentOs()">
             <ion-col size="2" class="icon-col"><ion-icon name="document-text-outline"></ion-icon></ion-col>
