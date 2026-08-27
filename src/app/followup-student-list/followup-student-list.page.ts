@@ -25,7 +25,6 @@ import { StorageService } from '../service/storage.service';
 import { StudentOptionsPopoverComponent } from '../components/student-options-popover/student-options-popover.component';
 import { AddReviewComponent } from '../add-review/add-review.component';
 import { Browser } from '@capacitor/browser';
-import { environment } from '../../environments/environment';
 import { ReportsApiService } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
@@ -408,12 +407,12 @@ export class FollowupStudentListPage {
           async res => {
             this.dataProvider.hideLoading();
             if (res && res.data) {
-              let fileUrl = String(res.data);
-              if (fileUrl.includes('uploads/stufollowup/')) {
-                let splitUrl = fileUrl.split('/');
-                let filename = splitUrl[splitUrl.length - 1];
-                fileUrl = `${environment.docUrl}uploads/stufollowup/${filename}`;
-              }
+              // The API already returns a full, ready-to-use public URL
+              // (e.g. https://staging.basmapp.com/uploads/stufollowup/...) --
+              // it must be used as-is. Previously this rewrote the URL onto
+              // environment.docUrl (the legacy PHP host), which no longer
+              // hosts these generated files and always 404'd.
+              const fileUrl = String(res.data);
               if (this.platform.is('capacitor') || this.platform.is('cordova')) {
                 await Browser.open({ url: fileUrl });
               } else {

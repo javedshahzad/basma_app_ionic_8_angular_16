@@ -1367,7 +1367,9 @@ export class StudentDetailPage {
         let studentData = {
           school_id: this.userInfo.school_id,
           sid: this.navData.student_id,
-          report_type: type
+          report_type: type,
+          user_no: this.userInfo.user_no,
+          session_id: this.userDetails.session_id
         };
 
         if (type === 'pdf') {
@@ -1408,9 +1410,10 @@ export class StudentDetailPage {
             async res => {
               this.dataProvider.hideLoading();
               if (res && res.data) {
-                let splitUrl = String(res.data).split('/');
-                let filename = splitUrl[splitUrl.length - 1];
-                let url = `${environment.docUrl}uploads/stufollowup/${filename}`;
+                // The API already returns a full, ready-to-use public URL --
+                // rewriting it onto environment.docUrl (the legacy PHP host)
+                // always 404'd, since that host no longer hosts these files.
+                const url = String(res.data);
                 await Browser.open({ url: url });
               } else {
                 this.dataProvider.showToast(this.lang.report_error);

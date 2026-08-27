@@ -16,6 +16,9 @@ export class PrintOptionsPopoverComponent {
 
   // دالة إغلاق النافذة مع إرسال القيمة المختارة
   close(type: string) {
-    this.popoverController.dismiss(type);
+    // The consumer (student-detail.page.ts) reads `data.selectedAction` off
+    // the dismiss payload -- dismissing with the bare string here made that
+    // always undefined, so choosing either option silently did nothing.
+    this.popoverController.dismiss({ selectedAction: type });
   }
 }
