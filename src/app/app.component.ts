@@ -10,7 +10,8 @@ import { DatabaseService } from './service/database/database.service';
 import { Network } from '@capacitor/network';
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { Share } from '@capacitor/share';
-import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras, NavigationStart } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
 import { ToastController } from '@ionic/angular';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
@@ -94,6 +95,25 @@ export class AppComponent {
     private cdr: ChangeDetectorRef
   ) {
     this.storageSr.init();
+
+    // Ionic keeps the outgoing page in the DOM and marks it aria-hidden
+    // during a route transition; a button that just triggered the
+    // navigation (e.g. via (click)="router.navigate(...)") still holds
+    // browser focus at that moment, which trips the browser's
+    // aria-hidden-on-a-focused-element warning. Blurring on every
+    // navigation start is the standard fix for this whole bug class
+    // rather than patching each call site individually.
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationStart => event instanceof NavigationStart),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        const active = document.activeElement;
+        if (active instanceof HTMLElement && active !== document.body) {
+          active.blur();
+        }
+      });
 
     App.addListener('appStateChange', async ({ isActive }) => {
       if (isActive) {
