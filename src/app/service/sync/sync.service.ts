@@ -1,140 +1,43 @@
 import { Injectable } from '@angular/core';
-import { Platform } from '@ionic/angular';
-import { Network } from '@capacitor/network';
-import { StorageService } from '../storage.service';
 import { OverlayService } from '../overlay/overlay.service';
 import { AttendanceApiService } from '../attendance-api/attendance-api.service';
+import { OfflineQueueService } from '../offline-queue/offline-queue.service';
 
 /**
- * Owns the offline attendance sync loop: retries queued attendance /
- * delay-attendance submissions once the network is back, then every 20s
- * while there's still a queue.
+ * Registers the attendance / delay-attendance offline-write handlers with
+ * OfflineQueueService, which owns the actual storage, retry/backoff, and
+ * drain-triggering (reconnect events, app-startup check, bounded poll —
+ * see offline-queue.service.ts). This service just supplies the two
+ * domain-specific "how do I actually submit this" callbacks and stays
+ * injected in app.component.ts so both get registered from app launch.
  */
 @Injectable({
   providedIn: 'root'
 })
 export class SyncService {
-  private syncInterval: ReturnType<typeof setInterval> | null = null;
-  private isSyncing = false;
-
   constructor(
-    private platform: Platform,
-    private storageSr: StorageService,
     private overlay: OverlayService,
-    private attendanceApi: AttendanceApiService
+    private attendanceApi: AttendanceApiService,
+    private offlineQueue: OfflineQueueService
   ) {
-    Network.addListener('networkStatusChange', status => {
-      if (status.connected) {
-        this.syncOffileData();
-      }
-    });
+    this.offlineQueue.registerHandler(
+      'attendance',
+      payload => this.attendanceApi.markAttendance(payload as Parameters<AttendanceApiService['markAttendance']>[0]),
+      () => this.overlay.showToast('Attendance Synced Successfully')
+    );
+
+    this.offlineQueue.registerHandler(
+      'delayattendance',
+      payload => {
+        const item = payload as { attendance: Parameters<AttendanceApiService['markOfflineDelayAttendance']>[0]; submittedByUser: number };
+        return this.attendanceApi.markOfflineDelayAttendance(item.attendance, item.submittedByUser);
+      },
+      () => this.overlay.showToast('Delay Attendance Synced Successfully')
+    );
   }
 
-  async syncOffileData() {
-    if (this.syncInterval) {
-      return;
-    }
-
-    // Run immediately
-    await this.performOfflineSync();
-
-    // Only keep polling if something is still queued (e.g. the immediate
-    // attempt above failed) — otherwise this would poll every 20s for the
-    // rest of the app session even with nothing left to sync.
-    if (await this.hasPendingSync()) {
-      this.syncInterval = setInterval(async () => {
-        await this.performOfflineSync();
-        if (this.syncInterval && !(await this.hasPendingSync())) {
-          clearInterval(this.syncInterval);
-          this.syncInterval = null;
-        }
-      }, 20000);
-    }
-  }
-
-  private async hasPendingSync(): Promise<boolean> {
-    const attendances = await this.storageSr.get('attendance') || [];
-    const delayAttendances = await this.storageSr.get('delayattendance') || [];
-    return attendances.length > 0 || delayAttendances.length > 0;
-  }
-
-  private async getNetworkInformation(): Promise<boolean> {
-    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      return (await Network.getStatus()).connected;
-    }
-    return navigator.onLine;
-  }
-
-  private async performOfflineSync() {
-    if (this.isSyncing) {
-      return;
-    }
-
-    this.isSyncing = true;
-
-    try {
-      const isNetworkAvailable = await this.getNetworkInformation();
-
-      if (!isNetworkAvailable) {
-        return;
-      }
-
-      /**
-       * Sync Attendance
-       */
-      const attendances = await this.storageSr.get("attendance") || [];
-
-      if (attendances.length > 0) {
-        const remainingAttendance = [];
-
-        for (const attendance of attendances) {
-          try {
-            await this.attendanceApi.markAttendance(attendance);
-          } catch (error) {
-            console.error("Attendance sync failed", error);
-            remainingAttendance.push(attendance);
-          }
-        }
-
-        if (remainingAttendance.length === 0) {
-          await this.storageSr.remove("attendance");
-          this.overlay.showToast("Attendance Synced Successfully");
-        } else {
-          await this.storageSr.set("attendance", remainingAttendance);
-        }
-      }
-
-      /**
-       * Sync Delay Attendance
-       */
-      const delayAttendances = await this.storageSr.get("delayattendance") || [];
-
-      if (delayAttendances.length > 0) {
-        const remainingDelayAttendance = [];
-
-        for (const item of delayAttendances) {
-          try {
-            await this.attendanceApi.markOfflineDelayAttendance(
-              item.attendance,
-              item.submittedByUser
-            );
-          } catch (error) {
-            console.error("Delay attendance sync failed", error);
-            remainingDelayAttendance.push(item);
-          }
-        }
-
-        if (remainingDelayAttendance.length === 0) {
-          await this.storageSr.remove("delayattendance");
-          this.overlay.showToast("Delay Attendance Synced Successfully");
-        } else {
-          await this.storageSr.set("delayattendance", remainingDelayAttendance);
-        }
-      }
-    } catch (error) {
-      console.error("Offline Sync Error", error);
-    } finally {
-      this.isSyncing = false;
-    }
+  /** Kept for the existing call sites (classlist/tasks-calendar) — now just delegates. */
+  async syncOffileData(): Promise<void> {
+    await this.offlineQueue.drain();
   }
 }

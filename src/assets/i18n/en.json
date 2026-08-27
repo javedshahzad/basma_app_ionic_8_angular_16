@@ -1090,6 +1090,7 @@
     "no_internet": "Please connect to internet to proceed",
     "offline_att_stored": "Attendance stored locally will sync when connected to internet",
     "offline": "You are in Offline Mode",
+    "pending_sync_count": "{{count}} changes pending sync",
     "not_online": "You are not Connected to Internet",
     "online": "Connected to internet",
     "download_complete": "Download completed",

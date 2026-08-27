@@ -25,6 +25,7 @@ import { GamificationEngineService } from '../service/gamification-engine/gamifi
 
 // 🟢 استيراد خدمة التخزين الموحدة
 import { StorageService } from '../service/storage.service';
+import { OfflineQueueService } from '../service/offline-queue/offline-queue.service';
 import { AttendanceApiService, AttendanceSubmitPayload } from '../service/attendance-api/attendance-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
@@ -214,6 +215,7 @@ export class ListStudentPage {
     private attendanceManager: AttendanceManagerService,
     public gamification: GamificationEngineService,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
+    private offlineQueue: OfflineQueueService,
     private attendanceApi: AttendanceApiService,
     private holidaysApi: HolidaysApiService,
     private studentEngagement: StudentEngagementService,
@@ -1476,9 +1478,7 @@ export class ListStudentPage {
       this.sendAttendanceToServer(data);
     } else {
       this.dataProvider.hideLoading();
-      let attendance = (await this.storageSr.get('attendance')) || [];
-      attendance.push(data);
-      await this.storageSr.set('attendance', attendance);
+      await this.offlineQueue.enqueue('attendance', data);
       this.dataProvider.showToast(this.lang.offline_att_stored);
       this.attendanceSheet = {};
       this.removeSheet = {};

@@ -6,5 +6,8 @@
   >
     <ion-icon name="cloud-offline-outline" class="text-sm"></ion-icon>
     <span>{{ 'alertmessages.offline' | translate }}</span>
+    @if (offlineQueue.pendingCount() > 0) {
+      <span class="opacity-90">· {{ pendingSyncLabel() }}</span>
+    }
   </div>
 }

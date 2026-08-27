@@ -28,6 +28,7 @@ import { AddReviewComponent } from '../add-review/add-review.component';
 
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { OfflineQueueService } from '../service/offline-queue/offline-queue.service';
 import { StudentUiService } from '../service/student-ui/student-ui.service';
 import { ImageProcessingService } from '../service/image-processing/image-processing.service';
 import { AttendanceApiService, AttendanceSubmitPayload } from '../service/attendance-api/attendance-api.service';
@@ -121,6 +122,7 @@ export class StudentsPage {
     public modalController: ModalController,
     private fileUpload: FileUploadService,
     private storageSr: StorageService,
+    private offlineQueue: OfflineQueueService,
     private cdr: ChangeDetectorRef,
     private imageService: ImageProcessingService,
     private studentUi: StudentUiService,
@@ -482,9 +484,7 @@ export class StudentsPage {
             });
         } else {
           this.dataProvider.hideLoading();
-          let delayAttendance = (await this.storageSr.get('delayattendance')) || [];
-          delayAttendance.push({ attendance: data, submittedByUser: submittedByUser });
-          await this.storageSr.set('delayattendance', delayAttendance);
+          await this.offlineQueue.enqueue('delayattendance', { attendance: data, submittedByUser: submittedByUser });
 
           // 🟢 للإرسال في وضع الأوفلاين أيضاً
           this.editMode = false;
