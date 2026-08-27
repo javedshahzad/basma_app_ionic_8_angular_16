@@ -104,7 +104,9 @@
     <div class="h-20 bg-slate-200 rounded-2xl animate-pulse"></div>
     }
   </div>
-  } @if (!show_loading) {
+  } @if (!show_loading && attendanceLoadFailed) {
+  <app-error-state (retry)="getStudents()"></app-error-state>
+  } @if (!show_loading && !attendanceLoadFailed) {
   <div class="h-full flex flex-col min-h-0">
     @if (students?.length === 0) {
     <div class="empty-state text-center p-10">

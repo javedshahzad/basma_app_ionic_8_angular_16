@@ -27,21 +27,15 @@ export class ChildrenPage {
   private destroyRef = inject(DestroyRef);
 
   /**
-   * @member student: Contains information about the student selected
    * @member students Array of all the childern
-   * @member showProfileModal Boolean variable used to show hide the profile modal
    * @member userDetails Contains the user details who is logged in from local storage
    * @member noDataFound used for diplaying the message when no child found
    * @member lang Contains the language translation object
-   * @member studentBehaviour selected student behaviour
    */
-  student: any = {};
   students: any = [];
-  showProfileModal: boolean = false;
   userDetails: any = {};
   noDataFound: string;
   lang: any = {};
-  studentBehaviour: any = '';
   ispermit = true;
   /**
    *
@@ -147,35 +141,6 @@ export class ChildrenPage {
   }
 
   /**
-   * Open image modal popup
-   * @param student Object of student details to show in image popup
-   */
-  openUserImageModal(student: any) {
-    this.student = student;
-    if (student.agg_ranking > 0 && student.agg_ranking < 2.6) {
-      this.studentBehaviour = this.lang.warning_behaviour;
-    } else if (student.agg_ranking > 2.5 && student.agg_ranking < 3.6) {
-      this.studentBehaviour = this.lang.good_behaviour;
-    } else if (student.agg_ranking > 3.5 && student.agg_ranking < 4.6) {
-      this.studentBehaviour = this.lang.very_good_behaviour;
-    } else if (student.agg_ranking > 4.5 && student.agg_ranking < 5.1) {
-      this.studentBehaviour = this.lang.excellent_behaviour;
-    } else {
-      this.studentBehaviour = this.lang.no_behaviour;
-    }
-    this.showProfileModal = true;
-  }
-
-  /**
-   * Hide image modal popup
-   */
-  hideUserImageModal(event: any) {
-    if (event.target.className == 'custom-modal-main') {
-      this.showProfileModal = false;
-    }
-  }
-
-  /**
    * Open student detail page
    * @param student_id Id of the student you want to see the details
    */
@@ -200,32 +165,6 @@ export class ChildrenPage {
     };
 
     this.router.navigate(['student-detail'], navigationExtras);
-  }
-
-  /**
-   * 🟢 دالة جديدة: تجهيز بيانات الطالب وفتح نافذة ملخص الأداء
-   */
-  openStudentModal(selectedStudent: any) {
-    // 1. تعيين الطالب المختار
-    this.student = selectedStudent;
-
-    // 2. حساب السلوك بناءً على التقييم (كما كان في الكود الأصلي)
-    let ranking = Number(this.student.agg_ranking || 0);
-
-    if (ranking > 0 && ranking < 2.6) {
-      this.studentBehaviour = this.lang.warning_behaviour;
-    } else if (ranking >= 2.6 && ranking < 3.6) {
-      this.studentBehaviour = this.lang.good_behaviour;
-    } else if (ranking >= 3.6 && ranking < 4.6) {
-      this.studentBehaviour = this.lang.very_good_behaviour;
-    } else if (ranking >= 4.6 && ranking <= 5.1) {
-      this.studentBehaviour = this.lang.excellent_behaviour;
-    } else {
-      this.studentBehaviour = this.lang.no_behaviour;
-    }
-
-    // 3. إظهار النافذة
-    this.showProfileModal = true;
   }
 
   // 🟢 استدعاء المحرك المركزي لضمان دقة السلوك (نصاً ولوناً)

@@ -36,6 +36,7 @@ import { NgClass, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SupervisorViewComponent } from '../components/supervisor-view/supervisor-view.component';
 import { TeacherViewComponent } from '../components/teacher-view/teacher-view.component';
+import { ErrorStateComponent } from '../components/error-state/error-state.component';
 import { Student } from '../model/student.model';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { AttendanceResponse } from '../model/attendance-response.model';
@@ -76,7 +77,7 @@ interface TeacherEditPowersResponse {
   templateUrl: './list-student.page.html',
   styleUrls: ['./list-student.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, NgClass, FormsModule, SupervisorViewComponent, TeacherViewComponent, DatePipe, TranslatePipe]
+  imports: [IonicModule, NgClass, FormsModule, SupervisorViewComponent, TeacherViewComponent, ErrorStateComponent, DatePipe, TranslatePipe]
 })
 export class ListStudentPage {
   trackByIndex(index: number): number {
@@ -122,6 +123,7 @@ export class ListStudentPage {
   canAddStudentNote: boolean = true;
   planLang: Record<string, string>;
   show_loading: boolean = false;
+  attendanceLoadFailed: boolean = false;
   student_detailse: Record<string, string>;
   student_points: number[] = [];
   interval: ReturnType<typeof setInterval> | null = null;
@@ -351,6 +353,7 @@ export class ListStudentPage {
 
   getStudents(loader: boolean = true) {
     this.show_loading = true;
+    this.attendanceLoadFailed = false;
     let course = this.navData;
     this.courseInfo = course;
 
@@ -436,6 +439,7 @@ export class ListStudentPage {
       })
       .catch(() => {
         this.show_loading = false;
+        this.attendanceLoadFailed = true;
         this.cdr.markForCheck();
       });
   }

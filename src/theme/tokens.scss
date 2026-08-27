@@ -163,6 +163,26 @@
   --color-warning-surface: #fffbeb;
 
   /* ============ Motion ============ */
+  /* This mapping was already the de facto convention across the app
+     (docs/ui-audit.md finding #12: 478 transition-all/colors/transform
+     sites, the vast majority landing on Tailwind's un-set 150ms
+     default) — written down here so it stops drifting as new screens
+     get built, not a new rule:
+       --duration-fast (150ms) — micro-interactions: hover/active state
+         on buttons, icon color changes, a toggled class. This is
+         Tailwind's own default when no duration-* utility is set, so
+         most transition-all/colors/transform classes in the app
+         already land here without saying so explicitly.
+       --duration-base (300ms) — layout/reveal transitions: a card
+         fading/sliding in, a panel expanding, a route-level reveal.
+       --duration-slow (600ms) — deliberate emphasis: a streak badge
+         pulse, an achievement unlock, anything meant to be *noticed*
+         rather than just smoothed over.
+     A transition that doesn't fit this 3-step scale (a bespoke
+     entrance easing, an unusually long/short one-off) is fine to leave
+     as a literal value on its own declaration — this table is a
+     default to reach for, not a hard constraint every animation must
+     be force-fit into. */
   --duration-fast: 150ms;
   --duration-base: 300ms;
   --duration-slow: 600ms;
