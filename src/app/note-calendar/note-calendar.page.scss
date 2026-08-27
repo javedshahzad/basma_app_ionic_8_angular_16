@@ -36,8 +36,14 @@ app-note-calendar:host {
             color: #1e293b;
         }
 
-        /* Active/Selected Day Styling */
+        /* ion-datetime's own "active" (last-clicked) day styling is separate
+           from our own multi-select state below (highlightedDates) -- when a
+           day happens to be both, ion-datetime renders the active part only
+           and drops the custom highlight color entirely. Matching this
+           background to our own indigo keeps that case visually consistent
+           instead of showing Ionic's unrelated default blue. */
         &::part(active) {
+            background: #4f46e5 !important;
             color: #ffffff !important;
         }
 

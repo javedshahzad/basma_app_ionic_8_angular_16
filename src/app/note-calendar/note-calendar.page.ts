@@ -35,6 +35,15 @@ export class NoteCalendarPage implements OnInit {
   // المتغير لعرض الملاحظات في الواجهة
   selectedNotes: any[] = [];
 
+  // 🟢 اختيار متعدد للأيام يُدار يدوياً (وليس عبر multiple الخاصة بـ ion-datetime):
+  // خاصية multiple في ion-datetime لديها خلل معروف وغير مخطط لإصلاحه في
+  // Ionic (github.com/ionic-team/ionic-framework/issues/28859) يجعل التقويم
+  // يقفز لشهر مختلف عند اختيار يوم في شهر غير الشهر الأول المختار. الحل هنا
+  // هو استخدام ion-datetime بوضع اختيار مفرد (بدون multiple) وربط كل نقرة
+  // بتبديل حالة اليوم في هذه المجموعة بدلاً من الاعتماد على قيمتها الداخلية.
+  private selectedDates = new Set<string>(); // YYYY-MM-DD
+  private noteHighlights: any[] = []; // أيام الملاحظات المحفوظة (برتقالي)
+
   viewTitle: string = 'تقويم الامتحانات';
 
   constructor(
@@ -92,6 +101,10 @@ export class NoteCalendarPage implements OnInit {
     this.cdr.markForCheck();
   }
 
+  private toIsoDate(d: Date): string {
+    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+  }
+
   // تلوين الأيام التي تحتوي على ملاحظات امتحانات
   setupHighlightedDates() {
     let highlights: any[] = [];
@@ -102,52 +115,79 @@ export class NoteCalendarPage implements OnInit {
 
           // تأمين من التواريخ الخاطئة Invalid Date
           if (!isNaN(d.getTime())) {
-            let dateString = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
-
             highlights.push({
-              date: dateString,
+              date: this.toIsoDate(d),
               textColor: '#ffffff',
-              backgroundColor: '#ff7043' // 🟢 تم تغيير اللون ليتوافق مع نسق Lineone (Indigo)
+              backgroundColor: '#ff7043'
             });
           }
         }
       });
     }
-    this.highlightedDates = highlights;
+    this.noteHighlights = highlights;
+    this.updateHighlightedDates();
   }
 
-  // الدالة المحدثة: تقوم بتحديث تواريخ الطباعة + جلب ملاحظات الأيام المحددة
+  // 🟢 دمج تلوين أيام الملاحظات المحفوظة (برتقالي) مع الأيام المختارة حالياً
+  // (نيلي/indigo) -- الأيام المختارة تأخذ الأولوية البصرية عند التطابق.
+  private updateHighlightedDates() {
+    const selectedHighlights = Array.from(this.selectedDates).map(iso => ({
+      date: iso,
+      textColor: '#ffffff',
+      backgroundColor: '#4f46e5'
+    }));
+    const noteHighlightsExcludingSelected = this.noteHighlights.filter(h => !this.selectedDates.has(h.date));
+    this.highlightedDates = [...noteHighlightsExcludingSelected, ...selectedHighlights];
+    this.cdr.markForCheck();
+  }
+
+  // الدالة المحدثة: تبديل حالة اليوم المنقور عليه (اختيار/إلغاء اختيار)
+  // ثم تحديث تواريخ الطباعة وملاحظات الأيام المحددة
   onDateChange(event: any) {
     let val = event.detail.value;
+    if (!val) return;
 
-    // تصفير المصفوفات عند كل تغيير
-    this.dates = [];
-    this.selectedNotes = [];
-    let selectedIsoDates: string[] = []; // مصفوفة مساعدة للمقارنة
+    let clickedDate = new Date(val);
+    if (isNaN(clickedDate.getTime())) return;
 
-    if (Array.isArray(val)) {
-      val.forEach(isoDate => {
-        this.dates.push(new Date(isoDate).toDateString());
-        selectedIsoDates.push(isoDate.split('T')[0]); // استخراج (YYYY-MM-DD)
-      });
-    } else if (val) {
-      this.dates.push(new Date(val).toDateString());
-      selectedIsoDates.push(val.split('T')[0]);
+    let iso = this.toIsoDate(clickedDate);
+    if (this.selectedDates.has(iso)) {
+      this.selectedDates.delete(iso);
+    } else {
+      this.selectedDates.add(iso);
     }
+
+    this.dates = Array.from(this.selectedDates).map(d => new Date(d).toDateString());
 
     // فلترة وعرض الملاحظات التي تتطابق تواريخها مع الأيام المحددة
-    if (this.note && this.note.length > 0) {
-      this.selectedNotes = this.note.filter((n: any) => {
-        if (n.examNoteDate) {
-          let d = new Date(n.examNoteDate);
-          if (!isNaN(d.getTime())) {
-            let dateStr = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
-            return selectedIsoDates.includes(dateStr);
-          }
-        }
-        return false;
-      });
-    }
+    this.selectedNotes =
+      this.note && this.note.length > 0
+        ? this.note.filter((n: any) => {
+            if (n.examNoteDate) {
+              let d = new Date(n.examNoteDate);
+              if (!isNaN(d.getTime())) {
+                return this.selectedDates.has(this.toIsoDate(d));
+              }
+            }
+            return false;
+          })
+        : [];
+
+    this.updateHighlightedDates();
+  }
+
+  // 🟢 دفاعي: التقويم يُبقي عدة حاويات شهر في الـ DOM لدعم السحب بين الأشهر،
+  // ويُخفي غير الظاهر منها عبر aria-hidden. إذا احتفظ زر يوم بالتركيز (focus)
+  // لحظة إخفاء حاويته، يصدر المتصفح تحذير "Blocked aria-hidden on an element
+  // because its descendant retained focus". إفراغ التركيز بعد أي تفاعل مع
+  // التقويم يمنع هذا التحذير بغض النظر عن أي عنصر بالضبط تسبب فيه.
+  onCalendarInteraction() {
+    setTimeout(() => {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement && active !== document.body) {
+        active.blur();
+      }
+    });
   }
 
   // ================= دالة الطباعة ================

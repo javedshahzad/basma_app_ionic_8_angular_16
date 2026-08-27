@@ -35,11 +35,11 @@
           mode="md"
           presentation="date"
           size="cover"
-          multiple="true"
           locale="ar-KW"
           firstDayOfWeek="0"
           [highlightedDates]="highlightedDates"
           (ionChange)="onDateChange($event)"
+          (click)="onCalendarInteraction()"
           color="primary"
         >
         </ion-datetime>
