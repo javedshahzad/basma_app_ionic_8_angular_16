@@ -214,7 +214,19 @@
     "cancel": "إلغاء",
     "register": "إضافة",
     "invalid_stu_id": "برجاء إدخال رقم الطالب بشكل صحيح",
-    "invalid_stu_name": "برجاء إدخال اسم الطالب بشكل صحيح"
+    "invalid_stu_name": "برجاء إدخال اسم الطالب بشكل صحيح",
+    "generate_title": "إنشاء عدة طلاب",
+    "generate_word": "الطالب",
+    "generate_count_label": "عدد الطلاب",
+    "generate_count_placeholder": "مثال: 10",
+    "generate_preview": "سيتم إنشاء",
+    "generate_confirm": "إنشاء",
+    "generate_invalid_count": "الرجاء إدخال عدد صحيح أكبر من صفر",
+    "generate_max_count": "الحد الأقصى {{max}} طالب في الدفعة الواحدة",
+    "generate_progress_title": "جارٍ إنشاء الطلاب...",
+    "generate_failed_word": "فشل",
+    "generate_success": "تم إنشاء {{count}} طالب بنجاح",
+    "generate_partial_failure": "تم إنشاء {{created}} من أصل {{total}} طالب"
   },
  "sidemenu": {
     "private_msg": "الرسائل الخاصة",
@@ -1361,6 +1373,7 @@
   "popovers": {
     "enable_edit_mode": "تفعيل وضع التعديل",
     "register_new_student": "تسجيل طالب جديد",
+    "generate_multiple_students": "إنشاء عدة طلاب",
     "view_notes": "عرض الملاحظات",
     "grant_student_points": "منح نقاط للطالب",
     "student_actions": "إجراءات الطالب",

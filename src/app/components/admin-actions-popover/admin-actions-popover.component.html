@@ -15,6 +15,12 @@
       >
         <ion-icon name="person-add-outline" class="text-indigo-600 text-lg"></ion-icon> {{'popovers.register_new_student' | translate}}
       </button>
+      <button
+        class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors text-right w-full"
+        (click)="dismiss('generate')"
+      >
+        <ion-icon name="people-outline" class="text-indigo-600 text-lg"></ion-icon> {{'popovers.generate_multiple_students' | translate}}
+      </button>
     }
     <button
       class="flex items-center gap-3 px-5 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors text-right w-full"

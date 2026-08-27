@@ -1,4 +1,4 @@
-import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
+import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   NavController,
@@ -46,6 +46,7 @@ import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { AttendanceResponse } from '../model/attendance-response.model';
 import { UserPlan } from '../service/plan-api/plan-api.service';
 import { Course } from '../service/courses-api/courses-api.service';
+import type { GenerateProgress } from '../components/generate-students-progress-modal/generate-students-progress-modal.component';
 
 export enum UserRole {
   Admin = '1',
@@ -844,8 +845,15 @@ export class ListStudentPage {
 
     this.zone.run(() => {
       if (action === 'add') this.registerNewStudent();
+      if (action === 'generate') this.generateMultipleStudents();
       if (action === 'notes') this.viewNote();
     });
+  }
+
+  async presentAddStudentOptions(event: Event) {
+    const mode = await this.studentUi.presentAddStudentModeChooser(event);
+    if (mode === 'single') this.registerNewStudent();
+    if (mode === 'multiple') this.generateMultipleStudents();
   }
 
   calculateAttendanceStats(semIndex?: number) {
@@ -1572,6 +1580,110 @@ export class ListStudentPage {
         });
     } else {
       this.dataProvider.showToast(response.invalid_stu_id);
+    }
+  }
+
+  async generateMultipleStudents() {
+    this.translate.get('reg_student').subscribe(async response => {
+      this.addStudentLang = response;
+      this.cdr.markForCheck();
+
+      if (this.AvailablePlan.isExpire === true) {
+        this.dataProvider.showToast('This feature is part of subscription plan.Please subscribe plan!');
+        return;
+      }
+
+      const startNumber = this.getNextStudentSequence();
+      const result = await this.studentUi.openGenerateStudents(this.addStudentLang, startNumber, 50);
+      if (!result?.count) return;
+
+      await this.runGenerateBatch(result.count, startNumber);
+    });
+  }
+
+  private getNextStudentSequence(): number {
+    const pattern = /^(?:الطالب|Student)\s+0*(\d+)$/i;
+    let max = 0;
+    for (const s of this.students) {
+      const match = (s.name || '').trim().match(pattern);
+      if (match) {
+        const n = parseInt(match[1], 10);
+        if (n > max) max = n;
+      }
+    }
+    return max + 1;
+  }
+
+
+  private async runGenerateBatch(count: number, startNumber: number) {
+    const endNumber = startNumber + count - 1;
+    const padWidth = Math.max(2, String(endNumber).length);
+    const studentWord = this.addStudentLang?.generate_word || 'الطالب';
+
+    const progress = signal<GenerateProgress>({ current: 0, total: count, failed: 0, currentLabel: '' });
+    const progressModal = await this.studentUi.presentGenerateProgress(this.addStudentLang, progress);
+
+    // Real student IDs in this system are 12-digit civil-ID-style numbers
+    // (confirmed live: e.g. 308111201914), not small sequential integers, and
+    // aren't reliably present on the already-loaded student list to scan for a
+    // "next" value. A 13-digit epoch-ms-based ID is unique by construction,
+    // sits well outside the real civil-ID numeric range (avoiding any
+    // collision with a real enrollment), and still increments predictably for
+    // the retry-on-duplicate loop below.
+    let nextId = Date.now();
+    let created = 0;
+    let failed = 0;
+
+    for (let i = 0; i < count; i++) {
+      const seq = startNumber + i;
+      const paddedName = `${studentWord} ${String(seq).padStart(padWidth, '0')}`;
+      progress.set({ ...progress(), currentLabel: paddedName });
+
+      let attempt = 0;
+      let success = false;
+      while (attempt < 3 && !success) {
+        attempt++;
+        try {
+          const res = await this.registrationApi.registerStudent({
+            name: paddedName,
+            student_id: nextId,
+            user_no: this.userInfo.user_no,
+            school_id: this.userInfo.school_id,
+            course_id: this.courseInfo.cid,
+            session_id: this.userDetails.session_id
+          });
+          if (res.session) {
+            success = true;
+            created++;
+          } else {
+            nextId++;
+          }
+        } catch {
+          nextId++;
+        }
+      }
+      if (success) {
+        nextId++;
+      } else {
+        failed++;
+      }
+
+      progress.set({ ...progress(), current: i + 1, failed });
+    }
+
+    await progressModal.dismiss();
+    this.getStudents(false);
+
+    if (failed === 0) {
+      this.dataProvider.showToast(
+        (this.addStudentLang?.generate_success || 'تم إنشاء {{count}} طالب بنجاح').replace('{{count}}', String(created))
+      );
+    } else {
+      this.dataProvider.showToast(
+        (this.addStudentLang?.generate_partial_failure || 'تم إنشاء {{created}} من أصل {{total}} طالب')
+          .replace('{{created}}', String(created))
+          .replace('{{total}}', String(count))
+      );
     }
   }
 

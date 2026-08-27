@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal } from '@angular/core';
 import { ModalController, PopoverController, ActionSheetController, AlertController, Platform } from '@ionic/angular';
+import type { GenerateProgress } from '../../components/generate-students-progress-modal/generate-students-progress-modal.component';
 
 // الاستيرادات أدناه ديناميكية عمداً (داخل كل دالة، لا في أعلى الملف): هذه
 // الخدمة تُستخدم من خمس صفحات مختلفة (قائمة المتابعة، قائمة الطلاب، تفاصيل
@@ -49,6 +50,63 @@ export class StudentUiService {
     return data;
   }
 
+  // 2ب. اختيار طريقة إضافة الطالب: فردي أم إنشاء عدة طلاب دفعة واحدة
+  async presentAddStudentModeChooser(event: Event): Promise<'single' | 'multiple' | null> {
+    return new Promise(async (resolve) => {
+      if (this.platform.width() >= 768) {
+        const { AddStudentModePopoverComponent } = await import('../../components/add-student-mode-popover/add-student-mode-popover.component');
+        const popover = await this.popoverCtrl.create({
+          component: AddStudentModePopoverComponent,
+          event: event,
+          mode: 'ios', translucent: true
+        });
+        await popover.present();
+        const { data } = await popover.onDidDismiss();
+        resolve(data?.selectedAction ?? null);
+      } else {
+        const actionSheet = await this.actionSheetCtrl.create({
+          header: 'إضافة طالب',
+          cssClass: 'custom-action-sheet',
+          buttons: [
+            { text: 'تسجيل طالب جديد', icon: 'person-add-outline', handler: () => resolve('single') },
+            { text: 'إنشاء عدة طلاب', icon: 'people-outline', handler: () => resolve('multiple') },
+            { text: 'إلغاء', icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) }
+          ]
+        });
+        await actionSheet.present();
+        actionSheet.onDidDismiss().then(() => resolve(null));
+      }
+    });
+  }
+
+  // 2ج. نافذة تحديد عدد الطلاب المراد إنشاؤهم دفعة واحدة
+  async openGenerateStudents(langData: any, startNumber: number, maxCount: number): Promise<{ count: number } | null> {
+    const { GenerateStudentsModalComponent } = await import('../../components/generate-students-modal/generate-students-modal.component');
+    const modal = await this.modalCtrl.create({
+      component: GenerateStudentsModalComponent,
+      cssClass: 'transparent-modal',
+      componentProps: { generateLang: langData, startNumber, maxCount }
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    return data ?? null;
+  }
+
+  // 2د. نافذة تقدّم إنشاء الطلاب أثناء تنفيذ الدفعة
+  async presentGenerateProgress(langData: any, progress: Signal<GenerateProgress>) {
+    const { GenerateStudentsProgressModalComponent } = await import(
+      '../../components/generate-students-progress-modal/generate-students-progress-modal.component'
+    );
+    const modal = await this.modalCtrl.create({
+      component: GenerateStudentsProgressModalComponent,
+      cssClass: 'transparent-modal',
+      backdropDismiss: false,
+      componentProps: { generateLang: langData, progress }
+    });
+    await modal.present();
+    return modal;
+  }
+
   // 3. إدارة قائمة إجراءات المشرف
   async presentAdminActions(event: any, showAdd: boolean): Promise<string | null> {
     return new Promise(async (resolve) => {
@@ -66,6 +124,7 @@ export class StudentUiService {
       } else {
         let buttons = [];
         if (showAdd) buttons.push({ text: 'تسجيل طالب جديد', icon: 'person-add-outline', handler: () => resolve('add') });
+        if (showAdd) buttons.push({ text: 'إنشاء عدة طلاب', icon: 'people-outline', handler: () => resolve('generate') });
         buttons.push({ text: 'عرض الملاحظات', icon: 'document-text-outline', handler: () => resolve('notes') });
         buttons.push({ text: 'إلغاء', icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) });
 
