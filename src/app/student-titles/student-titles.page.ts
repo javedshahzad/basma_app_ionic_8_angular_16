@@ -2,7 +2,7 @@
 import { NavController, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
 import {
@@ -28,7 +28,7 @@ interface AlchemyTitle extends ProcessedTitle {
   templateUrl: './student-titles.page.html',
   styleUrls: ['./student-titles.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, NgClass]
+  imports: [IonicModule, NgClass, TranslatePipe]
 })
 export class StudentTitlesPage {
   trackByIndex(index: number): number {

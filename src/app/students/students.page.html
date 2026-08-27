@@ -33,7 +33,7 @@
       @if (delayRule > 0) {
       <span class="text-2xs font-bold text-slate-400 mt-1 flex items-center gap-1">
         <ion-icon name="information-circle-outline"></ion-icon>
-        قانون المدرسة: غياب بعد {{delayRule}} تأخيرات
+        {{'delay_stu_list.school_rule_prefix' | translate}} {{delayRule}} {{'delay_stu_list.school_rule_suffix' | translate}}
       </span>
       }
     </div>
@@ -43,7 +43,7 @@
       class="px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1 transition-colors bg-orange-50 text-orange-600 border-orange-100"
     >
       <ion-icon name="time-outline" class="text-sm"></ion-icon>
-      سجل التأخير
+      {{'delay_stu_list.delay_log' | translate}}
     </div>
   </div>
 </ion-header>
@@ -57,14 +57,14 @@
   <div class="flex items-center gap-2">
     <ion-icon name="checkmark-done-circle-outline" class="text-2xl"></ion-icon>
     <div class="flex flex-col">
-      <span class="font-bold text-sm">أنت الآن في وضع تسجيل التأخير</span>
+      <span class="font-bold text-sm">{{'delay_stu_list.edit_mode_banner' | translate}}</span>
     </div>
   </div>
   <button
     (click)="toggleEditMode()"
     class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm"
   >
-    إلغاء التعديل
+    {{'delay_stu_list.cancel_edit' | translate}}
   </button>
 </div>
 }
@@ -110,7 +110,7 @@
               <span
                 class="bg-slate-50 text-slate-500 px-2 py-0.5 rounded border border-slate-200 text-3xs font-bold flex items-center gap-1"
               >
-                إجمالي التأخير: {{student.total_delay}}
+                {{'delay_stu_list.total_delay_label' | translate}} {{student.total_delay}}
               </span>
             </div>
           </div>
@@ -121,11 +121,11 @@
           >
             <span class="text-4xs font-bold text-slate-400 mb-0.5">{{'delay_stu_list.a_d' | translate}}</span>
             <div class="flex items-center text-xs font-bold" dir="ltr">
-              <span class="text-rose-500" title="أيام الغياب بسبب التأخير">
+              <span class="text-rose-500" [title]="'delay_stu_list.absence_due_to_delay_tooltip' | translate">
                 {{ delayRule > 0 ? ((student.useedforabsent?.one || 0) / delayRule | number:'1.0-0') : 0 }}
               </span>
               <span class="text-slate-300 mx-1">/</span>
-              <span class="text-orange-500" title="مرات التأخير الحالية">{{student.useedforabsent?.zero}}</span>
+              <span class="text-orange-500" [title]="'delay_stu_list.current_delay_count_tooltip' | translate">{{student.useedforabsent?.zero}}</span>
             </div>
           </div>
           <!-- 🟢 زر التأخير (متعطل بصرياً إذا لم يكن نمط التعديل مفعلاً للإدارة) -->
@@ -196,7 +196,7 @@
         (click)="toggleEditMode()"
       >
         <ion-icon name="create-outline" class="text-xl"></ion-icon>
-        تعديل التأخير
+        {{'delay_stu_list.edit_delay_btn' | translate}}
       </button>
       }
       <!-- زر الحفظ (يظهر بعد تفعيل التعديل، أو دائماً للإداري userType 3) -->
@@ -208,7 +208,7 @@
         (click)="submitAttendance()"
       >
         <ion-icon name="save-outline" class="text-xl"></ion-icon>
-        حفظ التأخير
+        {{'delay_stu_list.save_delay_btn' | translate}}
       </button>
       }
     </div>
@@ -226,9 +226,9 @@
   <ng-template>
     <ion-header class="ion-no-border">
       <ion-toolbar>
-        <ion-title>اختر التاريخ</ion-title>
+        <ion-title>{{'delay_stu_list.choose_date' | translate}}</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="hideCalenderModal()">إلغاء</ion-button>
+          <ion-button (click)="hideCalenderModal()">{{'action_icons.cancel' | translate}}</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>

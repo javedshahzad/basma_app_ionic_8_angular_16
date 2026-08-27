@@ -24,25 +24,10 @@ export class AddReviewComponent implements OnInit {
   @Input() student: any;
   selections: any[] = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
   postData: any[] = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
-  stars_array = [
-    {
-      title: 'متميز'
-    },
-    {
-      title: 'جيد جداً'
-    },
-    {
-      title: 'جيد'
-    },
-    {
-      title: 'مقبول'
-    },
-    {
-      title: 'ضعيف'
-    }
-  ];
+  stars_array: { title: string }[] = [];
   noteMessage: string = '';
   lang: any;
+  reviewLang: any;
   studentDetails: any;
 
   // أضف هذه المتغيرات في أعلى الكلاس
@@ -66,6 +51,17 @@ export class AddReviewComponent implements OnInit {
     // this.userDetails = JSON.parse(localStorage.getItem("userloggedin"));
     this.translate.get('alertmessages').subscribe(val => {
       this.lang = val;
+      this.cdr.markForCheck();
+    });
+    this.translate.get('add_review').subscribe(val => {
+      this.reviewLang = val;
+      this.stars_array = [
+        { title: val.star_excellent },
+        { title: val.star_very_good },
+        { title: val.star_good },
+        { title: val.star_acceptable },
+        { title: val.star_weak }
+      ];
       this.cdr.markForCheck();
     });
     if (this.data) {
@@ -107,50 +103,6 @@ export class AddReviewComponent implements OnInit {
     setTimeout(() => {
       this.viewImageUrl = '';
     }, 300); // تأخير بسيط لجمالية الإغلاق
-  }
-
-  getSelectedStars() {
-    let stars_array = [
-      {
-        title: 'متميز'
-      },
-      {
-        title: 'جيد جداً'
-      },
-      {
-        title: 'جيد'
-      },
-      {
-        title: 'مقبول'
-      },
-      {
-        title: 'ضعيف'
-      }
-    ];
-    console.log(stars_array);
-    return stars_array;
-    return new Array(5);
-  }
-  getSemArray() {
-    let stars_array = [
-      {
-        title: 'متميز'
-      },
-      {
-        title: 'جيد جداً'
-      },
-      {
-        title: 'جيد'
-      },
-      {
-        title: 'مقبول'
-      },
-      {
-        title: 'ضعيف'
-      }
-    ];
-    console.log(stars_array);
-    return stars_array;
   }
 
   selectStarsForRating(post_data_index: number, index: number) {

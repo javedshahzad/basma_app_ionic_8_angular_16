@@ -33,7 +33,7 @@
           <ion-icon name="calendar-outline" class="text-xl"></ion-icon>
         </div>
         <div>
-          <h3 class="text-3xs font-bold text-slate-400 mb-0.5">تاريخ الكشف</h3>
+          <h3 class="text-3xs font-bold text-slate-400 mb-0.5">{{'seminar_list.report_date' | translate}}</h3>
           <p class="text-sm font-bold text-slate-800 m-0">{{dateSelected | date: 'mediumDate'}}</p>
         </div>
       </div>
@@ -85,7 +85,7 @@
       </div>
     </div>
     <!-- تفاصيل الفصول -->
-    <h2 class="text-sm font-extrabold text-slate-800 mb-3 px-1">تفاصيل الحضور والغياب</h2>
+    <h2 class="text-sm font-extrabold text-slate-800 mb-3 px-1">{{'seminar_list.attendance_details' | translate}}</h2>
     <div class="space-y-4">
       @for (group of seminarList.records; track trackByIndex($index)) {
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -133,13 +133,13 @@
       <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
         <ion-icon name="document-text-outline" class="text-5xl text-slate-300"></ion-icon>
       </div>
-      <h4 class="text-slate-600 font-black text-base">لا توجد إحصائيات</h4>
-      <p class="text-xs text-slate-400 mt-1.5 font-bold">لم يتم تسجيل بيانات للحصص في هذا اليوم.</p>
+      <h4 class="text-slate-600 font-black text-base">{{'seminar_list.no_statistics' | translate}}</h4>
+      <p class="text-xs text-slate-400 mt-1.5 font-bold">{{'seminar_list.no_period_data' | translate}}</p>
       <button
         (click)="openCalenderModal()"
         class="mt-5 px-5 py-2.5 bg-indigo-50 text-indigo-600 font-bold text-xs rounded-xl hover:bg-indigo-100 transition-colors"
       >
-        اختر تاريخاً آخر
+        {{'seminar_list.choose_another_date' | translate}}
       </button>
     </div>
     }
@@ -166,8 +166,8 @@
         locale="ar-EG"
         color="primary"
         [showDefaultButtons]="true"
-        doneText="تأكيد"
-        cancelText="إلغاء"
+        [doneText]="'seminar_list.confirm' | translate"
+        [cancelText]="'action_icons.cancel' | translate"
         class="rounded-2xl border border-slate-100 shadow-sm w-full max-w-[350px]"
       >
       </ion-datetime>

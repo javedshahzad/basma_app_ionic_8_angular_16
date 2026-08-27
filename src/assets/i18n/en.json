@@ -44,7 +44,16 @@
     "submit": "Submit"
   },
   "news": {
-    "pagetitle": "News"
+    "pagetitle": "News",
+    "total_likes_suffix": "Likes",
+    "no_news_found": "No News Found",
+    "no_news_hint": "No news or announcements have been found yet.",
+    "confirm_delete_title": "Confirm Deletion",
+    "confirm_delete_message": "Are you sure you want to delete this news item?",
+    "confirm_delete_hint": "You won't be able to restore it later.",
+    "yes_delete": "Yes, Delete",
+    "search_country_placeholder": "Search for a country...",
+    "no_results": "No Results"
   },
   "plan": {
     "not_valid_old": "The paid subscription plan can be used to display a graphic summary of the student’s performance in general and its statistics in an easy and simple way so that it can be saved as a PDF file or printed directly.",
@@ -386,7 +395,18 @@
     "a_d": "A/D",
     "student_names": "Student Names",
     "total_delay": "Total Delay ",
-    "class_name": "Class"
+    "class_name": "Class",
+    "school_rule_prefix": "School rule: absent after",
+    "school_rule_suffix": "delays",
+    "delay_log": "Delay Log",
+    "edit_mode_banner": "You are now in delay-recording mode",
+    "cancel_edit": "Cancel Editing",
+    "total_delay_label": "Total Delays:",
+    "absence_due_to_delay_tooltip": "Absence days due to delay",
+    "current_delay_count_tooltip": "Current delay count",
+    "edit_delay_btn": "Edit Delays",
+    "save_delay_btn": "Save Delays",
+    "choose_date": "Choose Date"
   },
   "sendmsg": {
     "title": "Send Message",
@@ -527,7 +547,13 @@
     "total": "Total",
     "note": "Notes",
     "grand_total": "School Total",
-    "total_percent": "Attendance rate"
+    "total_percent": "Attendance rate",
+    "report_date": "Report Date",
+    "attendance_details": "Attendance & Absence Details",
+    "no_statistics": "No Statistics Found",
+    "no_period_data": "No period data was recorded for this day.",
+    "choose_another_date": "Choose Another Date",
+    "confirm": "Confirm"
   },
   "create_notes": {
     "pagetitle": "Student Review",
@@ -822,5 +848,48 @@
     "tos":"terms and conditions",
     "subscription":"Subscription Confirm",
     "subscription_success":"Success Receipt"
+  },
+
+  "add_review": {
+    "criteria_1": "1. Student's attendance, punctuality, and commitment to schedule during the class period",
+    "criteria_2": "2. Cooperation with fellow students during the class period",
+    "criteria_3": "3. Student's behavior reflects respect for classmates",
+    "criteria_4": "4. The relationship between student and teacher is based on mutual respect",
+    "criteria_5": "5. Commitment to rules for preserving public property",
+    "criteria_6": "6. Student's awareness of their rights and commitment to their duties",
+    "criteria_7": "7. Student's understanding of the rules and regulations within the educational institution",
+    "criteria_8": "8. Interest and focus in participation during the class period",
+    "criteria_9": "9. Student's mental comprehension ability during the class period",
+    "criteria_10": "10. Student's ability to read fluently with precise understanding of meaning",
+    "criteria_11": "11. Student's ability to organize ideas and express them in writing",
+    "criteria_12": "12. Student shows a responsible attitude and the ability to make decisions independently",
+    "criteria_13": "13. Extent of benefiting from prior knowledge and skills in the practical test",
+    "criteria_14": "14. Student's academic achievement level measured against subject objectives",
+    "criteria_15": "15. Student's ability to perform operations for problem-solving and critical thinking",
+    "criteria_16": "16. Innovation and planning skills in project performance",
+    "additional_notes": "Additional Notes",
+    "star_excellent": "Excellent",
+    "star_very_good": "Very Good",
+    "star_good": "Good",
+    "star_acceptable": "Acceptable",
+    "star_weak": "Weak"
+  },
+
+  "student_titles": {
+    "page_title": "Titles & Achievements Vault",
+    "skills_tree_title": "Skills Tree & Wallet",
+    "skills_tree_hint": "Large numbers are your total XP; colored ones are your spendable balance.",
+    "total_xp": "Total XP",
+    "merge_titles_tab": "🧪 Merge Titles",
+    "secret_achievements_tab": "🥷 Secret Achievements",
+    "current_active_title": "Current Approved Title",
+    "automatic_title_skills": "Automatic Title (Skills)",
+    "activate_automatic": "Activate Automatic",
+    "available_titles_recipes": "Titles Available to Merge (Recipes)",
+    "currently_active": "Currently Active",
+    "activate_this_title": "Activate This Title",
+    "merge_title_btn": "Merge Title",
+    "secret_badges_hint": "Discover hidden secrets! Perform exceptional deeds at school to unlock these rare badges.",
+    "secret_badge": "Secret Badge"
   }
 }
