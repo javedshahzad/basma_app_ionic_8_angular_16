@@ -228,7 +228,7 @@ export class NewsPage implements OnInit {
   getNews(start: number, newsPerPage: number, countryCode: string, loading: boolean = true): Promise<boolean> {
     return new Promise(resolve => {
       this.newsApi
-        .getNewsJoin(start, newsPerPage, this.userDetails.details, countryCode)
+        .getNewsJoin(start, newsPerPage, this.userDetails.details, countryCode, this.userDetails.session_id)
         .then(totalNews => {
           this.dataProvider.unread = false;
           this.show_loading = false;

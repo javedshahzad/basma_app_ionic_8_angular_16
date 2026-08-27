@@ -60,6 +60,7 @@ export class NewsApiService {
    * @param {number} newsPerPage - how many news in one page
    * @param {object} userDeatils logged in user details
    * @param {char} countrycode - to get news of current locaion
+   * @param {string} sessionId - logged-in session id, required by the API's auth middleware
    * @returns Array of News as per location or error
   */
   // Resolves News[] on success, but falls through to resolve the raw envelope
@@ -67,7 +68,7 @@ export class NewsApiService {
   // own resolve(), so a second resolve() always runs too — harmless since a
   // settled promise ignores later resolve() calls, but it means the failure
   // path really does resolve a different shape than the success path).
-  getNewsJoin(start: number, newsPerPage: number, userDeatils: UserDetails | undefined, countryCode: string): Promise<News[] | GetNewsJoinHttpResponse> {
+  getNewsJoin(start: number, newsPerPage: number, userDeatils: UserDetails | undefined, countryCode: string, sessionId: string | undefined): Promise<News[] | GetNewsJoinHttpResponse> {
     return new Promise((resolve, reject) => {
       this.apiClient.getNetworkInformation().then((isNetworkAvailable) => {
         if (isNetworkAvailable) {
@@ -81,7 +82,7 @@ export class NewsApiService {
             url = environment.serverURL + 'getNewsjoin/' + start + '/' + newsPerPage + '/desc';
           }
 
-          url = `${url}?school_id=${userDeatils?.school_id}&user_no=${userDeatils?.user_no}`
+          url = `${url}?school_id=${userDeatils?.school_id}&user_no=${userDeatils?.user_no}&session_id=${sessionId}`
           if(countryCode && typeof countryCode !=='undefined'){
              url= url+'&code='+countryCode;
           }
