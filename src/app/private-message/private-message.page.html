@@ -72,9 +72,9 @@
       >
         <ion-icon name="mail-unread-outline" class="text-5xl"></ion-icon>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">صندوق الوارد فارغ</h3>
+      <h3 class="text-lg font-bold text-slate-800 mb-2">{{'private_msg.empty_inbox_title' | translate}}</h3>
       <p class="text-sm font-medium text-slate-500 text-center max-w-xs leading-relaxed">
-        {{noRecordFound || 'ليس لديك أي رسائل خاصة في الوقت الحالي.'}}
+        {{noRecordFound || ('private_msg.empty_inbox_fallback' | translate)}}
       </p>
     </div>
     }
@@ -97,7 +97,7 @@
     class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-2xl shadow-lg flex items-center gap-2 backdrop-blur-lg transition-all active:scale-95"
     (click)="$event.stopPropagation(); downloadImage(viewImageUrl)"
   >
-    <ion-icon name="download-outline" class="text-xl"></ion-icon> حفظ الصورة
+    <ion-icon name="download-outline" class="text-xl"></ion-icon> {{'private_msg.save_image_btn' | translate}}
   </button>
   <div
     class="relative w-11/12 max-w-2xl max-h-[85vh] flex items-center justify-center overflow-auto"

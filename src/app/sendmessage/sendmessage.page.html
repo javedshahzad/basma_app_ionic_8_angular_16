@@ -25,7 +25,7 @@
       <div class="p-4 md:p-6 border-b border-slate-100 bg-white">
         <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
           <ion-icon name="people-outline" class="text-indigo-500 text-lg"></ion-icon>
-          الفئة المستهدفة
+          {{'sendmsg.target_category' | translate}}
         </h3>
 
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -81,16 +81,17 @@
       <div class="p-4 md:p-6 border-b border-slate-100">
         <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
           <ion-icon name="person-add-outline" class="text-indigo-500 text-lg"></ion-icon>
-          تحديد مستخدمين
-          <span class="text-xs text-rose-500 font-bold">* (مطلوب)</span>
+          {{'sendmsg.select_users_title' | translate}}
+          <span class="text-xs text-rose-500 font-bold">{{'sendmsg.required_mark' | translate}}</span>
         </h3>
         <div
           (click)="openUserSelection()"
           class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex justify-between items-center cursor-pointer hover:border-indigo-400 transition-colors shadow-sm"
         >
           <span class="font-bold text-slate-600 text-sm">
-            {{ mail.selected_users?.length > 0 ? 'تم تحديد (' + mail.selected_users.length + ') مستخدمين' : 'اضغط هنا
-            لفتح قائمة المستخدمين...' }}
+            {{ mail.selected_users?.length > 0 ? (('sendmsg.users_selected_prefix' | translate) + ' (' +
+            mail.selected_users.length + ') ' + ('sendmsg.users_selected_suffix' | translate)) :
+            ('sendmsg.open_user_list_hint' | translate) }}
           </span>
           <ion-icon name="chevron-back-outline" class="text-slate-400 text-xl"></ion-icon>
         </div>
@@ -140,8 +141,8 @@
           <img loading="lazy" [src]="'data:image/jpeg;base64,' + ticketImage" class="w-full h-full object-cover" />
         </div>
         <div class="flex-1 overflow-hidden">
-          <span class="block text-sm font-bold text-slate-800">الصورة المرفقة</span>
-          <span class="block text-2xs font-medium text-emerald-500 truncate">جاهزة للإرسال</span>
+          <span class="block text-sm font-bold text-slate-800">{{'sendmsg.attached_image_label' | translate}}</span>
+          <span class="block text-2xs font-medium text-emerald-500 truncate">{{'sendmsg.ready_to_send' | translate}}</span>
         </div>
         <button
           type="button"
@@ -161,7 +162,7 @@
           (click)="sendMessage()"
         >
           <ion-icon name="paper-plane-outline" class="text-xl mr-1 transform -rotate-45"></ion-icon>
-          إرسال الرسالة
+          {{'sendmsg.send_msg' | translate}}
         </button>
       </div>
     </form>

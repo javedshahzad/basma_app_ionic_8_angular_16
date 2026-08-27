@@ -2,7 +2,7 @@
 import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Browser } from '@capacitor/browser';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
@@ -15,7 +15,7 @@ import { DatePipe } from '@angular/common';
   templateUrl: './view-bulletin.page.html',
   styleUrls: ['./view-bulletin.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, DatePipe]
+  imports: [IonicModule, DatePipe, TranslatePipe]
 })
 export class ViewBulletinPage {
   trackByIndex(index: number): number {

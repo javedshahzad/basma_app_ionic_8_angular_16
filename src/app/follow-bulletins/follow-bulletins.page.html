@@ -35,7 +35,7 @@
         </div>
         <input type="file" id="myFileInput" (change)="onSelectFiles($event)" multiple="true" class="hidden" />
         <label class="block text-sm font-bold text-slate-600 mb-3 px-1"
-          >الملفات المرفقة <span class="text-rose-500">*</span></label
+          >{{'bulletin.attached_files_label' | translate}} <span class="text-rose-500">*</span></label
         >
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
           @for (doc of selectedDocument; track trackByIndex(i); let i = $index) {
@@ -85,7 +85,7 @@
             (click)="scanDocument()"
           >
             <ion-icon name="cloud-upload-outline" class="text-3xl mb-1"></ion-icon>
-            <span class="text-xs font-bold">أضف ملف</span>
+            <span class="text-xs font-bold">{{'bulletin.add_file_btn' | translate}}</span>
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@
       </div>
       @if (uploadStaus) {
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-4 text-center">
-        <h4 class="text-slate-600 font-bold text-sm mb-3">جاري رفع الملفات... {{uploadStaus}}%</h4>
+        <h4 class="text-slate-600 font-bold text-sm mb-3">{{'bulletin.uploading_files_prefix' | translate}} {{uploadStaus}}%</h4>
         <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
           <div
             class="bg-indigo-600 h-full rounded-full transition-all duration-300"

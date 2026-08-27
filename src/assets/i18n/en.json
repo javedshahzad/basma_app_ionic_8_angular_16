@@ -115,7 +115,9 @@
     "search": "Search Student",
     "search_teacher": "Search teacher",
     "search_parent": "Search parent",
-    "search_user": "Search User"
+    "search_user": "Search User",
+    "no_results": "No results found",
+    "no_results_hint": "Try a different name or check the spelling."
   },
   "student_notes": {
     "pagetitle": "Class Notes",
@@ -309,7 +311,20 @@
     "view": "View",
     "comment": "Comment",
     "add_comment": "Add comment",
-    "select_file": "Select a file"
+    "select_file": "Select a file",
+    "details_fallback": "Bulletin Details",
+    "note_placeholder": "Write your additional note here... (optional)",
+    "attached_files_label": "Attached Files",
+    "add_file_btn": "Add File",
+    "uploading_files_prefix": "Uploading files...",
+    "details_title": "Bulletin Details",
+    "description_label": "Bulletin Description",
+    "no_description_fallback": "No description available for this bulletin.",
+    "attached_files_count_prefix": "Attached Files",
+    "tap_to_view": "Tap to view",
+    "forward_btn": "Forward Bulletin",
+    "no_bulletins_title": "No Bulletins",
+    "no_bulletins_text": "No new bulletins or circulars have been posted yet."
   },
 
   "classlist": {
@@ -372,7 +387,17 @@
     "student_name": "Student Names"
   },
   "private_msg": {
-    "title": "Notifications"
+    "title": "Notifications",
+    "empty_inbox_title": "Inbox is empty",
+    "empty_inbox_fallback": "You have no private messages at the moment.",
+    "save_image_btn": "Save Image",
+    "admin_notification_title": "Admin Notification",
+    "view_attachment_btn": "View Attachment",
+    "empty_messages_title": "Message box is empty",
+    "confirm_delete_title": "Confirm Delete",
+    "confirm_delete_text": "Are you sure you want to delete this message?",
+    "cancel_btn": "Cancel",
+    "yes_delete_btn": "Yes, Delete"
   },
   "validations": {
     "required": "This is required",
@@ -451,7 +476,15 @@
     "send_msg": "Send message",
     "select_user": "Select user",
     "students": "All Students",
-    "to": "Send To"
+    "to": "Send To",
+    "target_category": "Target Category",
+    "select_users_title": "Select Users",
+    "required_mark": "* (Required)",
+    "users_selected_prefix": "Selected",
+    "users_selected_suffix": "users",
+    "open_user_list_hint": "Tap here to open the user list...",
+    "attached_image_label": "Attached Image",
+    "ready_to_send": "Ready to send"
   },
   "parentconnect": {
     "pagetitle": "Parent Connect",
@@ -459,23 +492,34 @@
   },
   "parentconnect_chat": {
     "pagetitle": "Connect Chat",
-    "typehere": "Message Details..."
+    "typehere": "Message Details...",
+    "load_older": "Load older messages ↑"
   },
   "parentconnect__newmsg": {
     "pagetitle": "New Message",
     "title": "Title",
     "msg_body": "Message",
-    "send": "Send"
+    "send": "Send",
+    "title_placeholder": "Write a short title for the message...",
+    "body_placeholder": "Write your message details or inquiry here...",
+    "attach_image_optional": "Attach image (optional)"
   },
   "post_news": {
-    "title": "Create News",
+    "title": "Add News",
     "edit_title": "Edit News",
     "news_title": "Title",
     "news_description": "Description",
     "notification": "Notification",
     "post": "Post",
     "image": "Select image",
-    "video": "Select video"
+    "video": "Select video",
+    "title_placeholder": "Write the news title here...",
+    "description_placeholder": "Write the news details here...",
+    "image_optional_label": "Attached Image (optional)",
+    "attach_image_hint": "Tap to attach an image",
+    "supported_formats": "Supports JPG, PNG",
+    "video_attached": "Video attached",
+    "publish_btn": "Publish News"
   },
   "app_rate": {
     "rate": "Change",

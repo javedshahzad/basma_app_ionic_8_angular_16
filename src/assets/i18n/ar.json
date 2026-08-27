@@ -284,7 +284,17 @@
     "student_name": "قائمة الطلاب"
   },
   "private_msg": {
-    "title": "إشعارات"
+    "title": "إشعارات",
+    "empty_inbox_title": "صندوق الوارد فارغ",
+    "empty_inbox_fallback": "ليس لديك أي رسائل خاصة في الوقت الحالي.",
+    "save_image_btn": "حفظ الصورة",
+    "admin_notification_title": "إشعار إداري",
+    "view_attachment_btn": "عرض المرفق",
+    "empty_messages_title": "صندوق الرسائل فارغ",
+    "confirm_delete_title": "تأكيد الحذف",
+    "confirm_delete_text": "هل أنت متأكد من رغبتك في حذف هذه الرسالة؟",
+    "cancel_btn": "إلغاء",
+    "yes_delete_btn": "نعم، احذف"
   },
   "validations": {
     "required": "هذا الحقل مطلوب",
@@ -363,7 +373,15 @@
     "send_msg": "أرسل",
     "select_user": "تحديد المستخدم",
     "students": "جميع الطلاب",
-    "to": "ارسل إلى"
+    "to": "ارسل إلى",
+    "target_category": "الفئة المستهدفة",
+    "select_users_title": "تحديد مستخدمين",
+    "required_mark": "* (مطلوب)",
+    "users_selected_prefix": "تم تحديد",
+    "users_selected_suffix": "مستخدمين",
+    "open_user_list_hint": "اضغط هنا لفتح قائمة المستخدمين...",
+    "attached_image_label": "الصورة المرفقة",
+    "ready_to_send": "جاهزة للإرسال"
   },
   "parentconnect": {
     "pagetitle": "تواصل",
@@ -371,31 +389,44 @@
   },
   "parentconnect_chat": {
     "pagetitle": "المحادثة المباشرة",
-    "typehere": "اكتب نص الرسالة..."
+    "typehere": "اكتب نص الرسالة...",
+    "load_older": "تحميل الرسائل الأقدم ↑"
   },
   "parentconnect__newmsg": {
     "pagetitle": "محادثة جديدة",
     "title": "عنوان المحادثة",
     "msg_body": "نص المحادثة",
-    "send": "أرسل"
+    "send": "أرسل",
+    "title_placeholder": "اكتب عنواناً مختصراً للرسالة...",
+    "body_placeholder": "اكتب تفاصيل رسالتك أو استفسارك هنا...",
+    "attach_image_optional": "إرفاق صورة (اختياري)"
   },
 
   "search": {
     "search": "البحث عن طالب",
     "search_teacher": "البحث عن معلم",
     "search_parent": "البحث عن ولي امر",
-    "search_user": "البحث عن مستخدم"
+    "search_user": "البحث عن مستخدم",
+    "no_results": "لا توجد نتائج",
+    "no_results_hint": "حاول البحث باسم آخر أو تأكد من إملاء الكلمة بشكل صحيح."
   },
 
   "post_news": {
-    "title": "انشاء خبر جديد",
-    "edit_title": "تحرير الأخبار",
+    "title": "إضافة خبر جديد",
+    "edit_title": "تعديل الخبر",
     "news_title": "عنوان الخبر",
     "news_description": "تفاصيل الخبر",
     "notification": "الاشعارات",
     "post": "إنشاء",
     "image": "تحديد صوره",
-    "video": "تحديد ملف فيديو"
+    "video": "تحديد ملف فيديو",
+    "title_placeholder": "اكتب عنوان الخبر هنا...",
+    "description_placeholder": "اكتب تفاصيل الخبر هنا...",
+    "image_optional_label": "الصورة المرفقة (اختياري)",
+    "attach_image_hint": "اضغط لإرفاق صورة",
+    "supported_formats": "يدعم JPG, PNG",
+    "video_attached": "تم إرفاق فيديو",
+    "publish_btn": "نشر الخبر"
   },
   "app_rate": {
     "rate": "تعديل",
@@ -567,7 +598,20 @@
     "view": "عرض النشره",
     "comment": "تعليق",
     "add_comment": "أضف تعليق",
-    "select_file": "تحديد الملف"
+    "select_file": "تحديد الملف",
+    "details_fallback": "تفاصيل النشرة",
+    "note_placeholder": "اكتب ملاحظتك الإضافية هنا... (اختياري)",
+    "attached_files_label": "الملفات المرفقة",
+    "add_file_btn": "أضف ملف",
+    "uploading_files_prefix": "جاري رفع الملفات...",
+    "details_title": "تفاصيل النشرة",
+    "description_label": "وصف النشرة",
+    "no_description_fallback": "لا يوجد وصف متاح لهذه النشرة.",
+    "attached_files_count_prefix": "الملفات المرفقة",
+    "tap_to_view": "اضغط للعرض",
+    "forward_btn": "إعادة توجيه النشرة",
+    "no_bulletins_title": "لا توجد تعاميم",
+    "no_bulletins_text": "لم يتم إدراج أي تعاميم أو نشرات جديدة حتى الآن."
   },
 
   "plan": {

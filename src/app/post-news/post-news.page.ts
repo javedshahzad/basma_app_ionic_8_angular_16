@@ -4,7 +4,7 @@ import { NavController, Platform, AlertController, IonicModule } from '@ionic/an
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { FileUploadService } from '../service/file-upload/file-upload.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -21,7 +21,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './post-news.page.html',
   styleUrls: ['./post-news.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, FormsModule]
+  imports: [IonicModule, FormsModule, TranslatePipe]
 })
 export class PostNewsPage {
   private destroyRef = inject(DestroyRef);
