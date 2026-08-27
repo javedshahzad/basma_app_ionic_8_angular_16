@@ -61,7 +61,7 @@
                 [(ngModel)]="f.field_name"
                 type="text"
                 maxlength="30"
-                placeholder="مثال: المشاركة الصفية"
+                [placeholder]="'followUp_student.field_name_example_placeholder' | translate"
                 class="text-sm font-bold text-slate-800 bg-transparent w-full"
               ></ion-input>
             </div>
@@ -124,8 +124,8 @@
       >
         <ion-icon name="list-outline" class="text-4xl"></ion-icon>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-1">لا توجد حقول مسجلة</h3>
-      <p class="text-sm font-medium text-slate-500">قم بإضافة حقل تقييم جديد لتبدأ بمتابعة طلابك.</p>
+      <h3 class="text-lg font-bold text-slate-800 mb-1">{{'followUp_student.no_fields_title' | translate}}</h3>
+      <p class="text-sm font-medium text-slate-500">{{'followUp_student.no_fields_text' | translate}}</p>
     </div>
     }
 

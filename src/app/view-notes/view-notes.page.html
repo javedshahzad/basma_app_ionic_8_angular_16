@@ -37,8 +37,8 @@
       >
         <ion-icon name="document-text-outline" class="text-3xl text-indigo-500"></ion-icon>
       </div>
-      <h2 class="text-lg font-black text-slate-800 m-0">قائمة الملاحظات</h2>
-      <p class="text-sm font-bold text-slate-500 mt-1.5 leading-relaxed">استعرض الملاحظات والمهام المسجلة.</p>
+      <h2 class="text-lg font-black text-slate-800 m-0">{{'student_notes.list_title' | translate}}</h2>
+      <p class="text-sm font-bold text-slate-500 mt-1.5 leading-relaxed">{{'student_notes.list_subtitle' | translate}}</p>
     </div>
 
     @if (data?.length > 0) { @for (note of data; track trackByIndex(i); let i = $index) {
@@ -69,7 +69,7 @@
         <div class="flex-1 space-y-1.5 w-full overflow-hidden">
           <div class="flex justify-between items-center">
             <h4 class="font-bold text-sm text-slate-800 m-0 truncate w-full">
-              {{note.profile?.first_name || 'معلم'}} {{note.profile?.last_name || ''}}
+              {{note.profile?.first_name || ('student_notes.teacher_fallback' | translate)}} {{note.profile?.last_name || ''}}
             </h4>
           </div>
           <p class="text-sm font-medium text-slate-600 m-0 leading-relaxed whitespace-pre-line">{{note.description}}</p>
@@ -92,7 +92,7 @@
             (click)="openPdf(note.file_link)"
           >
             <img loading="lazy" src="assets/imgs/pdfnew.png" class="w-8 h-8 object-contain" />
-            <span class="text-xs font-bold text-rose-600 pr-1">عرض المرفق (PDF)</span>
+            <span class="text-xs font-bold text-rose-600 pr-1">{{'student_notes.view_attachment_pdf' | translate}}</span>
           </div>
           }
         </div>
@@ -111,7 +111,7 @@
             class="bg-indigo-50 text-indigo-600 border border-indigo-100 px-2.5 py-1 rounded-md text-3xs font-bold flex items-center gap-1.5"
           >
             <ion-icon name="send-outline" class="text-indigo-400"></ion-icon>
-            {{'student_notes.sendTO' | translate}}: {{note.send_to==='exam' ? 'اختبار' : note.send_to}}
+            {{'student_notes.sendTO' | translate}}: {{note.send_to==='exam' ? ('student_notes.exam_label' | translate) : note.send_to}}
           </span>
           }
         </div>
@@ -122,7 +122,7 @@
             class="w-full sm:w-auto bg-rose-50 hover:bg-rose-100 text-rose-600 text-sm font-bold px-6 py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2 border border-rose-100 active:scale-95"
           >
             <ion-icon name="trash-outline" class="text-lg"></ion-icon>
-            حذف الملاحظة
+            {{'student_notes.delete_note_btn' | translate}}
           </button>
         </div>
         }
@@ -136,7 +136,7 @@
         <ion-icon name="document-text-outline" class="text-3xl text-slate-300"></ion-icon>
       </div>
       <h4 class="text-slate-500 font-bold text-sm m-0 text-center px-4 leading-relaxed">
-        لا توجد ملاحظات مسجلة حتى الآن.
+        {{'student_notes.no_notes_text' | translate}}
       </h4>
     </div>
     }
@@ -158,22 +158,22 @@
     >
       <ion-icon name="trash-outline" class="text-3xl text-rose-500"></ion-icon>
     </div>
-    <h3 class="text-lg font-black text-slate-800 mb-2">حذف الملاحظة؟</h3>
+    <h3 class="text-lg font-black text-slate-800 mb-2">{{'student_notes.delete_note_confirm_title' | translate}}</h3>
     <p class="text-sm font-bold text-slate-500 mb-6 leading-relaxed">
-      هل أنت متأكد من رغبتك في حذف هذه الملاحظة نهائياً؟ لا يمكن التراجع عن هذا الإجراء.
+      {{'student_notes.delete_note_confirm_text' | translate}}
     </p>
     <div class="flex items-center gap-3">
       <button
         class="flex-1 py-3.5 rounded-xl font-black text-slate-500 bg-slate-100 hover:bg-slate-200 active:scale-95 transition-all"
         (click)="cancelDelete()"
       >
-        إلغاء
+        {{'student_notes.cancel' | translate}}
       </button>
       <button
         class="flex-1 py-3.5 rounded-xl font-black text-white bg-rose-500 shadow-md shadow-rose-200 hover:bg-rose-600 active:scale-95 transition-all flex items-center justify-center gap-1.5"
         (click)="confirmDelete()"
       >
-        نعم، احذف
+        {{'student_notes.yes_delete_btn' | translate}}
       </button>
     </div>
   </div>

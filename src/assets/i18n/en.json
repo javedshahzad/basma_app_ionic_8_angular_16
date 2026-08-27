@@ -142,7 +142,21 @@
   "student_notes": {
     "pagetitle": "Class Notes",
     "sendTO": "Send to",
-    "no_note": "No record found"
+    "no_note": "No record found",
+    "list_title": "Notes List",
+    "list_subtitle": "Browse the recorded notes and tasks.",
+    "teacher_fallback": "Teacher",
+    "view_attachment_pdf": "View Attachment (PDF)",
+    "exam_label": "Exam",
+    "delete_note_btn": "Delete Note",
+    "no_notes_text": "No notes recorded yet.",
+    "delete_note_confirm_title": "Delete Note?",
+    "delete_note_confirm_text": "Are you sure you want to permanently delete this note? This action cannot be undone.",
+    "cancel": "Cancel",
+    "yes_delete_btn": "Yes, Delete",
+    "attachments_label": "Attachments",
+    "tap_to_view_pdf": "Tap to view the file (PDF)",
+    "no_notifications_title": "No Notifications"
   },
   "about": {
     "pagetitle": "About us",
@@ -375,7 +389,17 @@
     "present": "Present #",
     "absent": "Absent #",
     "total_student": "Total Students #",
-    "present_pecent": "Total Present"
+    "present_pecent": "Total Present",
+    "no_classes_title": "No Classes",
+    "no_classes_fallback": "No registered classes have been found yet."
+  },
+  "student_report_list": {
+    "no_students_fallback": "No registered students"
+  },
+  "tasks_calendar": {
+    "select_classes_title": "Select Classes",
+    "select_classes_subtitle": "Choose one or more classes to view their calendar and related tasks",
+    "no_classes_text": "No classes available to display"
   },
   "createClass": {
     "pagetitle": "Create Class",
@@ -749,7 +773,10 @@
     "classes_subtitle": "Select the classes you'd like to add or manage in your list.",
     "no_class_desc": "No description available for this class",
     "no_classes_available": "No classes available right now",
-    "no_classes_assigned_hint": "No additional classes have been assigned to you by the administration yet."
+    "no_classes_assigned_hint": "No additional classes have been assigned to you by the administration yet.",
+    "field_name_example_placeholder": "Example: Class Participation",
+    "no_fields_title": "No fields recorded",
+    "no_fields_text": "Add a new evaluation field to start tracking your students."
   },
   "manage_report": {
     "title": "Manage Report",

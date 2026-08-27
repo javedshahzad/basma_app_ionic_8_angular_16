@@ -60,8 +60,8 @@
       <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
         <ion-icon name="folder-open-outline" class="text-4xl text-slate-300"></ion-icon>
       </div>
-      <h3 class="text-slate-700 font-bold text-lg mb-1">لا توجد فصول</h3>
-      <p class="text-slate-400 text-sm font-medium">{{noDataFound || 'لم يتم العثور على فصول مسجلة حتى الآن.'}}</p>
+      <h3 class="text-slate-700 font-bold text-lg mb-1">{{'classlist.no_classes_title' | translate}}</h3>
+      <p class="text-slate-400 text-sm font-medium">{{noDataFound || ('classlist.no_classes_fallback' | translate)}}</p>
     </div>
     } }
   </div>

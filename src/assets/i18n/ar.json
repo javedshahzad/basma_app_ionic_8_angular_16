@@ -264,7 +264,17 @@
     "present": "الحضور",
     "absent": "الغياب",
     "total_student": "اجمالي الطلاب",
-    "present_pecent": "نسبه الحضور"
+    "present_pecent": "نسبه الحضور",
+    "no_classes_title": "لا توجد فصول",
+    "no_classes_fallback": "لم يتم العثور على فصول مسجلة حتى الآن."
+  },
+  "student_report_list": {
+    "no_students_fallback": "لا يوجد طلاب مسجلين"
+  },
+  "tasks_calendar": {
+    "select_classes_title": "تحديد الصفوف",
+    "select_classes_subtitle": "اختر صفاً واحداً أو أكثر لعرض التقويم والمهام المرتبطة بها",
+    "no_classes_text": "لا توجد صفوف متاحة لعرضها"
   },
   "createClass": {
     "pagetitle": "إنشاء صف جديد",
@@ -544,7 +554,21 @@
   "student_notes": {
     "pagetitle": "ملاحظات الصف",
     "sendTO": "ملاحظة ",
-    "no_note": "لا يوجد بيانات"
+    "no_note": "لا يوجد بيانات",
+    "list_title": "قائمة الملاحظات",
+    "list_subtitle": "استعرض الملاحظات والمهام المسجلة.",
+    "teacher_fallback": "معلم",
+    "view_attachment_pdf": "عرض المرفق (PDF)",
+    "exam_label": "اختبار",
+    "delete_note_btn": "حذف الملاحظة",
+    "no_notes_text": "لا توجد ملاحظات مسجلة حتى الآن.",
+    "delete_note_confirm_title": "حذف الملاحظة؟",
+    "delete_note_confirm_text": "هل أنت متأكد من رغبتك في حذف هذه الملاحظة نهائياً؟ لا يمكن التراجع عن هذا الإجراء.",
+    "cancel": "إلغاء",
+    "yes_delete_btn": "نعم، احذف",
+    "attachments_label": "المرفقات",
+    "tap_to_view_pdf": "اضغط لعرض الملف (PDF)",
+    "no_notifications_title": "لا توجد إشعارات"
   },
   "create_notes": {
     "pagetitle": "اضافه ملاحظه",
@@ -765,7 +789,10 @@
     "classes_subtitle": "قم بتحديد الفصول التي ترغب في إضافتها أو إدارتها في قائمتك.",
     "no_class_desc": "لا يوجد وصف متاح لهذا الفصل",
     "no_classes_available": "لا توجد فصول دراسية متاحة حالياً",
-    "no_classes_assigned_hint": "لم يتم إسناد فصول إضافية لك من قبل الإدارة بعد."
+    "no_classes_assigned_hint": "لم يتم إسناد فصول إضافية لك من قبل الإدارة بعد.",
+    "field_name_example_placeholder": "مثال: المشاركة الصفية",
+    "no_fields_title": "لا توجد حقول مسجلة",
+    "no_fields_text": "قم بإضافة حقل تقييم جديد لتبدأ بمتابعة طلابك."
   },
   "manage_report": {
     "title": "التحكم في التقارير",
