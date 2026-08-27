@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
     <h4 class="text-lg font-bold text-slate-800 m-0 flex items-center gap-2">
       <ion-icon name="id-card" class="text-indigo-600 bg-indigo-50 p-2 rounded-xl"></ion-icon>
-      بيانات الطالب
+      {{'student-details.student_data_title' | translate}}
     </h4>
     <button
       (click)="closeModal()"
@@ -86,7 +86,7 @@
         (click)="saveChanges()"
       >
         <ion-icon name="save-outline" class="text-lg"></ion-icon>
-        حفظ التعديلات
+        {{'edit_student.save' | translate}}
       </button>
     }
   </div>

@@ -72,9 +72,9 @@
       >
         <ion-icon name="albums-outline" class="text-5xl"></ion-icon>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">لا توجد فصول مضافة</h3>
+      <h3 class="text-lg font-bold text-slate-800 mb-2">{{'followUp_student.no_classes_added' | translate}}</h3>
       <p class="text-sm font-medium text-slate-500 text-center max-w-xs leading-relaxed">
-        {{noDataFound || 'لم يتم العثور على فصول مسجلة حتى الآن. انقر على زر الإضافة للبدء.'}}
+        {{noDataFound || ('followUp_student.no_classes_fallback' | translate)}}
       </p>
     </div>
     }

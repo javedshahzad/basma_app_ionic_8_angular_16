@@ -43,7 +43,7 @@
                   oldUser.email_id === currentUserEmail ||
                   oldUser.user_no === user_no
                 ) {
-                  <span class="text-4xs px-1.5 py-0.5 rounded-full bg-indigo-500 text-white font-bold">الحالي</span>
+                  <span class="text-4xs px-1.5 py-0.5 rounded-full bg-indigo-500 text-white font-bold">{{ lang?.current || 'الحالي' }}</span>
                 }
               </h4>
               <p

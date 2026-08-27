@@ -46,6 +46,7 @@
   "switch_account": {
     "login_as": "تسجيل الدخول بواسطه",
     "different_login": "تسجيل الدخول بحساب موجود ؟",
+    "current": "الحالي",
     "alert_mssg": "هل أنت متأكد أنك تريد إزالة هذا المستخدم",
     "confirm": "تأكيد",
     "cancel": "إلغاء",
@@ -210,7 +211,19 @@
     "status": "الحاله",
     "view_application_list": "عرض قائمة الطلبات المرسله",
     "filter": "تصفيه البيانات",
-    "class_select":"تحديد الصف"
+    "class_select":"تحديد الصف",
+    "no_data": "لا توجد بيانات",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "select_absent_day_placeholder": "اختر يوم الغياب",
+    "select_sems_placeholder": "حدد الحصص المتغيب فيها",
+    "notes_placeholder": "اكتب سبب الغياب هنا...",
+    "attachments_title": "المرفقات (عذر طبي، رسالة...)",
+    "attachments_hint": "اضغط لالتقاط أو رفع صورة",
+    "no_notes": "لا توجد ملاحظات",
+    "view_attachments_title": "المرفقات (اضغط للتكبير)",
+    "attachment_alt": "مرفق الطلب",
+    "no_requests": "لا توجد طلبات"
   },
   "classlist": {
     "pagetitle": "قائمة الصفوف",
@@ -236,9 +249,23 @@
     "medical_days": "الطبيات",
     "total_absents": "إجمالي الغياب",
     "mark_all": "تحديد غياب او حضور الطلاب دفعه واحده",
-    "student_points": "إجمالي النقاط"
+    "student_points": "إجمالي النقاط",
+    "period": "الحصة",
+    "preview_suffix": "(للمعاينة 👁️)",
+    "edit_mode_banner": "أنت الآن في وضع تسجيل الحضور والغياب",
+    "cancel_edit": "إلغاء التعديل",
+    "recorded_prefix": "تم تسجيل",
+    "recorded_of": "من",
+    "edit_absence": "تعديل الغياب",
+    "save_absence": "حفظ الغياب",
+    "frozen_student_title": "طالب مجمد ❄️",
+    "warning_title": "مهلاً!",
+    "understood_btn": "حسناً، فهمت",
+    "select_date_title": "اختر التاريخ",
+    "cancel": "إلغاء"
   },
   "student-details": {
+    "student_data_title": "بيانات الطالب",
     "heading": "صحيفه الطالب",
     "total_absent": "إجمالي الغياب",
     "notes": "التقييم والملاحظات",
@@ -301,7 +328,9 @@
     "title": "المحتوى التعليمي"
   },
   "delaylist": {
-    "title": "قائمة التأخير"
+    "title": "قائمة التأخير",
+    "no_classes": "لا توجد فصول",
+    "no_classes_fallback": "لم يتم العثور على فصول مسندة إليك لادخال التأخير."
   },
   "delay_stu_list": {
     "a_d": "ت/غ",
@@ -611,10 +640,13 @@
     "mark_on_present": "القيمة الافتراضية",
     "absent_fill": "تحديد الدرجة صفر في حاله الغياب",
     "add_field": "إضافة حقل جديد",
-    "submit": "حفظ"
+    "submit": "حفظ",
+    "no_classes_added": "لا توجد فصول مضافة",
+    "no_classes_fallback": "لم يتم العثور على فصول مسجلة حتى الآن. انقر على زر الإضافة للبدء."
   },
   "manage_report": {
     "title": "التحكم في التقارير",
+    "report": "تقرير",
     "report_type": "تحديد نوع التقرير",
     "medical_report": "تقرير طبي",
     "suspension_report": "الفصل السلوكي",
@@ -652,6 +684,15 @@
     "add_report": "إضافة تقرير",
     "search_violation_placeholder": "بحث عن مخالفة...",
     "search_action_placeholder": "بحث عن إجراء...",
+    "tab_call_pledge": "الاستدعاء والتعهدات",
+    "clean_record_title": "السجل نظيف",
+    "no_warnings_text": "لا توجد أي إنذارات مسجلة لهذا الطالب.",
+    "call_parent_reports_title": "تقارير استدعاء ولي الأمر",
+    "attendance_summon_title": "استدعاء حضور",
+    "pledges_title": "تعهدات الطالب",
+    "written_pledge_title": "تعهد خطي",
+    "no_records_title": "لا توجد سجلات",
+    "no_pledges_summons_text": "لم يتم تسجيل أي تعهدات أو استدعاءات.",
     "no_matching_results": "لا توجد نتائج مطابقة للبحث",
     "print": "طباعة",
     "to_separator": "إلى"
@@ -967,5 +1008,19 @@
     "marked_late": "مسجل تأخير",
     "present": "حاضر",
     "absent": "غائب"
+  },
+
+  "popovers": {
+    "enable_edit_mode": "تفعيل وضع التعديل",
+    "register_new_student": "تسجيل طالب جديد",
+    "view_notes": "عرض الملاحظات",
+    "grant_student_points": "منح نقاط للطالب",
+    "student_actions": "إجراءات الطالب",
+    "add_note": "إضافة ملاحظة",
+    "student_points": "نقاط الطالب",
+    "note_actions": "إجراءات الملاحظة",
+    "take_photo": "التقاط بالكاميرا",
+    "choose_from_gallery": "اختيار من المعرض",
+    "choose_avatar": "اختيار صورة رمزية"
   }
 }

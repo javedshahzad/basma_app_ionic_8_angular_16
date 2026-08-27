@@ -115,7 +115,7 @@
         class="py-10 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl bg-white mt-4"
       >
         <ion-icon name="folder-open-outline" class="text-4xl text-slate-300 mb-2"></ion-icon>
-        <h4 class="text-slate-500 font-bold text-sm">لا توجد طلبات</h4>
+        <h4 class="text-slate-500 font-bold text-sm">{{'absent_students.no_requests' | translate}}</h4>
       </div>
       }
     </div>
@@ -141,8 +141,8 @@
         locale="ar-EG"
         color="primary"
         [showDefaultButtons]="true"
-        doneText="تأكيد"
-        cancelText="إلغاء"
+        [doneText]="'absent_students.confirm' | translate"
+        [cancelText]="'absent_students.cancel' | translate"
         class="rounded-2xl border border-slate-100 shadow-sm w-full max-w-[350px]"
       >
       </ion-datetime>

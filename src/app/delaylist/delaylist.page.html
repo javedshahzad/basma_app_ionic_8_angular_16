@@ -68,9 +68,9 @@
       >
         <ion-icon name="time-outline" class="text-5xl"></ion-icon>
       </div>
-      <h3 class="text-lg font-bold text-slate-800 mb-2">لا توجد فصول</h3>
+      <h3 class="text-lg font-bold text-slate-800 mb-2">{{'delaylist.no_classes' | translate}}</h3>
       <p class="text-sm font-medium text-slate-500 max-w-xs mx-auto leading-relaxed">
-        {{ noDataFound || 'لم يتم العثور على فصول مسندة إليك لادخال التأخير.' }}
+        {{ noDataFound || ('delaylist.no_classes_fallback' | translate) }}
       </p>
     </div>
     }

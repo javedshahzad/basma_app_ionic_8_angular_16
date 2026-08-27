@@ -228,6 +228,7 @@
   "switch_account": {
     "login_as": "Login as",
     "different_login": "Login with existing account ?",
+    "current": "Current",
     "alert_mssg": "Are you sure you want to remove this user ?",
     "confirm": "Confirm !",
     "cancel": "Cancel",
@@ -271,7 +272,19 @@
     "submitted_by":"Submitted by",
     "status":"Status",
     "view_application_list":"View Applications List",
-    "filter":"Filter"
+    "filter":"Filter",
+    "no_data": "No data found",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "select_absent_day_placeholder": "Select absence day",
+    "select_sems_placeholder": "Select missed periods",
+    "notes_placeholder": "Write the reason for absence here...",
+    "attachments_title": "Attachments (medical excuse, letter...)",
+    "attachments_hint": "Tap to capture or upload a photo",
+    "no_notes": "No notes",
+    "view_attachments_title": "Attachments (tap to enlarge)",
+    "attachment_alt": "Application attachment",
+    "no_requests": "No requests found"
   },
   "bulletin": {
     "title": "Follow the bulletins",
@@ -323,9 +336,23 @@
     "medical_days": "Medical days",
     "total_absents": "Total absents",
     "mark_all": "Mark attendence for all student",
-    "student_points": "Points"
+    "student_points": "Points",
+    "period": "Period",
+    "preview_suffix": "(Preview 👁️)",
+    "edit_mode_banner": "You are now in attendance recording mode",
+    "cancel_edit": "Cancel Edit",
+    "recorded_prefix": "Recorded",
+    "recorded_of": "of",
+    "edit_absence": "Edit Absence",
+    "save_absence": "Save Absence",
+    "frozen_student_title": "Frozen Student ❄️",
+    "warning_title": "Wait!",
+    "understood_btn": "Okay, Got it",
+    "select_date_title": "Select Date",
+    "cancel": "Cancel"
   },
   "student-details": {
+    "student_data_title": "Student Data",
     "heading": "Student Profile",
     "total_absent": "Total Absent",
     "notes": "Notes",
@@ -389,7 +416,9 @@
     "title": "eLearning Material"
   },
   "delaylist": {
-    "title": "Delay List"
+    "title": "Delay List",
+    "no_classes": "No classes found",
+    "no_classes_fallback": "No classes assigned to you for delay entry were found."
   },
   "delay_stu_list": {
     "a_d": "A/D",
@@ -595,10 +624,13 @@
     "mark_on_present": "Default Value",
     "absent_fill": "Fill 0 on absent",
     "add_field": "Add field",
-    "submit": "Submit"
+    "submit": "Submit",
+    "no_classes_added": "No classes added",
+    "no_classes_fallback": "No registered classes have been found yet. Tap the add button to get started."
   },
   "manage_report": {
     "title": "Manage Report",
+    "report": "Report",
     "report_type": "Select report type",
     "medical_report": "Medical report",
     "suspension_report": "Suspension report",
@@ -636,6 +668,15 @@
     "add_report": "Add Report",
     "search_violation_placeholder": "Search for a violation...",
     "search_action_placeholder": "Search for an action...",
+    "tab_call_pledge": "Summons & Pledges",
+    "clean_record_title": "Clean Record",
+    "no_warnings_text": "No warnings recorded for this student.",
+    "call_parent_reports_title": "Parent Summon Reports",
+    "attendance_summon_title": "Attendance Summon",
+    "pledges_title": "Student Pledges",
+    "written_pledge_title": "Written Pledge",
+    "no_records_title": "No Records",
+    "no_pledges_summons_text": "No pledges or summons have been recorded.",
     "no_matching_results": "No matching search results",
     "print": "Print",
     "to_separator": "to"
@@ -951,5 +992,19 @@
     "marked_late": "Marked Late",
     "present": "Present",
     "absent": "Absent"
+  },
+
+  "popovers": {
+    "enable_edit_mode": "Enable Edit Mode",
+    "register_new_student": "Register New Student",
+    "view_notes": "View Notes",
+    "grant_student_points": "Grant Points to Student",
+    "student_actions": "Student Actions",
+    "add_note": "Add Note",
+    "student_points": "Student Points",
+    "note_actions": "Note Actions",
+    "take_photo": "Take Photo",
+    "choose_from_gallery": "Choose from Gallery",
+    "choose_avatar": "Choose Avatar"
   }
 }

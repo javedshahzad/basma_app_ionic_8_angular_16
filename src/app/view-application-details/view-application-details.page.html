@@ -125,7 +125,7 @@
               >
               <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 mt-1">
                 <span class="block text-sm font-bold text-slate-700 leading-relaxed"
-                  >{{AppData.absent_notes || 'لا توجد ملاحظات'}}</span
+                  >{{AppData.absent_notes || ('absent_students.no_notes' | translate)}}</span
                 >
               </div>
             </div>
@@ -135,7 +135,7 @@
         <div class="mt-8">
           <div class="flex items-center gap-2 mb-3">
             <ion-icon name="image-outline" class="text-slate-400"></ion-icon>
-            <h4 class="text-xs font-bold text-slate-500 m-0">المرفقات (اضغط للتكبير)</h4>
+            <h4 class="text-xs font-bold text-slate-500 m-0">{{'absent_students.view_attachments_title' | translate}}</h4>
           </div>
           <div
             class="rounded-2xl border-2 border-slate-100 overflow-hidden shadow-sm bg-slate-50 p-1 relative group cursor-pointer active:scale-95 transition-all"
@@ -145,7 +145,7 @@
               loading="lazy"
               [src]="AppData.pic_url"
               class="w-full h-auto object-cover max-h-72 rounded-xl transition-transform duration-300 group-hover:scale-[1.02]"
-              alt="مرفق الطلب"
+              [alt]="'absent_students.attachment_alt' | translate"
             />
             <div
               class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"

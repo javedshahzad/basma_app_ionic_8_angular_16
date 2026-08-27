@@ -30,7 +30,7 @@
           class="flex-1 relative flex items-center justify-center gap-1 py-1.5 px-2 rounded-full transition-all hover:bg-white hover:shadow-sm cursor-pointer"
         >
           <span class="text-xs font-bold text-indigo-700 mt-0.5 pointer-events-none w-full text-center truncate">
-            الحصة ({{ currentActivePeriod }})
+            {{ 'list-student.period' | translate }} ({{ currentActivePeriod }})
           </span>
           <ion-icon name="chevron-down" class="text-slate-400 text-3xs pointer-events-none"></ion-icon>
           <ion-select
@@ -43,8 +43,8 @@
           >
             @for (dummy of totalSemArray; track trackByIndex(i); let i = $index) {
             <ion-select-option [value]="i + 1">
-              الحصة {{ i + 1 }} {{ lockedPeriods.includes(i + 1) && currentActivePeriod !== (i + 1) ? '(للمعاينة 👁️)' :
-              '' }}
+              {{ 'list-student.period' | translate }} {{ i + 1 }} {{ lockedPeriods.includes(i + 1) &&
+              currentActivePeriod !== (i + 1) ? ('list-student.preview_suffix' | translate) : '' }}
             </ion-select-option>
             }
           </ion-select>
@@ -85,14 +85,14 @@
   <div class="flex items-center gap-2">
     <ion-icon name="checkmark-done-circle-outline" class="text-2xl"></ion-icon>
     <div class="flex flex-col">
-      <span class="font-bold text-sm">أنت الآن في وضع تسجيل الحضور والغياب</span>
+      <span class="font-bold text-sm">{{ 'list-student.edit_mode_banner' | translate }}</span>
     </div>
   </div>
   <button
     (click)="toggleEditMode()"
     class="bg-white/20 hover:bg-white/30 text-white px-5 py-1.5 rounded-full text-xs font-bold transition-all active:scale-95 border border-white/30 shadow-sm"
   >
-    إلغاء التعديل
+    {{ 'list-student.cancel_edit' | translate }}
   </button>
 </div>
 }
@@ -161,7 +161,7 @@
     @if (isTeacherUser || editMode || isRestrictedModerator) {
     <div class="flex justify-between items-center mb-4 px-2">
       <p class="text-slate-500 text-sm font-bold">
-        تم تسجيل <span class="text-indigo-600 text-lg">{{ totalPresent + totalAbsent }}</span> من
+        {{ 'list-student.recorded_prefix' | translate }} <span class="text-indigo-600 text-lg">{{ totalPresent + totalAbsent }}</span> {{ 'list-student.recorded_of' | translate }}
         <span class="text-slate-800 text-lg">{{ attendanceResponse.students?.length }}</span>
       </p>
       <div class="flex gap-2">
@@ -199,7 +199,7 @@
       (click)="toggleEditModeWithValidation()"
     >
       <ion-icon name="create-outline" class="text-xl"></ion-icon>
-      تعديل الغياب
+      {{ 'list-student.edit_absence' | translate }}
     </button>
     } @if (editMode || isRestrictedModerator) {
     <button
@@ -208,7 +208,7 @@
       [disabled]="isRestrictedModerator ? (!hasMadeChanges() || isAnyModifiedPeriodIncomplete()) : false"
     >
       <ion-icon name="save-outline" class="text-xl"></ion-icon>
-      حفظ الغياب
+      {{ 'list-student.save_absence' | translate }}
     </button>
     } }
   </div>
@@ -258,14 +258,14 @@
     >
       <ion-icon name="snow" class="text-3xl text-cyan-500 animate-pulse"></ion-icon>
     </div>
-    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">طالب مجمد ❄️</h3>
+    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">{{ 'list-student.frozen_student_title' | translate }}</h3>
     } @if (warningType === 'warning') {
     <div
       class="w-16 h-16 rounded-full bg-amber-50 flex items-center justify-center mb-4 border border-amber-100 shadow-inner"
     >
       <ion-icon name="warning-outline" class="text-3xl text-amber-500 animate-pulse"></ion-icon>
     </div>
-    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">مهلاً!</h3>
+    <h3 class="text-lg font-black text-slate-800 mb-2 text-center">{{ 'list-student.warning_title' | translate }}</h3>
     }
     <p class="text-sm text-slate-500 text-center font-medium leading-relaxed mb-6">{{ warningMessage }}</p>
     <button
@@ -273,7 +273,7 @@
       [ngClass]="warningType === 'frozen' ? 'bg-cyan-50 text-cyan-600 hover:bg-cyan-100' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
       class="w-full py-3 rounded-xl font-bold transition-colors"
     >
-      حسناً، فهمت
+      {{ 'list-student.understood_btn' | translate }}
     </button>
   </div>
 </div>
@@ -289,9 +289,9 @@
   <ng-template>
     <ion-header class="ion-no-border">
       <ion-toolbar>
-        <ion-title>اختر التاريخ</ion-title>
+        <ion-title>{{ 'list-student.select_date_title' | translate }}</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="hideCalenderModal()">إلغاء</ion-button>
+          <ion-button (click)="hideCalenderModal()">{{ 'list-student.cancel' | translate }}</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>

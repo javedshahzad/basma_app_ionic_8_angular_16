@@ -91,7 +91,7 @@
         class="py-10 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50"
       >
         <ion-icon name="folder-open-outline" class="text-4xl text-slate-300 mb-2"></ion-icon>
-        <h4 class="text-slate-500 font-bold text-sm">لا توجد بيانات</h4>
+        <h4 class="text-slate-500 font-bold text-sm">{{'absent_students.no_data' | translate}}</h4>
       </div>
       }
     </div>
@@ -105,7 +105,7 @@
     <div class="bg-white w-full max-w-md rounded-t-[2.5rem] shadow-2xl p-6 relative z-10 animate-fade-in-up" dir="rtl">
       <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-0 right-0"></div>
       <div class="flex items-center justify-between mt-3 mb-5 px-1">
-        <h3 class="text-lg font-black text-slate-800 m-0">تصفية البيانات</h3>
+        <h3 class="text-lg font-black text-slate-800 m-0">{{'absent_students.filter' | translate}}</h3>
         <button
           class="w-8 h-8 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition-colors"
           (click)="closeFilterModal()"
@@ -201,8 +201,8 @@
           locale="ar-EG"
           color="primary"
           [showDefaultButtons]="true"
-          doneText="تأكيد"
-          cancelText="إلغاء"
+          [doneText]="'absent_students.confirm' | translate"
+          [cancelText]="'absent_students.cancel' | translate"
           class="rounded-2xl border border-slate-100 shadow-sm w-full max-w-[350px]"
         >
         </ion-datetime>

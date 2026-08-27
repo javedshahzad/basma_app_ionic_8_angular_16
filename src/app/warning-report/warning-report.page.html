@@ -27,7 +27,7 @@
           [ngClass]="reportType === 'callOfParentAndPledges' ? 'bg-indigo-50 shadow-sm text-indigo-600 border border-indigo-100' : 'text-slate-500 hover:text-slate-700'"
           (click)="reportType = 'callOfParentAndPledges'"
         >
-          الاستدعاء والتعهدات
+          {{'manage_report.tab_call_pledge' | translate}}
         </button>
         <button
           class="flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-300"
@@ -92,8 +92,8 @@
           >
             <ion-icon name="checkmark-circle-outline" class="text-5xl"></ion-icon>
           </div>
-          <h3 class="text-lg font-bold text-slate-800 mb-1">السجل نظيف</h3>
-          <p class="text-sm font-medium text-slate-500">لا توجد أي إنذارات مسجلة لهذا الطالب.</p>
+          <h3 class="text-lg font-bold text-slate-800 mb-1">{{'manage_report.clean_record_title' | translate}}</h3>
+          <p class="text-sm font-medium text-slate-500">{{'manage_report.no_warnings_text' | translate}}</p>
         </div>
         }
       </div>
@@ -102,7 +102,7 @@
         @if (callOfStudentsReport?.length > 0) {
         <div class="mb-8">
           <h2 class="text-sm font-bold text-slate-500 mb-3 px-2 flex items-center gap-2">
-            <ion-icon name="call-outline"></ion-icon> تقارير استدعاء ولي الأمر
+            <ion-icon name="call-outline"></ion-icon> {{'manage_report.call_parent_reports_title' | translate}}
           </h2>
           <div class="space-y-4">
             @for (edays of callOfStudentsReport; track trackByIndex(i); let i = $index) {
@@ -114,7 +114,7 @@
                   <span class="font-black text-sm">#{{i+1}}</span>
                 </div>
                 <div>
-                  <h3 class="font-bold text-slate-800 m-0 text-sm">استدعاء حضور</h3>
+                  <h3 class="font-bold text-slate-800 m-0 text-sm">{{'manage_report.attendance_summon_title' | translate}}</h3>
                   <span class="text-2xs text-slate-400 font-bold" dir="ltr"
                     >{{edays.date | date : 'yyyy-MM-dd'}}</span
                   >
@@ -132,7 +132,7 @@
         } @if (AllStudentPledgesReports?.length > 0) {
         <div>
           <h2 class="text-sm font-bold text-slate-500 mb-3 px-2 flex items-center gap-2">
-            <ion-icon name="document-text-outline"></ion-icon> تعهدات الطالب
+            <ion-icon name="document-text-outline"></ion-icon> {{'manage_report.pledges_title' | translate}}
           </h2>
           <div class="space-y-4">
             @for (edays of AllStudentPledgesReports; track trackByIndex(i); let i = $index) {
@@ -144,7 +144,7 @@
                   <span class="font-black text-sm">#{{i+1}}</span>
                 </div>
                 <div>
-                  <h3 class="font-bold text-slate-800 m-0 text-sm">تعهد خطي</h3>
+                  <h3 class="font-bold text-slate-800 m-0 text-sm">{{'manage_report.written_pledge_title' | translate}}</h3>
                   <span class="text-2xs text-slate-400 font-bold" dir="ltr"
                     >{{edays.date | date : 'yyyy-MM-dd'}}</span
                   >
@@ -166,8 +166,8 @@
           >
             <ion-icon name="folder-open-outline" class="text-5xl"></ion-icon>
           </div>
-          <h3 class="text-lg font-bold text-slate-800 mb-1">لا توجد سجلات</h3>
-          <p class="text-sm font-medium text-slate-500">لم يتم تسجيل أي تعهدات أو استدعاءات.</p>
+          <h3 class="text-lg font-bold text-slate-800 mb-1">{{'manage_report.no_records_title' | translate}}</h3>
+          <p class="text-sm font-medium text-slate-500">{{'manage_report.no_pledges_summons_text' | translate}}</p>
         </div>
         }
       </div>

@@ -37,7 +37,7 @@
             mode="ios"
             interface="action-sheet"
             class="w-full font-bold text-sm text-slate-800 h-11"
-            placeholder="اختر يوم الغياب"
+            [placeholder]="'absent_students.select_absent_day_placeholder' | translate"
             (ionChange)="OnchangeDate($event)"
           >
             @for (date of absentDates; track trackByIndex(i); let i = $index) {
@@ -62,7 +62,7 @@
             interface="alert"
             [multiple]="true"
             class="w-full font-bold text-sm text-slate-800 h-11"
-            placeholder="حدد الحصص المتغيب فيها"
+            [placeholder]="'absent_students.select_sems_placeholder' | translate"
             (ionChange)="OnchangeSeminar($event)"
           >
             @for (semi of seminarsList; track trackByIndex($index)) {
@@ -86,7 +86,7 @@
             class="font-bold text-sm text-slate-800 m-0"
             rows="3"
             [(ngModel)]="notes"
-            placeholder="اكتب سبب الغياب هنا..."
+            [placeholder]="'absent_students.notes_placeholder' | translate"
           ></ion-textarea>
         </div>
       </div>
@@ -94,7 +94,7 @@
 
     <!-- رفع المرفقات / الصور -->
     <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-      <h3 class="text-sm font-extrabold text-slate-800 mb-3 px-1">المرفقات (عذر طبي، رسالة...)</h3>
+      <h3 class="text-sm font-extrabold text-slate-800 mb-3 px-1">{{'absent_students.attachments_title' | translate}}</h3>
 
       <!-- حالة عدم وجود صورة -->
       @if (!ImgData) {
@@ -108,7 +108,7 @@
           <ion-icon name="camera" class="text-2xl"></ion-icon>
         </div>
         <span class="text-sm font-bold text-indigo-600">{{'absent_students.image' | translate}}</span>
-        <span class="text-3xs text-indigo-400 mt-1">اضغط لالتقاط أو رفع صورة</span>
+        <span class="text-3xs text-indigo-400 mt-1">{{'absent_students.attachments_hint' | translate}}</span>
       </div>
       }
 
@@ -142,7 +142,7 @@
       class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-base font-black py-4 rounded-2xl shadow-md shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center gap-2 mt-4"
     >
       <ion-icon name="paper-plane" class="text-xl"></ion-icon>
-      إرسال الطلب
+      {{'absent_students.submit_app' | translate}}
     </button>
   </div>
 </ion-content>
