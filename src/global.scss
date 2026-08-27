@@ -131,9 +131,18 @@ margin-top: -55px!important;
   justify-content: space-between;
 }
 
-body{
-  direction: rtl;
-}
+// `body`'s direction is intentionally NOT hardcoded here. `direction` is an
+// inherited CSS property, so it already correctly follows the `dir`
+// attribute on <html> (set reactively by app.component.ts's
+// setAppDirection() on language change) via the browser's own native
+// dir-attribute handling. A hardcoded `direction: rtl` here used to permanently
+// override that for the whole app -- Ionic's own internal RTL-dependent JS
+// logic (e.g. ion-menu's slide side, ion-datetime's month navigation) reads
+// `document.dir` directly and DID correctly follow language switches, but the
+// actual CSS layout (menu anchor side, ion-buttons slot ordering, etc.) was
+// stuck on Arabic/RTL regardless, since this rule's origin/specificity beat
+// the browser's native reactive dir-attribute behavior. Removing it lets both
+// mechanisms agree again.
 ion-app.platform-ios12 ion-content { pointer-events: auto; /*fix scroll lock on ios12.2*/ }
 
 .right-direction{
