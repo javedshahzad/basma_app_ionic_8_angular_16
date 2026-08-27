@@ -328,7 +328,9 @@ export class ListStudentPage {
       let teacherName = this.getSemTeacherEntry(semKey)?.teacher;
 
       if (teacherName) {
-        this.dataProvider.showToast(`تم رصدها بواسطة: ${teacherName} (للمعاينة فقط)`);
+        this.dataProvider.showToast(
+          `${this.lang.recorded_by_preview_prefix || 'تم رصدها بواسطة: '}${teacherName}${this.lang.recorded_by_preview_suffix || ' (للمعاينة فقط)'}`
+        );
       } else {
         this.dataProvider.showToast(this.lang.session_saved_preview_only || 'هذه الحصة محفوظة (للمعاينة فقط)');
       }
@@ -1177,7 +1179,7 @@ export class ListStudentPage {
     let semteacherEntry = this.getSemTeacherEntry(semKey);
 
     if (semteacherEntry && !this.editMode) {
-      this.dataProvider.showToast('تم الرصد بواسطة: ' + semteacherEntry.teacher);
+      this.dataProvider.showToast((this.lang.recorded_by_prefix || 'تم الرصد بواسطة: ') + semteacherEntry.teacher);
       return;
     }
 
@@ -1528,7 +1530,9 @@ export class ListStudentPage {
       const res = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
       this.zone.run(() => {
         if (res && res.success) {
-          this.dataProvider.showToast(`تمت إضافة ${point} نقطة بنجاح!`);
+          this.dataProvider.showToast(
+            `${this.lang.points_added_prefix ?? 'تمت إضافة '}${point}${this.lang.points_added_suffix || ' نقطة بنجاح!'}`
+          );
           student.student_points = Number(student.student_points || 0) + point;
         } else {
           this.showModernWarning(res?.msg || 'تعذر إضافة النقاط');

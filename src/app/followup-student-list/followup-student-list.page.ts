@@ -761,7 +761,9 @@ export class FollowupStudentListPage {
       const res = await this.dataProvider.run(() => this.studentEngagement.awardSkillPoints(body));
       this.zone.run(() => {
         if (res && res.success) {
-          this.dataProvider.showToast(`تمت إضافة ${point} نقطة بنجاح!`);
+          this.dataProvider.showToast(
+            `${this.lang.points_added_prefix ?? 'تمت إضافة '}${point}${this.lang.points_added_suffix || ' نقطة بنجاح!'}`
+          );
           student.student_points = Number(student.student_points || 0) + point;
         } else {
           let msg = res?.msg || 'عفواً، لا يمكن منح النقاط الآن.';

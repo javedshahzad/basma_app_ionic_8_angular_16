@@ -1206,7 +1206,12 @@
     "note_length_exceeded": "Sorry, the note must not exceed 45 characters",
     "write_note_first": "Please write the note first",
     "unexpected_error_retry": "An unexpected error occurred, please try again.",
-    "database_connection_error": "Error connecting to the database."
+    "database_connection_error": "Error connecting to the database.",
+    "recorded_by_prefix": "Recorded by: ",
+    "recorded_by_preview_prefix": "Recorded by: ",
+    "recorded_by_preview_suffix": " (preview only)",
+    "points_added_prefix": "",
+    "points_added_suffix": " points added successfully!"
   },
 
   "action_icons": {

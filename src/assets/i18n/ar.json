@@ -1222,7 +1222,12 @@
     "note_length_exceeded": "عذراً، يجب ألا يتجاوز طول الملاحظة 45 حرفاً",
     "write_note_first": "الرجاء كتابة الملاحظة أولاً",
     "unexpected_error_retry": "حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.",
-    "database_connection_error": "خطأ في الاتصال بقاعدة البيانات."
+    "database_connection_error": "خطأ في الاتصال بقاعدة البيانات.",
+    "recorded_by_prefix": "تم الرصد بواسطة: ",
+    "recorded_by_preview_prefix": "تم رصدها بواسطة: ",
+    "recorded_by_preview_suffix": " (للمعاينة فقط)",
+    "points_added_prefix": "تمت إضافة ",
+    "points_added_suffix": " نقطة بنجاح!"
   },
 
   "action_icons": {

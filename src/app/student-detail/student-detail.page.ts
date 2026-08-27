@@ -273,7 +273,9 @@ export class StudentDetailPage {
 
       this.zone.run(() => {
         if (res && res.success) {
-          this.dataProvider.showToast(`تمت إضافة ${point} نقطة بنجاح!`);
+          this.dataProvider.showToast(
+            `${this.lang.points_added_prefix ?? 'تمت إضافة '}${point}${this.lang.points_added_suffix || ' نقطة بنجاح!'}`
+          );
 
           if (this.studentDetails.student_points !== undefined) {
             this.studentDetails.student_points = Number(this.studentDetails.student_points) + point;
