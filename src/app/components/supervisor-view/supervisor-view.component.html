@@ -12,16 +12,16 @@
               </div>
               <div class="flex flex-col">
                 <span class="text-sm text-slate-500 font-bold uppercase tracking-wider"
-                  >قوة الصف التراكمية
+                  >{{'teacher_view.cumulative_class_strength' | translate}}
                   <span class="text-sm font-black text-indigo-800"
-                    >{{ getTotalPoints() | number }} <span class="text-xs font-bold text-slate-500">نقطة</span></span
+                    >{{ getTotalPoints() | number }} <span class="text-xs font-bold text-slate-500">{{'teacher_view.points_suffix' | translate}}</span></span
                   ></span
                 >
               </div>
             </div>
           </div>
           <p class="text-indigo-800 font-bold mb-3 text-sm flex items-center gap-2" dir="rtl">
-            <ion-icon name="layers-outline" class="text-lg"></ion-icon> تحديد الكل
+            <ion-icon name="layers-outline" class="text-lg"></ion-icon> {{'teacher_view.select_all' | translate}}
           </p>
           <div class="flex justify-between items-center" dir="rtl">
             @for (sem of totalSemArray; track trackByPeriod(i, sem); let i = $index) {
@@ -100,7 +100,7 @@
                 @if (student.current_streak >= 10) {
                   <span
                     class="inline-flex items-center gap-1 bg-blue-50 text-blue-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-blue-100 shadow-sm shrink-0 animate-pulse"
-                    title="أسطورة الالتزام"
+                    [title]="'children.streak_legend_title' | translate"
                     ><ion-icon name="flame"></ion-icon
                     ><span class="text-4xs font-bold">{{ student.current_streak }}</span></span
                   >
@@ -108,7 +108,7 @@
                 @if (student.current_streak >= 5 && student.current_streak < 10) {
                   <span
                     class="inline-flex items-center gap-1 bg-orange-50 text-orange-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-orange-100 shadow-sm shrink-0"
-                    title="مشتعل"
+                    [title]="'children.streak_fire_title' | translate"
                     ><ion-icon name="flame"></ion-icon
                     ><span class="text-4xs font-bold">{{ student.current_streak }}</span></span
                   >
@@ -116,7 +116,7 @@
                 @if (student.isFrozen) {
                   <span
                     class="inline-flex items-center gap-1 bg-cyan-50 text-cyan-500 text-4xs font-black px-2 py-0.5 rounded-xl border border-cyan-100 shadow-sm shrink-0"
-                    ><ion-icon name="snow"></ion-icon> مجمد</span
+                    ><ion-icon name="snow"></ion-icon> {{'children.frozen_label' | translate}}</span
                   >
                 }
               </div>

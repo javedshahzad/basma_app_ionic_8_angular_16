@@ -42,6 +42,9 @@
   "avatar_images": {
     "title": "Avatar Image Library"
   },
+  "profile_image_modal": {
+    "title": "View Image"
+  },
   "login": {
     "pagetitle": "Login",
     "select_school": "Select school",
@@ -143,6 +146,9 @@
     "activate_features_subtitle": "Enter the code to activate additional features.",
     "enter_code_placeholder": "Enter code...",
     "activate_now_btn": "Activate Now",
+    "app_name_title": "Basma System",
+    "premium_plan_title": "Premium Plan",
+    "premium_plan_desc": "Elevate your school community to improve education quality and integrate technology in an organized, innovative way to achieve your goals.",
     "available": "Available",
     "expired": "Expired",
     "noPlan": "No plan subscribed yet",
@@ -1243,7 +1249,8 @@
     "not_recorded": "Not Recorded",
     "marked_late": "Marked Late",
     "present": "Present",
-    "absent": "Absent"
+    "absent": "Absent",
+    "select_all": "Select All"
   },
 
   "popovers": {

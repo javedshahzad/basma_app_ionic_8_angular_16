@@ -5,6 +5,7 @@ import { UserType } from '../../constants/user-type';
 import { NgClass, DecimalPipe } from '@angular/common';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 import { HasRoleDirective } from '../../directives/has-role.directive';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-supervisor-view',
@@ -19,7 +20,8 @@ import { HasRoleDirective } from '../../directives/has-role.directive';
     CdkVirtualScrollViewport,
     CdkFixedSizeVirtualScroll,
     CdkVirtualForOf,
-    HasRoleDirective
+    HasRoleDirective,
+    TranslatePipe
   ]
 })
 export class SupervisorViewComponent {

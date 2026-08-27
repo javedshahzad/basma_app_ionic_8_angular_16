@@ -42,6 +42,9 @@
   "avatar_images": {
     "title": "مكتبة الصور الرمزية"
   },
+  "profile_image_modal": {
+    "title": "عرض الصورة"
+  },
   "login": {
     "pagetitle": "تسجيل الدخول",
     "select_school": "اختيار المؤسسة التعليمية",
@@ -817,6 +820,9 @@
     "activate_features_subtitle": "أدخل الكود لتفعيل المميزات الاضافية.",
     "enter_code_placeholder": "أدخل كود...",
     "activate_now_btn": "تفعيل الآن",
+    "app_name_title": "نظام بصمة",
+    "premium_plan_title": "الخطة المميزة",
+    "premium_plan_desc": "أرتقي بمجتمعك المدرسي لتحسين جودة التعليم ودمج التقنية بطريقة منظمة ومبتكرة لتحقيق أهدافك.",
     "available": "متاح",
     "expired": "تاريخ الانتهاء",
     "noPlan": "لم يتم الاشتراك في أي خطة حتى الآن",
@@ -1259,7 +1265,8 @@
     "not_recorded": "لم يُرصد",
     "marked_late": "مسجل تأخير",
     "present": "حاضر",
-    "absent": "غائب"
+    "absent": "غائب",
+    "select_all": "تحديد الكل"
   },
 
   "popovers": {
