@@ -462,12 +462,21 @@ export class ListStudentPage {
 
   // 🟢 جلب طلبات تحويل الغياب المعتمدة لهذا الصف والتاريخ، وبناء خريطة
   // بحث سريعة مفتاحها `sid-period` لتمييزها في شبكة الحضور
+  //
+  // ⚠️ ملاحظة مهمة: getFormatedDate() ترجع تاريخاً غير مبطّن بالأصفار
+  // (مثلاً "2026-8-25")، بينما القيمة الفعلية المخزّنة في absent_date تأتي
+  // من عمود DATE حقيقي وتكون دائماً مبطّنة ("2026-08-25") — والمطابقة في
+  // getAbsentApplication نصية تماماً، فلا تتطابق القيمتان أبداً. هذا هو
+  // السبب الحقيقي وراء عدم ظهور شارة "محوّل عبر طلب معتمد" لأي طلب حقيقي
+  // في الإنتاج حتى الآن. الحل هنا مزدوج: إرسال تاريخ مبطّن فعلاً (ليطابق
+  // البيانات الحقيقية)، مع تحقق إضافي من تطابق التاريخ في العميل (مرن مع
+  // أي صيغة أخرى قد يرجعها الخادم) بدل الاعتماد الكامل على مطابقة الخادم.
   fetchAcceptedApplications() {
     const data = {
       user_no: this.userInfo.user_no,
       session_id: this.userDetails.session_id,
       school_id: this.userInfo.school_id,
-      datetime: this.dataProvider.getFormatedDate(this.dateSelected)
+      datetime: this.formatDatePadded(this.dateSelected)
     };
 
     this.absentApplicationApi
@@ -477,7 +486,12 @@ export class ListStudentPage {
         const cid = this.navData?.cid;
 
         (res?.data || [])
-          .filter(app => app.application_status === '1' && String(app.cid) === String(cid))
+          .filter(
+            app =>
+              app.application_status === '1' &&
+              String(app.cid) === String(cid) &&
+              this.isSameCalendarDate(app.absent_date, this.dateSelected)
+          )
           .forEach(app => {
             this.parseSeminarPeriods(app.absent_seminars).forEach(period => {
               const key = `${app.sid}-${period}`;
@@ -494,6 +508,30 @@ export class ListStudentPage {
         this.acceptedApplicationsBySeminar = new Map();
         this.cdr.markForCheck();
       });
+  }
+
+  // 🟢 نفس منطق getFormatedDate تماماً لكن مع تبطين الشهر واليوم بصفر —
+  // مطلوب هنا تحديداً لمطابقة absent_date الحقيقي (عمود DATE حقيقي)، خلافاً
+  // لبقية استخدامات getFormatedDate في هذا الملف التي أثبت الاختبار الحي
+  // أنها تعمل بصورة صحيحة بدون تبطين، فلم أُغيّر الدالة المشتركة نفسها.
+  private formatDatePadded(date: Date): string {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${date.getFullYear()}-${month}-${day}`;
+  }
+
+  // 🟢 تحقق مرن من تطابق التاريخ (سنة/شهر/يوم فقط) بغض النظر عن صيغة النص
+  // الوارد من الخادم (مبطّن أو غير مبطّن) — حماية إضافية لا تعتمد كلياً على
+  // مطابقة الخادم النصية الصارمة في getAbsentApplication.
+  private isSameCalendarDate(rawDate: unknown, target: Date): boolean {
+    if (!rawDate) return false;
+    const parsed = new Date(String(rawDate));
+    if (isNaN(parsed.getTime())) return false;
+    return (
+      parsed.getFullYear() === target.getFullYear() &&
+      parsed.getMonth() === target.getMonth() &&
+      parsed.getDate() === target.getDate()
+    );
   }
 
   // 🟢 تحليل دفاعي لأرقام الحصص المرسلة كنص مفصول بفواصل (قد تأتي بصيغة
