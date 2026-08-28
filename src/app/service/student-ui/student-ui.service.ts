@@ -52,8 +52,8 @@ export class StudentUiService {
     return data;
   }
 
-  // 2ب. اختيار طريقة إضافة الطالب: فردي أم إنشاء عدة طلاب دفعة واحدة
-  async presentAddStudentModeChooser(event: Event): Promise<'single' | 'multiple' | null> {
+  // 2ب. اختيار طريقة إضافة الطالب: فردي أم إنشاء عدة طلاب أم استيراد من إكسل
+  async presentAddStudentModeChooser(event: Event): Promise<'single' | 'multiple' | 'import' | null> {
     return new Promise(async (resolve) => {
       if (this.platform.width() >= 768) {
         const { AddStudentModePopoverComponent } = await import('../../components/add-student-mode-popover/add-student-mode-popover.component');
@@ -72,6 +72,7 @@ export class StudentUiService {
           buttons: [
             { text: this.translate.instant('popovers.register_new_student'), icon: 'person-add-outline', handler: () => resolve('single') },
             { text: this.translate.instant('popovers.generate_multiple_students'), icon: 'people-outline', handler: () => resolve('multiple') },
+            { text: this.translate.instant('popovers.import_students_excel'), icon: 'document-attach-outline', handler: () => resolve('import') },
             { text: this.translate.instant('popovers.cancel'), icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) }
           ]
         });
@@ -79,6 +80,19 @@ export class StudentUiService {
         actionSheet.onDidDismiss().then(() => resolve(null));
       }
     });
+  }
+
+  // 2هـ. نافذة استيراد الطلاب من ملف إكسل
+  async openImportStudents(langData: any): Promise<{ rows: { name: string; student_id: number }[] } | null> {
+    const { ImportStudentsModalComponent } = await import('../../components/import-students-modal/import-students-modal.component');
+    const modal = await this.modalCtrl.create({
+      component: ImportStudentsModalComponent,
+      cssClass: 'transparent-modal',
+      componentProps: { importLang: langData }
+    });
+    await modal.present();
+    const { data } = await modal.onDidDismiss();
+    return data ?? null;
   }
 
   // 2ج. نافذة تحديد عدد الطلاب المراد إنشاؤهم دفعة واحدة
@@ -127,6 +141,7 @@ export class StudentUiService {
         let buttons = [];
         if (showAdd) buttons.push({ text: this.translate.instant('popovers.register_new_student'), icon: 'person-add-outline', handler: () => resolve('add') });
         if (showAdd) buttons.push({ text: this.translate.instant('popovers.generate_multiple_students'), icon: 'people-outline', handler: () => resolve('generate') });
+        if (showAdd) buttons.push({ text: this.translate.instant('popovers.import_students_excel'), icon: 'document-attach-outline', handler: () => resolve('import') });
         buttons.push({ text: this.translate.instant('popovers.view_notes'), icon: 'document-text-outline', handler: () => resolve('notes') });
         buttons.push({ text: this.translate.instant('popovers.cancel'), icon: 'close', role: 'cancel', cssClass: 'text-rose-500 font-bold', handler: () => resolve(null) });
 

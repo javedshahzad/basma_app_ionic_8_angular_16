@@ -849,6 +849,7 @@ export class ListStudentPage {
     this.zone.run(() => {
       if (action === 'add') this.registerNewStudent();
       if (action === 'generate') this.generateMultipleStudents();
+      if (action === 'import') this.importStudentsFromExcel();
       if (action === 'notes') this.viewNote();
     });
   }
@@ -857,6 +858,7 @@ export class ListStudentPage {
     const mode = await this.studentUi.presentAddStudentModeChooser(event);
     if (mode === 'single') this.registerNewStudent();
     if (mode === 'multiple') this.generateMultipleStudents();
+    if (mode === 'import') this.importStudentsFromExcel();
   }
 
   calculateAttendanceStats(semIndex?: number) {
@@ -1551,33 +1553,81 @@ export class ListStudentPage {
   }
 
   addNewStudent(data: any, response: any) {
-    data.student_id = parseInt(data.student_id);
-    if (Number.isInteger(data.student_id)) {
-      this.dataProvider
-        .run(() =>
-          this.registrationApi.registerStudent({
-            name: data.student_name,
-            student_id: data.student_id,
-            user_no: this.userInfo.user_no,
-            school_id: this.userInfo.school_id,
-            course_id: this.courseInfo.cid,
-            session_id: this.userDetails.session_id
-          })
-        )
-        .then(res => {
-          if (res.session) {
-            this.getStudents(false);
-            this.dataProvider.showToast(this.lang.create_student_success_msg);
-          } else {
-            this.dataProvider.showToast(res.message || '');
-          }
-        })
-        .catch(err => {
-          this.dataProvider.errorALertMessage(err);
-        });
-    } else {
-      this.dataProvider.showToast(response.invalid_stu_id);
+    const trimmedId = String(data.student_id ?? '').trim();
+
+    if (trimmedId === '') {
+      // لم يُدخل المستخدم رمزاً: ننشئ رقماً فريداً تلقائياً بدلاً من رفض الطلب.
+      this.registerStudentWithAutoId(data.student_name, response);
+      return;
     }
+
+    const parsedId = parseInt(trimmedId, 10);
+    if (!Number.isInteger(parsedId) || parsedId === 0) {
+      this.dataProvider.showToast(response.invalid_stu_id);
+      return;
+    }
+
+    this.registerStudentWithFixedId(data.student_name, parsedId, response);
+  }
+
+  private registerStudentWithFixedId(name: string, studentId: number, response: any) {
+    this.dataProvider
+      .run(() =>
+        this.registrationApi.registerStudent({
+          name,
+          student_id: studentId,
+          user_no: this.userInfo.user_no,
+          school_id: this.userInfo.school_id,
+          course_id: this.courseInfo.cid,
+          session_id: this.userDetails.session_id
+        })
+      )
+      .then(res => {
+        if (res.session) {
+          this.getStudents(false);
+          this.dataProvider.showToast(this.lang.create_student_success_msg);
+        } else {
+          this.dataProvider.showToast(res.message || '');
+        }
+      })
+      .catch(err => {
+        this.dataProvider.errorALertMessage(err);
+      });
+  }
+
+  /**
+   * Auto-generated IDs use the same unique-by-construction strategy already
+   * proven for bulk generation (Date.now() sits well outside the 12-digit
+   * civil-ID range real enrollments use, so it can't collide with one) —
+   * but unlike a fixed/typed ID, a collision here just means "try the next
+   * number," not a real error, since nothing about this ID was meaningful
+   * to the admin in the first place.
+   */
+  private async registerStudentWithAutoId(name: string, response: any) {
+    let studentId = Date.now();
+
+    for (let attempt = 1; attempt <= 5; attempt++) {
+      try {
+        const res = await this.registrationApi.registerStudent({
+          name,
+          student_id: studentId,
+          user_no: this.userInfo.user_no,
+          school_id: this.userInfo.school_id,
+          course_id: this.courseInfo.cid,
+          session_id: this.userDetails.session_id
+        });
+        if (res.session) {
+          this.getStudents(false);
+          this.dataProvider.showToast(this.lang.create_student_success_msg);
+          return;
+        }
+      } catch {
+        // fall through to retry with the next candidate id
+      }
+      studentId++;
+    }
+
+    this.dataProvider.showToast(response.auto_id_failed || 'تعذر إنشاء رقم فريد للطالب، حاول مرة أخرى');
   }
 
   async generateMultipleStudents() {
@@ -1680,6 +1730,75 @@ export class ListStudentPage {
         (this.addStudentLang?.generate_partial_failure || 'تم إنشاء {{created}} من أصل {{total}} طالب')
           .replace('{{created}}', String(created))
           .replace('{{total}}', String(count))
+      );
+    }
+  }
+
+  async importStudentsFromExcel() {
+    this.translate.get('reg_student').subscribe(async response => {
+      this.addStudentLang = response;
+      this.cdr.markForCheck();
+
+      if (this.AvailablePlan.isExpire === true) {
+        this.dataProvider.showToast('This feature is part of subscription plan.Please subscribe plan!');
+        return;
+      }
+
+      const result = await this.studentUi.openImportStudents(this.addStudentLang);
+      if (!result?.rows?.length) return;
+
+      await this.runImportBatch(result.rows);
+    });
+  }
+
+  private async runImportBatch(rows: { name: string; student_id: number }[]) {
+    const progress = signal<GenerateProgress>({ current: 0, total: rows.length, failed: 0, currentLabel: '' });
+    const progressModal = await this.studentUi.presentGenerateProgress(this.addStudentLang, progress);
+
+    let created = 0;
+    let failed = 0;
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      progress.set({ ...progress(), currentLabel: row.name });
+
+      // No retry-on-collision here, unlike the auto-generated-id path above:
+      // these are real civil IDs supplied by the file, so a failure (e.g. a
+      // duplicate) gets recorded as a failed row, never silently altered to
+      // a different number.
+      try {
+        const res = await this.registrationApi.registerStudent({
+          name: row.name,
+          student_id: row.student_id,
+          user_no: this.userInfo.user_no,
+          school_id: this.userInfo.school_id,
+          course_id: this.courseInfo.cid,
+          session_id: this.userDetails.session_id
+        });
+        if (res.session) {
+          created++;
+        } else {
+          failed++;
+        }
+      } catch {
+        failed++;
+      }
+
+      progress.set({ ...progress(), current: i + 1, failed });
+    }
+
+    await progressModal.dismiss();
+    this.getStudents(false);
+
+    if (failed === 0) {
+      this.dataProvider.showToast(
+        (this.addStudentLang?.import_success || 'تم استيراد {{count}} طالب بنجاح').replace('{{count}}', String(created))
+      );
+    } else {
+      this.dataProvider.showToast(
+        (this.addStudentLang?.import_partial_failure || 'تم استيراد {{created}} من أصل {{total}} طالب')
+          .replace('{{created}}', String(created))
+          .replace('{{total}}', String(rows.length))
       );
     }
   }

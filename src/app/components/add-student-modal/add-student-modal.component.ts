@@ -32,7 +32,9 @@ export class AddStudentModalComponent {
       this.dataProvider.showToast(this.addStudentLang?.invalid_stu_name || 'اسم الطالب غير صالح');
       return;
     }
-    if (!this.newStudentId || Number(this.newStudentId) === 0) {
+    // رمز الطالب أصبح اختيارياً: تركه فارغاً يعني "أنشئ رقماً فريداً تلقائياً"،
+    // وليس خطأ في الإدخال. لا نرفض إلا قيمة مُدخَلة فعلياً وغير صالحة (مثل 0).
+    if (this.newStudentId && Number(this.newStudentId) === 0) {
       this.dataProvider.showToast(this.addStudentLang?.invalid_stu_id || 'رقم الطالب غير صالح');
       return;
     }

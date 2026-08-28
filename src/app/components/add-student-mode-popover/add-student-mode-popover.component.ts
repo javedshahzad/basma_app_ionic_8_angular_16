@@ -11,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class AddStudentModePopoverComponent {
   constructor(private popoverCtrl: PopoverController) {}
 
-  async dismiss(action: 'single' | 'multiple') {
+  async dismiss(action: 'single' | 'multiple' | 'import') {
     await this.popoverCtrl.dismiss({ selectedAction: action });
   }
 }
