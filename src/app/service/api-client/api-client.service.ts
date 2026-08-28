@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
 import { Network } from '@capacitor/network';
-import * as Sentry from '@sentry/angular';
+import { loadSentryAngular } from '../sentry/sentry-lazy';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../model/api-response.model';
 
@@ -107,7 +107,9 @@ export class ApiClient {
             // itself — are safe, genuinely diagnostic metadata.
             const status = error?.status ?? 'unknown';
             const statusText = error?.statusText || error?.message || 'Unknown Error';
-            Sentry.captureException(new Error(`HTTP ${status} (${statusText}) on ${slug}`), { extra: { slug, status, statusText } });
+            loadSentryAngular()?.then(Sentry => {
+              Sentry.captureException(new Error(`HTTP ${status} (${statusText}) on ${slug}`), { extra: { slug, status, statusText } });
+            });
             reject(error);
           })
         } else {

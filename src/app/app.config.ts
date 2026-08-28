@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, ApplicationConfig, ErrorHandler, importProvidersFrom } from '@angular/core';
+import { ApplicationConfig, ErrorHandler, importProvidersFrom } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import {
   HTTP_INTERCEPTORS,
@@ -16,7 +16,6 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { Printer } from '@awesome-cordova-plugins/printer/ngx';
 import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
-import * as SentryAngular from '@sentry/angular';
 
 import { createTranslateLoader } from './app.module';
 import { DataService } from './service/data/data.service';
@@ -64,13 +63,13 @@ export const appConfig: ApplicationConfig = {
     },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideHttpClient(withXhr(), withInterceptorsFromDi()),
-    SentryAngular.TraceService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => () => {},
-      deps: [SentryAngular.TraceService],
-      multi: true
-    }
+    provideHttpClient(withXhr(), withInterceptorsFromDi())
+    // Sentry's router-tracing (TraceService) is wired up manually in
+    // main.ts, post-bootstrap, once the SDK finishes loading — not
+    // registered as an eager root provider here. @sentry/angular is a
+    // sizeable package that's only needed to *observe* the app, not to run
+    // it; registering TraceService here would force it into the initial
+    // bundle for every user regardless of whether a DSN is configured. See
+    // sentry-lazy.ts.
   ]
 };

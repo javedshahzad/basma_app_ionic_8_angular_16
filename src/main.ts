@@ -1,12 +1,11 @@
-import { enableProdMode, provideZoneChangeDetection } from '@angular/core';
+import { enableProdMode, provideZoneChangeDetection, Injector } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-
-import * as Sentry from '@sentry/capacitor';
-import * as SentryAngular from '@sentry/angular';
+import { Router } from '@angular/router';
 
 import { environment } from './environments/environment';
 import { AppComponent } from './app/app.component';
 import { appConfig } from './app/app.config';
+import { loadSentryAngular } from './app/service/sentry/sentry-lazy';
 
 // تفعيل تتبع الأعطال فقط عند ضبط DSN (فارغ افتراضياً في environment.ts محلياً
 // حتى لا تُرسَل أخطاء التطوير)؛ راجع environment.prod.ts لإضافة DSN مشروع Sentry
@@ -20,7 +19,20 @@ function stripQuery(url: string): string {
   return url.split('?')[0];
 }
 
-if (environment.sentryDsn) {
+// Sentry's own packages (~177 KB combined) are dynamically imported — see
+// sentry-lazy.ts — so this fires in the background after bootstrap instead
+// of adding weight to the app's initial/critical bundle. It's fire-and-
+// forget: nothing in the app depends on Sentry being ready synchronously.
+// `injector` is the bootstrapped app's root injector, passed in once
+// bootstrapApplication() resolves below, so TraceService (router-tracing
+// spans) can be instantiated manually here instead of via an eager
+// APP_INITIALIZER provider in app.config.ts.
+async function initSentry(injector: Injector): Promise<void> {
+  const sentryAngularPromise = loadSentryAngular();
+  if (!sentryAngularPromise) return;
+
+  const [Sentry, SentryAngular] = await Promise.all([import('@sentry/capacitor'), sentryAngularPromise]);
+
   Sentry.init(
     {
       dsn: environment.sentryDsn,
@@ -53,7 +65,14 @@ if (environment.sentryDsn) {
     },
     SentryAngular.init
   );
+
+  // Kept alive via module scope — its constructor subscribes to
+  // router.events for the lifetime of the app, matching what the
+  // DI-registered provider used to do.
+  traceService = new SentryAngular.TraceService(injector.get(Router));
 }
+
+let traceService: unknown;
 
 if (environment.production) {
   enableProdMode();
@@ -72,4 +91,6 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   ...appConfig,
   providers: [provideZoneChangeDetection(), ...appConfig.providers]
-}).catch(err => console.log(err));
+})
+  .then(appRef => initSentry(appRef.injector))
+  .catch(err => console.log(err));
