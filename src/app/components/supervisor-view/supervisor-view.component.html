@@ -189,7 +189,7 @@
                   [title]="'absence_conversion.badge_tooltip' | translate"
                   (click)="$event.stopPropagation(); applicationInfoClick.emit({ event: $event, sid: student.sid, period: i + 1 })"
                 >
-                  <ion-icon name="checkmark-done" class="text-4xs"></ion-icon>
+                  <ion-icon name="document-text" class="text-4xs"></ion-icon>
                 </div>
               }
               @if (getCemStatus(student.sheet, i + 1) === '1') {
