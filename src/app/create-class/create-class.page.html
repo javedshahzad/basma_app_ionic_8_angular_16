@@ -25,50 +25,6 @@
     >
       <div>
         <div class="flex justify-between items-center mb-2">
-          <label class="text-sm font-bold text-slate-600">{{'createClass.class_code' | translate}}</label>
-          <span
-            class="text-xs font-bold transition-colors"
-            [ngClass]="class.code?.length === 10 ? 'text-rose-500' : 'text-slate-400'"
-          >
-            {{ class.code?.length || 0 }} / 10
-          </span>
-        </div>
-        <div
-          class="bg-slate-50 border rounded-xl px-3 py-1 transition-all"
-          [ngClass]="classCode.invalid && classCode.touched ? 'border-rose-400 ring-2 ring-rose-100 bg-rose-50/50' : 'border-slate-200 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100'"
-        >
-          <ion-input
-            type="text"
-            name="classCode"
-            #classCode="ngModel"
-            [(ngModel)]="class.code"
-            pattern="[A-Za-z0-9]*$"
-            maxlength="10"
-            class="text-sm text-slate-800 bg-transparent font-bold"
-            [placeholder]="'createClass.class_code' | translate"
-            required
-          ></ion-input>
-        </div>
-
-        @if (classCode.invalid && classCode.touched) {
-        <div class="text-2xs text-rose-500 mt-1.5 font-bold flex flex-col gap-1">
-          @if (classCode.errors?.required) {
-          <div class="flex items-center gap-1">
-            <ion-icon name="alert-circle-outline"></ion-icon>
-            <span>{{'validations.required' | translate}}</span>
-          </div>
-          } @if (classCode.errors?.pattern) {
-          <div class="flex items-center gap-1">
-            <ion-icon name="alert-circle-outline"></ion-icon>
-            <span>{{'createClass.code_pattern_error' | translate}}</span>
-          </div>
-          }
-        </div>
-        }
-      </div>
-
-      <div>
-        <div class="flex justify-between items-center mb-2">
           <label class="text-sm font-bold text-slate-600">{{'createClass.class_name' | translate}}</label>
           <span
             class="text-xs font-bold transition-colors"

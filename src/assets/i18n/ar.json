@@ -386,12 +386,10 @@
   },
   "createClass": {
     "pagetitle": "إنشاء صف جديد",
-    "class_code": "رمز الصف",
     "class_name": "اسم الصف",
     "class_desc": "وصف الصف",
     "seminar": "عدد حصص الصف",
     "reg_btn": "إنشاء",
-    "code_pattern_error": "المسموح هو استخدام الاحرف الانجليزية والارقام فقط بدون رموز او مسافات",
     "create_btn": "إنشاء صف جديد"
   },
   "list-student": {

@@ -74,9 +74,18 @@ export class CreateClassPage implements OnInit {
     return Array(8);
   }
 
+  /** The backend's `code` field isn't shown to the admin — it's not enforced
+   * as unique (confirmed live: two classes can share the same code without
+   * error) and only `cid`, the auto-assigned course id, is actually used to
+   * identify a class elsewhere in the app. A short base36 timestamp keeps it
+   * within the backend's 10-char alphanumeric limit. */
+  private generateClassCode(): string {
+    return Date.now().toString(36).toUpperCase();
+  }
+
   async registerClass() {
     let cleanPostData = {
-      code: String(this.class.code || '').trim(),
+      code: this.generateClassCode(),
       name: String(this.class.name || '').trim(),
       desc: String(this.class.desc || '').trim(),
       semno: String(this.class.semno || '1').trim(),

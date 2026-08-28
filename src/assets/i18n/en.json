@@ -525,12 +525,10 @@
   },
   "createClass": {
     "pagetitle": "Create Class",
-    "class_code": "Class ID",
     "class_name": "Class name",
     "class_desc": "Class description",
     "seminar": "Number of Seminar",
     "reg_btn": "Create Class",
-    "code_pattern_error": "Only English letters and numbers are allowed, without symbols or spaces",
     "create_btn": "Create New Class"
   },
   "list-student": {
