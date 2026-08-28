@@ -1161,6 +1161,8 @@
     "create_student_success_msg": "Created successfully",
     "add_review_success_message": "Student review submitted successfully",
     "add_note_success_message": "Student note submitted successfully",
+    "note_stored_offline": "Note saved and will be sent once connected to the internet",
+    "application_stored_offline": "Application saved and will be sent once connected to the internet",
     "avatar":"Avatar",
     "insufficient_points_merge_title": "Sorry, you don't have enough points to craft this title.",
     "connection_error_retry_later": "A connection error occurred, please try again later.",

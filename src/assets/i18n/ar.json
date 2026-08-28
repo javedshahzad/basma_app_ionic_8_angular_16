@@ -1177,6 +1177,8 @@
     "create_student_success_msg": "تم الإنشاء بنجاح",
     "add_review_success_message": "تم إضافة تقييم الطالب بنجاح",
     "add_note_success_message": "تم إضافة ملاحظة الطالب بنجاح",
+    "note_stored_offline": "تم حفظ الملاحظة وسوف يتم إرسالها عند الاتصال بالإنترنت",
+    "application_stored_offline": "تم حفظ الطلب وسوف يتم إرساله عند الاتصال بالإنترنت",
     "avatar":"الصورة الرمزية",
     "insufficient_points_merge_title": "عفواً، نقاطك لا تكفي لدمج هذا اللقب.",
     "connection_error_retry_later": "حدث خطأ في الاتصال، يرجى المحاولة لاحقاً.",

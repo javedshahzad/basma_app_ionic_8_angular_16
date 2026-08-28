@@ -10,6 +10,8 @@ import { Camera, CameraResultType, CameraSource, ImageOptions } from '@capacitor
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { AbsentApplicationApiService } from '../service/absent-application-api/absent-application-api.service';
+import { OfflineQueueService } from '../service/offline-queue/offline-queue.service';
+import { ConnectivityService } from '../service/connectivity/connectivity.service';
 
 import { FormsModule } from '@angular/forms';
 
@@ -46,6 +48,8 @@ export class SubmitAbsentApplicationPage implements OnInit {
     private platform: Platform, // 🟢 لحماية التقاط الصور
     private storageSr: StorageService, // 🟢 2. حقن الخدمة
     private absentApplicationApi: AbsentApplicationApiService,
+    private offlineQueue: OfflineQueueService,
+    private connectivity: ConnectivityService,
     private cdr: ChangeDetectorRef
   ) {
     // 🟢 3. استخراج البيانات من الـ Router بشكل متزامن قبل ضياعها
@@ -139,6 +143,16 @@ export class SubmitAbsentApplicationPage implements OnInit {
       imageData: this.ImgData,
       session_id: this.userDetails.session_id
     };
+
+    if (!(await this.connectivity.refresh())) {
+      await this.offlineQueue.enqueue('absent_application', data);
+      this.dataProvider.showToast(this.lang.application_stored_offline || 'تم حفظ الطلب وسوف يتم إرساله عند الاتصال بالإنترنت');
+      await this.storageSr.remove('submitAppData');
+      setTimeout(() => {
+        this.navCtrl.back();
+      }, 1000);
+      return;
+    }
 
     try {
       let res: any = await this.dataProvider.run(() => this.absentApplicationApi.saveAbsentApplication(data));

@@ -13,7 +13,6 @@ import {
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { Network } from '@capacitor/network';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 
@@ -26,6 +25,7 @@ import { GamificationEngineService } from '../service/gamification-engine/gamifi
 // 🟢 استيراد خدمة التخزين الموحدة
 import { StorageService } from '../service/storage.service';
 import { OfflineQueueService } from '../service/offline-queue/offline-queue.service';
+import { ConnectivityService } from '../service/connectivity/connectivity.service';
 import { AttendanceApiService, AttendanceSubmitPayload } from '../service/attendance-api/attendance-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
 import { StudentEngagementService } from '../service/student-engagement/student-engagement.service';
@@ -216,6 +216,7 @@ export class ListStudentPage {
     public gamification: GamificationEngineService,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين
     private offlineQueue: OfflineQueueService,
+    private connectivity: ConnectivityService,
     private attendanceApi: AttendanceApiService,
     private holidaysApi: HolidaysApiService,
     private studentEngagement: StudentEngagementService,
@@ -1515,11 +1516,7 @@ export class ListStudentPage {
     );
   }
   async isOnline(): Promise<boolean> {
-    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      return (await Network.getStatus()).connected;
-    }
-
-    return navigator.onLine;
+    return this.connectivity.refresh();
   }
   async registerNewStudent() {
     this.translate.get('reg_student').subscribe(async response => {
@@ -1743,7 +1740,7 @@ export class ListStudentPage {
   }
 
   // 🟢 7. إصلاح دالتي إرسال الملاحظات (إضافة date و course_id الناقصة)
-  submitTextNote(student: Student, message: string) {
+  async submitTextNote(student: Student, message: string) {
     let data = {
       sid: student.sid,
       note: message,
@@ -1755,6 +1752,12 @@ export class ListStudentPage {
       session_id: this.userDetails.session_id
     };
 
+    if (!(await this.connectivity.refresh())) {
+      await this.offlineQueue.enqueue('note', data);
+      this.dataProvider.showToast(this.lang.note_stored_offline);
+      return;
+    }
+
     this.dataProvider
       .run(() => this.studentEngagement.addNote(data))
       .then(() => {
@@ -1765,7 +1768,7 @@ export class ListStudentPage {
       });
   }
 
-  submitReviewNote(student: Student, stars: number, message: string) {
+  async submitReviewNote(student: Student, stars: number, message: string) {
     let data = {
       sid: student.sid,
       note: message,
@@ -1776,6 +1779,12 @@ export class ListStudentPage {
       course_id: this.navData?.cid || '',
       session_id: this.userDetails.session_id
     };
+
+    if (!(await this.connectivity.refresh())) {
+      await this.offlineQueue.enqueue('note', data);
+      this.dataProvider.showToast(this.lang.note_stored_offline);
+      return;
+    }
 
     this.dataProvider
       .run(() => this.studentEngagement.addNote(data))
