@@ -14,6 +14,7 @@ import { StorageService } from '../service/storage.service';
 import { CredentialStorageService } from '../service/credential-storage/credential-storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
+import { PrefetchService } from '../service/prefetch/prefetch.service';
 
 import { FormsModule } from '@angular/forms';
 
@@ -50,6 +51,7 @@ export class LoginPage {
     private credentialStorage: CredentialStorageService,
     private deviceApi: DeviceApiService,
     private planApi: PlanApiService,
+    private prefetchService: PrefetchService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -170,6 +172,14 @@ export class LoginPage {
           this.dataProvider.language.next(currentLang);
         });
         // =========================================================
+
+        // 🟢 4. تهيئة ذاكرة التخزين المؤقت (الصفوف وكشوف الحضور) بشكل استباقي
+        // بدلاً من انتظار زيارة المستخدم لصفحة الصفوف — لا يُنتظر هذا الوعد
+        // حتى لا يؤخر التنقل، وهو بلا تأثير عملي على متصفح الويب (الخدمة
+        // تتجاهل نفسها هناك تلقائياً)
+        if (response.details.user_type !== '4' && response.details.user_type !== '8') {
+          this.prefetchService.prefetchClassesAndRosters(response.details.user_no, response.details.school_id, response.session_id);
+        }
 
         if (response.details.is_school_admin == 1) {
           this.getUserPlan(response.details.user_no, response.details.school_id);

@@ -230,6 +230,7 @@ export class AttendanceApiService {
               resolve({ session: false, message: response.msg });
             } else if (response.success) {
               this.dbProvider.insertStudentList(response.students || [], 5);
+              this.dbProvider.insertAttendanceHistory(data.course_id as string, data.date as string, response.students || []);
               resolve({ session: true, data: response });
             } else {
               reject(response.msg);
@@ -237,29 +238,39 @@ export class AttendanceApiService {
           } else {
             let attendance = await this.storageSr.get('classlocalatt');
             const courseId = data.course_id as string;
-            if (attendance) {
-              if (attendance[courseId]) {
-                resolve({ session: true, data: attendance[courseId] });
-              } else {
-                this.dbProvider
-                  .getStudentList(data.course_id)
-                  .then(students => {
-                    resolve({ session: true, data: { students: students, last_cem: 0, semteacher: [] } });
-                  })
-                  .catch((error) => this.apiClient.handleApiError(error, reject));
-              }
+            if (attendance && attendance[courseId]) {
+              resolve({ session: true, data: attendance[courseId] });
             } else {
-              this.dbProvider
-                .getStudentList(data.course_id)
-                .then(students => {
-                  resolve({ session: true, data: { students: students, last_cem: 0, semteacher: [] } });
-                })
-                .catch((error) => this.apiClient.handleApiError(error, reject));
+              this.resolveFromOfflineCache(data.course_id as string, data.date as string, resolve, reject);
             }
           }
         })
         .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
     });
+  }
+
+  /**
+   * Offline fallback for getClassStudentList: the cached roster carries no
+   * attendance marks of its own (DatabaseService.getStudentList always
+   * returns an empty sheet), so merge in the cached attendance_history
+   * snapshot for this class/date — lets a previously-viewed date's marks
+   * actually show up while offline, not just a blank grid.
+   */
+  private resolveFromOfflineCache(
+    courseId: string,
+    date: string,
+    resolve: (value: { session: boolean; data?: AttendanceResponse }) => void,
+    reject: (reason?: unknown) => void
+  ) {
+    Promise.all([this.dbProvider.getStudentList(courseId), this.dbProvider.getAttendanceHistory(courseId, date)])
+      .then(([students, sheetsBySid]) => {
+        const merged = (students || []).map((student: any) => ({
+          ...student,
+          sheet: sheetsBySid[student.sid] || {}
+        }));
+        resolve({ session: true, data: { students: merged, last_cem: 0, semteacher: [] } });
+      })
+      .catch((error) => this.apiClient.handleApiError(error, reject));
   }
 
   /** Get delay student list according to course.

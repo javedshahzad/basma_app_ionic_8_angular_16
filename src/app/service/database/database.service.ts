@@ -124,6 +124,16 @@ export class DatabaseService {
       const credentialsTable = `CREATE TABLE IF NOT EXISTS credentials (
                                 key VARCHAR(50) PRIMARY KEY, value TEXT
                               );`;
+      // Per-class, per-date attendance sheet snapshot — lets a teacher/admin
+      // review a previously-viewed date's marks while offline, not just
+      // write new ones. `sheet` is the same {cem-1: 1, ...} shape the API
+      // already returns per student, stored as JSON text (same convention
+      // as `credentials.value`) rather than a wide column-per-period schema
+      // since the number of periods varies by class.
+      const attendanceHistoryTable = `CREATE TABLE IF NOT EXISTS attendance_history (
+                                cid INT, sid INT, date VARCHAR(20), sheet TEXT,
+                                PRIMARY KEY (cid, sid, date)
+                              );`;
 
       // تنفيذ الجداول بالتسلسل
       await this.db.execute(classesTable);
@@ -132,6 +142,7 @@ export class DatabaseService {
       await this.db.execute(parentConnTable);
       await this.db.execute(newsTable);
       await this.db.execute(credentialsTable);
+      await this.db.execute(attendanceHistoryTable);
       
       console.log('All Tables created successfully');
       return Promise.resolve(true);
@@ -338,6 +349,44 @@ export class DatabaseService {
   }
 
   /**
+   * insert or update a class's attendance sheet snapshot for one date
+   */
+  async insertAttendanceHistory(cid: string | number, date: string, students: Array<any>) {
+    if (!this.isNative) return;
+    try {
+      for (const student of students) {
+        const query = `INSERT OR REPLACE INTO attendance_history (cid, sid, date, sheet) VALUES (?, ?, ?, ?)`;
+        await this.db.run(query, [cid, student.sid, date, JSON.stringify(student.sheet || {})]);
+      }
+    } catch (error) {
+      console.error("Error inserting attendance history: ", error);
+    }
+  }
+
+  /**
+   * Get the cached attendance sheets for a class on one date, keyed by sid
+   */
+  async getAttendanceHistory(cid: string | number, date: string): Promise<Record<string, any>> {
+    if (!this.isNative) return {};
+    try {
+      const response = await this.db.query('SELECT sid, sheet FROM attendance_history WHERE cid = ? AND date = ?', [cid, date]);
+      const rows = response.values || [];
+      const bySid: Record<string, any> = {};
+      for (const row of rows) {
+        try {
+          bySid[row.sid] = JSON.parse(row.sheet || '{}');
+        } catch {
+          bySid[row.sid] = {};
+        }
+      }
+      return bySid;
+    } catch (error) {
+      console.error(error);
+      return {};
+    }
+  }
+
+  /**
    * truncate the table when user logged out
    */
   async deleteDataBase() {
@@ -347,6 +396,7 @@ export class DatabaseService {
       await this.db.run('DELETE FROM students');
       await this.db.run('DELETE FROM private_message');
       await this.db.run('DELETE FROM parent_connect');
+      await this.db.run('DELETE FROM attendance_history');
       console.log("Local database tables cleared successfully");
     } catch (error) {
       console.error("Error clearing database: ", error);
