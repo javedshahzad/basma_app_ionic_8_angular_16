@@ -1751,43 +1751,144 @@ export class ListStudentPage {
     });
   }
 
-  private async runImportBatch(rows: { name: string; student_id: number }[]) {
+  private async attemptRegisterStudent(name: string, studentId: number): Promise<{ success: boolean; duplicate: boolean }> {
+    try {
+      const res = await this.registrationApi.registerStudent({
+        name,
+        student_id: studentId,
+        user_no: this.userInfo.user_no,
+        school_id: this.userInfo.school_id,
+        course_id: this.courseInfo.cid,
+        session_id: this.userDetails.session_id
+      });
+      return { success: !!res.session, duplicate: false };
+    } catch (err) {
+      // The backend rejects (rather than resolves) a "Student ID already
+      // exists."/"رقم الطالب موجود مسبقاً." failure specifically — the
+      // message language follows the app's active UI language (lang_code
+      // is mutated at runtime, see AppStateService), so both must be
+      // matched — caught here so the caller can offer the admin an
+      // auto-generate option instead of just failing.
+      const message = typeof err === 'string' ? err : (err as { message?: string })?.message || '';
+      return { success: false, duplicate: /already exists|موجود مسبقاً/i.test(message) };
+    }
+  }
+
+  /** Shows the admin which imported rows already have that student ID
+   * registered to someone else, and asks whether to auto-generate unique
+   * replacement IDs for exactly those rows (same strategy as a blank cid). */
+  private confirmDuplicateIdAutoGenerate(names: string[]): Promise<boolean> {
+    return new Promise(resolve => {
+      // ion-alert renders `message` as plain text, not HTML, so a plain
+      // separator is used rather than a `<br>`-joined list (which would
+      // show the literal tag on screen instead of a line break).
+      const namesList = names.join(', ');
+      const template =
+        this.addStudentLang?.duplicate_id_alert_message ||
+        '{{count}} طالب رقمهم مسجل بالفعل لطالب آخر في قاعدة البيانات: {{names}}. هل تريد أن ينشئ التطبيق رقماً فريداً تلقائياً لهم ليتم استيرادهم؟';
+      const message = template.replace('{{count}}', String(names.length)).replace('{{names}}', namesList);
+
+      this.alertCtrl
+        .create({
+          header: this.addStudentLang?.duplicate_id_alert_title || 'أرقام طلاب مكررة',
+          message,
+          buttons: [
+            {
+              text: this.addStudentLang?.duplicate_id_skip || 'تخطي',
+              role: 'cancel',
+              handler: () => resolve(false)
+            },
+            {
+              text: this.addStudentLang?.duplicate_id_generate || 'توليد أرقام تلقائياً',
+              handler: () => resolve(true)
+            }
+          ]
+        })
+        .then(alert => alert.present());
+    });
+  }
+
+  private async runImportBatch(rows: { name: string; student_id: number | null }[]) {
     const progress = signal<GenerateProgress>({ current: 0, total: rows.length, failed: 0, currentLabel: '' });
     const progressModal = await this.studentUi.presentGenerateProgress(this.addStudentLang, progress);
 
     let created = 0;
     let failed = 0;
+    const duplicateRows: { name: string }[] = [];
+    // Shared, incrementing across the whole batch (not reset per row) so two
+    // rows that both need an auto-generated id never collide with each other,
+    // matching the single-add flow's exact strategy.
+    let nextAutoId = Date.now();
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       progress.set({ ...progress(), currentLabel: row.name });
 
-      // No retry-on-collision here, unlike the auto-generated-id path above:
-      // these are real civil IDs supplied by the file, so a failure (e.g. a
-      // duplicate) gets recorded as a failed row, never silently altered to
-      // a different number.
-      try {
-        const res = await this.registrationApi.registerStudent({
-          name: row.name,
-          student_id: row.student_id,
-          user_no: this.userInfo.user_no,
-          school_id: this.userInfo.school_id,
-          course_id: this.courseInfo.cid,
-          session_id: this.userDetails.session_id
-        });
-        if (res.session) {
-          created++;
-        } else {
-          failed++;
+      let success = false;
+
+      if (row.student_id === null) {
+        // No cid in the file for this row — auto-generate, with the same
+        // retry-on-collision behavior as the single-add flow's auto-id path,
+        // since nothing about this number was meaningful to the admin.
+        for (let attempt = 1; attempt <= 5 && !success; attempt++) {
+          success = (await this.attemptRegisterStudent(row.name, nextAutoId)).success;
+          nextAutoId++;
         }
-      } catch {
-        failed++;
+      } else {
+        // A real student ID supplied by the file. If it's already taken by
+        // another student, don't silently fail or alter it — hold the row
+        // aside and ask the admin once, after the batch, whether to
+        // auto-generate replacement IDs for every such row.
+        const result = await this.attemptRegisterStudent(row.name, row.student_id);
+        success = result.success;
+        if (!success && result.duplicate) {
+          duplicateRows.push({ name: row.name });
+          progress.set({ ...progress(), current: i + 1 });
+          continue;
+        }
       }
+
+      if (success) created++;
+      else failed++;
 
       progress.set({ ...progress(), current: i + 1, failed });
     }
 
     await progressModal.dismiss();
+
+    if (duplicateRows.length > 0) {
+      const shouldAutoGenerate = await this.confirmDuplicateIdAutoGenerate(duplicateRows.map(r => r.name));
+
+      if (shouldAutoGenerate) {
+        const retryProgress = signal<GenerateProgress>({ current: 0, total: duplicateRows.length, failed: 0, currentLabel: '' });
+        const retryModal = await this.studentUi.presentGenerateProgress(this.addStudentLang, retryProgress);
+        let retryFailed = 0;
+
+        for (let i = 0; i < duplicateRows.length; i++) {
+          const row = duplicateRows[i];
+          retryProgress.set({ ...retryProgress(), currentLabel: row.name });
+
+          let success = false;
+          for (let attempt = 1; attempt <= 5 && !success; attempt++) {
+            success = (await this.attemptRegisterStudent(row.name, nextAutoId)).success;
+            nextAutoId++;
+          }
+
+          if (success) created++;
+          else {
+            failed++;
+            retryFailed++;
+          }
+
+          retryProgress.set({ ...retryProgress(), current: i + 1, failed: retryFailed });
+        }
+
+        await retryModal.dismiss();
+      } else {
+        failed += duplicateRows.length;
+      }
+    }
+
     this.getStudents(false);
 
     if (failed === 0) {

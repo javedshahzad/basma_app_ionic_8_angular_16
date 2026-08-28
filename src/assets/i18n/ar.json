@@ -232,7 +232,8 @@
     "student_id_hint": "إذا تركته فارغاً، سينشئ النظام رقماً فريداً تلقائياً لن يتكرر مع أي طالب آخر في أي مدرسة.",
     "auto_id_failed": "تعذر إنشاء رقم فريد للطالب، حاول مرة أخرى",
     "import_title": "استيراد طلاب من ملف إكسل",
-    "import_hint": "يجب أن يحتوي الملف على عمودين: full_name (اسم الطالب) و cid (رقم الطالب).",
+    "import_hint": "يجب أن يحتوي الملف على عمود full_name (اسم الطالب). عمود cid (رقم الطالب) اختياري — أي صف بدون رقم الطالب سيحصل على رقم فريد تلقائياً.",
+    "auto_id_rows_count": "{{count}} منهم بدون رقم الطالب وسيُنشأ له رقم فريد تلقائياً",
     "choose_file": "اختر ملف إكسل",
     "parsing": "جارٍ قراءة الملف...",
     "parse_error": "تعذّرت قراءة الملف. تأكد أنه ملف إكسل صالح وأن أعمدة full_name و cid موجودة.",
@@ -241,11 +242,15 @@
     "invalid_rows_count": "{{count}} صف به مشكلة وسيتم تجاهله",
     "row_label": "الصف",
     "row_missing_name": "الاسم مفقود",
-    "row_invalid_id": "الرقم غير صالح",
+    "row_invalid_id": "رقم الطالب غير صالح",
     "import_confirm": "استيراد",
     "import_progress_title": "جارٍ استيراد الطلاب...",
     "import_success": "تم استيراد {{count}} طالب بنجاح",
-    "import_partial_failure": "تم استيراد {{created}} من أصل {{total}} طالب"
+    "import_partial_failure": "تم استيراد {{created}} من أصل {{total}} طالب",
+    "duplicate_id_alert_title": "أرقام طلاب مكررة",
+    "duplicate_id_alert_message": "{{count}} طالب رقمهم مسجل بالفعل لطالب آخر في قاعدة البيانات: {{names}}. هل تريد أن ينشئ التطبيق رقماً فريداً تلقائياً لهم ليتم استيرادهم؟",
+    "duplicate_id_generate": "توليد أرقام تلقائياً",
+    "duplicate_id_skip": "تخطي"
   },
  "sidemenu": {
     "private_msg": "الرسائل الخاصة",

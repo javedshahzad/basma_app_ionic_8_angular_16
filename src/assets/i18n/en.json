@@ -329,7 +329,8 @@
     "student_id_hint": "If left empty, the system will automatically generate a unique number that won't repeat with any other student at any school.",
     "auto_id_failed": "Could not generate a unique student number, please try again",
     "import_title": "Import Students from Excel",
-    "import_hint": "The file must have two columns: full_name (student name) and cid (student civil ID number).",
+    "import_hint": "The file must have a full_name column (student name). The cid column (student ID) is optional — any row without one gets a unique ID generated automatically.",
+    "auto_id_rows_count": "{{count}} of them have no student ID and will get a unique ID generated automatically",
     "choose_file": "Choose Excel file",
     "parsing": "Reading file...",
     "parse_error": "Could not read the file. Make sure it's a valid Excel file and the full_name/cid columns exist.",
@@ -338,11 +339,15 @@
     "invalid_rows_count": "{{count}} row(s) have an issue and will be skipped",
     "row_label": "Row",
     "row_missing_name": "Name is missing",
-    "row_invalid_id": "Invalid civil ID",
+    "row_invalid_id": "Invalid student ID",
     "import_confirm": "Import",
     "import_progress_title": "Importing students...",
     "import_success": "{{count}} students imported successfully",
-    "import_partial_failure": "Imported {{created}} of {{total}} students"
+    "import_partial_failure": "Imported {{created}} of {{total}} students",
+    "duplicate_id_alert_title": "Duplicate student IDs",
+    "duplicate_id_alert_message": "{{count}} student(s) have an ID already registered to another student in the database: {{names}}. Do you want the app to auto-generate a unique ID for them and import them?",
+    "duplicate_id_generate": "Auto-generate IDs",
+    "duplicate_id_skip": "Skip"
   },
   "sidemenu": {
     "private_msg": "Private Message",

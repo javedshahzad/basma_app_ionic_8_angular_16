@@ -6,7 +6,8 @@ import { readSheet, InvalidInputError } from 'read-excel-file/browser';
 
 export interface ImportRow {
   name: string;
-  student_id: number;
+  /** null means "no cid provided for this row" — auto-generated at import time, same as leaving Student ID blank in the single-add flow. */
+  student_id: number | null;
 }
 
 interface InvalidRow {
@@ -74,10 +75,13 @@ export class ImportStudentsModalComponent {
 
     const header = rows[0].map(cell => String(cell ?? '').trim().toLowerCase());
     const nameCol = header.indexOf('full_name');
+    // cid is optional — a missing column just means every row falls back to
+    // auto-generation, same as the -1-sentinel makes every row's idRaw below
+    // resolve to '' unconditionally.
     const idCol = header.indexOf('cid');
 
-    if (nameCol === -1 || idCol === -1) {
-      throw new Error('missing required columns');
+    if (nameCol === -1) {
+      throw new Error('missing required column');
     }
 
     const validRows: ImportRow[] = [];
@@ -87,7 +91,7 @@ export class ImportStudentsModalComponent {
       const row = rows[i];
       const rowNumber = i + 1; // 1-based, matching what a spreadsheet user sees
       const name = String(row[nameCol] ?? '').trim();
-      const idRaw = String(row[idCol] ?? '').trim();
+      const idRaw = idCol === -1 ? '' : String(row[idCol] ?? '').trim();
 
       if (!name && !idRaw) continue; // skip fully blank rows
 
@@ -96,8 +100,15 @@ export class ImportStudentsModalComponent {
         continue;
       }
 
+      if (idRaw === '') {
+        // No cid for this row — not an error, just means "auto-generate,"
+        // exactly like leaving Student ID blank in the single-add modal.
+        validRows.push({ name, student_id: null });
+        continue;
+      }
+
       const studentId = parseInt(idRaw, 10);
-      if (!idRaw || !Number.isInteger(studentId) || studentId === 0) {
+      if (!Number.isInteger(studentId) || studentId === 0) {
         invalidRows.push({ rowNumber, reason: this.importLang?.row_invalid_id || 'رقم الطالب غير صالح' });
         continue;
       }
@@ -121,5 +132,14 @@ export class ImportStudentsModalComponent {
   get invalidRowsLabel(): string {
     const template = this.importLang?.invalid_rows_count || '{{count}} صف به مشكلة وسيتم تجاهله';
     return template.replace('{{count}}', String(this.invalidRows.length));
+  }
+
+  get autoIdCount(): number {
+    return this.validRows.filter(row => row.student_id === null).length;
+  }
+
+  get autoIdLabel(): string {
+    const template = this.importLang?.auto_id_rows_count || '{{count}} منهم بدون رقم الطالب وسيُنشأ له رقم فريد تلقائياً';
+    return template.replace('{{count}}', String(this.autoIdCount));
   }
 }

@@ -83,7 +83,7 @@ export class StudentUiService {
   }
 
   // 2هـ. نافذة استيراد الطلاب من ملف إكسل
-  async openImportStudents(langData: any): Promise<{ rows: { name: string; student_id: number }[] } | null> {
+  async openImportStudents(langData: any): Promise<{ rows: { name: string; student_id: number | null }[] } | null> {
     const { ImportStudentsModalComponent } = await import('../../components/import-students-modal/import-students-modal.component');
     const modal = await this.modalCtrl.create({
       component: ImportStudentsModalComponent,

@@ -6,7 +6,7 @@
       {{ importLang?.import_title || 'استيراد طلاب من ملف إكسل' }}
     </h4>
     <p class="text-xs text-slate-400 mb-5 leading-relaxed">
-      {{ importLang?.import_hint || 'يجب أن يحتوي الملف على عمودين: full_name (اسم الطالب) و cid (الرقم المدني للطالب).' }}
+      {{ importLang?.import_hint || 'يجب أن يحتوي الملف على عمود full_name (اسم الطالب). عمود cid (رقم الطالب) اختياري — أي صف بدون رقم الطالب سيحصل على رقم فريد تلقائياً.' }}
     </p>
 
     <label
@@ -33,6 +33,12 @@
           <ion-icon name="checkmark-circle-outline"></ion-icon>
           {{ validRowsLabel }}
         </div>
+        @if (autoIdCount > 0) {
+          <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-500 flex items-center gap-2 mb-2">
+            <ion-icon name="sparkles-outline" class="text-slate-400"></ion-icon>
+            {{ autoIdLabel }}
+          </div>
+        }
         @if (invalidRows.length > 0) {
           <div class="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs text-amber-700">
             <div class="font-bold mb-1">
