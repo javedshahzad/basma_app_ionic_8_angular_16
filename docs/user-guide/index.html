@@ -1,0 +1,2079 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<title>دليل مستخدم تطبيق بصمة</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1e2433;
+    --sub:#5b6478;
+    --muted:#8993a6;
+    --line:#e4e8f0;
+    --bg:#ffffff;
+    --panel:#f6f8fc;
+    --brand:#2f6fed;
+    --brand-dark:#1f4fc4;
+    --brand-soft:#eaf1ff;
+    --accent2:#16b8a6;
+    --accent2-soft:#e7faf7;
+    --accent3:#f4a627;
+    --accent3-soft:#fff4e0;
+    --admin:#2f6fed;
+    --admin-soft:#eaf1ff;
+    --mod:#8451e0;
+    --mod-soft:#f3ecfd;
+    --teacher:#16b8a6;
+    --teacher-soft:#e7faf7;
+    --student:#f4a627;
+    --student-soft:#fff4e0;
+    --parent:#e0577a;
+    --parent-soft:#fdecf1;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Tajawal','IBM Plex Sans Arabic',Tahoma,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+    font-size:13px;
+    line-height:1.85;
+  }
+  @page{ size:A4; margin:0; }
+  .page{
+    width:210mm;
+    min-height:297mm;
+    padding:16mm 16mm 18mm 16mm;
+    position:relative;
+    page-break-after:always;
+  }
+  .page:last-child{ page-break-after:auto; }
+
+  /* ---------- Cover ---------- */
+  .cover{
+    background:linear-gradient(160deg,#16306b 0%,#1f4fc4 42%,#2f8ce0 78%,#16b8a6 100%);
+    color:#fff;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    overflow:hidden;
+  }
+  .cover-top{ padding:20mm 18mm 0 18mm; position:relative; z-index:2; }
+  .cover-ring{
+    position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,.16);
+  }
+  .cover-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.28);
+    padding:6px 16px; border-radius:999px; font-weight:700; font-size:11.5px;
+    letter-spacing:.3px;
+  }
+  .cover-logo{
+    width:100px;height:100px;border-radius:26px;background:#fff;
+    display:flex;align-items:center;justify-content:center;margin:26mm auto 8mm auto;
+    box-shadow:0 18px 40px rgba(0,0,0,.25);
+  }
+  .cover-logo svg{ width:56px;height:56px; }
+  .cover-title{ text-align:center; font-size:44px; font-weight:900; margin:0; letter-spacing:1px;}
+  .cover-sub{ text-align:center; font-size:15px; font-weight:500; margin:6px 0 0 0; color:#dbe8ff; }
+  .cover-mid{ text-align:center; margin-top:14mm; position:relative; z-index:2;}
+  .cover-manual-title{ font-size:26px; font-weight:800; margin:0; }
+  .cover-manual-sub{ font-size:13px; color:#dbe8ff; margin-top:6px; font-weight:500;}
+  .cover-roles{
+    display:flex; justify-content:center; gap:8px; margin-top:10mm; flex-wrap:wrap; padding:0 14mm;
+    position:relative; z-index:2;
+  }
+  .cover-role-chip{
+    background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25);
+    border-radius:12px; padding:8px 14px; font-size:11px; font-weight:700;
+  }
+  .cover-bottom{
+    padding:10mm 18mm 14mm 18mm; position:relative;z-index:2;
+    display:flex; justify-content:space-between; align-items:flex-end;
+    border-top:1px solid rgba(255,255,255,.2);
+  }
+  .cover-bottom .l{font-size:11px;color:#dbe8ff;font-weight:600;}
+  .cover-bottom .r{font-size:11px;color:#dbe8ff;font-weight:600;text-align:end;}
+
+  /* ---------- Generic content page chrome ---------- */
+  .kicker{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:10.5px; font-weight:800; letter-spacing:.4px;
+    color:var(--brand); background:var(--brand-soft);
+    padding:5px 12px; border-radius:8px; margin-bottom:10px;
+  }
+  h1.page-title{ font-size:26px; margin:0 0 4mm 0; font-weight:900; }
+  p.lede{ font-size:13.5px; color:var(--sub); max-width:150mm; margin:0 0 8mm 0;}
+  hr.rule{ border:none; border-top:2px solid var(--line); margin:8mm 0; }
+  .foot{
+    position:absolute; bottom:8mm; right:16mm; left:16mm;
+    display:flex; justify-content:space-between; font-size:9.5px; color:var(--muted);
+    border-top:1px solid var(--line); padding-top:3mm;
+  }
+
+  /* ---------- TOC ---------- */
+  .toc-group{ margin-bottom:3mm; }
+  .toc-group-title{
+    font-size:11px; font-weight:800; color:#fff; background:var(--role-color,var(--brand));
+    display:inline-block; padding:2.5px 11px; border-radius:7px; margin-bottom:1.3mm;
+  }
+  .toc-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:1.3mm 0; border-bottom:1px dotted var(--line); font-size:11px;
+  }
+  .toc-row .t{ font-weight:600; }
+  .toc-row .p{ color:var(--muted); font-weight:700; }
+
+  /* ---------- section divider pages ---------- */
+  .section-divider{
+    background:var(--role-color,var(--brand));
+    color:#fff;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative; overflow:hidden;
+  }
+  .section-divider .ring{ position:absolute; border-radius:50%; border:2px solid rgba(255,255,255,.18); }
+  .section-divider .num{
+    font-size:13px; font-weight:800; letter-spacing:3px; opacity:.85; margin-bottom:6mm; z-index:2;
+    padding-inline-start:18mm;
+  }
+  .section-divider h2{ font-size:38px; margin:0 0 6mm 0; font-weight:900; padding-inline-start:18mm; z-index:2; max-width:150mm;}
+  .section-divider p{ font-size:14px; max-width:130mm; line-height:1.9; opacity:.95; padding-inline-start:18mm; z-index:2;}
+  .section-divider .chips{ display:flex; gap:8px; flex-wrap:wrap; padding-inline-start:18mm; margin-top:8mm; z-index:2;}
+  .section-divider .chip{ background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.3); border-radius:10px; padding:6px 12px; font-size:11px; font-weight:700;}
+
+  /* ---------- screen entry blocks ---------- */
+  .screen{
+    display:flex; flex-direction:row-reverse; align-items:flex-start; gap:8mm;
+    padding:6mm 0; border-bottom:1px solid var(--line);
+    page-break-inside:avoid;
+  }
+  [dir="ltr"] .screen{ flex-direction:row; }
+  .screen:last-child{ border-bottom:none; }
+  .screen .shot{
+    flex:0 0 auto; width:44mm;
+    border:6px solid #1c2333; border-radius:6mm;
+    box-shadow:0 6px 18px rgba(20,30,60,.18);
+    overflow:hidden; background:#1c2333;
+  }
+  .screen .shot img{ display:block; width:100%; height:auto; }
+  .screen .body{ flex:1 1 auto; }
+  .num-badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px;height:22px;border-radius:7px;
+    background:var(--role-color,var(--brand)); color:#fff; font-size:11px; font-weight:800;
+    margin-inline-end:8px;
+  }
+  .screen h3{ font-size:15px; margin:0 0 3mm 0; font-weight:800; display:flex; align-items:center; }
+  .screen p.desc{ margin:0 0 3mm 0; color:var(--sub); font-size:12px; }
+  .screen ul.steps{ margin:0; padding-inline-start:16px; font-size:11.5px; color:var(--ink); }
+  .screen ul.steps li{ margin-bottom:1.6mm; }
+  .note{
+    margin-top:3mm; font-size:11px; background:var(--role-soft,var(--panel));
+    border-inline-start:3px solid var(--role-color,var(--brand)); padding:2.4mm 4mm; border-radius:2px; color:var(--sub);
+  }
+
+  .role-admin   { --role-color:var(--admin);   --role-soft:var(--admin-soft); }
+  .role-mod     { --role-color:var(--mod);     --role-soft:var(--mod-soft); }
+  .role-teacher { --role-color:var(--teacher); --role-soft:var(--teacher-soft); }
+  .role-student { --role-color:var(--student); --role-soft:var(--student-soft); }
+  .role-parent  { --role-color:var(--parent);  --role-soft:var(--parent-soft); }
+
+  .intro-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:6mm; margin-bottom:5mm;
+  }
+  .intro-card h4{ margin:0 0 2mm 0; font-size:13px; font-weight:800; color:var(--brand-dark);}
+  .intro-card p{ margin:0; font-size:12px; color:var(--sub); }
+
+  .goals-grid{ display:grid; grid-template-columns:1fr 1fr; gap:3mm; }
+  .goal-item{
+    display:flex; gap:2.6mm; align-items:flex-start; background:var(--panel);
+    border-radius:8px; padding:3mm; border:1px solid var(--line);
+  }
+  .goal-item .g-num{
+    flex:0 0 auto; width:20px;height:20px;border-radius:6px;background:var(--brand);
+    color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  }
+  .goal-item p{ margin:0; font-size:11px; color:var(--sub); }
+
+  .roles-table{ width:100%; border-collapse:collapse; font-size:11px; margin-top:3mm;}
+  .roles-table th{ background:var(--ink); color:#fff; padding:2.6mm 3mm; text-align:start; font-weight:700;}
+  .roles-table td{ padding:2.4mm 3mm; border-bottom:1px solid var(--line); }
+  .roles-table tr:nth-child(even) td{ background:var(--panel); }
+  .role-dot{ display:inline-block; width:9px;height:9px;border-radius:50%; margin-inline-end:6px; vertical-align:middle;}
+
+  .cred-table{ width:100%; border-collapse:collapse; font-size:11.5px; margin-top:3mm;}
+  .cred-table th{ background:var(--brand); color:#fff; padding:2.6mm 3mm; text-align:start; font-weight:700;}
+  .cred-table td{ padding:2.6mm 3mm; border-bottom:1px solid var(--line); font-weight:600;}
+  .cred-table tr:nth-child(even) td{ background:var(--panel); }
+
+  .nav-map{ font-size:11.5px; }
+  .nav-map .row{ display:flex; gap:4mm; padding:2mm 0; border-bottom:1px dashed var(--line); }
+  .nav-map .icon-col{ flex:0 0 26mm; font-weight:800; color:var(--brand-dark); }
+  .nav-map .desc-col{ flex:1; color:var(--sub); }
+
+  .faq-item{ margin-bottom:4.5mm; padding-bottom:4.5mm; border-bottom:1px solid var(--line); }
+  .faq-item:last-child{ border-bottom:none; }
+  .faq-q{ display:flex; gap:2.5mm; align-items:flex-start; font-weight:800; font-size:12.5px; color:var(--brand-dark); margin:0 0 1.6mm 0; }
+  .faq-q .qmark{ flex:0 0 auto; width:18px;height:18px;border-radius:6px; background:var(--brand-soft); color:var(--brand); font-size:11px; display:flex; align-items:center; justify-content:center; }
+  .faq-a{ font-size:11.5px; color:var(--sub); margin:0; padding-inline-start:26px; }
+
+  .glossary-item{ border-bottom:1px dotted var(--line); padding:3mm 0; display:flex; gap:5mm; }
+  .glossary-item:last-child{ border-bottom:none; }
+  .glossary-term{ flex:0 0 40mm; font-weight:800; font-size:12px; color:var(--ink); }
+  .glossary-def{ flex:1; font-size:11.5px; color:var(--sub); }
+
+  /* ---------- bilingual toggle ---------- */
+  #doc-en{ display:none; }
+  body[data-lang="en"] #doc-ar{ display:none; }
+  body[data-lang="en"] #doc-en{ display:block; }
+  .lang-toggle{
+    position:fixed; top:6mm; inset-inline-end:6mm; z-index:50;
+    display:flex; background:#1e2433; border-radius:999px; padding:3px; box-shadow:0 6px 18px rgba(0,0,0,.25);
+  }
+  .lang-toggle button{
+    border:none; background:transparent; color:#aab2c5; font-family:inherit; font-weight:800; font-size:11.5px;
+    padding:6px 14px; border-radius:999px; cursor:pointer;
+  }
+  .lang-toggle button.active{ background:var(--brand); color:#fff; }
+  @media print{ .lang-toggle{ display:none !important; } }
+</style>
+</head>
+<body>
+
+<div class="lang-toggle">
+  <button type="button" class="active" onclick="setLang('ar')">العربية</button>
+  <button type="button" onclick="setLang('en')">English</button>
+</div>
+
+<div id="doc-ar" lang="ar" dir="rtl">
+
+<!-- ============ COVER ============ -->
+<section class="page cover">
+  <div class="cover-ring" style="width:260mm;height:260mm;top:-90mm;left:-70mm;"></div>
+  <div class="cover-ring" style="width:160mm;height:160mm;bottom:-60mm;right:-40mm;"></div>
+  <div class="cover-top">
+    <div class="cover-badge">نظام الإدارة التعليمية الذكية</div>
+    <div class="cover-logo">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#2f6fed"/>
+        <path d="M32 30 C32 30 55 28 62 40 C68 50 60 58 50 58 C60 58 68 66 62 76 C55 88 32 86 32 86" stroke="white" stroke-width="9" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <h1 class="cover-title">بصمة</h1>
+    <p class="cover-sub">BASMA · نظام الإدارة التعليمية</p>
+  </div>
+  <div class="cover-mid">
+    <h2 class="cover-manual-title">الدليل الشامل لمستخدمي التطبيق</h2>
+    <p class="cover-manual-sub">شرح تفصيلي مصوَّر لكل شاشات التطبيق حسب نوع المستخدم</p>
+    <div class="cover-roles">
+      <div class="cover-role-chip">مشرف النظام</div>
+      <div class="cover-role-chip">المشرف الإداري</div>
+      <div class="cover-role-chip">المعلم</div>
+      <div class="cover-role-chip">الطالب</div>
+      <div class="cover-role-chip">ولي الأمر</div>
+    </div>
+  </div>
+  <div class="cover-bottom">
+    <div class="l">إعداد: تقنيات — فهد سعد الظفيري</div>
+    <div class="r">@fahadsaldaferi · إصدار 2026</div>
+  </div>
+</section>
+
+<!-- ============ TOC ============ -->
+<section class="page">
+  <div class="kicker">جدول المحتويات</div>
+  <h1 class="page-title">محتويات الدليل</h1>
+  <p class="lede">هذا الدليل مقسَّم حسب نوع المستخدم، بحيث يمكن لكل فئة (مشرف النظام، المشرف الإداري، المعلم، الطالب، ولي الأمر) الانتقال مباشرة إلى القسم الخاص بها.</p>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:#1e2433;">مقدّمة عامة</div>
+    <div class="toc-row"><span class="t">نبذة عن تطبيق بصمة</span><span class="p">٤</span></div>
+    <div class="toc-row"><span class="t">أهداف النظام</span><span class="p">٥</span></div>
+    <div class="toc-row"><span class="t">أبرز مميزات النظام</span><span class="p">٦</span></div>
+    <div class="toc-row"><span class="t">أنواع المستخدمين وصلاحياتهم</span><span class="p">٧</span></div>
+    <div class="toc-row"><span class="t">تسجيل الدخول والتنقل الأساسي</span><span class="p">٨</span></div>
+    <div class="toc-row"><span class="t">دليل البدء السريع</span><span class="p">٩</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--admin);">القسم الأول — مشرف النظام (مدير المدرسة)</div>
+    <div class="toc-row"><span class="t">الصفحة الرئيسية والقائمة الجانبية</span><span class="p">١١</span></div>
+    <div class="toc-row"><span class="t">إدارة المستخدمين والمعلمين</span><span class="p">١٢</span></div>
+    <div class="toc-row"><span class="t">إدارة الطلاب وأولياء الأمور</span><span class="p">١٣</span></div>
+    <div class="toc-row"><span class="t">التقويم والتواصل</span><span class="p">١٤</span></div>
+    <div class="toc-row"><span class="t">النشرات وطلبات تعديل الغياب</span><span class="p">١٥</span></div>
+    <div class="toc-row"><span class="t">قائمة التأخير وإدارة التقارير</span><span class="p">١٦</span></div>
+    <div class="toc-row"><span class="t">متابعة التقدم والأخبار</span><span class="p">١٧</span></div>
+    <div class="toc-row"><span class="t">الإشعارات والإعدادات</span><span class="p">١٨</span></div>
+    <div class="toc-row"><span class="t">الأجهزة المسجَّلة والاشتراك</span><span class="p">١٩</span></div>
+  </div>
+
+  <div class="foot"><span>دليل مستخدم تطبيق بصمة</span><span>٢</span></div>
+</section>
+
+<!-- ============ TOC (page 2) ============ -->
+<section class="page">
+  <div class="kicker">جدول المحتويات</div>
+  <h1 class="page-title">تابع المحتويات</h1>
+  <p class="lede">بقية أقسام الدليل: المشرف الإداري، المعلّم، الطالب، وولي الأمر.</p>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--mod);">القسم الثاني — المشرف الإداري</div>
+    <div class="toc-row"><span class="t">قائمة الفصول والتأخير</span><span class="p">٢١</span></div>
+    <div class="toc-row"><span class="t">تقرير الطلاب ومتابعة التقدم</span><span class="p">٢٢</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--teacher);">القسم الثالث — المعلم</div>
+    <div class="toc-row"><span class="t">قائمة الفصول وتسجيل الحضور</span><span class="p">٢٤</span></div>
+    <div class="toc-row"><span class="t">متابعة التقدم والنشرات</span><span class="p">٢٥</span></div>
+    <div class="toc-row"><span class="t">الأخبار والإشعارات</span><span class="p">٢٦</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--student);">القسم الرابع — الطالب</div>
+    <div class="toc-row"><span class="t">خزانة الألقاب والإنجازات، ملاحظات الأداء</span><span class="p">٢٨</span></div>
+    <div class="toc-row"><span class="t">تقرير الإنذارات والأخبار</span><span class="p">٢٩</span></div>
+    <div class="toc-row"><span class="t">الإشعارات</span><span class="p">٣٠</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--parent);">القسم الخامس — ولي الأمر</div>
+    <div class="toc-row"><span class="t">متابعة الأبناء، التواصل الخاص، الأخبار، الإعدادات</span><span class="p">٣٢</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:#1e2433;">مساعدة</div>
+    <div class="toc-row"><span class="t">الأسئلة الشائعة والمساعدة</span><span class="p">٣٣</span></div>
+    <div class="toc-row"><span class="t">معجم المصطلحات</span><span class="p">٣٥</span></div>
+  </div>
+  <div class="foot"><span>دليل مستخدم تطبيق بصمة</span><span>٣</span></div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="page">
+  <div class="kicker">مقدّمة</div>
+  <h1 class="page-title">ما هو تطبيق بصمة؟</h1>
+  <p class="lede">نظام إدارة تعليمية ذكية يهدف إلى تحسين بيئة العمل المدرسي، عبر متابعة مباشرة لحالة المتعلّم وتبسيط الأعمال الإدارية اليومية للمعلمين والإدارة المدرسية.</p>
+
+  <div class="intro-card">
+    <h4>نبذة</h4>
+    <p>
+      يتيح تطبيق بصمة للإدارة التعليمية متابعة حالة المتعلّم بشكل مباشر، من خلال مجموعة من الخدمات المتنوعة التي تُعين المعلمين على أداء مهامهم وتقليل الأعباء الإدارية، ورفع مستوى أدائهم داخل الحصة الدراسية، مما ينعكس إيجابًا على مستوى التحصيل الدراسي لدى المتعلّم. كما يوفّر النظام آلية مبتكرة لتقييم أداء المتعلّم تربويًا وتعليميًا، وشراكة رقابية بين المؤسسة التعليمية وولي أمر المتعلّم.
+    </p>
+  </div>
+
+  <div class="intro-card">
+    <h4>الفكرة والتطوّر</h4>
+    <p>
+      بدأت فكرة النظام مع «نظام متابعة الطلاب»، ومع التطوّر التكنولوجي تم استحداث العديد من المميزات المبتكرة لتغطية جوانب أوسع، ليصبح «بصمة: نظام الإدارة التعليمية الذكية». حصل التطبيق على المركز الأول على مستوى الكويت والوطن العربي في مجال التربية (جائزة الألكسو الكبرى للتطبيقات الجوّالة، تونس ٢٠١٧)، وجائزة الإسكوا للمحتوى الرقمي العربي من أجل التنمية المستدامة ٢٠٢٢، وجائزة الكويت لتكنولوجيا التعليم ٢٠٢٣ كأفضل فكرة مشروع على مستوى وزارة التربية.
+    </p>
+  </div>
+
+  <hr class="rule" />
+
+  <div style="display:flex; gap:6mm;">
+    <div style="flex:1;" class="intro-card">
+      <h4>الرؤية</h4>
+      <p>الريادة العالمية في تطوير العملية التعليمية.</p>
+    </div>
+    <div style="flex:1;" class="intro-card">
+      <h4>الرسالة</h4>
+      <p>بناء وإدارة نظام تعليمي ابتكاري ذو تنافسية عالمية، لرفع كفاءة أهل الميدان التربوي وتحسين جودة مخرجات العملية التعليمية في بيئة تساعد على بناء جيل متعلّم قادر على بناء المستقبل.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>مقدّمة</span><span>٤</span></div>
+</section>
+
+<!-- ============ GOALS ============ -->
+<section class="page">
+  <div class="kicker">مقدّمة</div>
+  <h1 class="page-title">أهداف النظام</h1>
+  <p class="lede">يهدف تطبيق بصمة إلى تحقيق عدد من الأهداف التربوية والإدارية، أبرزها:</p>
+
+  <div class="goals-grid">
+    <div class="goal-item"><div class="g-num">١</div><p>ترشيد استهلاك المصادر المادية في المؤسسة التعليمية (تقليل الأوراق والطباعة اليدوية).</p></div>
+    <div class="goal-item"><div class="g-num">٢</div><p>توفير وسيلة سهلة ودقيقة لمتابعة المتعلمين تعليميًا وتربويًا داخل المبنى المدرسي.</p></div>
+    <div class="goal-item"><div class="g-num">٣</div><p>تخفيف العبء على المعلمين المكلَّفين بالإشراف الإداري، والتفرّغ لمتابعة الحالات السلوكية.</p></div>
+    <div class="goal-item"><div class="g-num">٤</div><p>الحدّ من الظواهر السلبية داخل المبنى المدرسي وتعزيز الأمن الوقائي لدى المتعلمين.</p></div>
+    <div class="goal-item"><div class="g-num">٥</div><p>المساهمة في غرس القيم الأخلاقية النبيلة النابعة من ديننا الإسلامي الحنيف والعادات العربية الأصيلة.</p></div>
+    <div class="goal-item"><div class="g-num">٦</div><p>توفير الوسائل الكفيلة بجذب العناصر المؤهلة من أعضاء الهيئة التدريسية وحسن استثمار جهودها.</p></div>
+    <div class="goal-item"><div class="g-num">٧</div><p>المساهمة في إعداد جيل من الشباب واعٍ بشخصيته، صانع لهويته، ومساهم في تحقيق الرؤية الوطنية.</p></div>
+    <div class="goal-item"><div class="g-num">٨</div><p>توفير آلية تحفيزية (نظام نقاط وألقاب وإنجازات) تبني دافعية داخلية لدى الطالب للانضباط والتفوّق.</p></div>
+  </div>
+
+  <div class="foot"><span>مقدّمة</span><span>٥</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker">مقدّمة</div>
+  <h1 class="page-title">أبرز مميزات النظام</h1>
+  <p class="lede">مجموعة من الأدوات المتكاملة التي تجعل من بصمة نظامًا شاملاً لا مجرد سجلّ حضور وغياب.</p>
+
+  <div class="goals-grid">
+    <div class="goal-item"><div class="g-num">١</div><p>متابعة صحيفة المتعلّم: الغياب، الفصل السلوكي، الطبيّات، والتقييم اللفظي في مكان واحد.</p></div>
+    <div class="goal-item"><div class="g-num">٢</div><p>تسجيل الحضور والغياب وتأخير طابور الصباح بضغطات بسيطة من هاتف المعلّم.</p></div>
+    <div class="goal-item"><div class="g-num">٣</div><p>تقييم أداء المتعلّم تربويًا وتعليميًا بالاعتماد على الذكاء الاصطناعي.</p></div>
+    <div class="goal-item"><div class="g-num">٤</div><p>نظام تحفيزي (شجرة المهارة، الألقاب، الإنجازات السرية) يبني دافعية ذاتية للانضباط.</p></div>
+    <div class="goal-item"><div class="g-num">٥</div><p>رسائل خاصة مباشرة بين الإدارة والمعلمين وأولياء الأمور.</p></div>
+    <div class="goal-item"><div class="g-num">٦</div><p>إصدار وطباعة التقارير الرسمية: التقرير الطبي، الفصل السلوكي، إذن الخروج، التعهد، واستدعاء ولي الأمر.</p></div>
+    <div class="goal-item"><div class="g-num">٧</div><p>العمل دون اتصال بالإنترنت، مع مزامنة تلقائية للبيانات فور عودة الاتصال.</p></div>
+    <div class="goal-item"><div class="g-num">٨</div><p>لوحة تحكم إلكترونية متكاملة لإدارة المدرسة، تضمّ أكثر من ٢٠ تقريرًا جاهزًا للطباعة.</p></div>
+  </div>
+
+  <div class="foot"><span>مقدّمة</span><span>٦</span></div>
+</section>
+
+<!-- ============ ROLES & LOGIN ============ -->
+<section class="page">
+  <div class="kicker">مقدّمة</div>
+  <h1 class="page-title">أنواع المستخدمين وصلاحياتهم</h1>
+  <p class="lede">يتيح التطبيق خمسة أنواع من الحسابات، لكل منها واجهة وصلاحيات مختلفة تظهر تلقائيًا بعد تسجيل الدخول حسب نوع الحساب.</p>
+
+  <table class="roles-table">
+    <tr><th>نوع المستخدم</th><th>الوصف</th><th>القسم في هذا الدليل</th></tr>
+    <tr><td><span class="role-dot" style="background:var(--admin)"></span>مشرف النظام (مدير المدرسة)</td><td>الصلاحية الأوسع؛ إدارة كاملة للمستخدمين والفصول والإعدادات والتقارير</td><td>القسم الأول</td></tr>
+    <tr><td><span class="role-dot" style="background:var(--mod)"></span>المشرف الإداري</td><td>متابعة التأخير والغياب وتقارير الطلاب دون صلاحيات الإدارة الكاملة</td><td>القسم الثاني</td></tr>
+    <tr><td><span class="role-dot" style="background:var(--teacher)"></span>المعلّم</td><td>تسجيل الحضور والغياب، إضافة الملاحظات والتقييم لطلاب فصوله فقط</td><td>القسم الثالث</td></tr>
+    <tr><td><span class="role-dot" style="background:var(--student)"></span>الطالب</td><td>متابعة إنجازاته الشخصية، ملاحظات أدائه، وتقرير الإنذارات الخاص به</td><td>القسم الرابع</td></tr>
+    <tr><td><span class="role-dot" style="background:var(--parent)"></span>ولي الأمر</td><td>متابعة صحيفة أبنائه والتواصل المباشر مع الإدارة المدرسية</td><td>القسم الخامس</td></tr>
+  </table>
+
+  <div class="foot"><span>مقدّمة</span><span>٧</span></div>
+</section>
+
+<!-- ============ LOGIN & NAV ============ -->
+<section class="page">
+  <div class="kicker">مقدّمة</div>
+  <h1 class="page-title">تسجيل الدخول والتنقل الأساسي</h1>
+
+  <div class="screen">
+    <div class="shot"><img src="images/00-login.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge" style="background:#1e2433;">١</span>شاشة تسجيل الدخول</h3>
+      <p class="desc">نقطة البداية لجميع أنواع المستخدمين. يتعرّف التطبيق تلقائيًا على نوع الحساب (مشرف نظام، مشرف إداري، معلّم، طالب، ولي أمر) فور تسجيل الدخول، ويعرض له الواجهة والصلاحيات المناسبة.</p>
+      <ul class="steps">
+        <li>أدخل <b>اسم المستخدم</b> (الرقم المدني للطالب/ولي الأمر، أو اسم المستخدم للمعلّم والإدارة).</li>
+        <li>أدخل <b>كلمة المرور</b>، ويمكن إظهارها بالضغط على أيقونة العين.</li>
+        <li>فعِّل <b>«حفظ بيانات الدخول»</b> لتسجيل دخول أسرع في المرات القادمة.</li>
+        <li>عند نسيان كلمة المرور، استخدم رابط «نسيت كلمة المرور؟».</li>
+        <li>اضغط <b>«تسجيل الدخول»</b> للمتابعة، أو «ليس لديك حساب؟ أنشئ حساب جديد» لتسجيل مؤسسة تعليمية جديدة.</li>
+      </ul>
+      <div class="note">الحسابات التي تم تسجيل الدخول بها سابقًا على الجهاز تظهر كبطاقات سريعة أعلى النموذج، ويكفي الضغط عليها للدخول مباشرة دون كتابة البيانات من جديد.</div>
+    </div>
+  </div>
+
+  <hr class="rule" />
+
+  <div class="nav-map">
+    <h4 style="font-size:13px;margin:0 0 3mm 0;">عناصر التنقل الثابتة</h4>
+    <div class="row"><div class="icon-col">☰ القائمة الجانبية</div><div class="desc-col">تُفتح بالضغط على أيقونة الخطوط الثلاثة أعلى يسار الشاشة، وتحتوي على كامل صفحات الإدارة والإعدادات والدعم، وتختلف عناصرها حسب نوع المستخدم.</div></div>
+    <div class="row"><div class="icon-col">⬛ الشريط السفلي</div><div class="desc-col">يظهر لكل نوع مستخدم مجموعة تبويبات ثابتة للوصول السريع لأهم شاشاته (مثال: قائمة الفصول والتأخير والمتابعة للمعلّم والإدارة، أو الألقاب والملاحظات للطالب).</div></div>
+    <div class="row"><div class="icon-col">🔔 الإشعارات</div><div class="desc-col">تبويب «الإشعارات» متاح لجميع المستخدمين، ويعرض تنبيهات النظام (إنذارات، رسائل، تحديثات) فور صدورها.</div></div>
+    <div class="row"><div class="icon-col">🔄 تبديل المستخدم</div><div class="desc-col">زر «تبديل المستخدم» أعلى القائمة الجانبية يتيح التنقّل السريع بين أكثر من حساب مسجَّل على نفس الجهاز دون تسجيل خروج كامل.</div></div>
+  </div>
+
+  <div class="foot"><span>مقدّمة</span><span>٨</span></div>
+</section>
+
+<!-- ============ QUICK START ============ -->
+<section class="page">
+  <div class="kicker">مقدّمة</div>
+  <h1 class="page-title">دليل البدء السريع</h1>
+  <p class="lede">خمس خطوات لتجهيز حساب مدرستك على بصمة، من التسجيل حتى أول عملية رصد حضور.</p>
+
+  <div class="goals-grid" style="grid-template-columns:1fr;">
+    <div class="goal-item"><div class="g-num">١</div><p><b>تسجيل المؤسسة التعليمية:</b> من شاشة تسجيل الدخول، اضغط «ليس لديك حساب؟ أنشئ حساب جديد»، ثم أدخل اسم المدرسة وعنوانها، اسم المستخدم وكلمة المرور، الدولة، البريد الإلكتروني، ورقم التواصل. يُنشأ الحساب تلقائيًا بصلاحية مشرف النظام.</p></div>
+    <div class="goal-item"><div class="g-num">٢</div><p><b>تسجيل الدخول الأول:</b> سجّل الدخول بحساب مشرف النظام؛ ستصلك مباشرة إلى الصفحة الرئيسية (قائمة الفصول)، وهي فارغة حتى تُنشئ أول فصل دراسي.</p></div>
+    <div class="goal-item"><div class="g-num">٣</div><p><b>بناء الهيكل الدراسي:</b> من القائمة الجانبية أنشئ الفصول الدراسية، ثم أضف حسابات المعلمين وأسند لكل معلّم فصوله، ثم أضف الطلاب (فرديًا أو عبر استيراد قائمة كاملة) وأسندهم للفصول المناسبة.</p></div>
+    <div class="goal-item"><div class="g-num">٤</div><p><b>ربط أولياء الأمور:</b> شارك «رابط تسجيل ولي أمر» من القائمة الجانبية مع أولياء الأمور؛ تصلك طلبات تسجيلهم في «إدارة حسابات أولياء الأمور» لمراجعتها والموافقة عليها، وربطهم بأبنائهم تلقائيًا.</p></div>
+    <div class="goal-item"><div class="g-num">٥</div><p><b>أول يوم دراسي:</b> يدخل المعلّم إلى فصله من الشريط السفلي، ويسجّل الحضور والغياب بضغطة واحدة لكل حصة، ومنها تبدأ صحيفة كل طالب بالتكوّن تلقائيًا.</p></div>
+  </div>
+
+  <div class="note" style="margin-top:5mm;">لكل دور صفحته الخاصة في هذا الدليل توضّح كل شاشاته بالتفصيل — استخدم جدول المحتويات للانتقال مباشرة إلى القسم المناسب.</div>
+
+  <div class="foot"><span>مقدّمة</span><span>٩</span></div>
+</section>
+
+<!-- ============ SECTION 1 DIVIDER: ADMIN ============ -->
+<section class="page section-divider role-admin" style="background:var(--admin);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;left:-60mm;"></div>
+  <div class="num">القسم الأول</div>
+  <h2>مشرف النظام<br/>(مدير المدرسة)</h2>
+  <p>الحساب صاحب الصلاحية الأوسع في التطبيق: يدير الفصول والمستخدمين (معلمين وطلابًا وأولياء أمور)، يتابع التقارير والتأخير والغياب، يتواصل مع جميع الأطراف، ويضبط إعدادات المدرسة والاشتراك.</p>
+  <div class="chips">
+    <div class="chip">إدارة المستخدمين</div>
+    <div class="chip">التقارير</div>
+    <div class="chip">التواصل</div>
+    <div class="chip">الإعدادات المدرسية</div>
+  </div>
+</section>
+
+<!-- ============ ADMIN: HOME + SIDEMENU ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">مشرف النظام</div>
+  <h1 class="page-title">الصفحة الرئيسية والقائمة الجانبية</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/01-admin-classlist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١</span>الصفحة الرئيسية — قائمة الفصول</h3>
+      <p class="desc">أول شاشة تظهر بعد تسجيل الدخول. تعرض بطاقة لكل فصل دراسي تابع للمدرسة، وتحتوي كل بطاقة على اسم الفصول ووصفها المختصر (مثل «الصف العاشر»).</p>
+      <ul class="steps">
+        <li>تبويب <b>«قائمة الصفوف»</b>: يعرض كل الفصول؛ اضغط على أي فصل للدخول إلى تفاصيله وقائمة طلابه.</li>
+        <li>تبويب <b>«إحصائيات الحصص»</b>: يعرض ملخصًا سريعًا لنسب الحضور اليومية لكل حصة.</li>
+        <li>الشريط السفلي يتيح الانتقال السريع بين: الفصول، قائمة التأخير، متابعة التقدم، والأخبار.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/02-admin-sidemenu.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٢</span>القائمة الجانبية</h3>
+      <p class="desc">تُفتح من أيقونة الخطوط الثلاثة أعلى يسار أي شاشة، وهي المدخل الرئيسي لكامل صفحات الإدارة. تظهر أعلاها بطاقة المدرسة الحالية وزر «تبديل المستخدم»، يليها محدِّد اللغة (عربي/إنجليزي).</p>
+      <ul class="steps">
+        <li><b>القائمة الرئيسية:</b> الصفحة الرئيسية، إدارة التقارير، قائمة طلب تعديل غياب، قائمة المستخدمين، إدارة حسابات المعلمين/الطلاب/أولياء الأمور، مواعيد الاختبارات، التواصل مع المؤسسة التعليمية، متابعة النشرات، المحتوى التعليمي.</li>
+        <li><b>الإدارة والإعدادات:</b> رابط تسجيل معلّم جديد، رابط تسجيل ولي أمر، الإعدادات، الأجهزة، الخطط، لوحة التحكم (الموقع الإلكتروني)، تواصل معنا، نبذة عنا.</li>
+        <li><b>قانوني:</b> شروط الاستخدام، سياسة الخصوصية، ثم تسجيل الخروج أسفل القائمة.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>مشرف النظام</span><span>١١</span></div>
+</section>
+
+<!-- ============ ADMIN: USERS + TEACHERS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">مشرف النظام</div>
+  <h1 class="page-title">إدارة المستخدمين والمعلمين</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/07-admin-users-list.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٣</span>قائمة المستخدمين</h3>
+      <p class="desc">تعرض حسابات الإدارة والدعم المرتبطة بالمدرسة (مثل حساب الطبيّات، التسجيل، ومشرفي النظام الإضافيين)، مع اسم المستخدم ورقم الحساب وصورته.</p>
+      <ul class="steps">
+        <li>استخدم مربع <b>«البحث عن مستخدم»</b> لتضييق النتائج بسرعة.</li>
+        <li>اضغط زر <b>«+»</b> أعلى يمين الشاشة لإضافة مستخدم جديد وتحديد صلاحيته.</li>
+        <li>اضغط على أي بطاقة لعرض بيانات المستخدم أو تعديل صلاحياته.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/08-admin-manage-teacher.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٤</span>إدارة حسابات المعلمين</h3>
+      <p class="desc">تعرض كل معلّم مسجَّل في المدرسة مع رقم حسابه وعدد الفصول المسندة إليه.</p>
+      <ul class="steps">
+        <li>ابحث عن معلّم بالاسم من مربع البحث أعلى الشاشة.</li>
+        <li>اضغط على بطاقة المعلّم للاطلاع على بياناته أو تعديل الفصول المسندة له.</li>
+        <li>يمكن من هذه الشاشة أيضًا إضافة معلّم جديد يدويًا، أو مشاركة رابط تسجيل المعلمين من القائمة الجانبية.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>مشرف النظام</span><span>١٢</span></div>
+</section>
+
+<!-- ============ ADMIN: STUDENTS + PARENTS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">مشرف النظام</div>
+  <h1 class="page-title">إدارة الطلاب وأولياء الأمور</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/09-admin-manage-student.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٥</span>إدارة حسابات الطلاب</h3>
+      <p class="desc">إدارة كاملة لبيانات الطلاب: الإضافة الفردية أو الجماعية، تعديل بيانات الطالب، ونقله أو إيقاف حسابه عند الحاجة.</p>
+      <ul class="steps">
+        <li>استعرض الطلاب حسب الفصل، أو ابحث عن طالب محدد بالاسم أو الرقم المدني.</li>
+        <li>يمكن إضافة الطلاب يدويًا واحدًا تلو الآخر، أو استيراد قائمة كاملة دفعة واحدة.</li>
+        <li>اضغط على أي طالب للانتقال إلى صحيفته الكاملة (الغياب، الملاحظات، التقييم، التقارير).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/10-admin-requested-parent.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٦</span>إدارة حسابات أولياء الأمور</h3>
+      <p class="desc">شاشتان فرعيتان: «أولياء الأمور» (الحسابات المفعَّلة) و«طلبات الانضمام» (حسابات جديدة بانتظار الموافقة).</p>
+      <ul class="steps">
+        <li>كل بطاقة تعرض اسم صاحب الحساب وأبناءه المرتبطين به.</li>
+        <li>مفتاح <b>«عرض تفاصيل الغياب»</b> يتحكم في إظهار تفاصيل غياب الابن لولي الأمر من عدمه.</li>
+        <li>زرّا <b>«حذف»</b> و<b>«حفظ التعديلات»</b> أسفل كل بطاقة لإدارة الحساب.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>مشرف النظام</span><span>١٣</span></div>
+</section>
+
+<!-- ============ ADMIN: CALENDAR + COMMS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">مشرف النظام</div>
+  <h1 class="page-title">التقويم والتواصل</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/11-admin-tasks-calendar.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٧</span>مواعيد الاختبارات (التقويم)</h3>
+      <p class="desc">تنظيم وجدولة الاختبارات القصيرة والمهام لفصل واحد أو أكثر من مكان واحد.</p>
+      <ul class="steps">
+        <li>حدِّد فصلاً واحدًا أو أكثر بالضغط على المربّع المجاور لاسمه.</li>
+        <li>اضغط <b>«إرسال»</b> للانتقال إلى تحديد تفاصيل الموعد والتاريخ.</li>
+        <li>تظهر المواعيد المضافة لاحقًا في تقويم موحّد يمكن للمعلمين والطلاب الاطلاع عليه.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/12-admin-parentconnect.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٨</span>التواصل مع المؤسسة التعليمية</h3>
+      <p class="desc">قائمة موحّدة بكل محادثات التواصل الخاص بين الإدارة وأولياء الأمور والمعلمين، مرتبة حسب آخر رسالة.</p>
+      <ul class="steps">
+        <li>تعرض كل بطاقة اسم الطرف الآخر وصفته (ولي أمر، طالب، ...) وتاريخ آخر رسالة.</li>
+        <li>اضغط على أي بطاقة لفتح المحادثة الكاملة والرد المباشر.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>مشرف النظام</span><span>١٤</span></div>
+</section>
+
+<!-- ============ ADMIN: BULLETINS + ABSENT ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">مشرف النظام</div>
+  <h1 class="page-title">النشرات وطلبات تعديل الغياب</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/13-admin-bulletins.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٩</span>متابعة النشرات</h3>
+      <p class="desc">قائمة بالتعاميم والنشرات الصادرة من الإدارة، سواء لفصل كامل أو لعدد محدد من المتعلمين.</p>
+      <ul class="steps">
+        <li>اضغط أيقونة <b>«+»</b> أعلى يمين الشاشة لإنشاء نشرة جديدة.</li>
+        <li>حدِّد الفئة المستهدفة (صف كامل / طلاب محددون) ثم أدخل نص التعميم.</li>
+        <li>عند عدم وجود نشرات بعد، تظهر الشاشة برسالة «لا توجد تعاميم» كحالة افتراضية، كما في المثال المصوَّر.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/17-admin-absent-students.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١٠</span>غياب الطلاب — طلبات تعديل الغياب</h3>
+      <p class="desc">تجميع سريع لحالات الغياب اليومية عبر كل الفصول، بالإضافة إلى طلبات تعديل الغياب المرسَلة من المعلمين لمراجعتها واعتمادها.</p>
+      <ul class="steps">
+        <li>زر <b>«عرض قائمة الطلبات المرسلة»</b> أعلى الشاشة ينقلك مباشرة لقائمة الطلبات المعلَّقة.</li>
+        <li>أيقونة الفلترة أعلى يمين الشاشة تتيح تضييق النتائج حسب الفصل أو التاريخ.</li>
+        <li>عند عدم وجود بيانات لليوم المحدَّد تظهر رسالة «لا توجد بيانات».</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>مشرف النظام</span><span>١٥</span></div>
+</section>
+
+<!-- ============ ADMIN: DELAY + REPORTS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">مشرف النظام</div>
+  <h1 class="page-title">قائمة التأخير وإدارة التقارير</h1>
+  <p class="lede">شاشتان متاحتان من الشريط السفلي والقائمة الجانبية مباشرة.</p>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/03-admin-delaylist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١١</span>قائمة التأخير</h3>
+      <p class="desc">اختر الفصل أولاً، ثم سجّل تأخر أي طالب عن طابور الصباح. يقوم النظام تلقائيًا بتحويل التأخير المتكرر إلى غياب وفق «قانون التأخير» المحدَّد في إعدادات المدرسة.</p>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/06-admin-student-report-classes.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١٢</span>إدارة التقارير</h3>
+      <p class="desc">حدِّد الفصل الدراسي أولاً، ثم اختر نوع التقرير المطلوب: تقرير الغياب، الفصل السلوكي، الطبيّات، إذن الخروج، أو تقرير الأداء التربوي، مع إمكانية الطباعة أو الحفظ كملف PDF.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>مشرف النظام</span><span>١٦</span></div>
+</section>
+
+<!-- ============ ADMIN: FOLLOWUP + NEWS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">مشرف النظام</div>
+  <h1 class="page-title">متابعة التقدم والأخبار</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/04-admin-followup.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١٣</span>متابعة التقدم</h3>
+      <p class="desc">لوحة تحليلية تعرض مؤشرات أداء الطلاب والفصول (الحضور، السلوك، التقييم) بشكل مرئي مبسّط لدعم القرار الإداري.</p>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/05-admin-news.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١٤</span>الأخبار</h3>
+      <p class="desc">آخر الأخبار والإعلانات العامة الصادرة من إدارة المدرسة لكل مستخدمي التطبيق.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>مشرف النظام</span><span>١٧</span></div>
+</section>
+
+<!-- ============ ADMIN: MESSAGES + SETTINGS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">مشرف النظام</div>
+  <h1 class="page-title">الإشعارات والإعدادات</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/05b-admin-messages.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١٥</span>الإشعارات</h3>
+      <p class="desc">سجلّ زمني لكل التنبيهات الواردة (إنذارات، طلبات، تحديثات)، ويظهر بجانب أيقونته شارة حمراء عند وجود إشعار غير مقروء.</p>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/14-admin-settings.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١٦</span>الإعدادات</h3>
+      <p class="desc">تعديل البيانات الشخصية للحساب (البريد الإلكتروني، رقم الهاتف)، وتغيير كلمة المرور من قسم «الأمان وكلمة المرور».</p>
+      <ul class="steps">
+        <li>لمشرف النظام تحديدًا: قسم إضافي <b>«إعدادات المدرسة»</b> يتيح تفعيل روابط تسجيل أولياء الأمور والمعلمين، وضبط «قانون التأخير» وأيام الإنذار الأول/الثاني/الثالث، واختيار الدولة.</li>
+        <li>زر <b>«حفظ»</b> أسفل الشاشة لتثبيت أي تعديل.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>مشرف النظام</span><span>١٨</span></div>
+</section>
+
+<!-- ============ ADMIN: DEVICES + PLANS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">مشرف النظام</div>
+  <h1 class="page-title">الأجهزة المسجَّلة والاشتراك</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images/15-admin-all-devices.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١٧</span>الأجهزة المسجَّلة</h3>
+      <p class="desc">قائمة بكل الأجهزة التي سجّلت الدخول بحساب المستخدم الحالي، مع إمكانية تسجيل الخروج من جهاز معيَّن عن بُعد لأغراض أمنية.</p>
+    </div>
+  </div>
+
+  <div class="intro-card" style="margin-top:6mm;">
+    <h4>الخطط والاشتراكات</h4>
+    <p>من القائمة الجانبية، تتيح شاشة «الخطط» لمشرف النظام مراجعة باقة الاشتراك الحالية للمدرسة والمميزات المرتبطة بها (مثل التعليم الإلكتروني والتقارير المتقدمة)، والترقية إلى باقة أعلى عند الحاجة.</p>
+  </div>
+
+  <div class="foot"><span>مشرف النظام</span><span>١٩</span></div>
+</section>
+
+<!-- ============ SECTION 2 DIVIDER: MODERATOR ============ -->
+<section class="page section-divider role-mod" style="background:var(--mod);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;left:-60mm;"></div>
+  <div class="num">القسم الثاني</div>
+  <h2>المشرف الإداري</h2>
+  <p>حساب مخصَّص للإشراف اليومي على الفصول: متابعة التأخير والغياب وتقارير الطلاب، دون الحاجة لصلاحيات إدارة المستخدمين الكاملة الخاصة بمشرف النظام.</p>
+  <div class="chips">
+    <div class="chip">قائمة التأخير</div>
+    <div class="chip">تقرير الطلاب</div>
+    <div class="chip">متابعة التقدم</div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="kicker role-mod" style="color:var(--mod);background:var(--mod-soft);">المشرف الإداري</div>
+  <h1 class="page-title">قائمة الفصول والتأخير</h1>
+  <p class="lede">تتشابه واجهة المشرف الإداري مع واجهة مشرف النظام في الشكل العام، لكنها أضيق نطاقًا: تقتصر القائمة الجانبية على «إدارة التقارير» فقط، إلى جانب الشريط السفلي المخصَّص لمتابعة الفصول والتأخير والتقدّم.</p>
+
+  <div class="screen role-mod">
+    <div class="shot"><img src="images/30-moderator-classlist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١</span>قائمة الفصول</h3>
+      <p class="desc">تعرض فصول المدرسة المتاحة للمشرف الإداري؛ الضغط على أي فصل يفتح تفاصيله وقائمة طلابه لمتابعة حالته.</p>
+    </div>
+  </div>
+
+  <div class="screen role-mod">
+    <div class="shot"><img src="images/31-moderator-delaylist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٢</span>قائمة التأخير</h3>
+      <p class="desc">تسجيل تأخر الطلاب عن طابور الصباح لكل فصل على حدة، بنفس آلية شاشة التأخير الخاصة بمشرف النظام.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>المشرف الإداري</span><span>٢١</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-mod" style="color:var(--mod);background:var(--mod-soft);">المشرف الإداري</div>
+  <h1 class="page-title">تقرير الطلاب ومتابعة التقدم</h1>
+
+  <div class="screen role-mod">
+    <div class="shot"><img src="images/32-moderator-student-report.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٣</span>تقرير الطلاب</h3>
+      <p class="desc">حدِّد الفصل أولاً للوصول إلى التقارير المتاحة (الغياب، السلوك، الطبيّات) لطلابه، مع إمكانية الطباعة عند الحاجة.</p>
+    </div>
+  </div>
+
+  <div class="screen role-mod">
+    <div class="shot"><img src="images/33-moderator-followup.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٤</span>متابعة التقدم</h3>
+      <p class="desc">نفس لوحة التحليلات المتاحة لمشرف النظام، لعرض مؤشرات الحضور والسلوك والأداء لفصول المشرف الإداري.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>المشرف الإداري</span><span>٢٢</span></div>
+</section>
+
+<!-- ============ SECTION 3 DIVIDER: TEACHER ============ -->
+<section class="page section-divider role-teacher" style="background:var(--teacher);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;left:-60mm;"></div>
+  <div class="num">القسم الثالث</div>
+  <h2>المعلّم</h2>
+  <p>الأداة اليومية للمعلّم داخل الحصة الدراسية: تسجيل الحضور والغياب بضغطة واحدة، تقييم أداء الطلاب، ومتابعة النشرات والأخبار الصادرة من الإدارة.</p>
+  <div class="chips">
+    <div class="chip">تسجيل الحضور والغياب</div>
+    <div class="chip">تقييم الطلاب</div>
+    <div class="chip">النشرات</div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="kicker role-teacher" style="color:#0e8f80;background:var(--teacher-soft);">المعلّم</div>
+  <h1 class="page-title">قائمة الفصول وتسجيل الحضور</h1>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images/40-teacher-classlist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١</span>قائمة الفصول</h3>
+      <p class="desc">تعرض فقط الفصول المسندة إلى المعلّم. الضغط على أي فصل ينقل مباشرة إلى شاشة تسجيل الحضور لتلك الحصة.</p>
+    </div>
+  </div>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images/41-teacher-list-student.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٢</span>تسجيل الحضور والغياب</h3>
+      <p class="desc">الشاشة المحورية للمعلّم يوميًا. تعرض رقم الحصة والتاريخ في الأعلى، مع مؤشر «قوة الصف التراكمية» (مجموع نقاط التحفيز).</p>
+      <ul class="steps">
+        <li>زرّا <b>«الكل حاضر»</b> و<b>«الكل غائب»</b> لتحديد حالة الفصل كاملاً بضغطة واحدة، ثم تعديل الاستثناءات فرديًا.</li>
+        <li>لكل طالب زرّا <b>«حاضر»</b> / <b>«غائب»</b> مستقلّان، إلى جانب مستوى أدائه الحالي وشارة إنجازه (مثل «بطل في البداية»).</li>
+        <li>أيقونة <b>«+»</b> بجانب صورة الطالب تفتح نافذة إضافة تقييم أو ملاحظة سريعة له.</li>
+        <li>يعرض أسفل الشاشة عدّاد <b>«تم تسجيل … من …»</b>، واضغط <b>«حفظ»</b> لتثبيت الحضور.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>المعلّم</span><span>٢٤</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-teacher" style="color:#0e8f80;background:var(--teacher-soft);">المعلّم</div>
+  <h1 class="page-title">متابعة التقدم والنشرات</h1>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images/42-teacher-followup.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٣</span>متابعة التقدم</h3>
+      <p class="desc">مؤشرات سريعة لأداء طلاب فصول المعلّم، تساعده على تحديد الطلاب الذين يحتاجون متابعة إضافية.</p>
+    </div>
+  </div>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images/43-teacher-bulletins.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٤</span>متابعة النشرات</h3>
+      <p class="desc">يمكن للمعلّم إرسال تذكيرات ومواعيد اختبارات قصيرة لطلاب فصل كامل أو لعدد محدَّد منهم، والاطلاع على التعاميم الصادرة من الإدارة.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>المعلّم</span><span>٢٥</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-teacher" style="color:#0e8f80;background:var(--teacher-soft);">المعلّم</div>
+  <h1 class="page-title">الأخبار والإشعارات</h1>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images/44-teacher-news.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٥</span>الأخبار</h3>
+      <p class="desc">آخر إعلانات وأخبار المدرسة العامة.</p>
+    </div>
+  </div>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images/45-teacher-messages.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٦</span>الإشعارات</h3>
+      <p class="desc">سجلّ التنبيهات الخاصة بالمعلّم (طلبات، تحديثات حضور، ردود من الإدارة).</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>المعلّم</span><span>٢٦</span></div>
+</section>
+
+<!-- ============ SECTION 4 DIVIDER: STUDENT ============ -->
+<section class="page section-divider role-student" style="background:var(--student);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;left:-60mm;"></div>
+  <div class="num">القسم الرابع</div>
+  <h2>الطالب</h2>
+  <p>تجربة تحفيزية مبنية على الألعاب: يتابع الطالب نقاطه ومهاراته وألقابه المكتسبة، ويطّلع على ملاحظات معلميه وتقرير الإنذارات الخاص به.</p>
+  <div class="chips">
+    <div class="chip">خزانة الألقاب</div>
+    <div class="chip">شجرة المهارة</div>
+    <div class="chip">تقرير الإنذارات</div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="kicker role-student" style="color:#a5710a;background:var(--student-soft);">الطالب</div>
+  <h1 class="page-title">شاشات الطالب</h1>
+  <p class="lede">لا تظهر للطالب قائمة جانبية موسَّعة؛ تجربته مبنية بالكامل على أربعة تبويبات في الشريط السفلي.</p>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images/50-student-titles.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">١</span>خزانة الألقاب والإنجازات</h3>
+      <p class="desc">الشاشة الافتراضية بعد تسجيل الدخول. تعرض بطاقة الطالب، «شجرة المهارة والمحفظة» (توزيع نقاط الخبرة على خمس مهارات: عملي، عاطفي، انضباط، تواصل، عقلي)، اللقب الحالي المعتمَد، والألقاب المتاحة للدمج.</p>
+      <ul class="steps">
+        <li>يكسب الطالب النقاط تلقائيًا من تقييم المعلمين اليومي وانضباطه في الحضور.</li>
+        <li>خيار <b>«تفعيل تلقائي»</b> بجانب اللقب الحالي يجعل النظام يختار أنسب لقب تلقائيًا كلما تغيّرت النقاط.</li>
+        <li>تبويب <b>«دمج الألقاب»</b> مقابل تبويب <b>«الإنجازات السرية»</b> أسفل بطاقة الطالب.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images/51-student-notes.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٢</span>ملاحظات الطالب</h3>
+      <p class="desc">سجلّ بكل الملاحظات والتقييمات التي أضافها المعلمون والإدارة المدرسية لأداء الطالب، مرتبة زمنيًا.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>الطالب</span><span>٢٨</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-student" style="color:#a5710a;background:var(--student-soft);">الطالب</div>
+  <h1 class="page-title">تقرير الإنذارات والأخبار</h1>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images/52-student-warning-report.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٣</span>تقرير الإنذارات</h3>
+      <p class="desc">يوضّح عدد أيام غياب الطالب مقارنة بحدود الإنذار الأول والثاني والثالث المحدَّدة من إدارة المدرسة، ليكون على اطلاع دائم بوضعه قبل صدور أي إنذار رسمي.</p>
+    </div>
+  </div>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images/53-student-news.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٤</span>الأخبار</h3>
+      <p class="desc">آخر أخبار وإعلانات المدرسة الموجَّهة لكل الطلاب.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>الطالب</span><span>٢٩</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-student" style="color:#a5710a;background:var(--student-soft);">الطالب</div>
+  <h1 class="page-title">الإشعارات</h1>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images/54-student-messages.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">٥</span>الإشعارات</h3>
+      <p class="desc">تنبيهات فورية عند إضافة تقييم جديد، صدور إنذار، أو نشر تعميم يخصّ الطالب. يمكن للطالب من هذه الشاشة مراجعة كل التنبيهات السابقة مرتبة من الأحدث إلى الأقدم.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>الطالب</span><span>٣٠</span></div>
+</section>
+
+<!-- ============ SECTION 5 DIVIDER: PARENT ============ -->
+<section class="page section-divider role-parent" style="background:var(--parent);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;left:-60mm;"></div>
+  <div class="num">القسم الخامس</div>
+  <h2>ولي الأمر</h2>
+  <p>شراكة رقابية مباشرة بين ولي الأمر والمؤسسة التعليمية، لمتابعة أبنائه أولاً بأول والتواصل مع الإدارة دون الحاجة لزيارة المدرسة.</p>
+  <div class="chips">
+    <div class="chip">متابعة الأبناء</div>
+    <div class="chip">التواصل الخاص</div>
+    <div class="chip">إشعارات فورية</div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="kicker role-parent" style="color:#b23a5c;background:var(--parent-soft);">ولي الأمر</div>
+  <h1 class="page-title">شاشات ولي الأمر</h1>
+  <p class="lede">مثل الطالب، تجربة ولي الأمر مبنية على تبويبات الشريط السفلي مباشرة دون قائمة جانبية موسَّعة، وتتمحور حول متابعة الأبناء والتواصل مع المدرسة.</p>
+
+  <div class="intro-card">
+    <h4><span class="num-badge" style="background:var(--parent);">١</span>أبنائي</h4>
+    <p>الشاشة الافتراضية بعد الدخول. تعرض بطاقة لكل ابن مرتبط بحساب ولي الأمر (الاسم، الصورة، والفصل الدراسي). الضغط على بطاقة أي ابن يفتح صحيفته الكاملة: إجمالي أيام الغياب ونوعها (بعذر مقبول / غير مقبول)، أيام الفصل السلوكي والطبيّات، والتقييم اللفظي لأدائه من معلميه.</p>
+  </div>
+
+  <div class="intro-card">
+    <h4><span class="num-badge" style="background:var(--parent);">٢</span>التواصل الخاص</h4>
+    <p>محادثة مباشرة مع الإدارة المدرسية للاستفسار أو متابعة أي أمر يخصّ الابن. تصل الرسائل الجديدة كإشعارات فورية لكلا الطرفين، وتظهر شارة حمراء على أيقونة التبويب عند وجود رسالة غير مقروءة.</p>
+  </div>
+
+  <div class="intro-card">
+    <h4><span class="num-badge" style="background:var(--parent);">٣</span>الأخبار</h4>
+    <p>آخر الإعلانات والتعاميم العامة الصادرة من إدارة المدرسة، بالإضافة إلى تنبيهات تلقائية عند تسجيل غياب على أحد الأبناء أو صدور إنذار له.</p>
+  </div>
+
+  <div class="intro-card">
+    <h4><span class="num-badge" style="background:var(--parent);">٤</span>الإعدادات</h4>
+    <p>من القائمة الجانبية يمكن لولي الأمر تعديل بياناته الشخصية (البريد الإلكتروني ورقم الهاتف) وكلمة المرور، ومراجعة الأجهزة المسجَّلة بحسابه.</p>
+  </div>
+
+  <div class="foot"><span>ولي الأمر</span><span>٣٢</span></div>
+</section>
+
+<!-- ============ FAQ 1 ============ -->
+<section class="page">
+  <div class="kicker">مساعدة</div>
+  <h1 class="page-title">الأسئلة الشائعة والمساعدة</h1>
+  <p class="lede">إجابات سريعة لأكثر الأسئلة تكرارًا من مستخدمي التطبيق، مرتبطة بالشاشات التفصيلية في هذا الدليل.</p>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>نسيت كلمة المرور، ماذا أفعل؟</div>
+    <p class="faq-a">من شاشة تسجيل الدخول اضغط رابط «نسيت كلمة المرور؟» واتبع الخطوات لإعادة تعيينها. يمكن أيضًا تغيير كلمة المرور لاحقًا من «الإعدادات» بعد تسجيل الدخول.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>كيف أضيف معلّمًا أو طالبًا جديدًا؟</div>
+    <p class="faq-a">من القائمة الجانبية اختر «إدارة حسابات المعلمين» أو «إدارة حسابات الطلاب»، ثم أضِف حسابًا يدويًا واحدًا تلو الآخر، أو استورد قائمة طلاب كاملة دفعة واحدة. يمكن أيضًا مشاركة «رابط تسجيل معلّم جديد» ليسجّل المعلّم بياناته بنفسه.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>هل يعمل التطبيق بدون اتصال بالإنترنت؟</div>
+    <p class="faq-a">نعم. يمكن للمعلّم تسجيل الحضور والغياب حتى مع انقطاع الشبكة داخل المبنى المدرسي، وتتم مزامنة البيانات تلقائيًا مع الخادم فور عودة الاتصال.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>كيف تُحسب نقاط الطالب ولقبه؟</div>
+    <p class="faq-a">تُحسب النقاط تلقائيًا من تقييم المعلمين اليومي وانضباط الحضور، وتُوزَّع على خمس مهارات في «شجرة المهارة والمحفظة». يختار النظام أنسب لقب تلقائيًا (أو يدويًا) بناءً على مجموع هذه النقاط — راجع قسم الطالب لتفاصيل خزانة الألقاب.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>كيف يتحوّل تأخّر الطالب المتكرر إلى غياب؟</div>
+    <p class="faq-a">وفق «قانون التأخير» الذي يضبطه مشرف النظام من شاشة الإعدادات؛ عند تجاوز الطالب لعدد مرات التأخير المحدَّد، يسجّل النظام تلقائيًا يوم غياب بدلاً من التأخير.</p>
+  </div>
+
+  <div class="foot"><span>مساعدة</span><span>٣٣</span></div>
+</section>
+
+<!-- ============ FAQ 2 ============ -->
+<section class="page">
+  <div class="kicker">مساعدة</div>
+  <h1 class="page-title">الأسئلة الشائعة (تابع)</h1>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>كيف أطبع تقريرًا أو أحفظه كملف PDF؟</div>
+    <p class="faq-a">من «إدارة التقارير» حدِّد الفصل ثم نوع التقرير المطلوب (الغياب، الفصل السلوكي، الطبيّات، إذن الخروج، أو الأداء التربوي)، وستظهر خيارات الطباعة أو الحفظ كملف PDF مباشرة.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>من يمكنه رؤية تفاصيل غياب ابني؟</div>
+    <p class="faq-a">يتحكّم مشرف النظام بذلك عبر مفتاح «عرض تفاصيل الغياب» في شاشة «إدارة حسابات أولياء الأمور»، بحيث يمكن إتاحة أو إخفاء تفاصيل الغياب اليومي لولي الأمر حسب سياسة المدرسة.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>كيف أبدّل بين أكثر من حساب على نفس الجهاز؟</div>
+    <p class="faq-a">اضغط زر «تبديل المستخدم» أعلى القائمة الجانبية للتنقّل الفوري بين الحسابات المسجَّلة سابقًا على هذا الجهاز، دون الحاجة لتسجيل خروج كامل في كل مرة.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>كيف أتواصل مع الدعم الفني للتطبيق؟</div>
+    <p class="faq-a">من حساب مشرف النظام، اختر «الدعم الفني للتطبيق» من القائمة الجانبية للوصول المباشر لقنوات الدعم.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">؟</span>ماذا يحدث عند طلب حذف حساب المدرسة؟</div>
+    <p class="faq-a">يدخل الحساب في فترة سماح مؤقتة قبل الحذف النهائي، تظهر خلالها رسالة توضّح الوقت المتبقي مع خيار «إلغاء عملية حذف الحساب» لمن يرغب بالتراجع.</p>
+  </div>
+
+  <div class="foot"><span>مساعدة</span><span>٣٤</span></div>
+</section>
+
+<!-- ============ GLOSSARY ============ -->
+<section class="page">
+  <div class="kicker">مساعدة</div>
+  <h1 class="page-title">معجم المصطلحات</h1>
+  <p class="lede">أبرز المصطلحات المستخدمة داخل التطبيق وفي هذا الدليل.</p>
+
+  <div class="glossary-item"><div class="glossary-term">مشرف النظام</div><div class="glossary-def">حساب مدير المدرسة، صاحب الصلاحية الأوسع في التطبيق.</div></div>
+  <div class="glossary-item"><div class="glossary-term">المشرف الإداري</div><div class="glossary-def">حساب مخصَّص لمتابعة التأخير والغياب وتقارير الطلاب اليومية.</div></div>
+  <div class="glossary-item"><div class="glossary-term">صحيفة المتعلّم</div><div class="glossary-def">السجلّ الشامل لبيانات الطالب: الغياب، الفصل السلوكي، الطبيّات، والتقييم اللفظي.</div></div>
+  <div class="glossary-item"><div class="glossary-term">شجرة المهارة والمحفظة</div><div class="glossary-def">توزيع نقاط خبرة الطالب على خمس مهارات: عملي، عاطفي، انضباط، تواصل، عقلي.</div></div>
+  <div class="glossary-item"><div class="glossary-term">خزانة الألقاب والإنجازات</div><div class="glossary-def">مجموعة الألقاب التحفيزية التي يكتسبها الطالب وفق نقاطه، مع إمكانية دمجها أو تفعيلها تلقائيًا.</div></div>
+  <div class="glossary-item"><div class="glossary-term">الإنجازات السرية</div><div class="glossary-def">إنجازات إضافية مخفية يكتشفها الطالب تدريجيًا كحافز إضافي للانضباط والتفوّق.</div></div>
+  <div class="glossary-item"><div class="glossary-term">قانون التأخير</div><div class="glossary-def">عدد مرات التأخير المسموح بها قبل تحويلها تلقائيًا إلى يوم غياب، يضبطه مشرف النظام.</div></div>
+  <div class="glossary-item"><div class="glossary-term">تقرير الإنذارات</div><div class="glossary-def">مقارنة عدد أيام غياب الطالب بحدود الإنذار الأول والثاني والثالث التي تحدّدها المدرسة.</div></div>
+  <div class="glossary-item"><div class="glossary-term">التواصل الخاص</div><div class="glossary-def">محادثات مباشرة بين الإدارة المدرسية وأولياء الأمور أو المعلمين.</div></div>
+  <div class="glossary-item"><div class="glossary-term">إذن الخروج</div><div class="glossary-def">تقرير رسمي يوثّق خروج الطالب من المدرسة قبل نهاية اليوم الدراسي.</div></div>
+  <div class="glossary-item"><div class="glossary-term">الفصل السلوكي</div><div class="glossary-def">إجراء تأديبي رسمي يُوثَّق ويُطبع كتقرير من إدارة التقارير.</div></div>
+  <div class="glossary-item"><div class="glossary-term">المحتوى التعليمي (E-Learning)</div><div class="glossary-def">مواد تعليمية إلكترونية متاحة ضمن باقات الاشتراك غير المجانية.</div></div>
+
+  <div class="foot"><span>مساعدة</span><span>٣٥</span></div>
+</section>
+
+<!-- ============ BACK COVER ============ -->
+<section class="page cover" style="justify-content:center;align-items:center;text-align:center;">
+  <div class="cover-ring" style="width:220mm;height:220mm;top:-60mm;right:-60mm;"></div>
+  <div style="margin:auto; z-index:2;">
+    <div class="cover-logo" style="margin:0 auto 8mm auto;">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#2f6fed"/>
+        <path d="M32 30 C32 30 55 28 62 40 C68 50 60 58 50 58 C60 58 68 66 62 76 C55 88 32 86 32 86" stroke="white" stroke-width="9" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <h2 class="cover-manual-title">بصمة</h2>
+    <p class="cover-manual-sub">نظام الإدارة التعليمية الذكية</p>
+    <p style="margin-top:14mm;font-size:12px;color:#dbe8ff;">للتواصل ومتابعة آخر التحديثات<br/>@fahadsaldaferi</p>
+  </div>
+</section>
+
+</div>
+<!-- /doc-ar -->
+
+<div id="doc-en" lang="en" dir="ltr">
+
+<!-- ============ COVER ============ -->
+<section class="page cover">
+  <div class="cover-ring" style="width:260mm;height:260mm;top:-90mm;right:-70mm;"></div>
+  <div class="cover-ring" style="width:160mm;height:160mm;bottom:-60mm;left:-40mm;"></div>
+  <div class="cover-top">
+    <div class="cover-badge">Smart Education Management System</div>
+    <div class="cover-logo">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#2f6fed"/>
+        <path d="M32 30 C32 30 55 28 62 40 C68 50 60 58 50 58 C60 58 68 66 62 76 C55 88 32 86 32 86" stroke="white" stroke-width="9" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <h1 class="cover-title">Basma</h1>
+    <p class="cover-sub">بصمة · Education Management System</p>
+  </div>
+  <div class="cover-mid">
+    <h2 class="cover-manual-title">The Complete App User Guide</h2>
+    <p class="cover-manual-sub">A detailed, illustrated walkthrough of every screen, by user role</p>
+    <div class="cover-roles">
+      <div class="cover-role-chip">System Admin</div>
+      <div class="cover-role-chip">Moderator</div>
+      <div class="cover-role-chip">Teacher</div>
+      <div class="cover-role-chip">Student</div>
+      <div class="cover-role-chip">Parent</div>
+    </div>
+  </div>
+  <div class="cover-bottom">
+    <div class="l">Prepared by: Taqniyat — Fahad Saad Aldaferi</div>
+    <div class="r">@fahadsaldaferi · 2026 Edition</div>
+  </div>
+</section>
+
+<!-- ============ TOC ============ -->
+<section class="page">
+  <div class="kicker">Table of Contents</div>
+  <h1 class="page-title">Guide Contents</h1>
+  <p class="lede">This guide is organized by user role, so each type of user (System Admin, Moderator, Teacher, Student, Parent) can jump straight to their own section.</p>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:#1e2433;">General Introduction</div>
+    <div class="toc-row"><span class="t">About the Basma App</span><span class="p">4</span></div>
+    <div class="toc-row"><span class="t">System Goals</span><span class="p">5</span></div>
+    <div class="toc-row"><span class="t">Key Features at a Glance</span><span class="p">6</span></div>
+    <div class="toc-row"><span class="t">User Types and Permissions</span><span class="p">7</span></div>
+    <div class="toc-row"><span class="t">Signing In and Core Navigation</span><span class="p">8</span></div>
+    <div class="toc-row"><span class="t">Quick Start Guide</span><span class="p">9</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--admin);">Part One — System Admin (School Principal)</div>
+    <div class="toc-row"><span class="t">Home Screen and Side Menu</span><span class="p">11</span></div>
+    <div class="toc-row"><span class="t">Managing Users and Teachers</span><span class="p">12</span></div>
+    <div class="toc-row"><span class="t">Managing Students and Parents</span><span class="p">13</span></div>
+    <div class="toc-row"><span class="t">Calendar and Communication</span><span class="p">14</span></div>
+    <div class="toc-row"><span class="t">Bulletins and Absence-Edit Requests</span><span class="p">15</span></div>
+    <div class="toc-row"><span class="t">Late-Arrival List and Reports</span><span class="p">16</span></div>
+    <div class="toc-row"><span class="t">Progress Tracking and News</span><span class="p">17</span></div>
+    <div class="toc-row"><span class="t">Notifications and Settings</span><span class="p">18</span></div>
+    <div class="toc-row"><span class="t">Registered Devices and Subscription</span><span class="p">19</span></div>
+  </div>
+
+  <div class="foot"><span>Basma App User Guide</span><span>2</span></div>
+</section>
+
+<!-- ============ TOC (page 2) ============ -->
+<section class="page">
+  <div class="kicker">Table of Contents</div>
+  <h1 class="page-title">Contents (continued)</h1>
+  <p class="lede">The remaining parts of this guide: Moderator, Teacher, Student, and Parent.</p>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--mod);">Part Two — Moderator</div>
+    <div class="toc-row"><span class="t">Class List and Late Arrivals</span><span class="p">21</span></div>
+    <div class="toc-row"><span class="t">Student Report and Progress Tracking</span><span class="p">22</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--teacher);">Part Three — Teacher</div>
+    <div class="toc-row"><span class="t">Class List and Taking Attendance</span><span class="p">24</span></div>
+    <div class="toc-row"><span class="t">Progress Tracking and Bulletins</span><span class="p">25</span></div>
+    <div class="toc-row"><span class="t">News and Notifications</span><span class="p">26</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--student);">Part Four — Student</div>
+    <div class="toc-row"><span class="t">Titles &amp; Achievements Vault, Performance Notes</span><span class="p">28</span></div>
+    <div class="toc-row"><span class="t">Warning Report and News</span><span class="p">29</span></div>
+    <div class="toc-row"><span class="t">Notifications</span><span class="p">30</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:var(--parent);">Part Five — Parent</div>
+    <div class="toc-row"><span class="t">Following Children, Private Messaging, News, Settings</span><span class="p">32</span></div>
+  </div>
+
+  <div class="toc-group">
+    <div class="toc-group-title" style="--role-color:#1e2433;">Help</div>
+    <div class="toc-row"><span class="t">Frequently Asked Questions &amp; Help</span><span class="p">33</span></div>
+    <div class="toc-row"><span class="t">Glossary of Terms</span><span class="p">35</span></div>
+  </div>
+  <div class="foot"><span>Basma App User Guide</span><span>3</span></div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="page">
+  <div class="kicker">Introduction</div>
+  <h1 class="page-title">What Is the Basma App?</h1>
+  <p class="lede">A smart education management system that improves the day-to-day school environment by giving direct visibility into every learner's status and simplifying administrative work for teachers and school staff.</p>
+
+  <div class="intro-card">
+    <h4>Overview</h4>
+    <p>
+      Basma lets school administration follow a learner's status directly, through a range of services that help teachers carry out their duties, reduce administrative load, and raise the quality of their in-class performance — which in turn reflects positively on the learner's academic achievement. The system also provides an innovative way to assess a learner's educational and behavioral performance, and builds an oversight partnership between the school and the learner's parent.
+    </p>
+  </div>
+
+  <div class="intro-card">
+    <h4>Origin and Growth</h4>
+    <p>
+      The idea began as a "Student Follow-up System," and as technology evolved, many innovative features were added to cover broader ground, becoming "Basma: the Smart Education Management System." The app has won first place across Kuwait and the Arab world in education (the ALECSO Grand Prize for Mobile Applications, Tunisia 2017), the ESCWA Prize for Arabic Digital Content for Sustainable Development 2022, and the Kuwait Award for Education Technology 2023 as the Ministry of Education's best project idea.
+    </p>
+  </div>
+
+  <hr class="rule" />
+
+  <div style="display:flex; gap:6mm;">
+    <div style="flex:1;" class="intro-card">
+      <h4>Vision</h4>
+      <p>Global leadership in advancing the educational process.</p>
+    </div>
+    <div style="flex:1;" class="intro-card">
+      <h4>Mission</h4>
+      <p>To build and operate a globally competitive, innovative education system that raises the effectiveness of education professionals and improves the quality of educational outcomes, in an environment that helps shape a generation of learners capable of building the future.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Introduction</span><span>4</span></div>
+</section>
+
+<!-- ============ GOALS ============ -->
+<section class="page">
+  <div class="kicker">Introduction</div>
+  <h1 class="page-title">System Goals</h1>
+  <p class="lede">Basma aims to achieve a number of educational and administrative goals, most notably:</p>
+
+  <div class="goals-grid">
+    <div class="goal-item"><div class="g-num">1</div><p>Rationalizing the school's consumption of physical resources (less paper and manual printing).</p></div>
+    <div class="goal-item"><div class="g-num">2</div><p>Providing an easy, accurate way to track learners academically and behaviorally within the school building.</p></div>
+    <div class="goal-item"><div class="g-num">3</div><p>Reducing the load on teachers tasked with administrative supervision, freeing them to focus on behavioral cases.</p></div>
+    <div class="goal-item"><div class="g-num">4</div><p>Curbing negative phenomena within the school building and strengthening preventive safety for learners.</p></div>
+    <div class="goal-item"><div class="g-num">5</div><p>Helping instill noble moral values rooted in our Islamic faith and authentic Arab traditions.</p></div>
+    <div class="goal-item"><div class="g-num">6</div><p>Providing the means to attract qualified teaching staff and make the best use of their efforts.</p></div>
+    <div class="goal-item"><div class="g-num">7</div><p>Helping raise a generation of youth who are self-aware, identity-conscious, and contribute to the national vision.</p></div>
+    <div class="goal-item"><div class="g-num">8</div><p>Providing a motivational mechanism (points, titles, and achievements) that builds a student's inner drive toward discipline and excellence.</p></div>
+  </div>
+
+  <div class="foot"><span>Introduction</span><span>5</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker">Introduction</div>
+  <h1 class="page-title">Key Features at a Glance</h1>
+  <p class="lede">A complete toolkit that makes Basma a full system, not just an attendance log.</p>
+
+  <div class="goals-grid">
+    <div class="goal-item"><div class="g-num">1</div><p>A single learner record: absences, disciplinary action, medical notes, and verbal performance evaluation, all in one place.</p></div>
+    <div class="goal-item"><div class="g-num">2</div><p>Attendance, absence, and morning line-up lateness recorded with a few taps from the teacher's phone.</p></div>
+    <div class="goal-item"><div class="g-num">3</div><p>AI-assisted assessment of a learner's educational and behavioral performance.</p></div>
+    <div class="goal-item"><div class="g-num">4</div><p>A motivational system (skill tree, titles, secret achievements) that builds a student's own drive toward discipline.</p></div>
+    <div class="goal-item"><div class="g-num">5</div><p>Direct private messaging between administration, teachers, and parents.</p></div>
+    <div class="goal-item"><div class="g-num">6</div><p>Issuing and printing official reports: medical reports, disciplinary action, early-leave permits, pledges, and parent summons.</p></div>
+    <div class="goal-item"><div class="g-num">7</div><p>Works fully offline, with automatic data sync once the connection returns.</p></div>
+    <div class="goal-item"><div class="g-num">8</div><p>A complete web dashboard for school management, with more than 20 print-ready reports.</p></div>
+  </div>
+
+  <div class="foot"><span>Introduction</span><span>6</span></div>
+</section>
+
+<!-- ============ ROLES & LOGIN ============ -->
+<section class="page">
+  <div class="kicker">Introduction</div>
+  <h1 class="page-title">User Types and Permissions</h1>
+  <p class="lede">The app supports five account types, each with its own interface and permissions that appear automatically after sign-in based on the account type.</p>
+
+  <table class="roles-table">
+    <tr><th>User Type</th><th>Description</th><th>Section in This Guide</th></tr>
+    <tr><td><span class="role-dot" style="background:var(--admin)"></span>System Admin (School Principal)</td><td>The broadest permission level; full management of users, classes, settings, and reports</td><td>Part One</td></tr>
+    <tr><td><span class="role-dot" style="background:var(--mod)"></span>Moderator</td><td>Tracks lateness, absence, and student reports without full administrative rights</td><td>Part Two</td></tr>
+    <tr><td><span class="role-dot" style="background:var(--teacher)"></span>Teacher</td><td>Takes attendance and adds notes and evaluations for their own class's students only</td><td>Part Three</td></tr>
+    <tr><td><span class="role-dot" style="background:var(--student)"></span>Student</td><td>Follows their own achievements, performance notes, and warning report</td><td>Part Four</td></tr>
+    <tr><td><span class="role-dot" style="background:var(--parent)"></span>Parent</td><td>Follows their children's records and communicates directly with school staff</td><td>Part Five</td></tr>
+  </table>
+
+  <div class="foot"><span>Introduction</span><span>7</span></div>
+</section>
+
+<!-- ============ LOGIN & NAV ============ -->
+<section class="page">
+  <div class="kicker">Introduction</div>
+  <h1 class="page-title">Signing In and Core Navigation</h1>
+
+  <div class="screen">
+    <div class="shot"><img src="images-en/00-login.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge" style="background:#1e2433;">1</span>The Sign-in Screen</h3>
+      <p class="desc">The starting point for every user type. The app automatically recognizes the account type (System Admin, Moderator, Teacher, Student, Parent) right after sign-in, and shows the matching interface and permissions.</p>
+      <ul class="steps">
+        <li>Enter your <b>username</b> (the civil ID for a student/parent, or the assigned username for teachers and staff).</li>
+        <li>Enter your <b>password</b> — tap the eye icon to reveal it.</li>
+        <li>Turn on <b>"Remember me"</b> for faster sign-in next time.</li>
+        <li>If you forget your password, use the "Forgot password?" link.</li>
+        <li>Tap <b>"Sign in"</b> to continue, or "Don't have an account? Create one" to register a new school.</li>
+      </ul>
+      <div class="note">Accounts that have signed in on this device before appear as quick-access cards above the form — just tap one to sign in instantly without retyping your details.</div>
+    </div>
+  </div>
+
+  <hr class="rule" />
+
+  <div class="nav-map">
+    <h4 style="font-size:13px;margin:0 0 3mm 0;">Persistent Navigation Elements</h4>
+    <div class="row"><div class="icon-col">☰ Side Menu</div><div class="desc-col">Opened via the three-line icon at the top of any screen; it holds every management, settings, and support page, and its contents vary by user type.</div></div>
+    <div class="row"><div class="icon-col">⬛ Bottom Tab Bar</div><div class="desc-col">Each user type gets a fixed set of tabs for quick access to its most important screens (e.g. classes, late arrivals, and progress tracking for teachers/admins, or titles and notes for students).</div></div>
+    <div class="row"><div class="icon-col">🔔 Notifications</div><div class="desc-col">The "Notifications" tab is available to every user, showing system alerts (warnings, messages, updates) the moment they're issued.</div></div>
+    <div class="row"><div class="icon-col">🔄 Switch Account</div><div class="desc-col">The "Switch account" button at the top of the side menu lets you jump instantly between multiple accounts signed in on the same device, without a full sign-out.</div></div>
+  </div>
+
+  <div class="foot"><span>Introduction</span><span>8</span></div>
+</section>
+
+<!-- ============ QUICK START ============ -->
+<section class="page">
+  <div class="kicker">Introduction</div>
+  <h1 class="page-title">Quick Start Guide</h1>
+  <p class="lede">Five steps to get your school's Basma account up and running, from registration to the first attendance record.</p>
+
+  <div class="goals-grid" style="grid-template-columns:1fr;">
+    <div class="goal-item"><div class="g-num">1</div><p><b>Register your school:</b> From the sign-in screen, tap "Don't have an account? Create one," then enter the school name and address, a username and password, country, email, and contact number. The account is created automatically with System Admin rights.</p></div>
+    <div class="goal-item"><div class="g-num">2</div><p><b>First sign-in:</b> Sign in with the System Admin account; you'll land directly on the home screen (class list), which is empty until you create your first class.</p></div>
+    <div class="goal-item"><div class="g-num">3</div><p><b>Build the academic structure:</b> From the side menu, create your classes, then add teacher accounts and assign each teacher their classes, then add students (individually or by importing a full list) and assign them to the right classes.</p></div>
+    <div class="goal-item"><div class="g-num">4</div><p><b>Link parents:</b> Share the "Parent registration link" from the side menu with parents; their sign-up requests arrive in "Manage Parents" for you to review and approve, automatically linking them to their children.</p></div>
+    <div class="goal-item"><div class="g-num">5</div><p><b>The first school day:</b> The teacher opens their class from the bottom tab bar and takes attendance with one tap per period — and from there, every student's record starts building itself automatically.</p></div>
+  </div>
+
+  <div class="note" style="margin-top:5mm;">Every role has its own dedicated section in this guide covering all of its screens in detail — use the table of contents to jump straight to the right part.</div>
+
+  <div class="foot"><span>Introduction</span><span>9</span></div>
+</section>
+
+<!-- ============ PART 1 DIVIDER: ADMIN ============ -->
+<section class="page section-divider role-admin" style="background:var(--admin);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;right:-60mm;"></div>
+  <div class="num">Part One</div>
+  <h2>System Admin<br/>(School Principal)</h2>
+  <p>The account with the broadest permissions in the app: manages classes and users (teachers, students, and parents), tracks reports, lateness, and absences, communicates with every party, and controls school settings and the subscription.</p>
+  <div class="chips">
+    <div class="chip">Managing Users</div>
+    <div class="chip">Reports</div>
+    <div class="chip">Communication</div>
+    <div class="chip">School Settings</div>
+  </div>
+</section>
+
+<!-- ============ ADMIN: HOME + SIDEMENU ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">System Admin</div>
+  <h1 class="page-title">Home Screen and Side Menu</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/01-admin-classlist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">1</span>Home Screen — Class List</h3>
+      <p class="desc">The first screen shown after signing in. It shows a card for every class in the school, each with the class name and a short description (e.g. "Grade 10").</p>
+      <ul class="steps">
+        <li><b>"Class List"</b> tab: shows every class; tap one to open its details and student list.</li>
+        <li><b>"Statistical Present"</b> tab: a quick summary of daily attendance rates per period.</li>
+        <li>The bottom bar lets you jump quickly between: Classes, Late-Arrival List, Progress Tracking, and News.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/02-admin-sidemenu.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">2</span>The Side Menu</h3>
+      <p class="desc">Opened from the three-line icon at the top of any screen — the main gateway to every administrative page. It opens with the current school's card and a "Switch account" button, followed by the language selector (Arabic/English).</p>
+      <ul class="steps">
+        <li><b>Main Menu:</b> Home, Student Report, Absent-Student Requests, Users List, Manage Teacher/Student/Parent accounts, Exam Dates, Parent Connect, Follow the Bulletins, eLearning Material.</li>
+        <li><b>Management &amp; Settings:</b> Teacher Registration Link, Parent Registration Link, Settings, Devices, Activate Features (Plans), Backend Link, Contact Us, About Us.</li>
+        <li><b>Legal:</b> Terms of Service, Privacy Policy, followed by Logout at the bottom.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>System Admin</span><span>11</span></div>
+</section>
+
+<!-- ============ ADMIN: USERS + TEACHERS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">System Admin</div>
+  <h1 class="page-title">Managing Users and Teachers</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/07-admin-users-list.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">3</span>Users List</h3>
+      <p class="desc">Shows administrative/support accounts linked to the school (such as the medical, registration, or additional system-admin accounts), with each user's name, account number, and photo.</p>
+      <ul class="steps">
+        <li>Use the <b>"Search for a user"</b> box to narrow results quickly.</li>
+        <li>Tap the <b>"+"</b> button at the top of the screen to add a new user and set their permission level.</li>
+        <li>Tap any card to view a user's details or edit their permissions.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/08-admin-manage-teacher.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">4</span>Manage Teacher Accounts</h3>
+      <p class="desc">Shows every teacher registered at the school along with their account number and the number of classes assigned to them.</p>
+      <ul class="steps">
+        <li>Search for a teacher by name from the search box at the top.</li>
+        <li>Tap a teacher's card to view their details or edit their assigned classes.</li>
+        <li>You can also add a new teacher manually from this screen, or share the "Teacher registration link" from the side menu.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>System Admin</span><span>12</span></div>
+</section>
+
+<!-- ============ ADMIN: STUDENTS + PARENTS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">System Admin</div>
+  <h1 class="page-title">Managing Students and Parents</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/09-admin-manage-student.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">5</span>Manage Student Accounts</h3>
+      <p class="desc">Complete management of student data: adding students individually or in bulk, editing a student's details, and transferring or deactivating an account when needed.</p>
+      <ul class="steps">
+        <li>Browse students by class, or search for a specific student by name or civil ID.</li>
+        <li>Students can be added manually one at a time, or imported as a complete list.</li>
+        <li>Tap any student to open their full record (absences, notes, evaluations, reports).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/10-admin-requested-parent.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">6</span>Manage Parent Accounts</h3>
+      <p class="desc">Two sub-tabs: "Parents" (active accounts) and "Join Requests" (new accounts awaiting approval).</p>
+      <ul class="steps">
+        <li>Each card shows the account holder's name and the children linked to it.</li>
+        <li>The <b>"Show absence details"</b> toggle controls whether the parent can see their child's daily absence details.</li>
+        <li><b>"Delete"</b> and <b>"Save changes"</b> buttons under each card manage the account.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>System Admin</span><span>13</span></div>
+</section>
+
+<!-- ============ ADMIN: CALENDAR + COMMS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">System Admin</div>
+  <h1 class="page-title">Calendar and Communication</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/11-admin-tasks-calendar.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">7</span>Exam Dates (Calendar)</h3>
+      <p class="desc">Organize and schedule quizzes and tasks for one or more classes from a single place.</p>
+      <ul class="steps">
+        <li>Select one or more classes by tapping the checkbox next to each name.</li>
+        <li>Tap <b>"Submit"</b> to move on to setting the event's details and date.</li>
+        <li>Added dates then appear in a shared calendar teachers and students can view.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/12-admin-parentconnect.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">8</span>Parent Connect</h3>
+      <p class="desc">A unified list of every private conversation between school staff and parents or teachers, sorted by latest message.</p>
+      <ul class="steps">
+        <li>Each card shows the other party's name and role (parent, student, ...) and the date of the last message.</li>
+        <li>Tap any card to open the full conversation and reply directly.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>System Admin</span><span>14</span></div>
+</section>
+
+<!-- ============ ADMIN: BULLETINS + ABSENT ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">System Admin</div>
+  <h1 class="page-title">Bulletins and Absence-Edit Requests</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/13-admin-bulletins.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">9</span>Follow the Bulletins</h3>
+      <p class="desc">A list of circulars and bulletins issued by the administration, whether for a whole class or a specific group of learners.</p>
+      <ul class="steps">
+        <li>Tap the <b>"+"</b> icon at the top of the screen to create a new bulletin.</li>
+        <li>Choose the target audience (a whole class / specific students), then enter the bulletin text.</li>
+        <li>When no bulletins exist yet, the screen shows a "No bulletins found" message by default, as in the example shown.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/17-admin-absent-students.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">10</span>Absent Students — Absence-Edit Requests</h3>
+      <p class="desc">A quick roll-up of daily absences across every class, plus absence-edit requests submitted by teachers for review and approval.</p>
+      <ul class="steps">
+        <li>The <b>"View submitted requests list"</b> button at the top jumps straight to the list of pending requests.</li>
+        <li>The filter icon at the top narrows results by class or date.</li>
+        <li>When no data exists for the selected day, a "No data found" message appears.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>System Admin</span><span>15</span></div>
+</section>
+
+<!-- ============ ADMIN: DELAY + REPORTS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">System Admin</div>
+  <h1 class="page-title">Late-Arrival List and Reports</h1>
+  <p class="lede">Two screens reachable directly from the bottom bar and the side menu.</p>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/03-admin-delaylist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">11</span>Late-Arrival List</h3>
+      <p class="desc">Pick a class first, then record any student's lateness to the morning line-up. The system automatically converts repeated lateness into an absence per the "lateness rule" set in the school's settings.</p>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/06-admin-student-report-classes.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">12</span>Student Report</h3>
+      <p class="desc">Select the class first, then choose the report type: absence report, disciplinary action, medical notes, early-leave permit, or educational performance — with the option to print or save as a PDF.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>System Admin</span><span>16</span></div>
+</section>
+
+<!-- ============ ADMIN: FOLLOWUP + NEWS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">System Admin</div>
+  <h1 class="page-title">Progress Tracking and News</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/04-admin-followup.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">13</span>Progress Tracking</h3>
+      <p class="desc">An analytics dashboard showing student and class performance indicators (attendance, behavior, evaluation) in a simple visual layout that supports administrative decisions.</p>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/05-admin-news.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">14</span>News</h3>
+      <p class="desc">The latest news and general announcements issued by school administration for every app user.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>System Admin</span><span>17</span></div>
+</section>
+
+<!-- ============ ADMIN: MESSAGES + SETTINGS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">System Admin</div>
+  <h1 class="page-title">Notifications and Settings</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/05b-admin-messages.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">15</span>Notifications</h3>
+      <p class="desc">A timeline of every incoming alert (warnings, requests, updates); a red badge appears next to its icon whenever there's an unread notification.</p>
+    </div>
+  </div>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/14-admin-settings.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">16</span>Settings</h3>
+      <p class="desc">Edit your account's personal details (email, phone number), and change your password from the "Security &amp; Password" section.</p>
+      <ul class="steps">
+        <li>For System Admin specifically: an extra <b>"School Settings"</b> section lets you turn on parent/teacher registration links, set the "lateness rule" and the first/second/third warning-day thresholds, and choose the country.</li>
+        <li>The <b>"Save"</b> button at the bottom applies any change.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>System Admin</span><span>18</span></div>
+</section>
+
+<!-- ============ ADMIN: DEVICES + PLANS ============ -->
+<section class="page">
+  <div class="kicker role-admin" style="color:var(--admin);background:var(--admin-soft);">System Admin</div>
+  <h1 class="page-title">Registered Devices and Subscription</h1>
+
+  <div class="screen role-admin">
+    <div class="shot"><img src="images-en/15-admin-all-devices.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">17</span>Registered Devices</h3>
+      <p class="desc">A list of every device that has signed in with the current user's account, with the option to remotely sign a device out for security reasons.</p>
+    </div>
+  </div>
+
+  <div class="intro-card" style="margin-top:6mm;">
+    <h4>Plans and Subscription</h4>
+    <p>From the side menu, the "Activate Features" screen lets the System Admin review the school's current subscription plan and its included features (such as eLearning material and advanced reports), and upgrade to a higher plan when needed.</p>
+  </div>
+
+  <div class="foot"><span>System Admin</span><span>19</span></div>
+</section>
+
+<!-- ============ PART 2 DIVIDER: MODERATOR ============ -->
+<section class="page section-divider role-mod" style="background:var(--mod);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;right:-60mm;"></div>
+  <div class="num">Part Two</div>
+  <h2>Moderator</h2>
+  <p>An account dedicated to day-to-day class oversight: tracking lateness, absence, and student reports, without the System Admin's full user-management rights.</p>
+  <div class="chips">
+    <div class="chip">Late-Arrival List</div>
+    <div class="chip">Student Report</div>
+    <div class="chip">Progress Tracking</div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="kicker role-mod" style="color:var(--mod);background:var(--mod-soft);">Moderator</div>
+  <h1 class="page-title">Class List and Late Arrivals</h1>
+  <p class="lede">The Moderator interface looks much like the System Admin's, but with a narrower scope: the side menu is limited to "Student Report," alongside the bottom bar dedicated to tracking classes, lateness, and progress.</p>
+
+  <div class="screen role-mod">
+    <div class="shot"><img src="images-en/30-moderator-classlist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">1</span>Class List</h3>
+      <p class="desc">Shows the school classes available to the Moderator; tapping any class opens its details and student list to follow its status.</p>
+    </div>
+  </div>
+
+  <div class="screen role-mod">
+    <div class="shot"><img src="images-en/31-moderator-delaylist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">2</span>Late-Arrival List</h3>
+      <p class="desc">Records student lateness to the morning line-up per class, using the same mechanism as the System Admin's own late-arrival screen.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Moderator</span><span>21</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-mod" style="color:var(--mod);background:var(--mod-soft);">Moderator</div>
+  <h1 class="page-title">Student Report and Progress Tracking</h1>
+
+  <div class="screen role-mod">
+    <div class="shot"><img src="images-en/32-moderator-student-report.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">3</span>Student Report</h3>
+      <p class="desc">Select the class first to reach its available reports (absence, behavior, medical notes), with the option to print when needed.</p>
+    </div>
+  </div>
+
+  <div class="screen role-mod">
+    <div class="shot"><img src="images-en/33-moderator-followup.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">4</span>Progress Tracking</h3>
+      <p class="desc">The same analytics dashboard available to the System Admin, showing attendance, behavior, and performance indicators for the Moderator's classes.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Moderator</span><span>22</span></div>
+</section>
+
+<!-- ============ PART 3 DIVIDER: TEACHER ============ -->
+<section class="page section-divider role-teacher" style="background:var(--teacher);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;right:-60mm;"></div>
+  <div class="num">Part Three</div>
+  <h2>Teacher</h2>
+  <p>The teacher's daily tool inside the classroom: one-tap attendance, student performance evaluation, and following bulletins and news issued by the administration.</p>
+  <div class="chips">
+    <div class="chip">Taking Attendance</div>
+    <div class="chip">Evaluating Students</div>
+    <div class="chip">Bulletins</div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="kicker role-teacher" style="color:#0e8f80;background:var(--teacher-soft);">Teacher</div>
+  <h1 class="page-title">Class List and Taking Attendance</h1>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images-en/40-teacher-classlist.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">1</span>Class List</h3>
+      <p class="desc">Shows only the classes assigned to this teacher. Tapping a class goes straight to the attendance screen for that period.</p>
+    </div>
+  </div>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images-en/41-teacher-list-student.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">2</span>Taking Attendance</h3>
+      <p class="desc">The teacher's daily go-to screen. It shows the period number and date at the top, along with a "Cumulative Class Strength" indicator (total motivation points).</p>
+      <ul class="steps">
+        <li><b>"All Present"</b> and <b>"All Absent"</b> buttons set the whole class's status in one tap, then individual exceptions can be adjusted.</li>
+        <li>Each student has independent <b>"Present"</b> / <b>"Absent"</b> buttons, alongside their current performance level and achievement badge (e.g. "Rookie Champion").</li>
+        <li>The <b>"+"</b> icon next to a student's photo opens a window to quickly add an evaluation or note for them.</li>
+        <li>The bottom of the screen shows a <b>"Recorded … of …"</b> counter — tap <b>"Submit"</b> to save attendance.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>Teacher</span><span>24</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-teacher" style="color:#0e8f80;background:var(--teacher-soft);">Teacher</div>
+  <h1 class="page-title">Progress Tracking and Bulletins</h1>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images-en/42-teacher-followup.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">3</span>Progress Tracking</h3>
+      <p class="desc">Quick performance indicators for the teacher's own students, helping identify who needs extra attention.</p>
+    </div>
+  </div>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images-en/43-teacher-bulletins.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">4</span>Follow the Bulletins</h3>
+      <p class="desc">A teacher can send reminders and quiz dates to a whole class or a specific group of students, and view circulars issued by administration.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Teacher</span><span>25</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-teacher" style="color:#0e8f80;background:var(--teacher-soft);">Teacher</div>
+  <h1 class="page-title">News and Notifications</h1>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images-en/44-teacher-news.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">5</span>News</h3>
+      <p class="desc">The latest general school announcements and news.</p>
+    </div>
+  </div>
+
+  <div class="screen role-teacher">
+    <div class="shot"><img src="images-en/45-teacher-messages.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">6</span>Notifications</h3>
+      <p class="desc">A log of alerts specific to this teacher (requests, attendance updates, replies from administration).</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Teacher</span><span>26</span></div>
+</section>
+
+<!-- ============ PART 4 DIVIDER: STUDENT ============ -->
+<section class="page section-divider role-student" style="background:var(--student);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;right:-60mm;"></div>
+  <div class="num">Part Four</div>
+  <h2>Student</h2>
+  <p>A gamified, motivating experience: the student follows their points, skills, and earned titles, and can view their teachers' notes and their own warning report.</p>
+  <div class="chips">
+    <div class="chip">Titles Vault</div>
+    <div class="chip">Skill Tree</div>
+    <div class="chip">Warning Report</div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="kicker role-student" style="color:#a5710a;background:var(--student-soft);">Student</div>
+  <h1 class="page-title">Student Screens</h1>
+  <p class="lede">Students don't see an expanded side menu; their whole experience is built around four tabs in the bottom bar.</p>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images-en/50-student-titles.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">1</span>Titles &amp; Achievements Vault</h3>
+      <p class="desc">The default screen after signing in. Shows the student's card, the "Skill Tree &amp; Portfolio" (experience points spread across five skills: Practical, Emotional, Discipline, Communication, and Intellectual), the currently active title, and titles available to merge.</p>
+      <ul class="steps">
+        <li>Students earn points automatically from teachers' daily evaluations and attendance discipline.</li>
+        <li>The <b>"Auto-activate"</b> option next to the current title lets the system automatically pick the most fitting title as points change.</li>
+        <li><b>"Merge Titles"</b> tab versus <b>"Secret Achievements"</b> tab below the student's card.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images-en/51-student-notes.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">2</span>Student Notes</h3>
+      <p class="desc">A record of every note and evaluation added by teachers and school administration for this student's performance, sorted chronologically.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Student</span><span>28</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-student" style="color:#a5710a;background:var(--student-soft);">Student</div>
+  <h1 class="page-title">Warning Report and News</h1>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images-en/52-student-warning-report.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">3</span>Warning Report</h3>
+      <p class="desc">Shows the student's absence-day count against the first, second, and third warning thresholds set by the school administration, keeping the student always aware of their standing before any official warning is issued.</p>
+    </div>
+  </div>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images-en/53-student-news.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">4</span>News</h3>
+      <p class="desc">The latest school news and announcements aimed at all students.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Student</span><span>29</span></div>
+</section>
+
+<section class="page">
+  <div class="kicker role-student" style="color:#a5710a;background:var(--student-soft);">Student</div>
+  <h1 class="page-title">Notifications</h1>
+
+  <div class="screen role-student">
+    <div class="shot"><img src="images-en/54-student-messages.png" /></div>
+    <div class="body">
+      <h3><span class="num-badge">5</span>Notifications</h3>
+      <p class="desc">Instant alerts whenever a new evaluation is added, a warning is issued, or a bulletin concerning the student is posted. From this screen, a student can review every past notification, newest first.</p>
+    </div>
+  </div>
+
+  <div class="foot"><span>Student</span><span>30</span></div>
+</section>
+
+<!-- ============ PART 5 DIVIDER: PARENT ============ -->
+<section class="page section-divider role-parent" style="background:var(--parent);">
+  <div class="ring" style="width:220mm;height:220mm;top:-70mm;right:-60mm;"></div>
+  <div class="num">Part Five</div>
+  <h2>Parent</h2>
+  <p>A direct oversight partnership between the parent and the school, to follow their children day-to-day and communicate with administration without needing to visit the school.</p>
+  <div class="chips">
+    <div class="chip">Following Children</div>
+    <div class="chip">Private Messaging</div>
+    <div class="chip">Instant Notifications</div>
+  </div>
+</section>
+
+<section class="page">
+  <div class="kicker role-parent" style="color:#b23a5c;background:var(--parent-soft);">Parent</div>
+  <h1 class="page-title">Parent Screens</h1>
+  <p class="lede">Like the student experience, the parent's experience is built directly around the bottom tab bar without an expanded side menu, and centers on following children and communicating with the school.</p>
+
+  <div class="intro-card">
+    <h4><span class="num-badge" style="background:var(--parent);">1</span>My Children</h4>
+    <p>The default screen after signing in. Shows a card for each child linked to the parent's account (name, photo, and class). Tapping a child's card opens their complete record: total absence days and their type (excused / unexcused), disciplinary-action and medical-leave days, and their teachers' verbal performance evaluation.</p>
+  </div>
+
+  <div class="intro-card">
+    <h4><span class="num-badge" style="background:var(--parent);">2</span>Private Messaging</h4>
+    <p>A direct conversation with school administration to ask questions or follow up on anything concerning the child. New messages arrive as instant notifications for both sides, and a red badge appears on the tab icon whenever there's an unread message.</p>
+  </div>
+
+  <div class="intro-card">
+    <h4><span class="num-badge" style="background:var(--parent);">3</span>News</h4>
+    <p>The latest general announcements and circulars issued by school administration, plus automatic alerts whenever a child's absence is recorded or a warning is issued for them.</p>
+  </div>
+
+  <div class="intro-card">
+    <h4><span class="num-badge" style="background:var(--parent);">4</span>Settings</h4>
+    <p>From the side menu, a parent can edit their personal details (email and phone number) and password, and review the devices registered to their account.</p>
+  </div>
+
+  <div class="foot"><span>Parent</span><span>32</span></div>
+</section>
+
+<!-- ============ FAQ 1 ============ -->
+<section class="page">
+  <div class="kicker">Help</div>
+  <h1 class="page-title">Frequently Asked Questions &amp; Help</h1>
+  <p class="lede">Quick answers to the app's most common questions, linked back to the detailed screens in this guide.</p>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>I forgot my password — what do I do?</div>
+    <p class="faq-a">On the sign-in screen, tap the "Forgot password?" link and follow the steps to reset it. You can also change your password later from "Settings" after signing in.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>How do I add a new teacher or student?</div>
+    <p class="faq-a">From the side menu, choose "Manage Teacher" or "Manage Student," then add an account manually one at a time, or import a complete student list at once. You can also share the "Teacher registration link" so a teacher registers their own details.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>Does the app work without an internet connection?</div>
+    <p class="faq-a">Yes. A teacher can take attendance even if the network drops inside the school building, and the data syncs to the server automatically the moment the connection returns.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>How are a student's points and title calculated?</div>
+    <p class="faq-a">Points are calculated automatically from teachers' daily evaluations and attendance discipline, and are spread across five skills in the "Skill Tree &amp; Portfolio." The system picks the most fitting title automatically (or manually) based on this point total — see the Student section for details on the Titles Vault.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>How does repeated lateness turn into an absence?</div>
+    <p class="faq-a">Per the "lateness rule" the System Admin sets on the Settings screen; once a student exceeds the configured number of late arrivals, the system automatically records an absence day instead of a lateness.</p>
+  </div>
+
+  <div class="foot"><span>Help</span><span>33</span></div>
+</section>
+
+<!-- ============ FAQ 2 ============ -->
+<section class="page">
+  <div class="kicker">Help</div>
+  <h1 class="page-title">Frequently Asked Questions (continued)</h1>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>How do I print a report or save it as a PDF?</div>
+    <p class="faq-a">From "Student Report," pick the class, then the report type (absence, disciplinary action, medical notes, early-leave permit, or educational performance) — print or save-as-PDF options appear right there.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>Who can see my child's absence details?</div>
+    <p class="faq-a">The System Admin controls this via the "Show absence details" toggle on the "Manage Parent Accounts" screen, so daily absence details can be made visible or hidden to a parent depending on school policy.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>How do I switch between multiple accounts on the same device?</div>
+    <p class="faq-a">Tap the "Switch account" button at the top of the side menu to jump instantly between accounts previously signed in on this device, without a full sign-out every time.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>How do I contact app support?</div>
+    <p class="faq-a">From the System Admin account, choose "Contact Us" from the side menu for direct access to support channels.</p>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q"><span class="qmark">?</span>What happens when a school account deletion is requested?</div>
+    <p class="faq-a">The account enters a temporary grace period before permanent deletion, during which a message shows the remaining time along with an "Undo account deletion" option for anyone who changes their mind.</p>
+  </div>
+
+  <div class="foot"><span>Help</span><span>34</span></div>
+</section>
+
+<!-- ============ GLOSSARY ============ -->
+<section class="page">
+  <div class="kicker">Help</div>
+  <h1 class="page-title">Glossary of Terms</h1>
+  <p class="lede">Key terms used throughout the app and this guide.</p>
+
+  <div class="glossary-item"><div class="glossary-term">System Admin</div><div class="glossary-def">The school principal's account, with the broadest permission level in the app.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Moderator</div><div class="glossary-def">An account dedicated to tracking daily lateness, absence, and student reports.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Learner Record</div><div class="glossary-def">A student's complete file: absences, disciplinary action, medical notes, and verbal evaluation.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Skill Tree &amp; Portfolio</div><div class="glossary-def">The spread of a student's experience points across five skills: Practical, Emotional, Discipline, Communication, and Intellectual.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Titles &amp; Achievements Vault</div><div class="glossary-def">The set of motivational titles a student earns based on their points, which can be merged or auto-activated.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Secret Achievements</div><div class="glossary-def">Extra hidden achievements a student gradually discovers as an added incentive for discipline and excellence.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Lateness Rule</div><div class="glossary-def">The number of allowed late arrivals before they're automatically converted into an absence day, set by the System Admin.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Warning Report</div><div class="glossary-def">Compares a student's absence-day count against the first, second, and third warning thresholds set by the school.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Private Messaging</div><div class="glossary-def">Direct conversations between school administration and parents or teachers.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Early-Leave Permit</div><div class="glossary-def">An official report documenting a student leaving school before the end of the school day.</div></div>
+  <div class="glossary-item"><div class="glossary-term">Disciplinary Action</div><div class="glossary-def">A formal disciplinary measure, documented and printed as a report from Student Report.</div></div>
+  <div class="glossary-item"><div class="glossary-term">eLearning Material</div><div class="glossary-def">Electronic educational content available under non-free subscription plans.</div></div>
+
+  <div class="foot"><span>Help</span><span>35</span></div>
+</section>
+
+<!-- ============ BACK COVER ============ -->
+<section class="page cover" style="justify-content:center;align-items:center;text-align:center;">
+  <div class="cover-ring" style="width:220mm;height:220mm;top:-60mm;left:-60mm;"></div>
+  <div style="margin:auto; z-index:2;">
+    <div class="cover-logo" style="margin:0 auto 8mm auto;">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="48" fill="#2f6fed"/>
+        <path d="M32 30 C32 30 55 28 62 40 C68 50 60 58 50 58 C60 58 68 66 62 76 C55 88 32 86 32 86" stroke="white" stroke-width="9" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <h2 class="cover-manual-title">Basma</h2>
+    <p class="cover-manual-sub">Smart Education Management System</p>
+    <p style="margin-top:14mm;font-size:12px;color:#dbe8ff;">For updates and support<br/>@fahadsaldaferi</p>
+  </div>
+</section>
+
+</div>
+<!-- /doc-en -->
+
+<script>
+  function setLang(lang) {
+    document.body.dataset.lang = lang;
+    document.querySelectorAll('.lang-toggle button').forEach(function (b) {
+      b.classList.toggle('active', b.textContent === (lang === 'ar' ? 'العربية' : 'English'));
+    });
+  }
+</script>
+
+</body>
+</html>
