@@ -660,6 +660,7 @@
   "seminar_list": {
     "title": "احصائيه الغياب",
     "name": "الصف",
+    "not_submitted": "لم يتم تسجيل الحضور بعد",
     "present": "الحضور",
     "absent": "الغياب",
     "total": "الاجمالي",

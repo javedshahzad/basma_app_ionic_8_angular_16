@@ -20,7 +20,7 @@ export interface ActiveLink {
 }
 
 export interface SeminarClassGroup {
-  classess?: { class_name?: string; present?: string | number; absent?: string | number }[];
+  classess?: { class_name?: string; present?: string | number; absent?: string | number; total_student?: string | number }[];
   group_total_pre?: string | number;
   group_total_abs?: string | number;
   group_total_stu?: string | number;

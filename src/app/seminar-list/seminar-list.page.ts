@@ -149,7 +149,7 @@ export class SeminarListPage implements OnInit {
 
         if (res?.session) {
           console.log('seminar class', res.data);
-          this.seminarList = res.data;
+          this.seminarList = this.recomputeTotals(res.data);
         } else {
           this.seminarList = [];
         }
@@ -160,6 +160,54 @@ export class SeminarListPage implements OnInit {
         console.error('API Error:', error);
         this.cdr.markForCheck();
       });
+  }
+
+  // 🟢 التمييز بين "لم يتم تسجيل الحضور بعد" و"تم التسجيل والجميع حاضر" --
+  // present=0 و absent=0 معاً لا تعني بالضرورة عدم التسجيل إن كان الفصل
+  // فارغاً من الطلاب أصلاً، لذلك نتحقق من total_student أيضاً
+  isNotSubmitted(cls: { present?: string | number; absent?: string | number; total_student?: string | number }): boolean {
+    return Number(cls.total_student) > 0 && !Number(cls.present) && !Number(cls.absent);
+  }
+
+  // 🟢 إعادة حساب إجمالي المجموعة والمدرسة من جهة العميل بحيث تُستثنى
+  // الفصول التي لم يُسجَّل حضورها بعد -- الخادم يعيد المجموع الخام دائماً
+  // (0 حضور + 0 غياب لفصل لم يُسجَّل بعد تُحتسب كأنها "لا غياب إطلاقاً"،
+  // بنفس الخلل الذي عولج في تقرير إحصائية الغياب بلوحة التحكم)
+  private recomputeTotals(data: any): any {
+    if (!data || !Array.isArray(data.records)) return data;
+
+    let grandPresent = 0;
+    let grandAbsent = 0;
+    let grandTotal = 0;
+
+    data.records = data.records.map((group: any) => {
+      let groupPresent = 0;
+      let groupAbsent = 0;
+      let groupTotal = 0;
+
+      (group.classess || []).forEach((cls: any) => {
+        if (this.isNotSubmitted(cls)) return;
+        groupPresent += Number(cls.present) || 0;
+        groupAbsent += Number(cls.absent) || 0;
+        groupTotal += Number(cls.total_student) || 0;
+      });
+
+      group.group_total_pre = groupPresent;
+      group.group_total_abs = groupAbsent;
+      group.group_total_stu = groupTotal;
+
+      grandPresent += groupPresent;
+      grandAbsent += groupAbsent;
+      grandTotal += groupTotal;
+      return group;
+    });
+
+    data.all_present_total = grandPresent;
+    data.all_absent_total = grandAbsent;
+    data.all_student_total = grandTotal;
+    data.total_per_sent = grandTotal > 0 ? Math.round((grandPresent / grandTotal) * 10000) / 100 : 0;
+
+    return data;
   }
 
   onDaySelect(event: any) {

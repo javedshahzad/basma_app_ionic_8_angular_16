@@ -827,6 +827,7 @@
   "seminar_list": {
     "title": "Statistical Daily Absent",
     "name": "Name",
+    "not_submitted": "Attendance not submitted yet",
     "present": "Present",
     "absent": "Absent",
     "total": "Total",

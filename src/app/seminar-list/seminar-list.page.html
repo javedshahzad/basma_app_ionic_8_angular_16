@@ -97,6 +97,9 @@
               <div class="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
               <span class="text-sm font-bold text-slate-700">{{class.class_name}}</span>
             </div>
+            @if (isNotSubmitted(class)) {
+            <span class="text-2xs font-bold italic text-slate-400">{{'seminar_list.not_submitted' | translate}}</span>
+            } @else {
             <div class="flex gap-2 text-2xs font-bold">
               <span class="text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-1 rounded-md"
                 >{{'seminar_list.present' | translate}}: {{class.present}}</span
@@ -105,6 +108,7 @@
                 >{{'seminar_list.absent' | translate}}: {{class.absent}}</span
               >
             </div>
+            }
           </div>
           }
         </div>
