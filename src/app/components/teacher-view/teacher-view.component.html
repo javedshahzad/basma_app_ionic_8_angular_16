@@ -37,7 +37,7 @@
   <button class="flex-1 bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition-all active:scale-95 flex justify-center items-center gap-1" (click)="setAllStatus.emit('0')">
     <ion-icon name="close-circle"></ion-icon> {{'teacher_view.all_absent' | translate}}
   </button>
-  <button class="w-10 h-10 shrink-0 bg-white border border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl flex items-center justify-center shadow-sm transition-all active:scale-95" (click)="setAllStatus.emit('-1')">
+  <button class="w-10 h-10 shrink-0 bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-50 rounded-xl flex items-center justify-center shadow-sm transition-all active:scale-95" (click)="setAllStatus.emit('-1')">
     <ion-icon name="refresh"></ion-icon>
   </button>
 </div>
@@ -56,7 +56,7 @@
   <!-- 🟢 Virtual scroll: يعرض فقط الصفوف الظاهرة على الشاشة بدل رسم القائمة كاملة دفعة واحدة،
        مهم لصفوف بها 30+ طالب. itemSize يطابق ارتفاع الصف الفعلي (padding + قسم الاسم + صف أزرار الحضور + الهامش). -->
   <cdk-virtual-scroll-viewport itemSize="184" class="flex-1 min-h-0">
-    <div class="bg-white rounded-2xl p-4 mb-4 shadow-sm border border-slate-100 flex flex-col transition-all hover:shadow-md" *cdkVirtualFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent">
+    <div class="bg-slate-50 rounded-2xl p-4 mb-4 shadow-sm border border-slate-100 flex flex-col transition-all hover:shadow-md" *cdkVirtualFor="let student of attendanceResponse.students; let i = index; trackBy: trackByStudent">
       <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-4 w-full cursor-pointer" (click)="studentClick.emit(student.sid)">
 
@@ -101,7 +101,7 @@
           </div>
         </div>
 
-        <button class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center hover:bg-indigo-100 transition-colors flex-shrink-0" (click)="noteClick.emit({event: $event, student: student})">
+        <button class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center hover:bg-indigo-100 transition-colors flex-shrink-0" (click)="noteClick.emit({event: $event, student: student})">
           <ion-icon name="add" class="text-xl"></ion-icon>
         </button>
       </div>

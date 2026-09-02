@@ -13,7 +13,7 @@
     background: transparent;
   }
   &::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: var(--light-gray);
     border-radius: 10px;
   }
 }

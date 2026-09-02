@@ -1,12 +1,12 @@
-/* خلفية القائمة الجانبية بيضاء نظيفة */
+/* خلفية القائمة الجانبية -- تتبع لون السطح الحالي (فاتح/داكن + العلامة) */
 .lineone-sidebar {
-  --background: #ffffff;
+  --background: var(--light-blue);
 }
 
 /* الرأس (Header) - تصميم مسطح ونظيف */
 .sidebar-header {
   padding: 30px 20px 15px 20px;
-  background: #ffffff;
+  background: var(--light-blue);
 
   .user-info-row {
     display: flex;
@@ -20,7 +20,7 @@
     height: 60px;
     border-radius: 50%;
     overflow: hidden;
-    background: #f1f5f9; /* Slate 100 */
+    background: var(--light-gray);
 
     img {
       width: 100%;
@@ -31,13 +31,13 @@
 
   .user-text {
     .user-name {
-      color: #1e293b; /* Slate 800 */
+      color: var(--dark-color-second);
       font-size: 1.15rem;
       font-weight: 700;
       margin: 0 0 4px 0;
     }
     .user-role {
-      color: #64748b; /* Slate 500 */
+      color: var(--menu-text-color);
       font-size: 0.85rem;
       margin: 0;
     }
@@ -57,19 +57,19 @@
 
 .sidebar-divider {
   height: 1px;
-  background: #e2e8f0; /* Slate 200 */
+  background: var(--light-gray);
   margin: 0 20px 10px 20px;
 }
 
 /* القائمة (Menu List) */
 .lineone-menu-list {
-  background: #ffffff;
+  background: var(--light-blue);
   padding: 0 12px;
 
   .menu-section-title {
     font-size: 0.75rem;
     font-weight: 700;
-    color: #94a3b8; /* Slate 400 */
+    color: var(--menu-text-color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 15px 12px 5px 12px;
@@ -81,7 +81,7 @@
     padding: 6px 4px;
     margin-bottom: 2px;
     align-items: center;
-    color: #475569; /* Slate 600 */
+    color: var(--dark-color-second);
     transition: all 0.2s ease;
     cursor: pointer;
 
@@ -89,10 +89,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      
+
       ion-icon {
         font-size: 1.35rem;
-        color: #64748b; /* Slate 500 */
+        color: var(--menu-text-color);
         transition: color 0.2s ease;
       }
     }
@@ -105,9 +105,9 @@
     }
 
     &:hover, &:active {
-      background: #f8fafc; /* Slate 50 */
-      color: #0f172a; /* Slate 900 */
-      
+      background: var(--light-gray);
+      color: var(--dark-color-second);
+
       .icon-col ion-icon {
         color: var(--ion-color-primary);
       }
@@ -127,8 +127,8 @@
 
   /* قسم تغيير اللغة */
   .lang-item {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: var(--light-gray);
+    border: 1px solid var(--light-gray);
     margin: 10px 4px 15px 4px;
 
     .lang-label {
@@ -137,7 +137,7 @@
       gap: 8px;
       font-size: 0.9rem;
       font-weight: 600;
-      color: #334155;
+      color: var(--dark-color-second);
 
       ion-icon {
         font-size: 1.2rem;
@@ -163,20 +163,20 @@
 /* زر تسجيل الخروج */
 .logout-wrapper {
   margin-top: 10px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--light-gray);
 
   .lineone-logout-btn {
-    --color: #ef4444; /* لون أحمر فلات */
+    --color: var(--ion-color-danger);
     font-weight: 600;
     font-size: 1rem;
     letter-spacing: 0;
-    
+
     ion-icon {
       font-size: 1.4rem;
     }
 
     &:active {
-      --background: #fef2f2; /* خلفية حمراء باهتة عند النقر */
+      --background: color-mix(in srgb, var(--ion-color-danger) 10%, var(--color-surface));
     }
   }
 }
@@ -188,7 +188,7 @@ ion-menu ion-content {
 
 ion-menu ion-footer {
   padding-bottom: max(env(safe-area-inset-bottom), 24px) !important;
-  background: white; /* تأكد من تطابق لون الخلفية مع تصميمك */
+  background: var(--light-blue);
 }
 
 /* في حال كان زر الخروج موجوداً داخل عنصر معين في الأسفل */

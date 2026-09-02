@@ -137,6 +137,21 @@ export class AppComponent {
       }
     });
 
+    this.storageSr.get('appBrand').then(brand => {
+      if (brand === 'gold' || brand === 'burgundy' || brand === 'emerald') {
+        document.documentElement.setAttribute('data-brand', brand);
+      } else {
+        document.documentElement.removeAttribute('data-brand');
+      }
+    });
+    this.storageSr.get('appThemeMode').then(mode => {
+      if (mode === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+    });
+
     this.storageSr.get('language').then(res => {
       this.selectedLanguage = res ? res : 'ar';
       this.cdr.markForCheck();

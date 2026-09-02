@@ -2,7 +2,7 @@ app-view-application-details:host {
     
     /* لون الخلفية الأساسي للمنصة ليتوافق مع تصميم Lineone */
     .lineone-bg {
-        --background: #f8fafc;
+        --background: var(--light-gray);
     }
     
 }

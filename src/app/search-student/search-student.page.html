@@ -1,10 +1,10 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc" class="relative text-center border-b border-slate-100">
+  <ion-toolbar style="--background: var(--color-bg-page)" class="relative text-center border-b border-slate-100">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
       <ion-back-button
         defaultHref="/"
         text=""
-        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       ></ion-back-button>
     </ion-buttons>
 
@@ -28,7 +28,7 @@
   <div class="px-4 py-6 max-w-3xl mx-auto space-y-3 pb-20">
     @if (allStudents?.length > 0) { @for (student of allStudents; track trackByIndex($index)) {
     <div
-      class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md"
+      class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md"
       (click)="openStudentDetails(student)"
     >
       <div class="shrink-0 relative">
@@ -71,7 +71,7 @@
     </div>
     } } @if (!allStudents || allStudents?.length === 0) {
     <div
-      class="py-24 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-white shadow-sm mt-4"
+      class="py-24 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-slate-50 shadow-sm mt-4"
     >
       <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
         <ion-icon name="search-outline" class="text-4xl text-slate-300"></ion-icon>

@@ -2,22 +2,22 @@ app-student-report-classes:host {
     
   /* خلفية المنصة (Slate 50) */
   .lineone-bg {
-    --background: #f8fafc;
+    --background: var(--light-gray);
   }
 
   /* هيدر أبيض مسطح ونظيف */
   .lineone-header {
-    background: #ffffff;
+    background: var(--light-blue);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* ظل سفلي خفيف جداً */
     
     ion-toolbar {
-      --background: #ffffff;
+      --background: var(--light-blue);
     }
   }
 
   /* ================= البطاقات (Cards) المطابقة لـ classlist ================= */
   .lineone-card {
-    background: #ffffff;
+    background: var(--light-blue);
     border-radius: 16px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
     transition: all 0.2s ease;
@@ -25,7 +25,7 @@ app-student-report-classes:host {
 
     &:active {
       transform: scale(0.97);
-      background: #f8fafc;
+      background: var(--light-gray);
     }
 
     .card-content-flex {

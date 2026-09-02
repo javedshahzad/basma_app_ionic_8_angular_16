@@ -14,7 +14,7 @@
       @if (userType === UserType.Teacher) {
       <button
         [disabled]="editMode || !canReorder === true"
-        [ngClass]="(editMode || !canReorder === true) ? 'opacity-40 cursor-not-allowed bg-slate-50' : 'hover:bg-slate-100 bg-white'"
+        [ngClass]="(editMode || !canReorder === true) ? 'opacity-40 cursor-not-allowed bg-slate-50' : 'hover:bg-slate-100 bg-slate-50'"
         class="w-10 h-10 rounded-full border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center focus:outline-none"
         (click)="toogleReorder()"
       >
@@ -23,7 +23,7 @@
       } @if (userType !== UserType.Teacher) {
       <button
         [disabled]="editMode || !canReorder === true"
-        [ngClass]="(editMode || !canReorder === true) ? 'opacity-40 cursor-not-allowed bg-slate-50' : 'hover:bg-slate-100 bg-white'"
+        [ngClass]="(editMode || !canReorder === true) ? 'opacity-40 cursor-not-allowed bg-slate-50' : 'hover:bg-slate-100 bg-slate-50'"
         class="w-10 h-10 rounded-full border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center focus:outline-none"
         (click)="openMenu($event)"
       >
@@ -77,7 +77,7 @@
     @if (isLoading) {
     <div class="space-y-4 mt-2">
       @for (dummy of [1,2,3,4,5]; track trackByIndex($index)) {
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 animate-pulse">
+      <div class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 animate-pulse">
         <div class="w-14 h-14 bg-slate-200 rounded-2xl"></div>
         <div class="flex-1 space-y-3">
           <div class="h-4 bg-slate-200 rounded-md w-2/3"></div>

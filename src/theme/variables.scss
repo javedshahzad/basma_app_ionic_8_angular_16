@@ -2,14 +2,43 @@
 // http://ionicframework.com/docs/theming/
 
 /** Ionic CSS Variables **/
+/*
+ * Brand theming: four switchable palettes (default "sapphire", plus
+ * "gold", "burgundy", "emerald"), each with a light and dark mode --
+ * selected at runtime via
+ * `data-brand`/`data-theme` attributes on <html> (document.documentElement
+ * -- see app.component.ts, which reads the stored choice on startup, and
+ * settings.page.ts, which writes it on change -- same StorageService
+ * pattern already used for the language preference).
+ *
+ * Deliberately on <html>, not <body>: tokens.scss's semantic aliases
+ * (--color-surface etc.) are declared once in a plain `:root` rule and
+ * reference these vars via var() -- a custom property's var() reference
+ * resolves using the cascade AT THE ELEMENT WHERE IT'S DECLARED, not
+ * dynamically re-resolved per descendant. If the brand/dark override
+ * lived on <body> while the alias was declared on :root (<html>), the
+ * alias would permanently resolve against <html>'s un-overridden light
+ * default and silently ignore dark mode/brand switching -- this was a
+ * real bug (classlist/student-detail's header and card text staying
+ * light-mode-colored while surrounding chrome went dark).
+ *
+ * Only the vars that actually carry brand identity are redefined per
+ * block: the primary color family, and the handful of custom vars
+ * (--light-color/--light-blue/--menu-text-color/--dark-color-second/
+ * --light-gray/--calender-blue/--blue-color) that the structural
+ * --ion-background-color/--ion-toolbar-background/etc. remaps below
+ * already derive from. Unrelated one-off accents (--swatch_1..8,
+ * --ion-yellow-color, --ion-dark-blue, --ion-light-black) and the
+ * secondary/tertiary/success/warning/danger families are left as-is.
+ */
 :root {
-  /** primary **/
-  --ion-color-primary: #006fb9;
-  --ion-color-primary-rgb: 0, 111, 185;
+  /** primary -- sapphire (default brand), light mode (default) **/
+  --ion-color-primary: #1b3a73;
+  --ion-color-primary-rgb: 27, 58, 115;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #0061a2;
-  --ion-color-primary-tint: #007acb;
+  --ion-color-primary-shade: #17305f;
+  --ion-color-primary-tint: #2c4c87;
 
   /** secondary **/
   --ion-color-secondary:#43a047;
@@ -90,15 +119,33 @@
   --ion-yellow-color:#ffcd20;
   --ion-dark-blue:#0a082d;
   --ion-light-black:#404553;
-  
-  --blue-color:#006fb9;
-  --light-blue:#eff7fa;
-  --light-color:#fdfbfe;
-  --menu-text-color:#535d79;
+
+  --blue-color: #1b3a73;
+  --light-blue: #ebf1f9;
+  --light-color: #eef3fa;
+  --menu-text-color: #5b6b8c;
   --light-yellow:#fedb73;
-  --dark-color-second:#000000;
-  --light-gray:#f1f1f1;
-  --calender-blue:#009ada;
+  --dark-color-second: #0a1631;
+  --light-gray: #e4eaf6;
+  --light-gray-rgb: 228 234 246;
+  --calender-blue: #1b3a73;
+
+  /* "Safe" accent triad + space-separated RGB triplets, consumed by
+     tailwind.config.js's indigo-* remap (src/theme/tokens.scss's
+     --color-accent-* ramp) so every `bg-indigo-600 ... text-white`
+     button across the app's page templates stays legible. Kept distinct
+     from --ion-color-primary above: many of those buttons hardcode
+     literal white text with no separate contrast token (unlike Ionic's
+     own components, which already use --ion-color-primary-contrast
+     correctly), so this ramp needs values dark/saturated enough for
+     white text specifically -- see the matching fix + contrast-ratio
+     notes in basmacp-admin's globals.css for the numbers behind this. */
+  --accent-safe: #1b3a73;
+  --accent-safe-rgb: 27 58 115;
+  --accent-safe-tint: #2c4c87;
+  --accent-safe-tint-rgb: 44 76 135;
+  --accent-safe-shade: #142e5c;
+  --accent-safe-shade-rgb: 20 46 92;
 
   --ion-background-color: var(--light-color);
   --ion-item-background: var(--light-color);
@@ -109,328 +156,320 @@
   --ion-card-background: var(--light-blue);
   --ion-footer-background: var(--light-blue);
   //--ion-item-background:var(--light-gray);
+
+  /* Recurring arbitrary-value box-shadows from page templates
+     (shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] etc, ~50+ call sites),
+     now routed through these vars so dark mode can redefine them below.
+     Brand-agnostic on purpose (only redeclared in the plain
+     :root[data-theme="dark"] block, not per-brand) -- a card's shadow
+     doesn't need to change hue with the brand, only with light/dark. */
+  --shadow-card-soft: 0 4px 20px -10px rgba(0, 0, 0, 0.05);
+  --shadow-sheet-top: 0 -10px 30px -15px rgba(0, 0, 0, 0.1);
+  --shadow-lightbox: 0 0 40px rgba(0, 0, 0, 0.3);
+
+  /* Native form-control popups key off color-scheme on the root element. */
+  color-scheme: light;
 }
 
+/*
+ * Sapphire, dark mode: :root[data-theme="dark"] with no data-brand set.
+ */
+:root[data-theme='dark'] {
+  --ion-color-primary: #b9bfcb;
+  --ion-color-primary-rgb: 185, 191, 203;
+  --ion-color-primary-contrast: #0a1631;
+  --ion-color-primary-contrast-rgb: 10, 22, 49;
+  --ion-color-primary-shade: #a3a9b5;
+  --ion-color-primary-tint: #c8cdd7;
 
-// @media (prefers-color-scheme: dark) {
-//   /*
-//    * Dark Colors
-//    * -------------------------------------------
-//    */
+  --blue-color: #b9bfcb;
+  --light-blue: #101f42;
+  --light-color: #0a1631;
+  --menu-text-color: #8b9ac0;
+  --dark-color-second: #d8e2f0;
+  --light-gray: #16295a;
+  --light-gray-rgb: 22 41 90;
+  --calender-blue: #b9bfcb;
 
-//   body {
-//     --ion-color-primary: #038EC7;
-//     --ion-color-primary-rgb: 66,140,255;
-//     --ion-color-primary-contrast: #ffffff;
-//     --ion-color-primary-contrast-rgb: 255,255,255;
-//     --ion-color-primary-shade: #3a7be0;
-//     --ion-color-primary-tint: #5598ff;
+  --accent-safe: #3e63c4;
+  --accent-safe-rgb: 62 99 196;
+  --accent-safe-tint: #6e8ad9;
+  --accent-safe-tint-rgb: 110 138 217;
+  --accent-safe-shade: #2c4a94;
+  --accent-safe-shade-rgb: 44 74 148;
 
-//     --ion-color-secondary: #50c8ff;
-//     --ion-color-secondary-rgb: 80,200,255;
-//     --ion-color-secondary-contrast: #ffffff;
-//     --ion-color-secondary-contrast-rgb: 255,255,255;
-//     --ion-color-secondary-shade: #46b0e0;
-//     --ion-color-secondary-tint: #62ceff;
+  --ion-background-color: var(--light-color);
+  --ion-text-color: #d8e2f0;
+  --ion-item-background: var(--light-color);
+  --ion-toolbar-background: var(--light-blue);
+  --ion-header-background: var(--light-blue);
+  --ion-tab-bar-background: var(--light-color);
+  --ion-searchbar-background: var(--light-color);
+  --ion-card-background: var(--light-blue);
+  --ion-footer-background: var(--light-blue);
 
-//     --ion-color-tertiary: #6a64ff;
-//     --ion-color-tertiary-rgb: 106,100,255;
-//     --ion-color-tertiary-contrast: #ffffff;
-//     --ion-color-tertiary-contrast-rgb: 255,255,255;
-//     --ion-color-tertiary-shade: #5d58e0;
-//     --ion-color-tertiary-tint: #7974ff;
+  --ion-color-medium: #8b9ac0;
+  --ion-color-light: #101f42;
+  --ion-color-light-rgb: 16, 31, 66;
+  --ion-color-light-contrast: #d8e2f0;
+  --ion-color-light-contrast-rgb: 216, 226, 240;
+  --ion-color-dark: #d8e2f0;
+  --ion-color-dark-contrast: #0a1631;
 
-//     --ion-color-success: #2fdf75;
-//     --ion-color-success-rgb: 47,223,117;
-//     --ion-color-success-contrast: #000000;
-//     --ion-color-success-contrast-rgb: 0,0,0;
-//     --ion-color-success-shade: #29c467;
-//     --ion-color-success-tint: #44e283;
+  /* A black shadow at light-mode opacity barely registers against an
+     already-dark surface -- there's no headroom left to darken further.
+     Material's own dark-theme guidance is to raise shadow opacity (not
+     lower it) to compensate; this only matches the two "brand-agnostic"
+     :root blocks (this one and the un-set default), so gold/burgundy/
+     emerald dark mode all inherit it too via the plain
+     [data-theme="dark"] match -- none of the per-brand dark blocks
+     redeclare these three vars. */
+  --shadow-card-soft: 0 4px 20px -10px rgba(0, 0, 0, 0.45);
+  --shadow-sheet-top: 0 -10px 30px -15px rgba(0, 0, 0, 0.5);
+  --shadow-lightbox: 0 0 50px rgba(0, 0, 0, 0.55);
 
-//     --ion-color-warning: #ffd534;
-//     --ion-color-warning-rgb: 255,213,52;
-//     --ion-color-warning-contrast: #000000;
-//     --ion-color-warning-contrast-rgb: 0,0,0;
-//     --ion-color-warning-shade: #e0bb2e;
-//     --ion-color-warning-tint: #ffd948;
+  color-scheme: dark;
+}
 
-//     --ion-color-danger: #ff4961;
-//     --ion-color-danger-rgb: 255,73,97;
-//     --ion-color-danger-contrast: #ffffff;
-//     --ion-color-danger-contrast-rgb: 255,255,255;
-//     --ion-color-danger-shade: #e04055;
-//     --ion-color-danger-tint: #ff5b71;
+/*
+ * Gold, light mode: :root[data-brand="gold"] with no data-theme set.
+ */
+:root[data-brand='gold'] {
+  --ion-color-primary: #c6a227;
+  --ion-color-primary-rgb: 198, 162, 39;
+  --ion-color-primary-contrast: #141210;
+  --ion-color-primary-contrast-rgb: 20, 18, 16;
+  --ion-color-primary-shade: #ad8c22;
+  --ion-color-primary-tint: #cba93f;
 
-//     --ion-color-dark: #f4f5f8;
-//     --ion-color-dark-rgb: 244,245,248;
-//     --ion-color-dark-contrast: #000000;
-//     --ion-color-dark-contrast-rgb: 0,0,0;
-//     --ion-color-dark-shade: #d7d8da;
-//     --ion-color-dark-tint: #f5f6f9;
+  --blue-color: #c6a227;
+  --light-blue: #f5eedc;
+  --light-color: #fbf8f2;
+  --menu-text-color: #6f6a5e;
+  --dark-color-second: #141210;
+  --light-gray: #f0e6d2;
+  --light-gray-rgb: 240 230 210;
+  --calender-blue: #c6a227;
 
-//     --ion-color-medium: #989aa2;
-//     --ion-color-medium-rgb: 152,154,162;
-//     --ion-color-medium-contrast: #000000;
-//     --ion-color-medium-contrast-rgb: 0,0,0;
-//     --ion-color-medium-shade: #86888f;
-//     --ion-color-medium-tint: #a2a4ab;
+  --accent-safe: #8f6e1a;
+  --accent-safe-rgb: 143 110 26;
+  --accent-safe-tint: #b08b2c;
+  --accent-safe-tint-rgb: 176 139 44;
+  --accent-safe-shade: #6f5613;
+  --accent-safe-shade-rgb: 111 86 19;
 
-//     --ion-color-light: #222428;
-//     --ion-color-light-rgb: 34,36,40;
-//     --ion-color-light-contrast: #ffffff;
-//     --ion-color-light-contrast-rgb: 255,255,255;
-//     --ion-color-light-shade: #1e2023;
-//     --ion-color-light-tint: #383a3e;
-   
-//   }
+  color-scheme: light;
+}
 
-//   /*
-//    * iOS Dark Theme
-//    * -------------------------------------------
-//    */
+/*
+ * Gold, dark mode: both attributes set.
+ */
+:root[data-brand='gold'][data-theme='dark'] {
+  --ion-color-primary: #debe4e;
+  --ion-color-primary-rgb: 222, 190, 78;
+  --ion-color-primary-contrast: #141210;
+  --ion-color-primary-contrast-rgb: 20, 18, 16;
+  --ion-color-primary-shade: #c4a744;
+  --ion-color-primary-tint: #e2c563;
 
-//   .ios body {
-//     --ion-background-color: #000000;
-//     --ion-background-color-rgb: 0,0,0;
+  --blue-color: #debe4e;
+  --light-blue: #1d1a15;
+  --light-color: #141210;
+  --menu-text-color: #a79e8c;
+  --dark-color-second: #f0e6d2;
+  --light-gray: #26221b;
+  --light-gray-rgb: 38 34 27;
+  --calender-blue: #debe4e;
 
-//     --ion-text-color: #ffffff;
-//     --ion-text-color-rgb: 255,255,255;
+  --accent-safe: #9c7a1c;
+  --accent-safe-rgb: 156 122 28;
+  --accent-safe-tint: #b8923a;
+  --accent-safe-tint-rgb: 184 146 58;
+  --accent-safe-shade: #7a5f15;
+  --accent-safe-shade-rgb: 122 95 21;
 
-//     --ion-color-step-50: #0d0d0d;
-//     --ion-color-step-100: #1a1a1a;
-//     --ion-color-step-150: #262626;
-//     --ion-color-step-200: #333333;
-//     --ion-color-step-250: #404040;
-//     --ion-color-step-300: #4d4d4d;
-//     --ion-color-step-350: #595959;
-//     --ion-color-step-400: #666666;
-//     --ion-color-step-450: #737373;
-//     --ion-color-step-500: #808080;
-//     --ion-color-step-550: #8c8c8c;
-//     --ion-color-step-600: #999999;
-//     --ion-color-step-650: #a6a6a6;
-//     --ion-color-step-700: #b3b3b3;
-//     --ion-color-step-750: #bfbfbf;
-//     --ion-color-step-800: #cccccc;
-//     --ion-color-step-850: #d9d9d9;
-//     --ion-color-step-900: #e6e6e6;
-//     --ion-color-step-950: #f2f2f2;
+  --ion-background-color: var(--light-color);
+  --ion-text-color: #f0e6d2;
+  --ion-item-background: var(--light-color);
+  --ion-toolbar-background: var(--light-blue);
+  --ion-header-background: var(--light-blue);
+  --ion-tab-bar-background: var(--light-color);
+  --ion-searchbar-background: var(--light-color);
+  --ion-card-background: var(--light-blue);
+  --ion-footer-background: var(--light-blue);
 
-//     --ion-item-background: #000000;
+  --ion-color-medium: #a79e8c;
+  --ion-color-light: #1d1a15;
+  --ion-color-light-rgb: 29, 26, 21;
+  --ion-color-light-contrast: #f0e6d2;
+  --ion-color-light-contrast-rgb: 240, 230, 210;
+  --ion-color-dark: #f0e6d2;
+  --ion-color-dark-contrast: #141210;
 
-//     --ion-card-background: #1c1c1d;
-//   }
+  color-scheme: dark;
+}
 
-//   .ios ion-modal {
-//     --ion-background-color: var(--ion-color-step-100);
-//     --ion-toolbar-background: var(--ion-color-step-150);
-//     --ion-toolbar-border-color: var(--ion-color-step-250);
-//   }
+/*
+ * Burgundy, light mode: :root[data-brand="burgundy"] with no data-theme set.
+ */
+:root[data-brand='burgundy'] {
+  --ion-color-primary: #6e1b2e;
+  --ion-color-primary-rgb: 110, 27, 46;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #561523;
+  --ion-color-primary-tint: #82304a;
 
+  --blue-color: #6e1b2e;
+  --light-blue: #f3e6e3;
+  --light-color: #f6efec;
+  --menu-text-color: #8c6a64;
+  --dark-color-second: #2e0d16;
+  --light-gray: #f0dedd;
+  --light-gray-rgb: 240 222 221;
+  --calender-blue: #6e1b2e;
 
-//   /*
-//    * Material Design Dark Theme
-//    * -------------------------------------------
-//    */
+  --accent-safe: #6e1b2e;
+  --accent-safe-rgb: 110 27 46;
+  --accent-safe-tint: #82304a;
+  --accent-safe-tint-rgb: 130 48 74;
+  --accent-safe-shade: #561523;
+  --accent-safe-shade-rgb: 86 21 35;
 
-//   .md body {
-//     --ion-background-color: #121212;
-//     --ion-background-color-rgb: 18,18,18;
+  color-scheme: light;
+}
 
-//     --ion-text-color: #ffffff;
-//     --ion-text-color-rgb: 255,255,255;
+/*
+ * Burgundy, dark mode: both attributes set.
+ */
+:root[data-brand='burgundy'][data-theme='dark'] {
+  --ion-color-primary: #c08552;
+  --ion-color-primary-rgb: 192, 133, 82;
+  --ion-color-primary-contrast: #2e0d16;
+  --ion-color-primary-contrast-rgb: 46, 13, 22;
+  --ion-color-primary-shade: #a66d3f;
+  --ion-color-primary-tint: #cc9968;
 
-//     --ion-border-color: #222222;
+  --blue-color: #c08552;
+  --light-blue: #3a1420;
+  --light-color: #2e0d16;
+  --menu-text-color: #b99089;
+  --dark-color-second: #eadcd9;
+  --light-gray: #3a1420;
+  --light-gray-rgb: 58 20 32;
+  --calender-blue: #c08552;
 
-//     --ion-color-step-50: #1e1e1e;
-//     --ion-color-step-100: #2a2a2a;
-//     --ion-color-step-150: #363636;
-//     --ion-color-step-200: #414141;
-//     --ion-color-step-250: #4d4d4d;
-//     --ion-color-step-300: #595959;
-//     --ion-color-step-350: #656565;
-//     --ion-color-step-400: #717171;
-//     --ion-color-step-450: #7d7d7d;
-//     --ion-color-step-500: #898989;
-//     --ion-color-step-550: #949494;
-//     --ion-color-step-600: #a0a0a0;
-//     --ion-color-step-650: #acacac;
-//     --ion-color-step-700: #b8b8b8;
-//     --ion-color-step-750: #c4c4c4;
-//     --ion-color-step-800: #d0d0d0;
-//     --ion-color-step-850: #dbdbdb;
-//     --ion-color-step-900: #e7e7e7;
-//     --ion-color-step-950: #f3f3f3;
+  /* Rose Gold (the true swatch, used above for --ion-color-primary) is
+     too light for white-text-on-fill at ~3:1; this deeper terracotta
+     keeps the same hue family while staying legible -- see the matching
+     fix + contrast-ratio notes in basmacp-admin's globals.css. */
+  --accent-safe: #a66d3f;
+  --accent-safe-rgb: 166 109 63;
+  --accent-safe-tint: #c08552;
+  --accent-safe-tint-rgb: 192 133 82;
+  --accent-safe-shade: #7d5330;
+  --accent-safe-shade-rgb: 125 83 48;
 
-//     --ion-item-background: #1e1e1e;
+  --ion-background-color: var(--light-color);
+  --ion-text-color: #eadcd9;
+  --ion-item-background: var(--light-color);
+  --ion-toolbar-background: var(--light-blue);
+  --ion-header-background: var(--light-blue);
+  --ion-tab-bar-background: var(--light-color);
+  --ion-searchbar-background: var(--light-color);
+  --ion-card-background: var(--light-blue);
+  --ion-footer-background: var(--light-blue);
 
-//     --ion-toolbar-background: #1f1f1f;
+  --ion-color-medium: #b99089;
+  --ion-color-light: #3a1420;
+  --ion-color-light-rgb: 58, 20, 32;
+  --ion-color-light-contrast: #eadcd9;
+  --ion-color-light-contrast-rgb: 234, 220, 217;
+  --ion-color-dark: #eadcd9;
+  --ion-color-dark-contrast: #2e0d16;
 
-//     --ion-tab-bar-background: #1f1f1f;
+  color-scheme: dark;
+}
 
-//     --ion-card-background: #1e1e1e;
-//   }
-// }
-// /*
-//  * Dark Colors
-//  * -------------------------------------------
-//  */
+/*
+ * Emerald, light mode: :root[data-brand="emerald"] with no data-theme set.
+ */
+:root[data-brand='emerald'] {
+  --ion-color-primary: #0b6b4f;
+  --ion-color-primary-rgb: 11, 107, 79;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #084f3a;
+  --ion-color-primary-tint: #158863;
 
-//  body.dark {
-//   --ion-color-primary: #038EC7;
-//   --ion-color-primary-rgb: 66, 140, 255;
-//   --ion-color-primary-contrast: #ffffff;
-//   --ion-color-primary-contrast-rgb: 255, 255, 255;
-//   --ion-color-primary-shade: #3a7be0;
-//   --ion-color-primary-tint: #5598ff;
+  --blue-color: #0b6b4f;
+  --light-blue: #e4efe8;
+  --light-color: #e9f1eb;
+  --menu-text-color: #5c7a6e;
+  --dark-color-second: #06231a;
+  --light-gray: #d6e7dc;
+  --light-gray-rgb: 214 231 220;
+  --calender-blue: #0b6b4f;
 
-//   --ion-color-secondary: #50c8ff;
-//   --ion-color-secondary-rgb: 80, 200, 255;
-//   --ion-color-secondary-contrast: #ffffff;
-//   --ion-color-secondary-contrast-rgb: 255, 255, 255;
-//   --ion-color-secondary-shade: #46b0e0;
-//   --ion-color-secondary-tint: #62ceff;
+  --accent-safe: #0b6b4f;
+  --accent-safe-rgb: 11 107 79;
+  --accent-safe-tint: #158863;
+  --accent-safe-tint-rgb: 21 136 99;
+  --accent-safe-shade: #084f3a;
+  --accent-safe-shade-rgb: 8 79 58;
 
-//   --ion-color-tertiary: #6a64ff;
-//   --ion-color-tertiary-rgb: 106, 100, 255;
-//   --ion-color-tertiary-contrast: #ffffff;
-//   --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-//   --ion-color-tertiary-shade: #5d58e0;
-//   --ion-color-tertiary-tint: #7974ff;
+  color-scheme: light;
+}
 
-//   --ion-color-success: #2fdf75;
-//   --ion-color-success-rgb: 47, 223, 117;
-//   --ion-color-success-contrast: #000000;
-//   --ion-color-success-contrast-rgb: 0, 0, 0;
-//   --ion-color-success-shade: #29c467;
-//   --ion-color-success-tint: #44e283;
+/*
+ * Emerald, dark mode: both attributes set.
+ */
+:root[data-brand='emerald'][data-theme='dark'] {
+  --ion-color-primary: #e2d3b3;
+  --ion-color-primary-rgb: 226, 211, 179;
+  --ion-color-primary-contrast: #06231a;
+  --ion-color-primary-contrast-rgb: 6, 35, 26;
+  --ion-color-primary-shade: #c9b78f;
+  --ion-color-primary-tint: #e9ddc4;
 
-//   --ion-color-warning: #ffd534;
-//   --ion-color-warning-rgb: 255, 213, 52;
-//   --ion-color-warning-contrast: #000000;
-//   --ion-color-warning-contrast-rgb: 0, 0, 0;
-//   --ion-color-warning-shade: #e0bb2e;
-//   --ion-color-warning-tint: #ffd948;
+  --blue-color: #e2d3b3;
+  --light-blue: #0e3327;
+  --light-color: #06231a;
+  --menu-text-color: #8fafa0;
+  --dark-color-second: #d3e4da;
+  --light-gray: #0e3327;
+  --light-gray-rgb: 14 51 39;
+  --calender-blue: #e2d3b3;
 
-//   --ion-color-danger: #ff4961;
-//   --ion-color-danger-rgb: 255, 73, 97;
-//   --ion-color-danger-contrast: #ffffff;
-//   --ion-color-danger-contrast-rgb: 255, 255, 255;
-//   --ion-color-danger-shade: #e04055;
-//   --ion-color-danger-tint: #ff5b71;
+  /* Champagne (the true swatch, used above for --ion-color-primary) is
+     too light for white-text-on-fill at ~1.5:1; this deeper tan keeps
+     the warm hue while staying legible -- see the matching fix +
+     contrast-ratio notes in basmacp-admin's globals.css. */
+  --accent-safe: #9c8654;
+  --accent-safe-rgb: 156 134 84;
+  --accent-safe-tint: #b89f6e;
+  --accent-safe-tint-rgb: 184 159 110;
+  --accent-safe-shade: #7a6740;
+  --accent-safe-shade-rgb: 122 103 64;
 
-//   --ion-color-dark: #f4f5f8;
-//   --ion-color-dark-rgb: 244, 245, 248;
-//   --ion-color-dark-contrast: #000000;
-//   --ion-color-dark-contrast-rgb: 0, 0, 0;
-//   --ion-color-dark-shade: #d7d8da;
-//   --ion-color-dark-tint: #f5f6f9;
+  --ion-background-color: var(--light-color);
+  --ion-text-color: #d3e4da;
+  --ion-item-background: var(--light-color);
+  --ion-toolbar-background: var(--light-blue);
+  --ion-header-background: var(--light-blue);
+  --ion-tab-bar-background: var(--light-color);
+  --ion-searchbar-background: var(--light-color);
+  --ion-card-background: var(--light-blue);
+  --ion-footer-background: var(--light-blue);
 
-//   --ion-color-medium: #989aa2;
-//   --ion-color-medium-rgb: 152, 154, 162;
-//   --ion-color-medium-contrast: #000000;
-//   --ion-color-medium-contrast-rgb: 0, 0, 0;
-//   --ion-color-medium-shade: #86888f;
-//   --ion-color-medium-tint: #a2a4ab;
+  --ion-color-medium: #8fafa0;
+  --ion-color-light: #0e3327;
+  --ion-color-light-rgb: 14, 51, 39;
+  --ion-color-light-contrast: #d3e4da;
+  --ion-color-light-contrast-rgb: 211, 228, 218;
+  --ion-color-dark: #d3e4da;
+  --ion-color-dark-contrast: #06231a;
 
-//   --ion-color-light: #222428;
-//   --ion-color-light-rgb: 34, 36, 40;
-//   --ion-color-light-contrast: #ffffff;
-//   --ion-color-light-contrast-rgb: 255, 255, 255;
-//   --ion-color-light-shade: #1e2023;
-//   --ion-color-light-tint: #383a3e;
+  color-scheme: dark;
+}
 
-//   --swatch_7: #fff;
-// }
-
-// /*
-//  * iOS Dark Theme
-//  * -------------------------------------------
-//  */
-
-// .ios body.dark {
-//   --ion-background-color: #000000;
-//   --ion-background-color-rgb: 0, 0, 0;
-
-//   --ion-text-color: #ffffff;
-//   --ion-text-color-rgb: 255, 255, 255;
-
-//   --ion-color-step-50: #0d0d0d;
-//   --ion-color-step-100: #1a1a1a;
-//   --ion-color-step-150: #262626;
-//   --ion-color-step-200: #333333;
-//   --ion-color-step-250: #404040;
-//   --ion-color-step-300: #4d4d4d;
-//   --ion-color-step-350: #595959;
-//   --ion-color-step-400: #666666;
-//   --ion-color-step-450: #737373;
-//   --ion-color-step-500: #808080;
-//   --ion-color-step-550: #8c8c8c;
-//   --ion-color-step-600: #999999;
-//   --ion-color-step-650: #a6a6a6;
-//   --ion-color-step-700: #b3b3b3;
-//   --ion-color-step-750: #bfbfbf;
-//   --ion-color-step-800: #cccccc;
-//   --ion-color-step-850: #d9d9d9;
-//   --ion-color-step-900: #e6e6e6;
-//   --ion-color-step-950: #f2f2f2;
-
-
-//   --ion-item-background: #1e1e1e;
-
-//   --ion-toolbar-background: #1f1f1f;
-
-//   --ion-tab-bar-background: #1f1f1f;
-
-//   --ion-card-background: #1e1e1e;
-// }
-
-// .ios body.dark ion-modal {
-//   --ion-background-color: var(--ion-color-step-100);
-//   --ion-toolbar-background: var(--ion-color-step-150);
-//   --ion-toolbar-border-color: var(--ion-color-step-250);
-//   --ion-item-background: var(--ion-color-step-150);
-// }
-
-// /*
-//  * Material Design Dark Theme
-//  * -------------------------------------------
-//  */
-
-// .md body.dark {
-//   --ion-background-color: #121212;
-//   --ion-background-color-rgb: 18, 18, 18;
-
-//   --ion-text-color: #ffffff;
-//   --ion-text-color-rgb: 255, 255, 255;
-
-//   --ion-border-color: #222222;
-
-//   --ion-color-step-50: #1e1e1e;
-//   --ion-color-step-100: #2a2a2a;
-//   --ion-color-step-150: #363636;
-//   --ion-color-step-200: #414141;
-//   --ion-color-step-250: #4d4d4d;
-//   --ion-color-step-300: #595959;
-//   --ion-color-step-350: #656565;
-//   --ion-color-step-400: #717171;
-//   --ion-color-step-450: #7d7d7d;
-//   --ion-color-step-500: #898989;
-//   --ion-color-step-550: #949494;
-//   --ion-color-step-600: #a0a0a0;
-//   --ion-color-step-650: #acacac;
-//   --ion-color-step-700: #b8b8b8;
-//   --ion-color-step-750: #c4c4c4;
-//   --ion-color-step-800: #d0d0d0;
-//   --ion-color-step-850: #dbdbdb;
-//   --ion-color-step-900: #e7e7e7;
-//   --ion-color-step-950: #f3f3f3;
-
-//   --ion-item-background: #1e1e1e;
-
-//   --ion-toolbar-background: #1f1f1f;
-
-//   --ion-tab-bar-background: #1f1f1f;
-
-//   --ion-card-background: #1e1e1e;
-// }

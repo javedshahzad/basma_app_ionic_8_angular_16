@@ -1,18 +1,18 @@
 app-sendmessage:host {
   ion-content {
-    --background: #f8fafc;
+    --background: var(--light-gray);
   }
 
   /* تنسيقات الهيدر (Lineone Style) الموحدة */
   .lineone-header {
-    background: #ffffff;
+    background: var(--light-blue);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
     
     ion-toolbar {
-      --background: #ffffff;
+      --background: var(--light-blue);
     }
     
-    .text-dark { color: #334155; }
+    .text-dark { color: var(--dark-color-second); }
     .fw-bold { font-weight: 600; font-size: 1.15rem; letter-spacing: 0.5px; }
   }
 
@@ -22,7 +22,7 @@ app-sendmessage:host {
     margin-inline-end: 5px;
 
     .custom-menu-btn {
-      --background: #f1f5f9;
+      --background: var(--light-gray);
       --border-radius: 12px;
       --padding-start: 8px;
       --padding-end: 8px;
@@ -33,11 +33,11 @@ app-sendmessage:host {
 
       ion-icon {
         font-size: 1.6rem;
-        color: #334155;
+        color: var(--dark-color-second);
       }
 
       &:active {
-        --background: #e2e8f0;
+        --background: var(--light-gray);
         transform: scale(0.95);
       }
     }
@@ -55,7 +55,7 @@ app-sendmessage:host {
 
     ion-label {
       font-size: 0.85rem;
-      color: #475569; /* slate-600 */
+      color: var(--menu-text-color);
       font-weight: 600;
       margin: 0;
       white-space: normal;
@@ -64,16 +64,16 @@ app-sendmessage:host {
     ion-checkbox {
       --size: 20px;
       --border-radius: 6px;
-      --border-color: #cbd5e1; /* slate-300 */
+      --border-color: var(--menu-text-color); /* slate-300 */
       --border-width: 2px;
-      --checkmark-color: #ffffff;
-      --background-checked: #4f46e5; /* indigo-600 */
-      --border-color-checked: #4f46e5;
+      --checkmark-color: var(--ion-color-primary-contrast);
+      --background-checked: var(--ion-color-primary);
+      --border-color-checked: var(--ion-color-primary);
       margin-inline-end: 10px;
     }
 
     &:hover {
-      --background: #f1f5f9;
+      --background: var(--light-gray);
     }
   }
 
@@ -87,7 +87,7 @@ app-sendmessage:host {
     
     ::ng-deep .ionic-selectable-value {
       font-weight: 600;
-      color: #334155;
+      color: var(--dark-color-second);
       font-size: 0.9rem;
     }
     

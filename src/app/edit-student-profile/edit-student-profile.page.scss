@@ -2,7 +2,7 @@ app-edit-student-profile:host {
     
     /* لون الخلفية الأساسي للمنصة */
     .lineone-bg {
-        --background: #f8fafc;
+        --background: var(--light-gray);
     }
 
     /* حركة دخول انسيابية للبطاقة */
@@ -33,16 +33,16 @@ app-edit-student-profile:host {
         max-width: 100%;
         
         &::part(placeholder) {
-            color: #94a3b8; 
+            color: var(--menu-text-color); 
             font-weight: normal;
             opacity: 1;
         }
         &::part(text) {
-            color: #1e293b; 
+            color: var(--dark-color-second); 
             font-weight: 700;
         }
         &::part(icon) {
-            color: #64748b; 
+            color: var(--menu-text-color); 
             opacity: 1;
         }
     }

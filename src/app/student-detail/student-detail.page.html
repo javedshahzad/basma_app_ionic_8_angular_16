@@ -1,4 +1,4 @@
-﻿<ion-header class="ion-no-border bg-white border-b border-slate-200" mode="md">
+﻿<ion-header class="ion-no-border bg-slate-50 border-b border-slate-200" mode="md">
   <ion-toolbar class="--bg-transparent">
     <ion-buttons slot="start" class="mr-2 flex gap-2">
       @if (userType === 1 || userType === 3 || userType === 7) {
@@ -26,7 +26,7 @@
       <!-- 🟢 زر العودة المخصص لحل مشكلة توجيه ولي الأمر -->
       <button
         (click)="goBack()"
-        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-100 transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-100 transition-all flex items-center justify-center"
       >
         <ion-icon name="arrow-back" class="text-xl"></ion-icon>
       </button>
@@ -37,7 +37,7 @@
 <ion-content class="bg-surface-alt" mode="md">
   <div class="p-4 max-w-4xl mx-auto space-y-5 pb-16" dir="rtl">
     <div
-      class="bg-white rounded-4xl p-5 sm:p-6 shadow-sm border border-slate-200 relative overflow-hidden animate-fade-in-up"
+      class="bg-slate-50 rounded-4xl p-5 sm:p-6 shadow-sm border border-slate-200 relative overflow-hidden animate-fade-in-up"
     >
       <div class="flex items-center gap-4 relative z-10 mb-6">
         <div class="relative shrink-0">
@@ -54,7 +54,7 @@
 
           <button
             *appHasRole="[UserType.Admin, UserType.Moderator]"
-            class="absolute -bottom-1 -right-1 w-11 h-11 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all"
+            class="absolute -bottom-1 -right-1 w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md active:scale-95 transition-all"
             (click)="$event.stopPropagation(); takePicture($event)"
           >
             <ion-icon name="camera" class="text-base"></ion-icon>
@@ -129,7 +129,7 @@
     </div>
 
     <div
-      class="bg-white rounded-4xl p-5 shadow-sm border border-slate-100 animate-fade-in-up"
+      class="bg-slate-50 rounded-4xl p-5 shadow-sm border border-slate-100 animate-fade-in-up"
       style="animation-delay: 0.2s"
     >
       <div class="flex justify-between items-start mb-4">
@@ -154,7 +154,7 @@
         @if (userType === UserType.Admin) {
         <button
           (click)="openInventoryModal()"
-          class="text-2xs font-bold bg-white text-indigo-600 px-3 py-2 rounded-xl border-2 border-indigo-50 hover:bg-indigo-50 hover:border-indigo-100 transition-all flex items-center gap-1.5 shadow-sm shrink-0"
+          class="text-2xs font-bold bg-slate-50 text-indigo-600 px-3 py-2 rounded-xl border-2 border-indigo-50 hover:bg-indigo-50 hover:border-indigo-100 transition-all flex items-center gap-1.5 shadow-sm shrink-0"
         >
           <ion-icon name="flask" class="text-sm"></ion-icon> {{'student_detail.titles_badges_vault' | translate}}
         </button>
@@ -251,7 +251,7 @@
       @if (userType !== UserType.Teacher) {
       <button
         class="flex-1 py-2.5 text-2xs sm:text-sm font-bold rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
-        [ngClass]="category === 'absence' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
+        [ngClass]="category === 'absence' ? 'bg-slate-50 text-indigo-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
         (click)="switchCategory('absence')"
       >
         <span>{{'student-details.total_absent' | translate}}</span>
@@ -264,7 +264,7 @@
       } @if (userType !== UserType.Teacher) {
       <button
         class="flex-1 py-2.5 text-2xs sm:text-sm font-bold rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
-        [ngClass]="category === 'pledgesAndCallOffParent' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
+        [ngClass]="category === 'pledgesAndCallOffParent' ? 'bg-slate-50 text-indigo-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
         (click)="switchCategory('pledgesAndCallOffParent')"
       >
         <span>{{'manage_report.reports' | translate}}</span>
@@ -277,7 +277,7 @@
       }
       <button
         class="flex-1 py-2.5 text-2xs sm:text-sm font-bold rounded-lg transition-all flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2"
-        [ngClass]="category === 'notes' ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
+        [ngClass]="category === 'notes' ? 'bg-slate-50 text-indigo-600 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'"
         (click)="switchCategory('notes')"
       >
         <span>{{'student-details.notes' | translate}}</span>
@@ -304,7 +304,7 @@
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             @if (userType !== UserType.Teacher) {
             <div
-              class="bg-white rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
+              class="bg-slate-50 rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
             >
               <div class="absolute inset-0 bg-rose-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <ion-icon name="close-circle" class="text-3xl text-rose-500 mb-1 relative z-10"></ion-icon>
@@ -317,7 +317,7 @@
             </div>
             } @if (userType !== UserType.Teacher) {
             <div
-              class="bg-white rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
+              class="bg-slate-50 rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
             >
               <div class="absolute inset-0 bg-amber-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <ion-icon name="warning" class="text-3xl text-amber-500 mb-1 relative z-10"></ion-icon>
@@ -328,7 +328,7 @@
             </div>
             } @if (userType !== UserType.Teacher) {
             <div
-              class="bg-white rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
+              class="bg-slate-50 rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
             >
               <div class="absolute inset-0 bg-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <ion-icon name="medkit" class="text-3xl text-emerald-500 mb-1 relative z-10"></ion-icon>
@@ -339,7 +339,7 @@
             </div>
             } @if (userType !== UserType.Teacher) {
             <div
-              class="bg-white rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
+              class="bg-slate-50 rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
               [class.col-span-2]="userType === UserType.Teacher"
               [class.md:col-span-4]="userType === UserType.Teacher"
             >
@@ -355,7 +355,7 @@
           } @if (!studentDetails.can_view_absent) {
           <div class="grid grid-cols-2 gap-3 mb-4">
             <div
-              class="bg-white rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
+              class="bg-slate-50 rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
             >
               <div class="absolute inset-0 bg-amber-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <ion-icon name="warning" class="text-3xl text-amber-500 mb-1 relative z-10"></ion-icon>
@@ -366,7 +366,7 @@
             </div>
             @if (userType !== UserType.Teacher) {
             <div
-              class="bg-white rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
+              class="bg-slate-50 rounded-3xl p-3 text-center border border-slate-100 shadow-sm relative overflow-hidden group"
             >
               <div class="absolute inset-0 bg-emerald-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <ion-icon name="medkit" class="text-3xl text-emerald-500 mb-1 relative z-10"></ion-icon>
@@ -378,7 +378,7 @@
             }
           </div>
           } @for (details of studentDetails?.absents; track trackByAbsentDate($index, details)) {
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-slate-50 rounded-xl shadow-sm border border-slate-200 overflow-hidden">
             <div class="bg-slate-50 border-b border-slate-100 p-3 flex flex-col gap-2.5">
               <div class="flex items-center gap-2 text-sm font-bold text-slate-700">
                 <ion-icon name="calendar-outline" class="text-indigo-500"></ion-icon>
@@ -386,7 +386,7 @@
                 <span class="text-slate-300">|</span>
                 <span dir="ltr">{{details.date}}</span>
               </div>
-              <div class="flex items-start gap-1.5 bg-white p-2.5 rounded-lg border border-slate-200 shadow-sm w-full">
+              <div class="flex items-start gap-1.5 bg-slate-50 p-2.5 rounded-lg border border-slate-200 shadow-sm w-full">
                 <span class="text-2xs font-bold text-muted mt-0.5 whitespace-nowrap flex items-center gap-1">
                   <ion-icon name="time-outline"></ion-icon> {{'student_detail.periods_label' | translate}}
                 </span>
@@ -407,7 +407,7 @@
                   @if (userDetails.details && (note.created_by === userDetails.details.user_no ||
                   userDetails.details.user_type === UserType.Admin)) {
                   <button
-                    class="text-rose-400 hover:text-rose-600 p-1 transition-colors bg-white rounded shadow-sm border border-rose-100"
+                    class="text-rose-400 hover:text-rose-600 p-1 transition-colors bg-slate-50 rounded shadow-sm border border-rose-100"
                     (click)="deleteAbsenceNote(details.notes || [], note.ID || '', i)"
                   >
                     <ion-icon name="trash" class="text-base"></ion-icon>
@@ -456,7 +456,7 @@
             {{'manage_report.call_off_report' | translate}}
           </h4>
           @for (edays of callOfStudentsReport; track trackByIndex(i); let i = $index) {
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <div class="bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-4">
             <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-100">
               <span class="text-xs font-bold text-muted bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
               <div class="flex items-center gap-1.5 text-xs font-bold text-slate-600 flex-row-reverse" dir="ltr">
@@ -478,7 +478,7 @@
             {{'manage_report.student_pledges_report' | translate}}
           </h4>
           @for (edays of AllStudentPledgesReports; track trackByIndex(i); let i = $index) {
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+          <div class="bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-4">
             <div class="flex justify-between items-center mb-3 pb-3 border-b border-slate-100">
               <span class="text-xs font-bold text-muted bg-slate-50 px-2 py-1 rounded">#{{i+1}}</span>
               <span class="text-xs font-bold text-slate-600 flex items-center gap-1.5 flex-row-reverse" dir="ltr"
@@ -505,7 +505,7 @@
       } @case ('notes') {
       <div class="space-y-4 pb-6">
         @if (notes?.total_rating) {
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between">
+        <div class="bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between">
           <div class="flex flex-col items-center justify-center w-28 border-l border-slate-100 pl-4">
             <h4 class="text-4xl font-extrabold text-slate-800 m-0 leading-none">
               {{notes.agg_ranking | number:'1.1-1'}}
@@ -551,7 +551,7 @@
         }
         <div class="space-y-3">
           @for (note of notes?.notes; track trackByNoteId(i, note); let i = $index) {
-          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 relative" dir="rtl">
+          <div class="bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-4 relative" dir="rtl">
             <div class="flex justify-between items-start mb-3">
               <div class="flex items-center gap-3">
                 <img
@@ -619,7 +619,7 @@
   (click)="closeWarningPopup()"
 >
   <div
-    class="bg-white rounded-3xl w-10/12 max-w-sm p-6 flex flex-col items-center justify-center shadow-2xl animate-fade-in-up border border-slate-100 mx-auto"
+    class="bg-slate-50 rounded-3xl w-10/12 max-w-sm p-6 flex flex-col items-center justify-center shadow-2xl animate-fade-in-up border border-slate-100 mx-auto"
     (click)="$event.stopPropagation()"
   >
     @if (warningType === 'frozen') {
@@ -666,14 +666,14 @@
     <img
       loading="lazy"
       [src]="viewImageUrl"
-      class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300"
+      class="max-w-full max-h-[85vh] rounded-3xl shadow-[var(--shadow-lightbox)] object-contain border border-white/10 transition-transform duration-300"
     />
   </div>
 </div>
 } @if (showNoteModal) {
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity">
   <div
-    class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10"
+    class="bg-slate-50 w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10"
     dir="rtl"
     (click)="$event.stopPropagation()"
   >
@@ -718,7 +718,7 @@
 } @if (showAbsenceNoteModal) {
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity">
   <div
-    class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10"
+    class="bg-slate-50 w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10"
     dir="rtl"
     (click)="$event.stopPropagation()"
   >
@@ -759,7 +759,7 @@
 } @if (showDeleteConfirmModal) {
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity">
   <div
-    class="bg-white w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10 text-center"
+    class="bg-slate-50 w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10 text-center"
     dir="rtl"
     (click)="$event.stopPropagation()"
   >

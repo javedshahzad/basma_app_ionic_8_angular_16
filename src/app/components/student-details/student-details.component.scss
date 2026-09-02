@@ -1,6 +1,6 @@
 :host {
   display: block;
-  background: #ffffff;
+  background: var(--light-blue);
   
   /* مسح أي تأثيرات افتراضية من Ionic Inputs */
   ion-input {

@@ -1,6 +1,6 @@
 /* 🌟 تنسيقات التصميم القديمة (إن وجدت) */
 .seminars {
-  background: #f1f1f1;
+  background: var(--light-gray);
   padding: 14px 5px;
   height: 100%;
   margin-bottom: calc(env(safe-area-inset-bottom, 16px) + 20px) !important;
@@ -25,8 +25,8 @@
       border-bottom: 0.1px solid rgba(0, 0, 0, 0.15);
     }
     .total {
-      background: #e2e2e2;
-      color: #5d5c5b !important;
+      background: var(--light-gray);
+      color: var(--color-text-muted) !important;
     }
   }
 }
@@ -36,32 +36,32 @@
    ========================================================= */
 ion-datetime {
   /* 1. إجبار الخلفية على الأبيض، والنصوص العامة على الأسود/الرمادي الداكن */
-  --background: #ffffff !important;
-  --color: #1e293b !important;
-  --title-color: #1e293b !important;
-  color: #1e293b !important;
+  --background: var(--light-blue) !important;
+  --color: var(--dark-color-second) !important;
+  --title-color: var(--dark-color-second) !important;
+  color: var(--dark-color-second) !important;
 
   /* 2. الأيام العادية (التي لم يتم اختيارها) يجب أن تكون داكنة لتظهر على الخلفية البيضاء */
   &::part(calendar-day) {
-    color: #1e293b !important;
+    color: var(--dark-color-second) !important;
     font-weight: 600;
   }
 
   /* 3. اليوم الحالي (Today) عندما لا يكون مختاراً (نعطيه لون مميز بدون خلفية) */
   &::part(calendar-day today) {
-    color: #4f46e5 !important;
+    color: var(--ion-color-primary) !important;
     font-weight: 800;
   }
 
   /* 4. اليوم المختار (Active) - سواء كان اليوم الحالي أو يوم آخر - (نص أبيض فوق الدائرة الملونة) */
   &::part(calendar-day active),
   &::part(calendar-day today active) {
-    color: #ffffff !important;
+    color: var(--ion-color-primary-contrast) !important;
   }
 
   /* 5. أزرار التحكم السفلية (إلغاء / تأكيد) */
   &::part(button) {
-    color: #4f46e5 !important;
+    color: var(--ion-color-primary) !important;
     font-weight: bold;
   }
 }

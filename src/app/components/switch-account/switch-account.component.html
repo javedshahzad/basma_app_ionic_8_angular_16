@@ -1,4 +1,4 @@
-﻿<div class="bg-white w-full max-w-md mx-auto rounded-3xl p-4 sm:p-6" dir="rtl">
+﻿<div class="bg-slate-50 w-full max-w-md mx-auto rounded-3xl p-4 sm:p-6" dir="rtl">
   @if ((loggedinUser?.length || 0) > 0) {
     <div class="space-y-2.5 max-h-[60vh] overflow-y-auto custom-scrollbar pb-2">
       @for (oldUser of loggedinUser; track trackByIndex(i); let i = $index) {
@@ -8,7 +8,7 @@
           [ngClass]="
             oldUser.email_id === currentUser || oldUser.email_id === currentUserEmail || oldUser.user_no === user_no
               ? 'border-2 border-indigo-500 bg-indigo-50 shadow-sm shadow-indigo-100'
-              : 'border border-slate-100 bg-white hover:bg-slate-50'
+              : 'border border-slate-100 bg-slate-50 hover:bg-slate-50'
           "
         >
           <div class="flex items-center gap-3">

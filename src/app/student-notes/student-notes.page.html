@@ -28,7 +28,7 @@
     <div class="space-y-4">
       @for (note of notes; track trackByIndex($index)) {
       <div
-        class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 transition-all hover:shadow-md hover:border-indigo-100"
+        class="bg-slate-50 rounded-2xl shadow-sm border border-slate-200 p-4 transition-all hover:shadow-md hover:border-indigo-100"
       >
         <div class="flex items-start justify-between mb-3">
           <div class="flex items-center gap-3">
@@ -84,7 +84,7 @@
               <h4 class="text-sm font-bold text-indigo-700 m-0">{{'student_notes.attachments_label' | translate}}</h4>
               <p class="text-2xs text-indigo-400 font-medium m-0 mt-0.5">{{'student_notes.tap_to_view_pdf' | translate}}</p>
             </div>
-            <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-indigo-400 shadow-sm">
+            <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-indigo-400 shadow-sm">
               <ion-icon name="download-outline" class="text-lg"></ion-icon>
             </div>
           </div>
@@ -129,7 +129,7 @@
     <img
       loading="lazy"
       [src]="viewImageUrl"
-      class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300"
+      class="max-w-full max-h-[85vh] rounded-3xl shadow-[var(--shadow-lightbox)] object-contain border border-white/10 transition-transform duration-300"
     />
   </div>
 </div>

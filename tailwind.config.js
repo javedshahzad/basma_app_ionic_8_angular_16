@@ -67,15 +67,35 @@ module.exports = {
         indigo: {
           50: "rgb(var(--color-accent-50-rgb) / <alpha-value>)",
           100: "rgb(var(--color-accent-100-rgb) / <alpha-value>)",
+          200: "rgb(var(--color-accent-200-rgb) / <alpha-value>)",
+          300: "rgb(var(--color-accent-300-rgb) / <alpha-value>)",
           400: "rgb(var(--color-accent-400-rgb) / <alpha-value>)",
           500: "rgb(var(--color-accent-500-rgb) / <alpha-value>)",
           600: "rgb(var(--color-accent-600-rgb) / <alpha-value>)",
           700: "rgb(var(--color-accent-700-rgb) / <alpha-value>)",
+          // 800/900/950 previously fell through to Tailwind's own static
+          // (never-theme-aware) indigo -- the exact bug that made the
+          // switch-account panel's "currently logged in" name
+          // (text-indigo-950) invisible in dark mode, sitting on a
+          // bg-indigo-50 that *did* invert. Mapped to the same darkest
+          // safe tone as 600/700 rather than inventing 3 more shades.
+          800: "rgb(var(--color-accent-600-rgb) / <alpha-value>)",
+          900: "rgb(var(--color-accent-600-rgb) / <alpha-value>)",
+          950: "rgb(var(--color-accent-600-rgb) / <alpha-value>)",
         },
         // semantic aliases for the neutral/accent roles pages actually reach for
         surface: "rgb(var(--color-surface-rgb) / <alpha-value>)",
         "surface-alt": "rgb(var(--color-surface-alt-rgb) / <alpha-value>)",
         muted: "rgb(var(--color-text-muted-rgb) / <alpha-value>)",
+        // NOTE: `emerald` is intentionally NOT remapped here. ~170 call
+        // sites across ~29 templates use Tailwind's own static
+        // emerald-* palette purely as a semantic "success" color
+        // (approved/accepted states) — unrelated to the "Emerald" brand
+        // theme in variables.scss, which is a distinct accent color
+        // reached via --ion-color-primary/--accent-safe*, not Tailwind
+        // classes. Don't confuse the two, and don't remap emerald-* to
+        // brand tokens — that would make success-state color shift
+        // with the active brand, which isn't wanted.
       },
     },
   },

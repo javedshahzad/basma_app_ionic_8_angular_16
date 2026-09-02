@@ -1,6 +1,6 @@
-﻿<div class="bg-white w-full h-full rounded-3xl overflow-y-auto hide-scrollbar relative">
+﻿<div class="bg-slate-50 w-full h-full rounded-3xl overflow-y-auto hide-scrollbar relative">
   <button
-    class="absolute top-4 left-4 z-20 w-11 h-11 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all"
+    class="absolute top-4 left-4 z-20 w-10 h-10 bg-black/30 hover:bg-black/50 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all"
     (click)="closeModal()"
   >
     <ion-icon name="close" class="text-xl"></ion-icon>
@@ -13,7 +13,7 @@
     <div class="absolute inset-0 bg-black/50"></div>
     @if (userType !== UserType.Teacher && userType !== UserType.Viewer) {
       <button
-        class="absolute top-4 right-4 z-20 text-white bg-black/30 w-11 h-11 flex items-center justify-center rounded-full backdrop-blur-md hover:bg-black/50 transition-colors"
+        class="absolute top-4 right-4 z-20 text-white bg-black/30 w-10 h-10 flex items-center justify-center rounded-full backdrop-blur-md hover:bg-black/50 transition-colors"
         (click)="triggerCamera($event)"
       >
         <ion-icon name="camera" class="text-xl"></ion-icon>
@@ -29,7 +29,7 @@
         this.onerror = null;
         this.src = 'assets/imgs/default_avatar.png';
       "
-      class="w-24 h-24 rounded-full border-4 border-white mx-auto shadow-md object-cover relative z-10 bg-white cursor-pointer hover:scale-105 transition-transform"
+      class="w-24 h-24 rounded-full border-4 border-white mx-auto shadow-md object-cover relative z-10 bg-slate-50 cursor-pointer hover:scale-105 transition-transform"
       (click)="triggerFullscreen($safeNavigationMigration(student?.pic))"
     />
 
@@ -105,7 +105,7 @@
     </div>
   }
 
-  <div class="p-4 bg-white border-t border-slate-100 w-full pb-8">
+  <div class="p-4 bg-slate-50 border-t border-slate-100 w-full pb-8">
     <h3 class="text-sm font-black text-slate-800 mb-4 flex items-center justify-center gap-2">
       <ion-icon name="analytics" class="text-indigo-500 text-lg"></ion-icon>
       {{'gamification.skills_analysis_title' | translate}}

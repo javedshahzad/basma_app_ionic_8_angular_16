@@ -24,7 +24,7 @@
     @if (isLoading) {
     <div class="space-y-4">
       @for (dummy of [1,2,3]; track trackByIndex($index)) {
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+      <div class="bg-slate-50 rounded-2xl shadow-sm border border-slate-200 p-4">
         <div class="flex items-center gap-3 mb-4">
           <ion-skeleton-text animated class="w-12 h-12 rounded-full m-0"></ion-skeleton-text>
           <div class="flex-1">
@@ -38,7 +38,7 @@
       }
     </div>
     } @if (!isLoading) { @for (bullet of allBullentins; track trackByIndex($index)) {
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative">
+    <div class="bg-slate-50 rounded-2xl shadow-sm border border-slate-200 overflow-hidden relative">
       @if (bullet.is_closed === '1') {
       <div
         class="absolute top-4 left-4 w-8 h-8 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center"
@@ -56,7 +56,7 @@
               this.onerror = null;
               this.src = 'assets/imgs/default_avatar.png';
             "
-            class="w-10 h-10 rounded-full object-cover border border-slate-200 bg-white"
+            class="w-10 h-10 rounded-full object-cover border border-slate-200 bg-slate-50"
           />
           <div>
             <h4 class="text-sm font-bold text-slate-800 m-0">{{bullet.created_by_username}}</h4>

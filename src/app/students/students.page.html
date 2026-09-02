@@ -6,7 +6,7 @@
         [ngClass]="editMode ? 'opacity-40 pointer-events-none' : ''"
         defaultHref="/tabs"
         text=""
-        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       >
       </ion-back-button>
     </ion-buttons>
@@ -27,7 +27,7 @@
     </ion-buttons>
   </ion-toolbar>
 
-  <div class="bg-white p-4 relative z-10 shadow-sm flex justify-between items-center" dir="rtl">
+  <div class="bg-slate-50 p-4 relative z-10 shadow-sm flex justify-between items-center" dir="rtl">
     <div class="flex flex-col text-right">
       <span class="text-lg font-bold text-slate-800">{{courseInfo?.name}}</span>
       @if (delayRule > 0) {
@@ -76,7 +76,7 @@
       مهم لمدارس ذات أعداد طلاب كبيرة. itemSize يطابق ارتفاع الصف الفعلي (p-3 + الصورة 48px + الهامش). -->
     <cdk-virtual-scroll-viewport itemSize="88" style="height: 100%" class="px-4 pt-4 pb-6">
       <div
-        class="bg-white rounded-xl p-3 mb-3 shadow-sm border border-slate-200 flex items-center justify-between hover:border-indigo-200 transition-colors"
+        class="bg-slate-50 rounded-xl p-3 mb-3 shadow-sm border border-slate-200 flex items-center justify-between hover:border-indigo-200 transition-colors"
         *cdkVirtualFor="let student of students; let sno = index; trackBy: trackByStudent"
       >
         <div
@@ -135,7 +135,7 @@
             [ngClass]="{
                    'bg-emerald-500 border-emerald-600 text-white': student.sheet?.['cem-1'] === true,
                    'bg-rose-500 border-rose-600 text-white': student.suspend_leave === true || student.medical_leave === true,
-                   'bg-white border-slate-200 text-slate-400 hover:bg-slate-50': student.sheet?.['cem-1'] === 'undefined' || (!student.sheet?.['cem-1'] && !student.suspend_leave && !student.medical_leave),
+                   'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-50': student.sheet?.['cem-1'] === 'undefined' || (!student.sheet?.['cem-1'] && !student.suspend_leave && !student.medical_leave),
                    'opacity-50': userType === UserType.Admin && !editMode
                  }"
           >
@@ -167,7 +167,7 @@
     } @if (show_loading) {
     <div class="space-y-3 mt-2 px-4 pb-6">
       @for (dummy of [1,2,3,4,5,6,7,8]; track trackByIndex($index)) {
-      <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 flex items-center gap-4 animate-pulse">
+      <div class="bg-slate-50 rounded-xl p-4 shadow-sm border border-slate-200 flex items-center gap-4 animate-pulse">
         <div class="flex gap-2">
           <div class="w-11 h-11 bg-slate-100 rounded-xl"></div>
           <div class="w-12 h-11 bg-slate-100 rounded-xl"></div>
@@ -187,7 +187,7 @@
 <!-- 🟢 الفوتر الذكي المطابق لتصميم صفحة تسجيل غياب الحصص -->
 <ng-container *appHasRole="[UserType.Admin, UserType.Moderator]">
   @if (!isHoliday && (students?.length || 0) > 0) {
-  <ion-footer class="ion-no-border bg-white shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.1)] rounded-t-3xl">
+  <ion-footer class="ion-no-border bg-slate-50 shadow-[var(--shadow-sheet-top)] rounded-t-3xl">
     <div class="p-5 max-w-6xl mx-auto transition-all duration-300">
       <!-- زر تفعيل التعديل (يظهر لمشرف النظام فقط إذا لم يكن النمط مفعلاً) -->
       @if (userType === UserType.Admin && !editMode) {
@@ -264,7 +264,7 @@
         <img
           loading="lazy"
           [src]="viewImageUrl"
-          class="max-w-full max-h-[85vh] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.3)] object-contain border border-white/10 transition-transform duration-300"
+          class="max-w-full max-h-[85vh] rounded-3xl shadow-[var(--shadow-lightbox)] object-contain border border-white/10 transition-transform duration-300"
         />
       </div>
     </div>

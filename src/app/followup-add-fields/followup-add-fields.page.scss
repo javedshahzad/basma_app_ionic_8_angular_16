@@ -1,6 +1,6 @@
 app-followup-add-fields:host {
   ion-content {
-    --background: #f8fafc;
+    --background: var(--light-gray);
   }
 
   ::-webkit-scrollbar {
@@ -24,9 +24,9 @@ app-followup-add-fields:host {
 
   ion-checkbox {
     --size: 22px;
-    --checkbox-background-checked: #4f46e5;
-    --border-color: #cbd5e1;
-    --border-color-checked: #4f46e5;
+    --checkbox-background-checked: var(--ion-color-primary);
+    --border-color: var(--menu-text-color);
+    --border-color-checked: var(--ion-color-primary);
   }
 
   .pb-safe {

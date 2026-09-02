@@ -31,7 +31,7 @@
 
   <div class="p-4 max-w-2xl mx-auto space-y-4 pb-10" dir="rtl">
     <div
-      class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 relative overflow-hidden animate__animated animate__fadeInDown"
+      class="bg-slate-50 rounded-3xl p-5 shadow-sm border border-slate-100 flex items-center gap-4 relative overflow-hidden animate__animated animate__fadeInDown"
     >
       <div class="absolute -left-6 -top-6 w-24 h-24 bg-indigo-50 rounded-full blur-2xl"></div>
 
@@ -64,7 +64,7 @@
     </div>
 
     <div
-      class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 animate__animated animate__fadeInDown animate__delay-1s"
+      class="bg-slate-50 rounded-3xl p-5 shadow-sm border border-slate-100 animate__animated animate__fadeInDown animate__delay-1s"
     >
       <div class="flex items-start justify-between mb-4 px-1">
         <div>
@@ -109,14 +109,14 @@
     <div class="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200 shadow-inner sticky top-0 z-20 mt-2">
       <button
         class="flex-1 py-2 text-sm font-bold rounded-lg transition-all"
-        [ngClass]="inventoryTab === 'titles' ? 'bg-white shadow-sm text-indigo-600 border border-slate-200' : 'text-slate-500 hover:text-indigo-500'"
+        [ngClass]="inventoryTab === 'titles' ? 'bg-slate-50 shadow-sm text-indigo-600 border border-slate-200' : 'text-slate-500 hover:text-indigo-500'"
         (click)="inventoryTab = 'titles'"
       >
         {{'student_titles.merge_titles_tab' | translate}}
       </button>
       <button
         class="flex-1 py-2 text-sm font-bold rounded-lg transition-all"
-        [ngClass]="inventoryTab === 'badges' ? 'bg-white shadow-sm text-indigo-600 border border-slate-200' : 'text-slate-500 hover:text-indigo-500'"
+        [ngClass]="inventoryTab === 'badges' ? 'bg-slate-50 shadow-sm text-indigo-600 border border-slate-200' : 'text-slate-500 hover:text-indigo-500'"
         (click)="inventoryTab = 'badges'"
       >
         {{'student_titles.secret_achievements_tab' | translate}}
@@ -126,7 +126,7 @@
     @if (inventoryTab === 'titles') {
     <div class="animate__animated animate__fadeIn mt-4">
       <div
-        class="bg-white p-4 rounded-2xl border border-slate-200 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] flex items-center justify-between mb-5 relative overflow-hidden"
+        class="bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-[var(--shadow-card-soft)] flex items-center justify-between mb-5 relative overflow-hidden"
       >
         <div class="absolute inset-0 bg-indigo-500 opacity-[0.02]"></div>
         <div class="relative z-10">
@@ -155,7 +155,7 @@
       <div class="grid grid-cols-1 gap-3">
         @for (title of alchemyTitlesList; track trackByIndex($index)) {
         <div
-          class="bg-white p-3.5 rounded-2xl shadow-sm border relative overflow-hidden transition-all"
+          class="bg-slate-50 p-3.5 rounded-2xl shadow-sm border relative overflow-hidden transition-all"
           [ngClass]="title.isUnlocked ? title.border : 'border-slate-200 opacity-95'"
         >
           <div class="flex gap-3.5 relative z-10">
@@ -248,7 +248,7 @@
       <div class="grid grid-cols-2 gap-3.5">
         @for (badge of secretBadgesList; track trackByIndex($index)) {
         <div
-          class="bg-white p-4 rounded-3xl border text-center relative transition-all"
+          class="bg-slate-50 p-4 rounded-3xl border text-center relative transition-all"
           [ngClass]="badge.isUnlocked ? 'border-amber-300 shadow-md bg-gradient-to-b from-white to-amber-50/30' : 'border-slate-200 border-dashed'"
         >
           @if (!badge.isUnlocked) {

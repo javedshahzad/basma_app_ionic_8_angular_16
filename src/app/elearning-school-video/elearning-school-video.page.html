@@ -13,7 +13,7 @@
 <ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <div class="p-4 max-w-2xl mx-auto pb-24">
     <!-- 🟢 بطاقة تفاصيل المدرسة -->
-    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 mb-6">
+    <div class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 mb-6">
       <div class="relative shrink-0" (click)="dataProvider.openAvatarModel(school.pic || '')">
         <img
           loading="lazy"
@@ -35,7 +35,7 @@
     @if (show_loading) {
     <div class="space-y-3">
       @for (dummy of [1,2,3]; track trackByIndex($index)) {
-      <div class="bg-white rounded-2xl h-14 border border-slate-100 animate-pulse"></div>
+      <div class="bg-slate-50 rounded-2xl h-14 border border-slate-100 animate-pulse"></div>
       }
     </div>
     }
@@ -45,7 +45,7 @@
     <div class="space-y-3">
       @for (category of categories; track trackByIndex(i); let i = $index) {
       <div
-        class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300"
+        class="bg-slate-50 rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300"
         [ngClass]="{'border-indigo-200 shadow-md': category.isOpen}"
       >
         <!-- رأس القائمة -->
@@ -79,7 +79,7 @@
               @for (material of category.materials; track trackByIndex($index)) {
               <div
                 (click)="playvideo(material.id || '')"
-                class="flex items-center gap-3 p-3 rounded-xl hover:bg-white hover:shadow-sm cursor-pointer transition-all border border-transparent hover:border-slate-200 group mb-1"
+                class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 hover:shadow-sm cursor-pointer transition-all border border-transparent hover:border-slate-200 group mb-1"
               >
                 <div
                   class="w-8 h-8 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center group-hover:scale-110 transition-transform"

@@ -1,10 +1,10 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc" class="relative text-center border-b border-slate-100">
+  <ion-toolbar style="--background: var(--color-bg-page)" class="relative text-center border-b border-slate-100">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
       <ion-back-button
         defaultHref="/tabs"
         text=""
-        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       ></ion-back-button>
     </ion-buttons>
     <ion-title class="font-extrabold text-slate-800 text-base w-full"
@@ -29,7 +29,7 @@
 
     @if (classes?.length > 0) { @for (course of classes; track trackByIndex(i); let i = $index) {
     <div
-      class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 transition-all hover:shadow-md cursor-pointer relative overflow-hidden"
+      class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-4 transition-all hover:shadow-md cursor-pointer relative overflow-hidden"
       (click)="checkboxRef.checked = !checkboxRef.checked; selectUser(course, {detail: {checked: checkboxRef.checked}}, i)"
     >
       <div
@@ -62,7 +62,7 @@
     </div>
     } } @if (!classes || classes.length === 0) {
     <div
-      class="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-white shadow-sm mt-4"
+      class="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-slate-50 shadow-sm mt-4"
     >
       <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
         <ion-icon name="school-outline" class="text-3xl text-slate-300"></ion-icon>
@@ -74,7 +74,7 @@
 </ion-content>
 
 <ion-footer
-  class="ion-no-border bg-white/90 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"
+  class="ion-no-border bg-slate-50/90 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"
 >
   <div class="p-4 max-w-2xl mx-auto w-full pb-safe">
     <button

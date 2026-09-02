@@ -80,6 +80,9 @@ export class SettingsPage {
     country_code: '',
     country_ar_name: ''
   };
+  appBrand: 'sapphire' | 'gold' | 'burgundy' | 'emerald' = 'sapphire';
+  appThemeMode: 'light' | 'dark' = 'light';
+
   deactivate_date: string;
   delete_translation_text: Record<string, string> = {};
   showDeleteAlert: boolean = false;
@@ -121,6 +124,36 @@ export class SettingsPage {
       this.cdr.markForCheck();
     });
     this.getCountry();
+
+    this.storageSr.get('appBrand').then(brand => {
+      this.appBrand =
+        brand === 'gold' || brand === 'burgundy' || brand === 'emerald' ? brand : 'sapphire';
+      this.cdr.markForCheck();
+    });
+    this.storageSr.get('appThemeMode').then(mode => {
+      this.appThemeMode = mode === 'dark' ? 'dark' : 'light';
+      this.cdr.markForCheck();
+    });
+  }
+
+  async setAppBrand(brand: 'sapphire' | 'gold' | 'burgundy' | 'emerald') {
+    this.appBrand = brand;
+    await this.storageSr.set('appBrand', brand);
+    if (brand === 'gold' || brand === 'burgundy' || brand === 'emerald') {
+      document.documentElement.setAttribute('data-brand', brand);
+    } else {
+      document.documentElement.removeAttribute('data-brand');
+    }
+  }
+
+  async setAppThemeMode(mode: 'light' | 'dark') {
+    this.appThemeMode = mode;
+    await this.storageSr.set('appThemeMode', mode);
+    if (mode === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
   }
 
   // 🟢 3. تحويل الدالة لـ async واستبدال localStorage

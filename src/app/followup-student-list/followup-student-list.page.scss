@@ -1,6 +1,6 @@
 app-followup-student-list:host {
   ion-content {
-    --background: #f8fafc;
+    --background: var(--light-gray);
   }
 
   ::-webkit-scrollbar {

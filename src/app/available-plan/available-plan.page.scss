@@ -4,14 +4,14 @@
    ========================================================================== */
 
 :host {
-  --lineone-primary: #5f5af0;
-  --lineone-primary-hover: #4f46e5;
-  --lineone-secondary: #f1f5f9;
-  --lineone-text-main: #1e293b;
-  --lineone-text-muted: #64748b;
-  --lineone-bg-content: #f8fafc; 
-  --lineone-card-bg: #ffffff;
-  --lineone-border-color: #e2e8f0;
+  --lineone-primary: var(--ion-color-primary);
+  --lineone-primary-hover: var(--accent-safe-shade);
+  --lineone-secondary: var(--color-neutral-100);
+  --lineone-text-main: var(--color-text-primary);
+  --lineone-text-muted: var(--color-text-muted);
+  --lineone-bg-content: var(--color-bg-page);
+  --lineone-card-bg: var(--color-surface);
+  --lineone-border-color: var(--light-gray);
   
   --lineone-success: #10b981; // اللون الأخضر لعلامات الصح
   --lineone-danger: #ef4444; // اللون الأحمر لعلامات الخطأ
@@ -102,7 +102,7 @@
   &.is-current-plan {
     border: 2px solid var(--lineone-success);
     box-shadow: 0 0 15px color-mix(in srgb, var(--lineone-success) 20%, transparent);
-    background: linear-gradient(to bottom, #ffffff, #f0fdf4);
+    background: linear-gradient(to bottom, var(--lineone-card-bg), color-mix(in srgb, var(--lineone-success) 8%, var(--lineone-card-bg)));
   }
 }
 
@@ -219,7 +219,7 @@
   
   &.btn-primary {
     background-color: var(--lineone-primary);
-    color: #ffffff;
+    color: var(--ion-color-primary-contrast);
     box-shadow: 0 4px 12px color-mix(in srgb, var(--lineone-primary) 30%, transparent);
     &:hover { background-color: var(--lineone-primary-hover); }
   }
@@ -235,7 +235,7 @@
 /* 🌟 بانر الاشتراك الحالي (Active Plan Banner) */
 /* ========================================== */
 .current-subscription-banner {
-  background: linear-gradient(135deg, var(--lineone-primary), #3b33d9);
+  background: linear-gradient(135deg, var(--lineone-primary), var(--ion-color-primary-shade));
   border-radius: var(--lineone-radius-xl);
   padding: 1.25rem 1.5rem;
   margin-bottom: 2.5rem;
@@ -245,7 +245,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #fff;
+  color: var(--ion-color-primary-contrast);
   
   /* لمعة خلفية خفيفة */
   &::after {
@@ -277,15 +277,15 @@
       
       ion-icon {
         font-size: 1.6rem;
-        color: #ffffff;
+        color: var(--ion-color-primary-contrast);
       }
     }
-    
+
     .texts {
       text-align: right;
       .subtitle {
         font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.85);
+        color: color-mix(in srgb, var(--ion-color-primary-contrast) 85%, transparent);
         font-weight: 600;
         margin: 0 0 0.25rem 0;
       }
@@ -293,7 +293,7 @@
         font-size: 1.2rem;
         font-weight: 900;
         margin: 0;
-        color: #ffffff;
+        color: var(--ion-color-primary-contrast);
       }
     }
   }
@@ -302,10 +302,10 @@
     z-index: 10;
     text-align: left;
     padding-right: 1.25rem; /* المسافة عن الخط الفاصل */
-    
+
     .subtitle {
       font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.85);
+      color: color-mix(in srgb, var(--ion-color-primary-contrast) 85%, transparent);
       font-weight: 600;
       margin: 0 0 0.25rem 0;
     }
@@ -314,13 +314,13 @@
       font-weight: 800;
       margin: 0;
       letter-spacing: 0.5px;
-      color: #ffffff;
+      color: var(--ion-color-primary-contrast);
     }
   }
 
   /* تصميم حالة الباقة المجانية */
   &.free-plan {
-    background: #ffffff;
+    background: var(--light-blue);
     border: 1px solid var(--lineone-border-color);
     box-shadow: var(--lineone-shadow-sm);
     justify-content: flex-start;

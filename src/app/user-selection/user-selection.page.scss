@@ -2,14 +2,14 @@ app-user-selection:host {
   
   /* تنسيقات الهيدر (Lineone Style) الموحدة */
   .lineone-header {
-    background: #ffffff;
+    background: var(--light-blue);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
     
     ion-toolbar {
-      --background: #ffffff;
+      --background: var(--light-blue);
     }
     
-    .text-dark { color: #334155; }
+    .text-dark { color: var(--dark-color-second); }
     .fw-bold { font-weight: 600; font-size: 1.15rem; letter-spacing: 0.5px; }
   }
 
@@ -19,7 +19,7 @@ app-user-selection:host {
     margin-inline-end: 5px;
 
     .custom-menu-btn {
-      --background: #f1f5f9;
+      --background: var(--light-gray);
       --border-radius: 12px;
       --padding-start: 8px;
       --padding-end: 8px;
@@ -30,11 +30,11 @@ app-user-selection:host {
 
       ion-icon {
         font-size: 1.6rem;
-        color: #334155;
+        color: var(--dark-color-second);
       }
 
       &:active {
-        --background: #e2e8f0;
+        --background: var(--light-gray);
         transform: scale(0.95);
       }
     }

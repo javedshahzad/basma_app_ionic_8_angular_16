@@ -3,7 +3,7 @@
     float: left;
     font-size: 25px;
     padding: 2px;
-    color: #eb445a;
+    color: var(--ion-color-danger);
 
 }
 .pdf-div{
@@ -16,6 +16,6 @@
 	    position: absolute;
 	    right: 9vh;
 	    top: 8vh;
-	    color: #2979ff;
+	    color: var(--ion-color-primary);
 	}
 }

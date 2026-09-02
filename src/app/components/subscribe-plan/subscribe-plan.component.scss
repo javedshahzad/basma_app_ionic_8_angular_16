@@ -3,15 +3,15 @@
    ========================================================================== */
 
 :host {
-  --lineone-primary: #5f5af0;
-  --lineone-primary-hover: #4f46e5;
-  --lineone-secondary: #f1f5f9;
-  --lineone-text-main: #1e293b;
-  --lineone-text-muted: #64748b;
-  --lineone-bg-content: #f8fafc; 
-  --lineone-card-bg: #ffffff;
-  --lineone-border-color: #e2e8f0;
-  --lineone-accent-gold: #f59e0b;
+  --lineone-primary: var(--ion-color-primary);
+  --lineone-primary-hover: var(--accent-safe-shade);
+  --lineone-secondary: var(--color-neutral-100);
+  --lineone-text-main: var(--color-text-primary);
+  --lineone-text-muted: var(--color-text-muted);
+  --lineone-bg-content: var(--color-bg-page);
+  --lineone-card-bg: var(--color-surface);
+  --lineone-border-color: var(--light-gray);
+  --lineone-accent-gold: #f59e0b; /* deliberate fixed "premium" gold accent, not theme-linked */
   
   --lineone-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --lineone-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -59,11 +59,11 @@
 
 /* --- 🌟 Premium Hero Banner --- */
 .premium-hero-banner {
-  background: linear-gradient(135deg, var(--lineone-primary), #3b33d9);
+  background: linear-gradient(135deg, var(--lineone-primary), var(--ion-color-primary-shade));
   border-radius: var(--lineone-radius-xl);
   padding: 2rem 1.5rem;
   text-align: center;
-  color: #ffffff;
+  color: var(--ion-color-primary-contrast);
   position: relative;
   overflow: hidden;
   box-shadow: 0 12px 25px -5px color-mix(in srgb, var(--lineone-primary) 50%, transparent);
@@ -121,7 +121,7 @@
     font-size: 0.9rem;
     line-height: 1.6;
     margin: 0;
-    color: rgba(255, 255, 255, 0.85);
+    color: color-mix(in srgb, var(--ion-color-primary-contrast) 85%, transparent);
     font-weight: 500;
   }
 }
@@ -260,7 +260,7 @@
   
   &.btn-primary {
     background-color: var(--lineone-primary);
-    color: #ffffff;
+    color: var(--ion-color-primary-contrast);
     box-shadow: 0 8px 20px -5px color-mix(in srgb, var(--lineone-primary) 50%, transparent);
   }
   

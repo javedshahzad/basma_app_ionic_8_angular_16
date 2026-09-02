@@ -7,7 +7,7 @@
   class="lineone-modal"
 >
   <ng-template>
-    <ion-header class="ion-no-border bg-white pt-2">
+    <ion-header class="ion-no-border bg-slate-50 pt-2">
       <div class="flex flex-col px-4 pb-2 border-b border-slate-100">
         <div class="flex justify-between items-center mb-3">
           <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
@@ -15,7 +15,7 @@
           </h3>
           <button
             (click)="close()"
-            class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center"
+            class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center"
           >
             <ion-icon name="close" class="text-xl"></ion-icon>
           </button>
@@ -24,14 +24,14 @@
         <div class="flex bg-slate-100 p-1 rounded-xl">
           <button
             class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all"
-            [ngClass]="inventoryTab === 'titles' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'"
+            [ngClass]="inventoryTab === 'titles' ? 'bg-slate-50 shadow-sm text-indigo-600' : 'text-slate-500'"
             (click)="inventoryTab = 'titles'"
           >
             {{'gamification.merge_titles_tab' | translate}}
           </button>
           <button
             class="flex-1 py-1.5 text-sm font-bold rounded-lg transition-all"
-            [ngClass]="inventoryTab === 'badges' ? 'bg-white shadow-sm text-indigo-600' : 'text-slate-500'"
+            [ngClass]="inventoryTab === 'badges' ? 'bg-slate-50 shadow-sm text-indigo-600' : 'text-slate-500'"
             (click)="inventoryTab = 'badges'"
           >
             {{'gamification.secret_achievements_tab' | translate}}
@@ -45,7 +45,7 @@
         @if (inventoryTab === 'titles') {
           <div>
             <div
-              class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between mb-4"
+              class="bg-slate-50 p-3 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between mb-4"
             >
               <div>
                 <h4 class="text-sm font-black text-slate-700 m-0">{{'gamification.dynamic_title_label' | translate}}</h4>
@@ -70,7 +70,7 @@
             <div class="grid grid-cols-1 gap-3">
               @for (title of processedTitles; track trackByTitleCode($index, title)) {
                 <div
-                  class="bg-white p-3 rounded-2xl shadow-sm border relative overflow-hidden transition-all"
+                  class="bg-slate-50 p-3 rounded-2xl shadow-sm border relative overflow-hidden transition-all"
                   [ngClass]="title.isUnlocked ? title.border : 'border-slate-200 opacity-90'"
                 >
                   <div class="flex gap-3 relative z-10">
@@ -178,7 +178,7 @@
             <div class="grid grid-cols-2 gap-3">
               @for (badge of processedBadges; track trackByBadgeCode($index, badge)) {
                 <div
-                  class="bg-white p-3 rounded-2xl border text-center relative"
+                  class="bg-slate-50 p-3 rounded-2xl border text-center relative"
                   [ngClass]="badge.isUnlocked ? 'border-amber-300 shadow-md' : 'border-slate-200 border-dashed'"
                 >
                   @if (!badge.isUnlocked) {

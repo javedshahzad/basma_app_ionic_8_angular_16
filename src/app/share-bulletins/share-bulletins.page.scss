@@ -1,13 +1,13 @@
 app-share-bulletins:host {
   .lineone-bg {
-    --background: #f8fafc;
+    --background: var(--light-gray);
   }
   
   .lineone-header {
-    background: #ffffff;
+    background: var(--light-blue);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
     ion-toolbar {
-      --background: #ffffff;
+      --background: var(--light-blue);
     }
   }
 

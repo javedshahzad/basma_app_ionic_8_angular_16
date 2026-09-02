@@ -22,20 +22,20 @@ app-add-notes:host {
 
     /* تخصيص القائمة المنسدلة (ionic-selectable) لتطابق الألوان */
     ionic-selectable::part(placeholder) {
-        color: #94a3b8; /* Slate 400 */
+        color: var(--menu-text-color); /* Slate 400 */
         font-weight: 500;
     }
     
     ionic-selectable::part(text) {
-        color: #1e293b; /* Slate 800 */
+        color: var(--dark-color-second); /* Slate 800 */
         font-weight: 700;
     }
 
     ion-select::part(placeholder) {
-        color: #94a3b8; 
+        color: var(--menu-text-color); 
     }
 
     ion-select::part(text) {
-        color: #1e293b;
+        color: var(--dark-color-second);
     }
 }

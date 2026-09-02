@@ -1,10 +1,10 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc" class="relative text-center border-b border-slate-100">
+  <ion-toolbar style="--background: var(--color-bg-page)" class="relative text-center border-b border-slate-100">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
       <ion-back-button
         defaultHref="/"
         text=""
-        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       ></ion-back-button>
     </ion-buttons>
 
@@ -27,7 +27,7 @@
     <div class="space-y-3 mt-2">
       @for (student of attendanceResponse.students; track student.sid; let sno = $index) {
       <div
-        class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-3.5 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md"
+        class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 flex items-center gap-3.5 cursor-pointer active:scale-[0.98] transition-transform hover:shadow-md"
         (click)="openStudentDetail(student.sid)"
       >
         <div class="shrink-0 relative">
@@ -63,7 +63,7 @@
     </div>
     } @if (attendanceResponse.students?.length === 0) {
     <div
-      class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-white mt-4 shadow-sm"
+      class="py-16 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-slate-50 mt-4 shadow-sm"
     >
       <ion-icon name="folder-open-outline" class="text-5xl text-slate-300 mb-3"></ion-icon>
       <h4 class="text-slate-500 font-bold text-sm m-0">{{noDataFound || ('student_report_list.no_students_fallback' | translate)}}</h4>

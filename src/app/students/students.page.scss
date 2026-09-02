@@ -1,6 +1,6 @@
 app-students:host {
   ion-content {
-    --background: #f8fafc;
+    --background: var(--light-gray);
   }
 
   /* إخفاء السكرول بار */

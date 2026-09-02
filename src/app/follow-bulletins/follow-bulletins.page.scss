@@ -1,18 +1,18 @@
 app-follow-bulletins:host {
   ion-content {
-    --background: #f8fafc;
+    --background: var(--light-gray);
   }
 
   /* تنسيقات الهيدر الموحدة (Lineone Style) */
   .lineone-header {
-    background: #ffffff;
+    background: var(--light-blue);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
     
     ion-toolbar {
-      --background: #ffffff;
+      --background: var(--light-blue);
     }
     
-    .text-dark { color: #334155; }
+    .text-dark { color: var(--dark-color-second); }
     .fw-bold { font-weight: 600; font-size: 1.15rem; letter-spacing: 0.5px; }
   }
 
@@ -24,9 +24,9 @@ app-follow-bulletins:host {
   /* تخصيص الـ Checkbox ليتماشى مع اللون النيلي */
   ion-checkbox {
     --size: 24px;
-    --checkbox-background-checked: #4f46e5; 
-    --border-color: #cbd5e1; 
-    --border-color-checked: #4f46e5;
+    --checkbox-background-checked: var(--ion-color-primary); 
+    --border-color: var(--menu-text-color); 
+    --border-color-checked: var(--ion-color-primary);
   }
 
   .pb-safe {

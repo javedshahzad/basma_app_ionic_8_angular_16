@@ -1,10 +1,10 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc" class="relative text-center border-b border-slate-100">
+  <ion-toolbar style="--background: var(--color-bg-page)" class="relative text-center border-b border-slate-100">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
       <ion-back-button
         defaultHref="/"
         text=""
-        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       ></ion-back-button>
     </ion-buttons>
     <ion-title class="font-extrabold text-slate-800 text-base w-full">{{'manage_report.title' | translate}}</ion-title>
@@ -14,7 +14,7 @@
 <ion-content class="lineone-bg" mode="md" dir="rtl">
   <div class="px-4 py-6 max-w-2xl mx-auto space-y-6 pb-16">
     <div
-      class="bg-white rounded-4xl p-4 sm:p-5 shadow-sm border border-slate-100 flex items-center gap-4 animate-fade-in-up"
+      class="bg-slate-50 rounded-4xl p-4 sm:p-5 shadow-sm border border-slate-100 flex items-center gap-4 animate-fade-in-up"
     >
       <div class="relative shrink-0">
         <img
@@ -39,7 +39,7 @@
     </div>
 
     <div
-      class="bg-white rounded-4xl p-5 sm:p-6 shadow-sm shadow-slate-200/50 border border-slate-100 animate-fade-in-up"
+      class="bg-slate-50 rounded-4xl p-5 sm:p-6 shadow-sm shadow-slate-200/50 border border-slate-100 animate-fade-in-up"
       style="animation-delay: 0.1s"
     >
       <div class="flex items-center gap-3 mb-5">
@@ -151,7 +151,7 @@
             >
             <div
               id="open-report-date-1"
-              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-slate-50 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
             >
               <span class="text-sm font-bold" [ngClass]="formData.selectedDate ? 'text-slate-800' : 'text-slate-400'">
                 {{ formData.selectedDate ? (formData.selectedDate | date: 'yyyy-MM-dd') : ('manage_report.select_date' |
@@ -168,7 +168,7 @@
               class="lineone-modal"
             >
               <ng-template>
-                <ion-header class="ion-no-border bg-white pt-3">
+                <ion-header class="ion-no-border bg-slate-50 pt-3">
                   <div class="flex justify-center items-center px-4 pb-2 border-b border-slate-100">
                     <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
                       <ion-icon name="calendar" class="text-indigo-600"></ion-icon>
@@ -187,7 +187,7 @@
                       [showDefaultButtons]="true"
                       [doneText]="'seminar_list.confirm' | translate"
                       [cancelText]="'action_icons.cancel' | translate"
-                      class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm"
+                      class="rounded-2xl border border-slate-200 shadow-md bg-slate-50 w-full max-w-sm"
                       color="primary"
                     ></ion-datetime>
                   </div>
@@ -241,7 +241,7 @@
             >
             <div
               id="open-report-date-2"
-              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-slate-50 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
             >
               <span class="text-sm font-bold" [ngClass]="formData.selectedDate ? 'text-slate-800' : 'text-slate-400'">
                 {{ formData.selectedDate ? (formData.selectedDate | date: 'yyyy-MM-dd') : ('manage_report.select_date' |
@@ -258,7 +258,7 @@
               class="lineone-modal"
             >
               <ng-template>
-                <ion-header class="ion-no-border bg-white pt-3">
+                <ion-header class="ion-no-border bg-slate-50 pt-3">
                   <div class="flex justify-center items-center px-4 pb-2 border-b border-slate-100">
                     <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
                       <ion-icon name="calendar" class="text-indigo-600"></ion-icon>
@@ -277,7 +277,7 @@
                       [showDefaultButtons]="true"
                       [doneText]="'seminar_list.confirm' | translate"
                       [cancelText]="'action_icons.cancel' | translate"
-                      class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm"
+                      class="rounded-2xl border border-slate-200 shadow-md bg-slate-50 w-full max-w-sm"
                       color="primary"
                     ></ion-datetime>
                   </div>
@@ -291,7 +291,7 @@
             >
             <div
               id="open-report-time"
-              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-slate-50 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
             >
               <span class="text-sm font-bold" [ngClass]="formData.time ? 'text-slate-800' : 'text-slate-400'">
                 {{ formData.time ? (formData.time | date: 'shortTime') : ('manage_report.select_time' | translate) }}
@@ -307,7 +307,7 @@
               class="lineone-modal"
             >
               <ng-template>
-                <ion-header class="ion-no-border bg-white pt-3">
+                <ion-header class="ion-no-border bg-slate-50 pt-3">
                   <div class="flex justify-center items-center px-4 pb-2 border-b border-slate-100">
                     <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
                       <ion-icon name="time" class="text-indigo-600"></ion-icon>
@@ -325,7 +325,7 @@
                       [showDefaultButtons]="true"
                       [doneText]="'seminar_list.confirm' | translate"
                       [cancelText]="'action_icons.cancel' | translate"
-                      class="rounded-2xl border border-slate-200 shadow-md bg-white w-full max-w-sm"
+                      class="rounded-2xl border border-slate-200 shadow-md bg-slate-50 w-full max-w-sm"
                       color="primary"
                     ></ion-datetime>
                   </div>
@@ -387,7 +387,7 @@
             >
             <div
               (click)="isViolationModalOpen = true"
-              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-slate-50 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
             >
               <span
                 class="text-xs font-bold truncate pr-2"
@@ -406,7 +406,7 @@
               class="lineone-modal"
             >
               <ng-template>
-                <ion-header class="ion-no-border bg-white pt-3 border-b border-slate-100">
+                <ion-header class="ion-no-border bg-slate-50 pt-3 border-b border-slate-100">
                   <div class="flex justify-between items-center px-4 pb-2">
                     <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
                       <ion-icon name="warning" class="text-rose-500"></ion-icon>
@@ -414,7 +414,7 @@
                     </h3>
                     <button
                       (click)="isViolationModalOpen = false"
-                      class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-600 active:scale-95 transition-all"
+                      class="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-full text-slate-600 active:scale-95 transition-all"
                     >
                       <ion-icon name="close"></ion-icon>
                     </button>
@@ -438,7 +438,7 @@
                     @for (item of filteredViolations; track trackById($index, item)) {
                     <div
                       (click)="selectViolation(item)"
-                      class="p-3.5 bg-white border rounded-xl flex items-center justify-between active:scale-95 transition-all cursor-pointer shadow-sm hover:border-indigo-300"
+                      class="p-3.5 bg-slate-50 border rounded-xl flex items-center justify-between active:scale-95 transition-all cursor-pointer shadow-sm hover:border-indigo-300"
                       [ngClass]="pledgesViolation?.id === item.id ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-200'"
                     >
                       <span class="text-xs font-bold text-slate-700 leading-relaxed">{{item.description}}</span>
@@ -464,7 +464,7 @@
             >
             <div
               (click)="isActionModalOpen = true"
-              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-white focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] hover:bg-slate-50 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all cursor-pointer flex items-center justify-between active:scale-[0.98] shadow-sm"
             >
               <span
                 class="text-xs font-bold truncate pr-2"
@@ -483,7 +483,7 @@
               class="lineone-modal"
             >
               <ng-template>
-                <ion-header class="ion-no-border bg-white pt-3 border-b border-slate-100">
+                <ion-header class="ion-no-border bg-slate-50 pt-3 border-b border-slate-100">
                   <div class="flex justify-between items-center px-4 pb-2">
                     <h3 class="font-black text-slate-800 text-base m-0 flex items-center gap-2">
                       <ion-icon name="hammer" class="text-indigo-500"></ion-icon>
@@ -491,7 +491,7 @@
                     </h3>
                     <button
                       (click)="isActionModalOpen = false"
-                      class="w-8 h-8 flex items-center justify-center bg-slate-100 rounded-full text-slate-600 active:scale-95 transition-all"
+                      class="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-full text-slate-600 active:scale-95 transition-all"
                     >
                       <ion-icon name="close"></ion-icon>
                     </button>
@@ -515,7 +515,7 @@
                     @for (item of filteredActions; track trackById($index, item)) {
                     <div
                       (click)="selectAction(item)"
-                      class="p-3.5 bg-white border rounded-xl flex items-center justify-between active:scale-95 transition-all cursor-pointer shadow-sm hover:border-indigo-300"
+                      class="p-3.5 bg-slate-50 border rounded-xl flex items-center justify-between active:scale-95 transition-all cursor-pointer shadow-sm hover:border-indigo-300"
                       [ngClass]="pledgesAction?.id === item.id ? 'border-indigo-500 bg-indigo-50/30' : 'border-slate-200'"
                     >
                       <span class="text-xs font-bold text-slate-700 leading-relaxed">{{item.description}}</span>
@@ -577,7 +577,7 @@
         <div class="space-y-3">
           @for (sdays of suspend; track trackById(i, sdays); let i = $index) {
           <div
-            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+            class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
           >
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-orange-500 rounded-r-2xl"></div>
             <div class="flex justify-between items-start pl-1 pr-3">
@@ -622,7 +622,7 @@
         <div class="space-y-3">
           @for (mdays of medical; track trackById(i, mdays); let i = $index) {
           <div
-            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+            class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
           >
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-emerald-500 rounded-r-2xl"></div>
             <div class="flex justify-between items-start pl-1 pr-3">
@@ -667,7 +667,7 @@
         <div class="space-y-3">
           @for (edays of exitdays; track trackById(i, edays); let i = $index) {
           <div
-            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+            class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
           >
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-cyan-500 rounded-r-2xl"></div>
             <div class="flex justify-between items-center pl-1 pr-3">
@@ -709,7 +709,7 @@
         <div class="space-y-3">
           @for (edays of callOfStudentsReport; track trackById(i, edays); let i = $index) {
           <div
-            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+            class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
           >
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-indigo-500 rounded-r-2xl"></div>
             <div class="pl-1 pr-3">
@@ -748,7 +748,7 @@
         <div class="space-y-3">
           @for (edays of AllStudentPledgesReports; track trackById(i, edays); let i = $index) {
           <div
-            class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
+            class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-3"
           >
             <div class="absolute top-0 right-0 bottom-0 w-1.5 bg-purple-500 rounded-r-2xl"></div>
             <div class="pl-1 pr-3">
@@ -800,7 +800,7 @@
 
 <ion-modal [isOpen]="isDeleteModalOpen" (didDismiss)="isDeleteModalOpen = false" class="lineone-delete-modal">
   <ng-template>
-    <div class="bg-white p-6 flex flex-col items-center justify-center text-center h-full rounded-3xl">
+    <div class="bg-slate-50 p-6 flex flex-col items-center justify-center text-center h-full rounded-3xl">
       <div class="w-20 h-20 rounded-full bg-rose-50 flex items-center justify-center mb-5 relative">
         <div
           class="absolute inset-0 bg-rose-100 rounded-full animate-ping opacity-40"

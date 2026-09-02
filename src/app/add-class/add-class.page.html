@@ -31,7 +31,7 @@
     <div class="space-y-3">
       @for (classItem of classes; track trackByIndex(i); let i = $index) {
       <div
-        class="bg-white rounded-2xl shadow-sm border p-3 flex items-center justify-between cursor-pointer transition-all duration-300 active:scale-[0.98]"
+        class="bg-slate-50 rounded-2xl shadow-sm border p-3 flex items-center justify-between cursor-pointer transition-all duration-300 active:scale-[0.98]"
         [ngClass]="classItem.is_selected ? 'border-indigo-400 bg-indigo-50/50 shadow-md' : 'border-slate-100 hover:border-indigo-200'"
         (click)="classItem.is_selected = !classItem.is_selected; changeClass(classItem, {detail: {checked: classItem.is_selected}})"
       >
@@ -100,7 +100,7 @@
 <!-- زر الحفظ في الأسفل يظهر فقط إذا تم إجراء تغييرات -->
 @if (changedData.length > 0) {
 <ion-footer
-  class="ion-no-border bg-white border-t border-slate-100 shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.05)] rounded-t-3xl"
+  class="ion-no-border bg-slate-50 border-t border-slate-100 shadow-[0_-10px_30px_-15px_rgba(0,0,0,0.05)] rounded-t-3xl"
 >
   <div class="p-5 max-w-2xl mx-auto">
     <button

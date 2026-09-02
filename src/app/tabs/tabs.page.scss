@@ -18,16 +18,16 @@ app-students:host {
 
   /* تحسين مظهر التقويم عند الفتح كمودال ليتناسب مع الألوان الجديدة */
   ion-calendar {
-    --bg-color: #ffffff;
-    --color: #334155; /* Slate 700 */
-    --sel-color: #ffffff;
-    --sel-bg-color: var(--ion-color-primary, #4f46e5); /* Indigo 600 */
+    --bg-color: var(--color-surface);
+    --color: var(--dark-color-second); /* Slate 700 */
+    --sel-color: var(--ion-color-primary-contrast);
+    --sel-bg-color: var(--ion-color-primary);
   }
 
   /* حركة ناعمة عند النقر على بطاقات الطلاب */
   .bg-white {
     &:active {
-      background-color: #f1f5f9; /* Slate 100 */
+      background-color: var(--light-gray); /* Slate 100 */
       transform: scale(0.98);
       transition: all 0.1s ease-in-out;
     }

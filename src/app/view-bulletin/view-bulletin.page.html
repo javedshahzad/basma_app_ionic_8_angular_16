@@ -4,7 +4,7 @@
       <ion-back-button
         defaultHref="/bulletins"
         text=""
-        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       ></ion-back-button>
     </ion-buttons>
 
@@ -16,7 +16,7 @@
 
 <ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <div class="p-4 max-w-3xl mx-auto pb-24">
-    <div class="bg-white rounded-4xl shadow-sm border border-slate-200 overflow-hidden animate-fade-in-up">
+    <div class="bg-slate-50 rounded-4xl shadow-sm border border-slate-200 overflow-hidden animate-fade-in-up">
       <div class="p-5 border-b border-slate-50 flex items-center gap-4 bg-slate-50/50">
         <div
           class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-100"
@@ -48,10 +48,10 @@
             @for (file of bulletin.files; track trackByIndex($index)) {
             <div
               (click)="viewFile(file)"
-              class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-300 hover:bg-white transition-all cursor-pointer group active:scale-[0.98]"
+              class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-300 hover:bg-slate-50 transition-all cursor-pointer group active:scale-[0.98]"
             >
               <div
-                class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center text-indigo-600 shrink-0 group-hover:scale-110 transition-transform"
+                class="w-10 h-10 rounded-xl bg-slate-50 shadow-sm flex items-center justify-center text-indigo-600 shrink-0 group-hover:scale-110 transition-transform"
               >
                 <ion-icon
                   [name]="file.file_name.endsWith('pdf') ? 'document-text' : 'image'"
@@ -73,7 +73,7 @@
   </div>
 </ion-content>
 
-<ion-footer class="ion-no-border bg-white border-t border-slate-100">
+<ion-footer class="ion-no-border bg-slate-50 border-t border-slate-100">
   <div class="p-4 max-w-3xl mx-auto pb-safe">
     <button
       (click)="forwardBulletin()"

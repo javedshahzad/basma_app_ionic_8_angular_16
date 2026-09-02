@@ -76,7 +76,7 @@
         [ngClass]="{'mt-6': i > 0 && visibleMessages[i-1].receiver !== message.receiver}"
       >
         <div
-          class="bg-white text-slate-700 p-3 rounded-2xl rounded-tl-sm border border-slate-100 max-w-[85%] shadow-sm self-start"
+          class="bg-slate-50 text-slate-700 p-3 rounded-2xl rounded-tl-sm border border-slate-100 max-w-[85%] shadow-sm self-start"
         >
           @if (message.sender_name && message.sender_name !== '') {
           <div class="text-3xs font-bold text-slate-400 mb-1">{{message.sender_name}}</div>
@@ -91,7 +91,7 @@
               (click)="showPhoto(message.attachment_url)"
             />
             <button
-              class="absolute bottom-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center text-slate-700 shadow-sm backdrop-blur-sm"
+              class="absolute bottom-2 right-2 w-10 h-10 bg-slate-50/90 rounded-full flex items-center justify-center text-slate-700 shadow-sm backdrop-blur-sm"
               (click)="downloadImage(message.attachment_url)"
             >
               <ion-icon name="download-outline" class="text-lg"></ion-icon>
@@ -109,7 +109,7 @@
 
 <!-- حقل الإدخال -->
 @if (chat && chat.ticket_status === '0') {
-<ion-footer class="bg-white border-t border-slate-100 p-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
+<ion-footer class="bg-slate-50 border-t border-slate-100 p-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
   @if (image !== '') {
   <div class="px-2 pb-2 relative w-fit">
     <img loading="lazy" [src]="image" class="h-20 rounded-xl border border-slate-200 object-cover shadow-sm" />
@@ -141,7 +141,7 @@
       </ion-textarea>
     </div>
     <button
-      class="w-11 h-11 mb-[2px] rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-sm hover:bg-indigo-700 active:scale-95 transition-all shrink-0"
+      class="w-10 h-10 mb-[2px] rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-sm hover:bg-indigo-700 active:scale-95 transition-all shrink-0"
       [disabled]="(!message || message.trim() === '') && image === ''"
       [ngClass]="{'opacity-50 cursor-not-allowed': (!message || message.trim() === '') && image === ''}"
       (click)="sendMessage()"

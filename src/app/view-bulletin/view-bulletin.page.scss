@@ -1,9 +1,9 @@
 app-view-bulletin:host {
   .lineone-header {
-    background: #ffffff;
+    background: var(--light-blue);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-    ion-toolbar { --background: #ffffff; }
-    .text-dark { color: #334155; }
+    ion-toolbar { --background: var(--light-blue); }
+    .text-dark { color: var(--dark-color-second); }
     .fw-bold { font-weight: 600; font-size: 1.15rem; }
   }
 

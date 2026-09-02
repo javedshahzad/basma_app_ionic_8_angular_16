@@ -1,14 +1,14 @@
 app-delaylist:host {
   
   .lineone-header {
-    background: #ffffff;
+    background: var(--light-blue);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
     
     ion-toolbar {
       --background: transparent;
     }
     
-    .text-dark { color: #334155; }
+    .text-dark { color: var(--dark-color-second); }
     .fw-bold { font-weight: 600; font-size: 1.15rem; }
   }
 
@@ -16,10 +16,10 @@ app-delaylist:host {
     margin-inline-start: 8px;
   
     .custom-menu-btn {
-      --background: #f1f5f9;
-      --background-hover: #e2e8f0;
+      --background: var(--light-gray);
+      --background-hover: var(--color-neutral-200);
       --border-radius: 12px;
-      --color: #334155;
+      --color: var(--dark-color-second);
       height: 40px;
       width: 40px;
       margin: 0;

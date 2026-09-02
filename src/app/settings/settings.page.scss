@@ -17,15 +17,15 @@ app-settings:host {
 
   /* تخصيص مؤشر زر التبديل (Toggle) ليتناسب مع Lineone */
   ion-toggle {
-    --background: #e2e8f0; /* Slate 200 */
+    --background: var(--light-gray); /* Slate 200 */
     --background-checked: var(--ion-color-primary); /* Indigo */
-    --handle-background: #ffffff;
-    --handle-background-checked: #ffffff;
+    --handle-background: var(--light-blue);
+    --handle-background-checked: var(--ion-color-primary-contrast);
   }
 
   /* تخصيص القوائم المنسدلة */
   ion-select::part(icon) {
-    color: #64748b; /* Slate 500 */
+    color: var(--menu-text-color); /* Slate 500 */
     opacity: 1;
   }
 }

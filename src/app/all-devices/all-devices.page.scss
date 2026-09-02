@@ -3,15 +3,15 @@
    ========================================================================== */
 
 :host {
-  --lineone-primary: #5f5af0;
-  --lineone-secondary: #f1f5f9;
-  --lineone-text-main: #1e293b;
-  --lineone-text-muted: #64748b;
-  --lineone-bg-content: #f8fafc; 
-  --lineone-card-bg: #ffffff;
-  --lineone-status-online: #22c55e; 
-  --lineone-status-offline: #ef4444; 
-  --lineone-border-color: #e2e8f0;
+  --lineone-primary: var(--ion-color-primary);
+  --lineone-secondary: var(--color-neutral-100);
+  --lineone-text-main: var(--color-text-primary);
+  --lineone-text-muted: var(--color-text-muted);
+  --lineone-bg-content: var(--color-bg-page);
+  --lineone-card-bg: var(--color-surface);
+  --lineone-status-online: #22c55e;
+  --lineone-status-offline: #ef4444;
+  --lineone-border-color: var(--light-gray);
   
   --lineone-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   --lineone-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -177,10 +177,10 @@
   }
 
   &.btn-danger {
-    background-color: #fee2e2;
-    color: #ef4444;
+    background-color: color-mix(in srgb, var(--ion-color-danger) 12%, var(--lineone-card-bg));
+    color: var(--ion-color-danger);
     padding: 0.5rem 1rem;
     flex: none;
-    &:hover { background-color: #fecaca; }
+    &:hover { background-color: color-mix(in srgb, var(--ion-color-danger) 22%, var(--lineone-card-bg)); }
   }
 }

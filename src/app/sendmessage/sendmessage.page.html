@@ -20,9 +20,9 @@
   <div class="p-4 md:p-6 lg:p-8 max-w-2xl mx-auto pb-10" dir="rtl">
     <form
       #privateMessage="ngForm"
-      class="bg-white rounded-4xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full relative"
+      class="bg-slate-50 rounded-4xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full relative"
     >
-      <div class="p-4 md:p-6 border-b border-slate-100 bg-white">
+      <div class="p-4 md:p-6 border-b border-slate-100 bg-slate-50">
         <h3 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
           <ion-icon name="people-outline" class="text-indigo-500 text-lg"></ion-icon>
           {{'sendmsg.target_category' | translate}}
@@ -134,7 +134,7 @@
       </div>
 
       @if (ticketImage !== '') {
-      <div class="p-4 flex items-center gap-3 bg-white border-b border-slate-100">
+      <div class="p-4 flex items-center gap-3 bg-slate-50 border-b border-slate-100">
         <div
           class="w-16 h-16 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm relative"
         >
@@ -147,14 +147,14 @@
         <button
           type="button"
           (click)="ticketImage=''"
-          class="w-8 h-8 flex flex-shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-100 transition-colors"
+          class="w-10 h-10 flex flex-shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-500 hover:bg-rose-100 transition-colors"
         >
           <ion-icon name="close" class="text-lg"></ion-icon>
         </button>
       </div>
       }
 
-      <div class="p-4 md:p-6 bg-white mt-auto">
+      <div class="p-4 md:p-6 bg-slate-50 mt-auto">
         <button
           type="button"
           class="w-full flex items-center justify-center gap-2 py-3.5 text-sm font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"

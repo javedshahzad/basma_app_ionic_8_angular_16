@@ -6,7 +6,7 @@
         [ngClass]="editMode ? 'opacity-40 pointer-events-none' : ''"
         defaultHref="/tabs"
         text=""
-        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       ></ion-back-button>
     </ion-buttons>
 
@@ -16,7 +16,7 @@
       >
         <div
           class="flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-full transition-all"
-          [ngClass]="editMode ? 'opacity-50 pointer-events-none' : 'hover:bg-white hover:shadow-sm cursor-pointer'"
+          [ngClass]="editMode ? 'opacity-50 pointer-events-none' : 'hover:bg-slate-50 hover:shadow-sm cursor-pointer'"
           (click)="!editMode && openCalenderModal()"
         >
           <ion-icon name="calendar-outline" class="text-indigo-600 text-base"></ion-icon>
@@ -27,7 +27,7 @@
         <div class="w-px h-5 bg-slate-300 mx-1 rounded-full"></div>
         } @if (isTeacherUser && (totalSemArray?.length || 0) > 0) {
         <div
-          class="flex-1 relative flex items-center justify-center gap-1 py-1.5 px-2 rounded-full transition-all hover:bg-white hover:shadow-sm cursor-pointer"
+          class="flex-1 relative flex items-center justify-center gap-1 py-1.5 px-2 rounded-full transition-all hover:bg-slate-50 hover:shadow-sm cursor-pointer"
         >
           <span class="text-xs font-bold text-indigo-700 mt-0.5 pointer-events-none w-full text-center truncate">
             {{ 'list-student.period' | translate }} ({{ currentActivePeriod }})
@@ -160,7 +160,7 @@
 </ion-content>
 
 @if (shouldShowFooter()) {
-<ion-footer class="ion-no-border bg-white shadow-sheet-top rounded-t-3xl">
+<ion-footer class="ion-no-border bg-slate-50 shadow-sheet-top rounded-t-3xl">
   <div class="p-5 max-w-6xl mx-auto transition-all duration-300">
     @if (isTeacherUser || editMode || isRestrictedModerator) {
     <div class="flex justify-between items-center mb-4 px-2">
@@ -253,7 +253,7 @@
   (click)="closeWarningPopup()"
 >
   <div
-    class="bg-white rounded-3xl w-10/12 max-w-sm p-6 flex flex-col items-center justify-center shadow-2xl animate-fade-in-up border border-slate-100 mx-auto"
+    class="bg-slate-50 rounded-3xl w-10/12 max-w-sm p-6 flex flex-col items-center justify-center shadow-2xl animate-fade-in-up border border-slate-100 mx-auto"
     (click)="$event.stopPropagation()"
   >
     @if (warningType === 'frozen') {

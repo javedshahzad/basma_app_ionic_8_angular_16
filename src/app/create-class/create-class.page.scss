@@ -2,7 +2,7 @@ app-create-class:host {
   
   /* فرض لون الخلفية على كامل الشاشة ليتناسق مع حواف النافذة المنبثقة */
   ion-content {
-    --background: #f8fafc; /* Slate 50 */
+    --background: var(--light-gray); /* Slate 50 */
   }
 
   /* إخفاء خطوط التمرير (Scrollbars) لشكل أنيق */

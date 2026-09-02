@@ -1,15 +1,15 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc" class="border-b border-slate-100">
+  <ion-toolbar style="--background: var(--color-bg-page)" class="border-b border-slate-100">
     <ion-buttons slot="start" class="px-2 gap-2">
       <button
         (click)="openCalModal()"
-        class="w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm transition-all flex items-center justify-center active:scale-95"
+        class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm transition-all flex items-center justify-center active:scale-95"
       >
         <ion-icon name="calendar-outline" class="text-lg"></ion-icon>
       </button>
       <button
         (click)="addNotes()"
-        class="w-9 h-9 rounded-full bg-indigo-600 text-white shadow-sm transition-all flex items-center justify-center active:scale-95"
+        class="w-10 h-10 rounded-full bg-indigo-600 text-white shadow-sm transition-all flex items-center justify-center active:scale-95"
       >
         <ion-icon name="add" class="text-xl"></ion-icon>
       </button>
@@ -23,7 +23,7 @@
       <ion-back-button
         defaultHref="/"
         text=""
-        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       ></ion-back-button>
     </ion-buttons>
   </ion-toolbar>
@@ -43,7 +43,7 @@
 
     @if (data?.length > 0) { @for (note of data; track trackByIndex(i); let i = $index) {
     <div
-      class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-4 transition-all hover:shadow-md animate-fade-in-up"
+      class="bg-slate-50 rounded-2xl p-5 shadow-sm border border-slate-100 relative overflow-hidden flex flex-col gap-4 transition-all hover:shadow-md animate-fade-in-up"
       [style.animation-delay]="(i * 0.05) + 's'"
     >
       <div class="absolute top-0 bottom-0 right-0 w-1.5 bg-indigo-400"></div>
@@ -130,7 +130,7 @@
     </div>
     } } @if (!data || data.length === 0) {
     <div
-      class="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-white shadow-sm mt-4"
+      class="py-20 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-4xl bg-slate-50 shadow-sm mt-4"
     >
       <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
         <ion-icon name="document-text-outline" class="text-3xl text-slate-300"></ion-icon>
@@ -150,7 +150,7 @@
   (click)="cancelDelete()"
 >
   <div
-    class="relative w-11/12 max-w-sm bg-white rounded-4xl shadow-2xl overflow-hidden transform transition-all scale-100 opacity-100 p-6 text-center"
+    class="relative w-11/12 max-w-sm bg-slate-50 rounded-4xl shadow-2xl overflow-hidden transform transition-all scale-100 opacity-100 p-6 text-center"
     (click)="$event.stopPropagation()"
   >
     <div

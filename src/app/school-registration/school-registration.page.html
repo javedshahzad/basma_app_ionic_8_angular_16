@@ -1,10 +1,10 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc">
+  <ion-toolbar style="--background: var(--color-bg-page)">
     <ion-buttons slot="end" class="ml-2">
       <ion-back-button
         defaultHref="/"
         text=""
-        class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       ></ion-back-button>
     </ion-buttons>
     <ion-title class="font-extrabold text-slate-800 text-lg text-right"
@@ -15,7 +15,7 @@
 
 <ion-content class="lineone-bg" mode="md" dir="rtl">
   <div class="px-4 py-6 pb-12 sm:px-8 max-w-3xl mx-auto">
-    <div class="bg-white rounded-4xl shadow-xl shadow-slate-200/50 p-6 sm:p-10">
+    <div class="bg-slate-50 rounded-4xl shadow-xl shadow-slate-200/50 p-6 sm:p-10">
       <form #registerForm="ngForm" class="space-y-6">
         <div class="flex flex-col items-center justify-center mb-8">
           <div class="relative group cursor-pointer" (click)="takePicture('schoollogo')">

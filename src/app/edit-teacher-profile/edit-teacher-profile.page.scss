@@ -1,13 +1,13 @@
 .list{
 	margin:5px;
 	.item{
-		--background: #e0e0e0;
+		--background: var(--color-neutral-200);
 	        --min-height: 47px;
 	    margin: 5px;
 	}
 }
 .radio-div{
-	border: 1px solid darkgrey;
+	border: 1px solid var(--light-gray);
     margin: 10px;
 	.radio-head{
 		    margin: 10px;

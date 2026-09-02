@@ -1,10 +1,10 @@
 ﻿<ion-header class="ion-no-border" mode="md">
-  <ion-toolbar style="--background: #f8fafc" class="relative text-center">
+  <ion-toolbar style="--background: var(--color-bg-page)" class="relative text-center">
     <ion-buttons slot="end" class="absolute left-2 z-10 top-0 bottom-0">
       <ion-back-button
         defaultHref="/"
         text=""
-        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm transition-all flex items-center justify-center"
       ></ion-back-button>
     </ion-buttons>
 
@@ -13,7 +13,7 @@
     <ion-buttons slot="start" class="absolute right-2 z-10 top-0 bottom-0">
       <button
         (click)="printReport()"
-        class="w-9 h-9 rounded-full bg-white border border-slate-200 text-indigo-600 shadow-sm hover:bg-indigo-50 transition-all flex items-center justify-center"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-indigo-600 shadow-sm hover:bg-indigo-50 transition-all flex items-center justify-center"
       >
         <ion-icon name="print-outline" class="text-xl"></ion-icon>
       </button>
@@ -25,7 +25,7 @@
   <div class="px-4 py-5 max-w-lg mx-auto pb-20" id="printSection">
     <!-- 🌟 زر اختيار التاريخ -->
     <div
-      class="bg-white rounded-xl shadow-sm border border-slate-200 p-3 mb-6 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors"
+      class="bg-slate-50 rounded-xl shadow-sm border border-slate-200 p-3 mb-6 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors"
       (click)="openCalenderModal()"
     >
       <div class="flex items-center gap-3">
@@ -48,7 +48,7 @@
     <h2 class="text-sm font-extrabold text-slate-800 mb-3 px-1">{{'seminar_list.grand_total' | translate}}</h2>
     <div class="grid grid-cols-2 gap-3 mb-6">
       <div
-        class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
+        class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
       >
         <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-2">
           <ion-icon name="checkmark-circle" class="text-2xl"></ion-icon>
@@ -57,7 +57,7 @@
         <span class="text-2xs font-bold text-slate-500 mt-1">{{'seminar_list.present' | translate}}</span>
       </div>
       <div
-        class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
+        class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
       >
         <div class="w-10 h-10 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mb-2">
           <ion-icon name="close-circle" class="text-2xl"></ion-icon>
@@ -66,7 +66,7 @@
         <span class="text-2xs font-bold text-slate-500 mt-1">{{'seminar_list.absent' | translate}}</span>
       </div>
       <div
-        class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
+        class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
       >
         <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center mb-2">
           <ion-icon name="people" class="text-2xl"></ion-icon>
@@ -75,7 +75,7 @@
         <span class="text-2xs font-bold text-slate-500 mt-1">{{'seminar_list.total' | translate}}</span>
       </div>
       <div
-        class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
+        class="bg-slate-50 rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center"
       >
         <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mb-2">
           <ion-icon name="pie-chart" class="text-2xl"></ion-icon>
@@ -88,7 +88,7 @@
     <h2 class="text-sm font-extrabold text-slate-800 mb-3 px-1">{{'seminar_list.attendance_details' | translate}}</h2>
     <div class="space-y-4">
       @for (group of seminarList.records; track trackByIndex($index)) {
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="bg-slate-50 rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <!-- قائمة الفصول داخل المجموعة -->
         <div class="p-2">
           @for (class of group.classess; track trackByIndex($index)) {
@@ -132,7 +132,7 @@
     </div>
     } @else {
     <div
-      class="py-14 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-3xl bg-white mt-4 shadow-sm"
+      class="py-14 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-3xl bg-slate-50 mt-4 shadow-sm"
     >
       <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4 border border-slate-100">
         <ion-icon name="document-text-outline" class="text-5xl text-slate-300"></ion-icon>
@@ -158,7 +158,7 @@
   class="fixed inset-0 z-[9999] flex items-end justify-center bg-slate-900/60 backdrop-blur-sm transition-all duration-300"
 >
   <div class="absolute inset-0" (click)="hideCalenderModal()"></div>
-  <div class="bg-white w-full max-w-md rounded-t-[2.5rem] shadow-2xl p-6 relative z-10 animate-fade-in-up" dir="rtl">
+  <div class="bg-slate-50 w-full max-w-md rounded-t-[2.5rem] shadow-2xl p-6 relative z-10 animate-fade-in-up" dir="rtl">
     <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-0 right-0"></div>
     <div class="mt-4 flex justify-center w-full">
       <ion-datetime

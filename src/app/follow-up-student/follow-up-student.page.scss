@@ -7,12 +7,12 @@ app-duration-subscription:host {
   
   /* تخصيص لون أزرار الاختيار (Radio Buttons) لتناسب الهوية */
   ion-radio {
-    --color: #cbd5e1; /* slate-300 */
-    --color-checked: #4f46e5; /* indigo-600 */
+    --color: var(--menu-text-color); /* slate-300 */
+    --color-checked: var(--ion-color-primary); /* indigo-600 */
   }
 
   /* تخصيص النافذة (Modal) لتكون حوافها دائرية من الأعلى */
   ion-content {
-    --background: #ffffff;
+    --background: var(--light-blue);
   }
 }

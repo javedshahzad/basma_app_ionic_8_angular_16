@@ -9,7 +9,7 @@ app-about-us:host {
             }
         }
         ion-card-content {
-            color: #666;
+            color: var(--color-text-muted);
             text-align: justify;
             font-size: 0.8em;
             ul{
@@ -20,14 +20,14 @@ app-about-us:host {
             li{
                 padding: 4px 0;
                 span{
-                    color: #2979ff;
+                    color: var(--ion-color-primary);
                     text-decoration: underline;
                     cursor: pointer;
                 }
             }
             li::before {
                 content: "\2022";
-                color: #2979ff;
+                color: var(--ion-color-primary);
                 font-weight: bold;
                 display: inline-block;
                 width: 1em;

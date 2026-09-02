@@ -75,7 +75,7 @@
           </div>
         </div>
         <div class="card-actions-area">
-          <button class="lineone-btn btn-secondary" style="width: 100%; color: #ef4444" (click)="deletedDevice(device)">
+          <button class="lineone-btn btn-secondary" style="width: 100%; color: var(--ion-color-danger)" (click)="deletedDevice(device)">
             <ion-icon name="trash-outline" slot="start"></ion-icon>
             {{'device.delete' | translate}}
           </button>
@@ -92,7 +92,7 @@
     (click)="closeDeleteModal()"
   >
     <div
-      class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl transform transition-all animate-scale-up"
+      class="bg-slate-50 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl transform transition-all animate-scale-up"
       (click)="$event.stopPropagation()"
     >
       <div class="flex justify-center pt-8 pb-4">
@@ -110,7 +110,7 @@
       </div>
       <div class="flex border-t border-slate-100 bg-slate-50 p-4 gap-3">
         <button
-          class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none"
+          class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-slate-50 border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none"
           (click)="closeDeleteModal()"
         >
           {{'device.cancel_btn' | translate}}
@@ -130,7 +130,7 @@
     (click)="closeLogoutAllModal()"
   >
     <div
-      class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl transform transition-all animate-scale-up"
+      class="bg-slate-50 rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl transform transition-all animate-scale-up"
       (click)="$event.stopPropagation()"
     >
       <div class="flex justify-center pt-8 pb-4">
@@ -148,7 +148,7 @@
       </div>
       <div class="flex border-t border-slate-100 bg-slate-50 p-4 gap-3">
         <button
-          class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none"
+          class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-slate-50 border border-slate-200 shadow-sm hover:bg-slate-100 active:scale-95 transition-all focus:outline-none"
           (click)="closeLogoutAllModal()"
         >
           {{'device.cancel_btn' | translate}}

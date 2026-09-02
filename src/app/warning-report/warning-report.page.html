@@ -21,7 +21,7 @@
 
   <div class="max-w-3xl mx-auto pb-8" dir="rtl">
     <div class="px-4 pt-4 pb-2 sticky top-0 z-20 bg-surface-alt/90 backdrop-blur-md">
-      <div class="bg-white p-1.5 rounded-2xl flex items-center justify-between border border-slate-200 shadow-sm">
+      <div class="bg-slate-50 p-1.5 rounded-2xl flex items-center justify-between border border-slate-200 shadow-sm">
         <button
           class="flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-300"
           [ngClass]="reportType === 'callOfParentAndPledges' ? 'bg-indigo-50 shadow-sm text-indigo-600 border border-indigo-100' : 'text-slate-500 hover:text-slate-700'"
@@ -43,7 +43,7 @@
       @if (show_loading) {
       <div class="space-y-4">
         @for (i of [1,2]; track trackByIndex($index)) {
-        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100">
+        <div class="bg-slate-50 rounded-3xl p-5 shadow-sm border border-slate-100">
           <ion-skeleton-text animated class="w-full h-20 rounded-xl"></ion-skeleton-text>
         </div>
         }
@@ -54,7 +54,7 @@
         <div class="space-y-4">
           @for (item of reportData; track trackByIndex(i); let i = $index) {
           <div
-            class="bg-white rounded-3xl p-5 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] border border-rose-100 transition-all hover:shadow-md"
+            class="bg-slate-50 rounded-3xl p-5 shadow-[var(--shadow-card-soft)] border border-rose-100 transition-all hover:shadow-md"
           >
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
@@ -106,7 +106,7 @@
           </h2>
           <div class="space-y-4">
             @for (edays of callOfStudentsReport; track trackByIndex(i); let i = $index) {
-            <div class="bg-white rounded-3xl p-4 shadow-sm border border-amber-100">
+            <div class="bg-slate-50 rounded-3xl p-5 shadow-sm border border-amber-100">
               <div class="flex items-center gap-3 mb-3">
                 <div
                   class="w-10 h-10 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100"
@@ -136,7 +136,7 @@
           </h2>
           <div class="space-y-4">
             @for (edays of AllStudentPledgesReports; track trackByIndex(i); let i = $index) {
-            <div class="bg-white rounded-3xl p-4 shadow-sm border border-indigo-100">
+            <div class="bg-slate-50 rounded-3xl p-5 shadow-sm border border-indigo-100">
               <div class="flex items-center gap-3 mb-3">
                 <div
                   class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100"
