@@ -2,6 +2,13 @@ import { Injectable } from '@angular/core';
 import { PopoverController, AlertController, ToastController, AlertButton } from '@ionic/angular';
 import { LoaderComponent } from '../../components/loader/loader.component';
 
+/** See createLoader()'s comment -- same reasoning applies to any overlay
+ * (alert/toast included), so every presenter here calls this first. */
+function BlurActiveElement(): void {
+  const active = document.activeElement as HTMLElement | null;
+  active?.blur();
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +22,13 @@ export class OverlayService {
   ) { }
 
   async createLoader(backdropDismiss: boolean): Promise<HTMLIonPopoverElement> {
+    // Ionic sets aria-hidden on the app's main content behind any
+    // presented overlay. If the element that triggered this (typically
+    // the submit button just clicked) still holds focus at that moment,
+    // the browser correctly warns: a focused element can't be hidden from
+    // assistive tech. Moving focus off it first (browser default target:
+    // <body>) avoids that without changing anything visible.
+    BlurActiveElement();
     const popover = await this.popoverController.create({
       component: LoaderComponent,
       backdropDismiss,
@@ -38,6 +52,7 @@ export class OverlayService {
   }
 
   async presentAlert(header: string, message: string, buttons: (AlertButton | string)[] = ['Ok'], mode?: 'ios' | 'md', backdropDismiss: boolean = true): Promise<void> {
+    BlurActiveElement();
     const alert = await this.alertController.create({
       header,
       message,
@@ -49,6 +64,7 @@ export class OverlayService {
   }
 
   async showToast(message: string): Promise<void> {
+    BlurActiveElement();
     const toast = await this.toastCtrl.create({
       message,
       position: 'bottom',
