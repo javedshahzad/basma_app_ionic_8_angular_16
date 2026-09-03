@@ -1521,6 +1521,7 @@ export class ListStudentPage {
       this.dataProvider.hideLoading();
       const idempotencyKey = this.offlineQueue.generateId();
       data.idempotency_key = idempotencyKey;
+      data.queued_at = Date.now();
       await this.offlineQueue.enqueue('attendance', data, idempotencyKey);
       this.dataProvider.showToast(this.lang.offline_att_stored);
       this.attendanceSheet = {};

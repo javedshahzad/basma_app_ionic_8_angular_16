@@ -26,7 +26,20 @@ export class SyncService {
   ) {
     this.offlineQueue.registerHandler(
       'attendance',
-      payload => this.attendanceApi.markAttendance(payload as Parameters<AttendanceApiService['markAttendance']>[0]),
+      async payload => {
+        const response = await this.attendanceApi.markAttendance(payload as Parameters<AttendanceApiService['markAttendance']>[0]);
+        if (response?.conflicts?.length) {
+          // Last-write-wins (enterprise-offline-mode-plan.md Phase 5): the
+          // queued mark was still applied, but someone else changed the
+          // same mark server-side in the meantime and got overwritten --
+          // surfaced here rather than silently, separate from the batch
+          // success toast below.
+          this.overlay.showToast(
+            `تنبيه: تم استبدال ${response.conflicts.length} من علامات الحضور التي عدّلها مستخدم آخر أثناء الانقطاع`
+          );
+        }
+        return response;
+      },
       () => this.overlay.showToast('Attendance Synced Successfully')
     );
 

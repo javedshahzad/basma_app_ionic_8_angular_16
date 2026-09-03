@@ -22,12 +22,30 @@ export interface AttendanceSubmitPayload {
    * id so the backend can recognize and dedupe a retried offline-queue
    * write instead of re-executing it. */
   idempotency_key?: string;
+  /** Set only when replayed from OfflineQueueService — epoch ms this write
+   * was originally queued, so the backend can detect whether the same mark
+   * was changed by someone else in the meantime (last-write-wins policy,
+   * flagged back via AttendanceSubmitResult.conflicts rather than silently
+   * overwritten). */
+  queued_at?: number;
+}
+
+export interface AttendanceConflict {
+  sid: number;
+  semno: number;
+  previousAttendance: number;
+  newAttendance: number;
 }
 
 export interface AttendanceSubmitResult {
   session: boolean;
   message: string;
   success: boolean;
+  /** Marks that were overwritten despite having changed server-side after
+   * this write was originally queued (see AttendanceSubmitPayload.queued_at) —
+   * always applied per the last-write-wins policy, surfaced here so the UI
+   * can inform the user rather than overwrite silently. */
+  conflicts?: AttendanceConflict[];
 }
 
 /**
@@ -71,6 +89,8 @@ export class AttendanceApiService {
           // السماح للمتغيرات بالمرور للسيرفر
           if (data.user_type) body = body.append("user_type", data.user_type);
           if (data.username) body = body.append("username", data.username);
+          if (data.idempotency_key) body = body.append("idempotency_key", data.idempotency_key);
+          if (data.queued_at) body = body.append("queued_at", String(data.queued_at));
 
           let index = 0;
           if (data.removal_sheet) {
@@ -111,7 +131,12 @@ export class AttendanceApiService {
               if (response.session === false) {
                 resolve({ session: false, message: response.msg, success: false });
               } else {
-                resolve({ session: true, message: response.msg || 'تم حفظ الغياب بنجاح', success: true });
+                resolve({
+                  session: true,
+                  message: response.msg || 'تم حفظ الغياب بنجاح',
+                  success: true,
+                  conflicts: Array.isArray(response.conflicts) ? response.conflicts : undefined
+                });
               }
             } catch (e) {
               console.warn("تم حفظ البيانات، لكن السيرفر أرجع رداً مشوهاً:", res);
@@ -196,6 +221,7 @@ export class AttendanceApiService {
           body= body.append("session_id", data.session_id);
           body= body.append("user_no", data.user_no);
           body= body.append("lang_code", data.lang_code);
+          if (data.idempotency_key) body = body.append("idempotency_key", data.idempotency_key);
           const sheet = data.sheet || {};
           Object.keys(sheet).map((key) => {
             Object.keys(sheet[key]).map((sid) => {
