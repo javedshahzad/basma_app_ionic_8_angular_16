@@ -310,6 +310,14 @@ export class StudentCaseModalComponent implements OnInit {
     return this.translate.instant('student-cases.status_' + status);
   }
 
+  /** name_ar/name_en were always rendered as name_ar regardless of the
+   * active UI language -- this picks the right one live off the current
+   * translate language instead of a fixed field. */
+  caseTypeName(type: { name_ar?: string; name_en?: string } | null | undefined): string {
+    if (!type) return '';
+    return this.translate.currentLang === 'en' ? type.name_en || type.name_ar || '' : type.name_ar || type.name_en || '';
+  }
+
   private async loadModerators() {
     try {
       const res = await this.schoolDirectoryApi.getAllUsers({ ...this.baseParams() });

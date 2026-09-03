@@ -31,7 +31,7 @@
         >
           <div class="flex flex-col gap-1">
             <span class="text-sm font-bold text-slate-800">
-              {{ c.case_type ? (c.case_type.name_ar) : ('student-cases.restricted_hidden' | translate) }}
+              {{ c.case_type ? caseTypeName(c.case_type) : ('student-cases.restricted_hidden' | translate) }}
             </span>
             <span class="text-xs text-slate-400" dir="ltr">{{ c.opened_at | date: 'yyyy-MM-dd' }}</span>
           </div>
@@ -80,7 +80,7 @@
         >
           <option [ngValue]="null">{{ 'student-cases.select_type' | translate }}</option>
           @for (t of caseTypes; track t.id) {
-            <option [ngValue]="t.id">{{ t.name_ar }}</option>
+            <option [ngValue]="t.id">{{ caseTypeName(t) }}</option>
           }
         </select>
       </div>
@@ -150,7 +150,7 @@
       @if (detailTab === 'overview') {
         <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
           <div class="flex items-center justify-between">
-            <span class="text-sm font-bold text-slate-800">{{ selectedCase.case_type?.name_ar }}</span>
+            <span class="text-sm font-bold text-slate-800">{{ caseTypeName(selectedCase.case_type) }}</span>
             <span
               class="text-2xs font-bold px-2.5 py-1 rounded-full"
               [ngClass]="{
@@ -248,51 +248,58 @@
       <!-- Follow-up tab -->
       @if (detailTab === 'followup') {
         <div class="space-y-3">
-          <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
-            <select
-              [(ngModel)]="followUpType"
-              (ngModelChange)="onFollowUpTypeChange()"
-              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800"
-            >
-              <option value="note">{{ 'student-cases.followup_note' | translate }}</option>
-              <option value="parent_contact">{{ 'student-cases.followup_parent_contact' | translate }}</option>
-              <option value="meeting">{{ 'student-cases.followup_meeting' | translate }}</option>
-              <option value="referral_note">{{ 'student-cases.followup_referral_note' | translate }}</option>
-            </select>
+          @if (selectedCase.status !== 'closed') {
+            <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+              <select
+                [(ngModel)]="followUpType"
+                (ngModelChange)="onFollowUpTypeChange()"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800"
+              >
+                <option value="note">{{ 'student-cases.followup_note' | translate }}</option>
+                <option value="parent_contact">{{ 'student-cases.followup_parent_contact' | translate }}</option>
+                <option value="meeting">{{ 'student-cases.followup_meeting' | translate }}</option>
+                <option value="referral_note">{{ 'student-cases.followup_referral_note' | translate }}</option>
+              </select>
 
-            @if (followUpType === 'parent_contact') {
-              <div class="flex items-center gap-2">
-                <ion-input
-                  type="tel"
-                  [(ngModel)]="followUpPhone"
-                  class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 text-sm font-bold text-slate-800"
-                ></ion-input>
-                @if (followUpPhone) {
-                  <a
-                    [href]="'tel:' + followUpPhone"
-                    class="w-11 h-11 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200"
-                  >
-                    <ion-icon name="call" class="text-xl"></ion-icon>
-                  </a>
-                }
-              </div>
-            }
+              @if (followUpType === 'parent_contact') {
+                <div class="flex items-center gap-2">
+                  <ion-input
+                    type="tel"
+                    [(ngModel)]="followUpPhone"
+                    class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 text-sm font-bold text-slate-800"
+                  ></ion-input>
+                  @if (followUpPhone) {
+                    <a
+                      [href]="'tel:' + followUpPhone"
+                      class="w-11 h-11 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200"
+                    >
+                      <ion-icon name="call" class="text-xl"></ion-icon>
+                    </a>
+                  }
+                </div>
+              }
 
-            <ion-textarea
-              [(ngModel)]="followUpDescription"
-              [placeholder]="'student-cases.followup_description_placeholder' | translate"
-              [autoGrow]="true"
-              class="bg-slate-50 border border-slate-200 rounded-xl px-3 text-sm text-slate-800"
-            ></ion-textarea>
+              <ion-textarea
+                [(ngModel)]="followUpDescription"
+                [placeholder]="'student-cases.followup_description_placeholder' | translate"
+                [autoGrow]="true"
+                class="bg-slate-50 border border-slate-200 rounded-xl px-3 text-sm text-slate-800"
+              ></ion-textarea>
 
-            <button
-              (click)="submitFollowup()"
-              class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2"
-            >
-              <ion-icon name="add-outline"></ion-icon>
-              {{ 'student-cases.add_followup' | translate }}
-            </button>
-          </div>
+              <button
+                (click)="submitFollowup()"
+                class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2"
+              >
+                <ion-icon name="add-outline"></ion-icon>
+                {{ 'student-cases.add_followup' | translate }}
+              </button>
+            </div>
+          } @else {
+            <div class="bg-white border border-slate-200 rounded-xl p-4 text-center text-sm font-bold text-slate-400 flex flex-col items-center gap-2">
+              <ion-icon name="lock-closed-outline" class="text-2xl text-slate-300"></ion-icon>
+              {{ 'student-cases.case_closed_locked' | translate }}
+            </div>
+          }
 
           @for (f of selectedCase.followups; track f.id) {
             <div class="bg-white border border-slate-200 rounded-xl p-3">
@@ -328,6 +335,15 @@
                 {{ 'student-cases.refer_case' | translate }}
               </button>
             </div>
+          } @else if (selectedCase.referrals.length === 0) {
+            <div class="bg-white border border-slate-200 rounded-xl p-4 text-center text-sm font-bold text-slate-400 flex flex-col items-center gap-2">
+              <ion-icon name="lock-closed-outline" class="text-2xl text-slate-300"></ion-icon>
+              {{ 'student-cases.case_closed_locked' | translate }}
+            </div>
+          }
+
+          @if (selectedCase.status !== 'closed' && selectedCase.referrals.length === 0) {
+            <div class="text-center text-xs text-slate-400 py-2">{{ 'student-cases.no_referrals' | translate }}</div>
           }
 
           @for (r of selectedCase.referrals; track r.id) {

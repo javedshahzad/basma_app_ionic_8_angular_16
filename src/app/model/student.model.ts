@@ -24,6 +24,11 @@ export interface Student {
   suspend_leave?: boolean;
   medical_leave?: boolean;
   medical_condition?: string;
+  // خطة إدارة حالات الطلاب — existence-only signal, top-level here since
+  // getChildrens/login return it directly on the child/details object
+  // rather than nested under student_data (that nesting is specific to
+  // the classlist roster's BuildClassAttendanceStudents response shape).
+  has_active_case?: boolean;
   phone_no?: string;
   phone_no_two?: string;
   can_view_absent?: boolean;

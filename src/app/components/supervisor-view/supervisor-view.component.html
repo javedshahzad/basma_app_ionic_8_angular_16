@@ -85,9 +85,10 @@
               />
               @if (student.student_data?.medical_condition) {
                 <div
-                  class="absolute bottom-0 right-0 bg-rose-500 text-white text-3xs font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white"
+                  class="absolute bottom-0 right-0 bg-rose-500 text-white rounded-full w-4 h-4 flex items-center justify-center border border-white"
+                  [title]="'student-cases.medical_condition_badge' | translate"
                 >
-                  M
+                  <ion-icon name="medical" class="text-3xs"></ion-icon>
                 </div>
               }
               @if (student.student_data?.has_active_case) {

@@ -27,6 +27,10 @@ export interface UserDetails {
   // `details` for a student account (confirmed via student-titles.page.html).
   level_name?: string;
   class_name?: string;
+  // Student-role account's own badges (login response) — see student.model.ts's
+  // Student.has_active_case for the shared reasoning on top-level vs nested.
+  medical_condition?: string;
+  has_active_case?: boolean;
 }
 
 export interface LoggedInUser {

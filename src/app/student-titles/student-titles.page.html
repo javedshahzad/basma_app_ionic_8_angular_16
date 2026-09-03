@@ -35,18 +35,36 @@
     >
       <div class="absolute -left-6 -top-6 w-24 h-24 bg-indigo-50 rounded-full blur-2xl"></div>
 
-      <div
-        class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner overflow-hidden shrink-0 p-0.5"
-      >
-        <img
-          loading="lazy"
-          [src]="navData?.pic || 'assets/imgs/default_avatar.png'"
-          onerror="
-            this.onerror = null;
-            this.src = 'assets/imgs/default_avatar.png';
-          "
-          class="w-full h-full object-cover rounded-xl"
-        />
+      <div class="relative shrink-0">
+        <div
+          class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 shadow-inner overflow-hidden p-0.5"
+        >
+          <img
+            loading="lazy"
+            [src]="navData?.pic || 'assets/imgs/default_avatar.png'"
+            onerror="
+              this.onerror = null;
+              this.src = 'assets/imgs/default_avatar.png';
+            "
+            class="w-full h-full object-cover rounded-xl"
+          />
+        </div>
+        @if (navData?.medical_condition) {
+          <div
+            class="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm"
+            [title]="'student-cases.medical_condition_badge' | translate"
+          >
+            <ion-icon name="medical" class="text-3xs"></ion-icon>
+          </div>
+        }
+        @if (navData?.has_active_case) {
+          <div
+            class="absolute -bottom-1 -right-1 w-5 h-5 bg-indigo-500 text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm"
+            [title]="'student-cases.has_active_case_badge' | translate"
+          >
+            <ion-icon name="briefcase" class="text-3xs"></ion-icon>
+          </div>
+        }
       </div>
       <div class="flex-1 relative z-10">
         <h2 class="text-base font-black text-slate-800 m-0 leading-tight">

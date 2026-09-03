@@ -24,10 +24,28 @@
       >
         <div class="absolute -left-10 -top-10 w-32 h-32 bg-indigo-50/40 rounded-full blur-2xl z-0"></div>
         <div class="flex items-start gap-4 relative z-10">
-          <div
-            class="w-20 h-20 rounded-2xl border-2 border-white shadow-md bg-cover bg-center bg-slate-100 flex-shrink-0"
-            [ngStyle]="{'background-image': 'url(' + (student?.pic ? student.pic : 'assets/imgs/user.png') + ')'}"
-          ></div>
+          <div class="relative flex-shrink-0">
+            <div
+              class="w-20 h-20 rounded-2xl border-2 border-white shadow-md bg-cover bg-center bg-slate-100"
+              [ngStyle]="{'background-image': 'url(' + (student?.pic ? student.pic : 'assets/imgs/user.png') + ')'}"
+            ></div>
+            @if (student.medical_condition) {
+              <div
+                class="absolute -top-1 -right-1 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm"
+                [title]="'student-cases.medical_condition_badge' | translate"
+              >
+                <ion-icon name="medical" class="text-xs"></ion-icon>
+              </div>
+            }
+            @if (student.has_active_case) {
+              <div
+                class="absolute -bottom-1 -right-1 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm"
+                [title]="'student-cases.has_active_case_badge' | translate"
+              >
+                <ion-icon name="briefcase" class="text-xs"></ion-icon>
+              </div>
+            }
+          </div>
           <div class="flex-1 pt-1">
             <div class="flex items-center gap-2">
               <h2 class="text-slate-800 font-black text-lg leading-tight mb-2">{{student?.name}}</h2>
