@@ -68,7 +68,7 @@
 
           @if (studentDetails.medical_condition) {
             <div
-              class="absolute -top-1 -right-1 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm"
+              class="absolute -top-1 -left-1 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm"
               [title]="'student-cases.medical_condition_badge' | translate"
             >
               <ion-icon name="medical" class="text-xs"></ion-icon>
@@ -76,7 +76,7 @@
           }
           @if (studentDetails.has_active_case) {
             <div
-              class="absolute -top-1 -left-1 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm"
+              class="absolute -bottom-1 -left-1 w-6 h-6 bg-indigo-500 text-white rounded-full flex items-center justify-center border-2 border-white shadow-sm"
               [title]="'student-cases.has_active_case_badge' | translate"
             >
               <ion-icon name="briefcase" class="text-xs"></ion-icon>
