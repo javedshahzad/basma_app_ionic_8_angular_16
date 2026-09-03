@@ -569,7 +569,18 @@
     "phone_two":"هاتف رقم2",
     "personal_info_title": "البيانات الشخصية",
     "security_title": "الأمان وكلمة المرور",
-    "school_settings_title": "إعدادات المدرسة"
+    "school_settings_title": "إعدادات المدرسة",
+    "education_stages_title": "المراحل التعليمية",
+    "education_stages_hint": "مراحل مدرستك الخاصة — تُستخدم لفلترة كتالوج المخالفات والإجراءات حسب مرحلة الطالب",
+    "add_education_stage": "إضافة مرحلة",
+    "edit_education_stage": "تعديل مرحلة",
+    "no_education_stages": "لا توجد مراحل تعليمية بعد",
+    "stage_name_ar": "الاسم بالعربية",
+    "stage_name_en": "الاسم بالإنجليزية",
+    "stage_min_age": "الحد الأدنى للعمر",
+    "stage_max_age": "الحد الأقصى للعمر",
+    "stage_sort_order": "الترتيب",
+    "confirm_delete_stage": "هل أنت متأكد من حذف هذه المرحلة؟ بنود الكتالوج المرتبطة بها ستصبح متاحة لكل المراحل بدلاً من حذفها."
   },
   "eLearning": {
     "title": "المحتوى التعليمي",
@@ -1241,6 +1252,7 @@
     "same_user": "لا يمكن الارسال لنفس المستخدم",
     "messageWarningHeader": " القواعد الأساسية للمحادثة ",
     "usnexpectedError": "حدث خطأ غير متوقع يرجى معاودة المحاولة في وقت لاحق.",
+    "mandatory_fields": "الرجاء تعبئة كل الحقول المطلوبة",
     "networkNotWorking": "لرجاء التأكد من اتصالك بالانترنت",
     "note_created": "تم حفظ الملاحظة",
     "new_message": "تم استلام رسالة جديدة",

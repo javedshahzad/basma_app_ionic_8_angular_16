@@ -16,6 +16,7 @@ import {
   UserManagementApiService,
   SchoolRulesDetails
 } from '../service/user-management-api/user-management-api.service';
+import { EducationStagesApiService, EducationStage } from '../service/education-stages-api/education-stages-api.service';
 import { UserType } from '../constants/user-type';
 
 import { FormsModule } from '@angular/forms';
@@ -90,6 +91,21 @@ export class SettingsPage {
 
   show_save_spinner: boolean = false;
 
+  // المراحل التعليمية (Education Stages) -- خطة الاستفادة من اللائحة
+  // التنظيمية لتطوير بصمة.pdf, Phase 2. School-owned, admin-managed here.
+  educationStages: EducationStage[] = [];
+  showStageModal: boolean = false;
+  editingStageId: number | null = null;
+  stageForm: { name_ar: string; name_en: string; min_age: number | null; max_age: number | null; sort_order: number | null } = {
+    name_ar: '',
+    name_en: '',
+    min_age: null,
+    max_age: null,
+    sort_order: 0
+  };
+  showDeleteStageAlert: boolean = false;
+  stagePendingDeletion: EducationStage | null = null;
+
   // userDetails.details is genuinely optional on LoggedInUser (a real API
   // response can omit it), but every call site here only runs after
   // ionViewWillEnter()'s `if (userLoggedIn)` guard has already populated
@@ -110,6 +126,7 @@ export class SettingsPage {
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     private deviceApi: DeviceApiService,
     private userManagementApi: UserManagementApiService,
+    private educationStagesApi: EducationStagesApiService,
     private permissionService: PermissionService,
     private cdr: ChangeDetectorRef
   ) {
@@ -184,6 +201,7 @@ export class SettingsPage {
 
       if (this.permissionService.hasRole(UserType.Admin)) {
         this.getAllRules();
+        this.loadEducationStages();
       }
     } else {
       this.dataProvider.hideLoading();
@@ -258,6 +276,97 @@ export class SettingsPage {
       .catch(error => {
         console.log(error);
       });
+  }
+
+  private baseRequestData(): { user_no: string; session_id: string; school_id: string } {
+    return {
+      user_no: this.userInfo.user_no as string,
+      session_id: this.userDetails.session_id as string,
+      school_id: this.userInfo.school_id as string
+    };
+  }
+
+  loadEducationStages() {
+    this.educationStagesApi
+      .getEducationStages(this.baseRequestData())
+      .then(stages => {
+        this.educationStages = (stages || []).sort((a, b) => a.sortOrder - b.sortOrder);
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  openAddStageModal() {
+    this.editingStageId = null;
+    this.stageForm = { name_ar: '', name_en: '', min_age: null, max_age: null, sort_order: this.educationStages.length };
+    this.showStageModal = true;
+  }
+
+  openEditStageModal(stage: EducationStage) {
+    this.editingStageId = stage.id;
+    this.stageForm = {
+      name_ar: stage.nameAr,
+      name_en: stage.nameEn,
+      min_age: stage.minAge,
+      max_age: stage.maxAge,
+      sort_order: stage.sortOrder
+    };
+    this.showStageModal = true;
+  }
+
+  hideStageModal() {
+    this.showStageModal = false;
+  }
+
+  async saveStage() {
+    if (!this.stageForm.name_ar || !this.stageForm.name_en || this.stageForm.min_age == null || this.stageForm.max_age == null) {
+      this.dataProvider.showToast(this.lang.mandatory_fields || 'الرجاء تعبئة كل الحقول المطلوبة');
+      return;
+    }
+
+    const payload = {
+      ...this.baseRequestData(),
+      name_ar: this.stageForm.name_ar,
+      name_en: this.stageForm.name_en,
+      min_age: this.stageForm.min_age,
+      max_age: this.stageForm.max_age,
+      sort_order: this.stageForm.sort_order ?? 0
+    };
+
+    try {
+      if (this.editingStageId) {
+        await this.educationStagesApi.updateEducationStage({ ...payload, id: this.editingStageId });
+      } else {
+        await this.educationStagesApi.addEducationStage(payload);
+      }
+      this.showStageModal = false;
+      this.loadEducationStages();
+    } catch (error) {
+      this.dataProvider.errorALertMessage(String(error || this.lang.usnexpectedError));
+    }
+  }
+
+  confirmDeleteStage(stage: EducationStage) {
+    this.stagePendingDeletion = stage;
+    this.showDeleteStageAlert = true;
+  }
+
+  hideDeleteStageAlert() {
+    this.showDeleteStageAlert = false;
+    this.stagePendingDeletion = null;
+  }
+
+  async deleteStageConfirmed() {
+    if (!this.stagePendingDeletion) return;
+    try {
+      await this.educationStagesApi.deleteEducationStage({ ...this.baseRequestData(), id: this.stagePendingDeletion.id });
+      this.hideDeleteStageAlert();
+      this.loadEducationStages();
+    } catch (error) {
+      this.dataProvider.errorALertMessage(String(error || this.lang.usnexpectedError));
+    }
   }
 
   // 🟢 4. تأمين الحفظ والتحديث بشكل غير متزامن

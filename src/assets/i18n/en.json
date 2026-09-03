@@ -709,7 +709,18 @@
     "phone_two":"Phone #2",
     "personal_info_title": "Personal Information",
     "security_title": "Security & Password",
-    "school_settings_title": "School Settings"
+    "school_settings_title": "School Settings",
+    "education_stages_title": "Education Stages",
+    "education_stages_hint": "Your school's own stages — used to filter the violations/actions catalog by student stage",
+    "add_education_stage": "Add Stage",
+    "edit_education_stage": "Edit Stage",
+    "no_education_stages": "No education stages yet",
+    "stage_name_ar": "Arabic Name",
+    "stage_name_en": "English Name",
+    "stage_min_age": "Minimum Age",
+    "stage_max_age": "Maximum Age",
+    "stage_sort_order": "Sort Order",
+    "confirm_delete_stage": "Are you sure you want to delete this stage? Catalog items linked to it will become available to every stage instead of being deleted."
   },
   "eLearning": {
     "title": "eLearning Material",
@@ -1227,6 +1238,7 @@
     "note_created": "Note created",
     "new_message": "New message recieved",
     "usnexpectedError": "An unexpected error occurred, please try again later.",
+    "mandatory_fields": "Please fill in all required fields",
     "networkNotWorking": "Please make sure you are connected to the Internet",
     "messageWarningbody": " <div class='parent-connect-rules'><ul><li>You are only allowed to create ONE TOPIC per day.</li> <li>The limits of politeness and mutual respect must be observed during the conversation.</li><li>اA response to the topic may require some time and during official working hours, with a literary limit of 24 hours.</li><li>If you agree to the above, you can continue.</li></ul></div> ",
     "class_added": "Courses added to list",

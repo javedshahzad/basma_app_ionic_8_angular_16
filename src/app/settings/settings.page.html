@@ -373,6 +373,52 @@
           </div>
         </div>
       </div>
+
+      <div class="bg-slate-50 rounded-2xl shadow-sm border border-slate-200 p-5 mb-6">
+        <div class="flex items-center justify-between mb-5">
+          <h4 class="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <ion-icon name="school-outline" class="text-lg"></ion-icon> {{'setting.education_stages_title' | translate}}
+          </h4>
+          <button
+            class="w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors flex items-center justify-center shadow-sm"
+            (click)="openAddStageModal()"
+          >
+            <ion-icon name="add" class="text-xl"></ion-icon>
+          </button>
+        </div>
+        <p class="text-2xs text-slate-400 mb-4 leading-relaxed">{{'setting.education_stages_hint' | translate}}</p>
+
+        @if (educationStages.length === 0) {
+        <div class="text-center py-8 bg-slate-50 rounded-xl border border-slate-100">
+          <ion-icon name="layers-outline" class="text-3xl text-slate-300 mb-2"></ion-icon>
+          <p class="text-xs font-bold text-muted m-0">{{'setting.no_education_stages' | translate}}</p>
+        </div>
+        }
+        <div class="space-y-2">
+          @for (stage of educationStages; track stage.id) {
+          <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-3">
+            <div>
+              <span class="text-sm font-bold text-slate-700">{{stage.nameAr}}</span>
+              <span class="text-2xs text-slate-400 block mt-0.5" dir="ltr">{{stage.minAge}} – {{stage.maxAge}}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <button
+                class="w-8 h-8 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center justify-center"
+                (click)="openEditStageModal(stage)"
+              >
+                <ion-icon name="create-outline" class="text-base"></ion-icon>
+              </button>
+              <button
+                class="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors flex items-center justify-center"
+                (click)="confirmDeleteStage(stage)"
+              >
+                <ion-icon name="trash-outline" class="text-base"></ion-icon>
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
       }
     </ng-container>
 
@@ -437,5 +483,93 @@
     </div>
   </div>
   <div class="absolute inset-0" (click)="onCancelDeleteSchool()"></div>
+</div>
+} @if (showStageModal) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm transition-opacity">
+  <div class="bg-slate-50 w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10" dir="rtl">
+    <div class="flex items-center gap-3 mb-5">
+      <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+        <ion-icon name="school-outline" class="text-xl"></ion-icon>
+      </div>
+      <h4 class="text-lg font-bold text-slate-800 m-0">
+        {{(editingStageId ? 'setting.edit_education_stage' : 'setting.add_education_stage') | translate}}
+      </h4>
+    </div>
+    <div class="space-y-3 mb-5">
+      <div>
+        <label class="block text-2xs font-bold text-slate-500 mb-1.5">{{'setting.stage_name_ar' | translate}}</label>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
+          <ion-input [(ngModel)]="stageForm.name_ar" class="text-sm font-bold text-slate-800"></ion-input>
+        </div>
+      </div>
+      <div>
+        <label class="block text-2xs font-bold text-slate-500 mb-1.5">{{'setting.stage_name_en' | translate}}</label>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
+          <ion-input [(ngModel)]="stageForm.name_en" dir="ltr" class="text-sm font-bold text-slate-800"></ion-input>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-2xs font-bold text-slate-500 mb-1.5">{{'setting.stage_min_age' | translate}}</label>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
+            <ion-input type="number" [(ngModel)]="stageForm.min_age" class="text-sm font-bold text-slate-800 text-center"></ion-input>
+          </div>
+        </div>
+        <div>
+          <label class="block text-2xs font-bold text-slate-500 mb-1.5">{{'setting.stage_max_age' | translate}}</label>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
+            <ion-input type="number" [(ngModel)]="stageForm.max_age" class="text-sm font-bold text-slate-800 text-center"></ion-input>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label class="block text-2xs font-bold text-slate-500 mb-1.5">{{'setting.stage_sort_order' | translate}}</label>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
+          <ion-input type="number" [(ngModel)]="stageForm.sort_order" class="text-sm font-bold text-slate-800 text-center"></ion-input>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button
+        class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors"
+        (click)="hideStageModal()"
+      >
+        {{'alertmessages.alert_btn_cancel_text' | translate}}
+      </button>
+      <button
+        class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95"
+        (click)="saveStage()"
+      >
+        {{'alertmessages.alert_btn_submit_text' | translate}}
+      </button>
+    </div>
+  </div>
+  <div class="absolute inset-0" (click)="hideStageModal()"></div>
+</div>
+} @if (showDeleteStageAlert) {
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm transition-opacity">
+  <div class="bg-slate-50 w-11/12 max-w-sm rounded-3xl overflow-hidden shadow-2xl p-6 relative z-10" dir="rtl">
+    <div class="flex flex-col items-center justify-center mb-6 text-center">
+      <div class="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mb-4">
+        <ion-icon name="warning" class="text-4xl"></ion-icon>
+      </div>
+      <h4 class="text-lg font-bold text-slate-800 m-0 leading-snug">{{'setting.confirm_delete_stage' | translate}}</h4>
+    </div>
+    <div class="flex gap-3 mt-2">
+      <button
+        class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-xl transition-colors"
+        (click)="hideDeleteStageAlert()"
+      >
+        {{'alertmessages.alert_btn_cancel_text' | translate}}
+      </button>
+      <button
+        class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl shadow-lg shadow-rose-200 transition-all active:scale-95"
+        (click)="deleteStageConfirmed()"
+      >
+        {{'alertmessages.alert_btn_submit_text' | translate}}
+      </button>
+    </div>
+  </div>
+  <div class="absolute inset-0" (click)="hideDeleteStageAlert()"></div>
 </div>
 }
