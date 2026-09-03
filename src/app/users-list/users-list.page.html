@@ -63,6 +63,15 @@
           <h4 class="text-base font-bold text-slate-800 m-0 truncate">{{list.first_name}}</h4>
           <p class="text-xs text-slate-500 m-0 mt-1 font-medium truncate" dir="ltr">{{list.username}}</p>
         </div>
+        @if (isAdmin && list.user_type === UserType.Viewer) {
+          <button
+            (click)="openQualifications($event, list)"
+            [title]="'student-cases.manage_qualifications' | translate"
+            class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 hover:bg-indigo-100 transition-colors"
+          >
+            <ion-icon name="ribbon-outline" class="text-lg"></ion-icon>
+          </button>
+        }
         <ion-icon name="chevron-back-outline" class="text-slate-300 text-xl shrink-0"></ion-icon>
       </div>
       }

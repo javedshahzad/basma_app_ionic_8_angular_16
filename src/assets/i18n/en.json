@@ -620,7 +620,12 @@
     "closure_outcome_placeholder": "Case closure outcome...",
     "close_case": "Close case",
     "case_closed": "Case closed successfully",
-    "already_closed": "This case is already closed"
+    "already_closed": "This case is already closed",
+    "has_active_case_badge": "This student has an active case",
+    "manage_qualifications": "Specialist Qualifications",
+    "manage_qualifications_desc": "Choose which case types each Social & Psychological Services account can handle",
+    "no_specialist_accounts": "No Social & Psychological Services accounts in this school",
+    "qualification_updated": "Qualification updated successfully"
   },
   "children": {
     "title": "Children",

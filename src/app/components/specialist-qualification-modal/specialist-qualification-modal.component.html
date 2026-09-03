@@ -1,0 +1,47 @@
+<div class="p-5 bg-slate-50 min-h-[40vh] pb-8" dir="rtl">
+  <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+    <div>
+      <h4 class="text-lg font-bold text-slate-800 m-0 flex items-center gap-2">
+        <ion-icon name="ribbon-outline" class="text-indigo-600 bg-indigo-50 p-2 rounded-xl"></ion-icon>
+        {{ 'student-cases.manage_qualifications' | translate }}
+      </h4>
+      <p class="text-xs text-slate-500 mt-1 mb-0">{{ specialist.first_name }}</p>
+    </div>
+    <button
+      (click)="closeModal()"
+      class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full hover:bg-rose-50 hover:text-rose-500 transition-colors"
+    >
+      <ion-icon name="close" class="text-xl"></ion-icon>
+    </button>
+  </div>
+
+  <p class="text-xs text-slate-400 mb-4">{{ 'student-cases.manage_qualifications_desc' | translate }}</p>
+
+  @if (loading) {
+    <div class="flex justify-center py-10">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+    </div>
+  } @else {
+    <div class="space-y-2">
+      @for (t of caseTypes; track t.id) {
+        <button
+          (click)="toggle(t.id)"
+          [disabled]="savingId === t.id"
+          class="w-full flex items-center justify-between bg-white border rounded-xl p-4 transition-all"
+          [ngClass]="isQualified(t.id) ? 'border-indigo-300 bg-indigo-50' : 'border-slate-200'"
+        >
+          <span class="text-sm font-bold text-slate-800">{{ t.name_ar }}</span>
+          @if (savingId === t.id) {
+            <ion-spinner name="crescent" color="primary" style="width: 20px; height: 20px"></ion-spinner>
+          } @else {
+            <ion-icon
+              [name]="isQualified(t.id) ? 'checkmark-circle' : 'ellipse-outline'"
+              class="text-xl"
+              [ngClass]="isQualified(t.id) ? 'text-indigo-600' : 'text-slate-300'"
+            ></ion-icon>
+          }
+        </button>
+      }
+    </div>
+  }
+</div>

@@ -44,6 +44,10 @@ export interface Student {
   student_data?: {
     medical_condition?: string;
     active_crafted_title?: string;
+    // خطة إدارة حالات الطلاب Phase 3 — existence-only signal (no type/
+    // summary, that stays behind the confidentiality check) for the
+    // neutral case badge on the class roster view.
+    has_active_case?: boolean;
   };
   // Class/course association fields (edit-student-profile.page.ts) — the
   // backend returns these under inconsistent names depending on endpoint.

@@ -19,6 +19,9 @@ import { FormsModule } from '@angular/forms';
 
 import { UserSearchPipe } from '../pipes/user-search.pipe';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { UserType } from '../constants/user-type';
+import { PermissionService } from '../service/permission/permission.service';
+import { SpecialistQualificationModalComponent } from '../components/specialist-qualification-modal/specialist-qualification-modal.component';
 
 @Component({
   selector: 'app-users-list',
@@ -29,6 +32,7 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
 })
 export class UsersListPage implements OnInit {
   private destroyRef = inject(DestroyRef);
+  readonly UserType = UserType;
   allUsers: any = [];
   userDetails: any;
   selectedUsers: any = [];
@@ -50,6 +54,7 @@ export class UsersListPage implements OnInit {
     public modalController: ModalController,
     private storageSr: StorageService, // 🟢 2. حقن خدمة التخزين
     private schoolDirectoryApi: SchoolDirectoryApiService,
+    private permissionService: PermissionService,
     private cdr: ChangeDetectorRef
   ) {
     // 🟢 3. جعل الاشتراك (subscribe) async لجلب البيانات بأمان عند العودة
@@ -163,5 +168,25 @@ export class UsersListPage implements OnInit {
       state: { user: user }
     };
     this.router.navigate(['edit-user-profile'], navigation);
+  }
+
+  /** خطة إدارة حالات الطلاب Phase 3 — Admin-only, Viewer-role rows only
+   * ("مكتب الخدمة الاجتماعية والنفسية"). Reuses this existing list instead
+   * of adding a new nav item, per the plan's own design. */
+  get isAdmin(): boolean {
+    return this.permissionService.hasRole(UserType.Admin);
+  }
+
+  async openQualifications(event: Event, user: any) {
+    event.stopPropagation();
+    const modal = await this.modalController.create({
+      component: SpecialistQualificationModalComponent,
+      componentProps: { specialist: user },
+      breakpoints: [0, 0.6, 0.9],
+      initialBreakpoint: 0.6,
+      handleBehavior: 'cycle',
+      cssClass: 'lineone-bottom-sheet'
+    });
+    await modal.present();
   }
 }

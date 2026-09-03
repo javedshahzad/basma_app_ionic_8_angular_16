@@ -65,6 +65,11 @@
             @if (student.student_data?.medical_condition) {
             <div class="absolute bottom-0 right-0 bg-rose-500 text-white text-3xs font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white">M</div>
             }
+            @if (student.student_data?.has_active_case) {
+            <div class="absolute bottom-0 left-0 bg-indigo-500 text-white rounded-full w-5 h-5 flex items-center justify-center border-2 border-white" [title]="'student-cases.has_active_case_badge' | translate">
+              <ion-icon name="briefcase" class="text-3xs"></ion-icon>
+            </div>
+            }
             <!-- <img loading="lazy" class="absolute -top-1 -left-1 w-5 h-5" [src]="student.computedIcon" *ngIf="student.agg_ranking > 0" /> -->
           </div>
 

@@ -90,6 +90,14 @@
                   M
                 </div>
               }
+              @if (student.student_data?.has_active_case) {
+                <div
+                  class="absolute bottom-0 left-0 bg-indigo-500 text-white rounded-full w-4 h-4 flex items-center justify-center border border-white"
+                  [title]="'student-cases.has_active_case_badge' | translate"
+                >
+                  <ion-icon name="briefcase" class="text-3xs"></ion-icon>
+                </div>
+              }
               <!--<img loading="lazy" class="absolute -top-1 -left-1 w-4 h-4" [src]="student.computedIcon" *ngIf="student.agg_ranking > 0" />-->
             </div>
             <div class="flex-1">
