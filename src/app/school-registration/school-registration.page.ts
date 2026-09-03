@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
+import { RecaptchaService } from '../service/recaptcha/recaptcha.service';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
 import { IonicSelectableComponent } from 'ionic-selectable';
@@ -49,6 +50,7 @@ export class SchoolRegistrationPage implements OnInit {
     public authProvider: AuthService,
     private router: Router,
     private storageSr: StorageService, // 🟢 حقن خدمة التخزين الجديدة
+    private recaptcha: RecaptchaService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(res => {
@@ -166,6 +168,7 @@ export class SchoolRegistrationPage implements OnInit {
     }
 
     this.school.country_code = this.selected_country.code;
+    this.school.recaptcha_token = await this.recaptcha.execute('register');
 
     try {
       const response = await this.dataProvider.run(() => this.authProvider.registerSchool(this.school));

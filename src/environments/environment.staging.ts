@@ -12,5 +12,8 @@ export const environment = {
   docUrl: "https://basmapp.com/BasmaCP/",
   ipinfoToken: "eebb6806073dbe",
   // اتركه فارغاً في staging حتى لا تُرسَل أخطاء بيئة الاختبار إلى Sentry
-  sentryDsn: "https://559fc7bf2e03cf467e6fd52eb5c763a9@o4511849267855360.ingest.de.sentry.io/4511849284960336"
+  sentryDsn: "https://559fc7bf2e03cf467e6fd52eb5c763a9@o4511849267855360.ingest.de.sentry.io/4511849284960336",
+  // reCAPTCHA v3 site key (public by design) — login/school-registration
+  // anti-bot. Secret key lives server-side only, in staging.basmapp's env.
+  recaptchaSiteKey: "6LcOc6ctAAAAACL0_qEZFaj1LyexPY9pp0k3OFtp"
 };
