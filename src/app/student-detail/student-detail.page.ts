@@ -392,9 +392,13 @@ export class StudentDetailPage {
 
   async ionViewWillEnter() {
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      if ((await Network.getStatus()).connected) {
-        await this.checkProfile();
-      } else {
+      // Try the live call first rather than gating on Network.getStatus() --
+      // that flag has been observed reporting disconnected even when the
+      // device can genuinely reach the API (e.g. emulator/local-dev-server
+      // setups), which silently served a stale offline cache missing any
+      // field added to the API after that cache was last written.
+      const loadedLive = await this.checkProfile();
+      if (!loadedLive) {
         if (this.navData.student_id) {
           this.getOfflineNote();
           this.studentService
@@ -512,9 +516,9 @@ export class StudentDetailPage {
   }
 
   // 🟢 الإصلاح الثاني: تأمين دالة الجلب بـ try..finally لضمان إغلاق التحميل اللانهائي!
-  async checkProfile() {
+  async checkProfile(): Promise<boolean> {
     try {
-      await this.dataProvider.run(async () => {
+      return await this.dataProvider.run(async () => {
         const userData = await this.storageSr.get('userloggedin');
         if (userData) {
           this.userDetails = userData;
@@ -573,17 +577,21 @@ export class StudentDetailPage {
               }
             }
             this.cdr.markForCheck();
+            return true;
           } else {
             // في حال الرد بفشل من السيرفر
             this.dataProvider.showToast(response?.message || 'تعذر جلب بيانات الطالب بشكل كامل');
+            return false;
           }
         } else {
           this.authProvider.flushLocalStorage();
           this.router.navigate(['login'], { replaceUrl: true });
+          return false;
         }
       });
     } catch (error) {
       console.error('Critical Profile Error:', error);
+      return false;
     }
   }
 
