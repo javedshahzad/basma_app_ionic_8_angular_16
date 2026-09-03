@@ -1519,7 +1519,9 @@ export class ListStudentPage {
       this.sendAttendanceToServer(data);
     } else {
       this.dataProvider.hideLoading();
-      await this.offlineQueue.enqueue('attendance', data);
+      const idempotencyKey = this.offlineQueue.generateId();
+      data.idempotency_key = idempotencyKey;
+      await this.offlineQueue.enqueue('attendance', data, idempotencyKey);
       this.dataProvider.showToast(this.lang.offline_att_stored);
       this.attendanceSheet = {};
       this.removeSheet = {};
@@ -1999,6 +2001,7 @@ export class ListStudentPage {
 
   // 🟢 7. إصلاح دالتي إرسال الملاحظات (إضافة date و course_id الناقصة)
   async submitTextNote(student: Student, message: string) {
+    const idempotencyKey = this.offlineQueue.generateId();
     let data = {
       sid: student.sid,
       note: message,
@@ -2007,11 +2010,12 @@ export class ListStudentPage {
       new_rating: JSON.stringify([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
       date: this.dataProvider.getFormatedDate(this.dateSelected),
       course_id: this.navData?.cid || '',
-      session_id: this.userDetails.session_id
+      session_id: this.userDetails.session_id,
+      idempotency_key: idempotencyKey
     };
 
     if (!(await this.connectivity.refresh())) {
-      await this.offlineQueue.enqueue('note', data);
+      await this.offlineQueue.enqueue('note', data, idempotencyKey);
       this.dataProvider.showToast(this.lang.note_stored_offline);
       return;
     }
@@ -2027,6 +2031,7 @@ export class ListStudentPage {
   }
 
   async submitReviewNote(student: Student, stars: number, message: string) {
+    const idempotencyKey = this.offlineQueue.generateId();
     let data = {
       sid: student.sid,
       note: message,
@@ -2035,11 +2040,12 @@ export class ListStudentPage {
       new_rating: JSON.stringify(stars),
       date: this.dataProvider.getFormatedDate(this.dateSelected),
       course_id: this.navData?.cid || '',
-      session_id: this.userDetails.session_id
+      session_id: this.userDetails.session_id,
+      idempotency_key: idempotencyKey
     };
 
     if (!(await this.connectivity.refresh())) {
-      await this.offlineQueue.enqueue('note', data);
+      await this.offlineQueue.enqueue('note', data, idempotencyKey);
       this.dataProvider.showToast(this.lang.note_stored_offline);
       return;
     }

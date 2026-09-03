@@ -19,14 +19,18 @@ type QueueHandler = (payload: unknown) => Promise<unknown>;
  * (reconnect events + a bounded poll while non-empty), independent of which
  * page happens to be open.
  *
- * Note on duplicate writes: `id` is a locally-generated tracking key, not
- * a server-recognized idempotency token — the backend endpoints this
- * drains into (markAttendance/markOfflineDelayAttendance) don't accept one
- * today. A drain attempt whose request actually succeeded server-side but
- * whose response was lost (e.g. connection drops mid-response) can still
- * retry into a duplicate write on next drain — the same risk the original
- * hand-rolled per-page queues already carried. Closing that fully needs a
- * backend-side idempotency-key contract, out of scope for this pass.
+ * Idempotency: `id` doubles as the request's server-recognized idempotency
+ * key (staging.basmapp's `RunIdempotent`, Phase 5) — callers should
+ * pre-generate it via `generateId()`, embed that same value into the
+ * payload's own `idempotency_key` field before calling `enqueue()`, and
+ * pass it as `enqueue()`'s third argument so the queue item's own tracking
+ * id and the value the backend dedupes on are the same string, not two
+ * independently-generated ones. A drain attempt whose request actually
+ * succeeded server-side but whose response was lost (e.g. connection
+ * drops mid-response) now replays into the backend returning its stored
+ * result instead of re-executing the write, closing the duplicate-write
+ * risk the original hand-rolled per-page queues (and this queue's own
+ * earlier version) carried.
  */
 @Injectable({
   providedIn: 'root'
@@ -76,11 +80,20 @@ export class OfflineQueueService {
     if (onBatchSynced) this.batchCallbacks.set(type, onBatchSynced);
   }
 
-  async enqueue<T>(type: string, payload: T): Promise<void> {
+  /**
+   * Pre-generate a tracking id to embed into a payload's own
+   * `idempotency_key` field before calling `enqueue(type, payload, id)`
+   * with the same value — see the class-level note on idempotency above.
+   */
+  generateId(): string {
+    return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  async enqueue<T>(type: string, payload: T, id?: string): Promise<void> {
     await this.ready;
     const items = await this.getAll();
     items.push({
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      id: id ?? this.generateId(),
       type,
       payload,
       queuedAt: Date.now(),
@@ -148,7 +161,7 @@ export class OfflineQueueService {
 
       for (const payload of legacyItems) {
         items.push({
-          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          id: this.generateId(),
           type: legacy.type,
           payload,
           queuedAt: Date.now(),

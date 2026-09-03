@@ -18,6 +18,10 @@ export interface AttendanceSubmitPayload {
   school_id: string | number;
   sheet?: Record<string, Record<string, string>>;
   removal_sheet?: Record<string, { sid: string | number; sem: string | number }>;
+  /** Set only when replayed from OfflineQueueService — echoes its tracking
+   * id so the backend can recognize and dedupe a retried offline-queue
+   * write instead of re-executing it. */
+  idempotency_key?: string;
 }
 
 export interface AttendanceSubmitResult {

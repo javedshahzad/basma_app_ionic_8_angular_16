@@ -129,6 +129,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
       return;
     }
 
+    const idempotencyKey = this.offlineQueue.generateId();
     const data = {
       absent_date: this.selectedDate,
       absent_seminars: this.selectedSeminar,
@@ -141,11 +142,12 @@ export class SubmitAbsentApplicationPage implements OnInit {
       user_no: this.userDetails.details.user_no,
       submitted_by: this.userDetails.details.user_no,
       imageData: this.ImgData,
-      session_id: this.userDetails.session_id
+      session_id: this.userDetails.session_id,
+      idempotency_key: idempotencyKey
     };
 
     if (!(await this.connectivity.refresh())) {
-      await this.offlineQueue.enqueue('absent_application', data);
+      await this.offlineQueue.enqueue('absent_application', data, idempotencyKey);
       this.dataProvider.showToast(this.lang.application_stored_offline || 'تم حفظ الطلب وسوف يتم إرساله عند الاتصال بالإنترنت');
       await this.storageSr.remove('submitAppData');
       setTimeout(() => {

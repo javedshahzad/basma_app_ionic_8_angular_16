@@ -484,7 +484,13 @@ export class StudentsPage {
             });
         } else {
           this.dataProvider.hideLoading();
-          await this.offlineQueue.enqueue('delayattendance', { attendance: data, submittedByUser: submittedByUser });
+          const idempotencyKey = this.offlineQueue.generateId();
+          data.idempotency_key = idempotencyKey;
+          await this.offlineQueue.enqueue(
+            'delayattendance',
+            { attendance: data, submittedByUser: submittedByUser },
+            idempotencyKey
+          );
 
           // 🟢 للإرسال في وضع الأوفلاين أيضاً
           this.editMode = false;
