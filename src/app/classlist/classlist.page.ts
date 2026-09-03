@@ -29,12 +29,8 @@ import { CreateClassPage } from '../create-class/create-class.page';
 import { LoaderComponent } from '../components/loader/loader.component';
 import { IonReorderGroup } from '@ionic/angular';
 
-// 🟢 استبدال moment بـ dayjs واستدعاء إضافة الفترات الزمنية
-import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
-dayjs.extend(duration);
-
 import { ClasslistOptionsPopoverComponent } from '../components/classlist-options-popover/classlist-options-popover.component';
+import { SchoolDeletionBannerComponent } from '../components/school-deletion-banner/school-deletion-banner.component';
 import { StorageService } from '../service/storage.service';
 import { SyncService } from '../service/sync/sync.service';
 import { UserManagementApiService } from '../service/user-management-api/user-management-api.service';
@@ -60,7 +56,7 @@ interface DashboardSeminar {
   templateUrl: './classlist.page.html',
   styleUrls: ['./classlist.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, NgClass, FormsModule, TranslatePipe, HasRoleDirective]
+  imports: [IonicModule, NgClass, FormsModule, TranslatePipe, HasRoleDirective, SchoolDeletionBannerComponent]
 })
 export class ClasslistPage implements OnInit {
   readonly UserType = UserType;
@@ -96,6 +92,8 @@ export class ClasslistPage implements OnInit {
   showIcon: boolean = false;
   is_school_admin: number | boolean;
   deactivate_date: string;
+  /** Server-computed deactivate_date + SCHOOL_DELETION_GRACE_DAYS. */
+  delete_at: string | null = null;
 
   isPopoverOpen: boolean = false;
   popoverEvent: unknown;
@@ -299,6 +297,7 @@ export class ClasslistPage implements OnInit {
       .then(response => {
         this.dataProvider.errorALertMessage(response.message || '');
         this.deactivate_date = '';
+        this.delete_at = null;
         this.dataProvider.deactivate_date = '';
         this.cdr.markForCheck();
       })
@@ -662,8 +661,9 @@ export class ClasslistPage implements OnInit {
         }
       }
       if (!responseData.success) {
-        const deactivateInfo = responseData.response as { deactivate_date?: string };
+        const deactivateInfo = responseData.response as { deactivate_date?: string; delete_at?: string };
         this.deactivate_date = deactivateInfo.deactivate_date || '';
+        this.delete_at = deactivateInfo.delete_at || null;
         this.dataProvider.deactivate_date = deactivateInfo.deactivate_date || '';
         this.cdr.markForCheck();
       }
@@ -672,36 +672,11 @@ export class ClasslistPage implements OnInit {
     }
   }
 
-  // 🟢 استبدال moment بـ dayjs (بطريقة آمنة وصحيحة)
   trackByCourse(index: number, course: Course): string | number {
     return course?.cid ?? index;
   }
 
   trackByIndex(index: number): number {
     return index;
-  }
-
-  getDeactivateTime() {
-    let myDayjs = dayjs(this.dataProvider.deactivate_date, 'YYYY-MM-DD HH:mm:ss');
-    let now = dayjs();
-
-    // الفرق بالميللي ثانية
-    var total = myDayjs.diff(now);
-
-    // إضافة 72 ساعة (72 * 60 * 60 * 1000)
-    var t = total + 72 * 60 * 60 * 1000;
-
-    var seconds = Math.floor((t / 1000) % 60);
-    var minutes = Math.floor((t / 1000 / 60) % 60);
-    var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-    var days = Math.floor(t / (1000 * 60 * 60 * 24));
-
-    return {
-      total: t,
-      days: days,
-      hours: hours,
-      minutes: minutes,
-      seconds: seconds
-    };
   }
 }

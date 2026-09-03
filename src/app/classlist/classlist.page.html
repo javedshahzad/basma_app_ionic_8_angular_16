@@ -69,6 +69,13 @@
 }
 
 <ion-content class="lineone-bg" mode="md">
+  @if (deactivate_date && (is_school_admin || userType === UserType.Moderator || userType === UserType.Viewer)) {
+  <app-school-deletion-banner
+    [deleteAt]="delete_at"
+    [canCancel]="!!is_school_admin"
+    (cancelRequested)="revertSchoolDeletion()"
+  ></app-school-deletion-banner>
+  }
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)" [disabled]="!canReorder">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>

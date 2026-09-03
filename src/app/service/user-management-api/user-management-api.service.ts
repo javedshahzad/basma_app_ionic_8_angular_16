@@ -11,9 +11,12 @@ import { DataService } from '../data/data.service';
 export interface RawActionResponse {
   // requestTodeleteSchoolAccount/deleteSchoolPermanentlyRequest use this as
   // a plain boolean flag ("did the request go through") on failure, but as
-  // an object carrying the school's new deactivate_date on success —
-  // confirmed by real consumers of both (settings.page.ts, classlist.page.ts).
-  response?: boolean | { deactivate_date?: string };
+  // an object carrying the school's new deactivate_date/delete_at on
+  // success — confirmed by real consumers of both (settings.page.ts,
+  // classlist.page.ts). delete_at is the actual countdown target
+  // (deactivate_date + SCHOOL_DELETION_GRACE_DAYS, computed server-side) —
+  // never re-derive it client-side from a hardcoded grace-period constant.
+  response?: boolean | { deactivate_date?: string; delete_at?: string };
   success?: boolean;
   msg?: string;
 }
@@ -25,6 +28,7 @@ export interface SchoolRulesDetails {
     second_report_condition?: string | number;
     third_report_condition?: string | number;
     deactivate_date?: string;
+    delete_at?: string;
   };
   user_details?: {
     teacher_register_link?: string;

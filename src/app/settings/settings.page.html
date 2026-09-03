@@ -25,21 +25,12 @@
 </ion-header>
 
 <ion-content class="bg-surface-alt" mode="md">
-  @if (deactivate_date) {
-  <div class="bg-amber-50 border-b border-amber-200 text-amber-700 p-4 text-center font-bold text-sm shadow-sm">
-    <ion-icon name="warning" class="text-2xl mb-1 text-amber-500"></ion-icon>
-    <p class="m-0 leading-relaxed">
-      {{'setting.deactive_account_text' | translate}} <br />
-      <span
-        class="inline-block mt-2 bg-amber-100 text-amber-800 px-3 py-1 rounded-lg border border-amber-200"
-        dir="ltr"
-      >
-        @if (remainingTime.days > 0) {
-        <span>{{remainingTime.days}}D </span>
-        } {{remainingTime.hours}}H {{remainingTime.minutes}}M
-      </span>
-    </p>
-  </div>
+  @if (deactivate_date && (is_school_admin || userType === UserType.Moderator || userType === UserType.Viewer)) {
+  <app-school-deletion-banner
+    [deleteAt]="delete_at"
+    [canCancel]="!!is_school_admin"
+    (cancelRequested)="revertSchoolDeletion()"
+  ></app-school-deletion-banner>
   }
 
   <div class="p-5 max-w-2xl mx-auto" dir="rtl">
@@ -407,7 +398,7 @@
       >
         <ion-icon name="trash-outline" class="text-lg"></ion-icon> {{'setting.delete_School_button_text' | translate}}
       </button>
-      } @if (deactivate_date) {
+      } @if (deactivate_date && is_school_admin) {
       <button
         class="w-full bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-700 font-bold text-sm py-3 rounded-xl transition-all flex justify-center items-center gap-2 active:scale-[0.98]"
         (click)="revertSchoolDeletion()"

@@ -9,9 +9,6 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 import { Storage } from '@ionic/storage';
 
-// 🟢 استبدال moment بـ dayjs
-import dayjs from 'dayjs';
-
 // 🟢 1. استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
@@ -25,6 +22,7 @@ import { FormsModule } from '@angular/forms';
 import { LoggedInUser, UserDetails } from '../model/logged-in-user.model';
 import { HasRoleDirective } from '../directives/has-role.directive';
 import { PermissionService } from '../service/permission/permission.service';
+import { SchoolDeletionBannerComponent } from '../components/school-deletion-banner/school-deletion-banner.component';
 
 interface SettingsCountry {
   code?: string;
@@ -36,7 +34,7 @@ interface SettingsCountry {
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, FormsModule, TranslatePipe, HasRoleDirective]
+  imports: [IonicModule, FormsModule, TranslatePipe, HasRoleDirective, SchoolDeletionBannerComponent]
 })
 export class SettingsPage {
   trackByIndex(index: number): number {
@@ -84,13 +82,13 @@ export class SettingsPage {
   appThemeMode: 'light' | 'dark' = 'light';
 
   deactivate_date: string;
+  /** Server-computed deactivate_date + SCHOOL_DELETION_GRACE_DAYS — the
+   * countdown banner counts down to this, never a client-side constant. */
+  delete_at: string | null = null;
   delete_translation_text: Record<string, string> = {};
   showDeleteAlert: boolean = false;
-  DateLeftTodeleteAccount: string;
 
   show_save_spinner: boolean = false;
-  timerInterval: ReturnType<typeof setInterval>;
-  remainingTime: { days: number; hours: number; minutes: number } = { days: 0, hours: 0, minutes: 0 };
 
   // userDetails.details is genuinely optional on LoggedInUser (a real API
   // response can omit it), but every call site here only runs after
@@ -251,9 +249,8 @@ export class SettingsPage {
           this.user.warning_report_third = String(schoolDetail.third_report_condition ?? '');
           if (schoolDetail.deactivate_date) {
             this.deactivate_date = schoolDetail.deactivate_date;
-            this.startCountdownTimer();
-            let addHourtodate = this.dataProvider.addHoursToDate(new Date(), 72);
-            this.DateLeftTodeleteAccount = this.dataProvider.caclulateHours(this.deactivate_date, addHourtodate);
+            this.delete_at = schoolDetail.delete_at || null;
+            this.dataProvider.deactivate_date = this.deactivate_date;
           }
         }
         this.cdr.markForCheck();
@@ -423,8 +420,9 @@ export class SettingsPage {
         var responseData = response;
         if (responseData.success) {
           this.dataProvider.errorALertMessage(response.msg || '');
-          const deactivateInfo = responseData.response as { deactivate_date?: string };
+          const deactivateInfo = responseData.response as { deactivate_date?: string; delete_at?: string };
           this.deactivate_date = deactivateInfo.deactivate_date || '';
+          this.delete_at = deactivateInfo.delete_at || null;
           this.dataProvider.deactivate_date = deactivateInfo.deactivate_date || '';
         }
       }
@@ -445,6 +443,7 @@ export class SettingsPage {
       .then(response => {
         this.dataProvider.errorALertMessage(response.message || '');
         this.deactivate_date = '';
+        this.delete_at = null;
         this.dataProvider.deactivate_date = '';
         this.cdr.markForCheck();
       })
@@ -506,42 +505,4 @@ export class SettingsPage {
     });
   }
 
-  // 🟢 استبدال moment بـ dayjs بشكل مباشر
-  calculateRemainingTime() {
-    if (!this.deactivate_date) return;
-
-    let deactivationDate = dayjs(this.deactivate_date);
-    let now = dayjs();
-
-    // حساب الفرق بالميلي ثانية
-    let elapsed = now.diff(deactivationDate);
-    let total72Hours = 72 * 60 * 60 * 1000;
-
-    let remaining = total72Hours - elapsed;
-
-    if (remaining <= 0) {
-      this.remainingTime = { days: 0, hours: 0, minutes: 0 };
-    } else {
-      this.remainingTime = {
-        days: Math.floor(remaining / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((remaining / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((remaining / 1000 / 60) % 60)
-      };
-    }
-  }
-
-  startCountdownTimer() {
-    this.calculateRemainingTime();
-    this.cdr.markForCheck();
-    this.timerInterval = setInterval(() => {
-      this.calculateRemainingTime();
-      this.cdr.markForCheck();
-    }, 60000);
-  }
-
-  ionViewWillLeave() {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
-  }
 }
