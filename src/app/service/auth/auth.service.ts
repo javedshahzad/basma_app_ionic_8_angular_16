@@ -9,6 +9,7 @@ import { Router } from "@angular/router";
 import { Device } from "@capacitor/device";
 import { StorageService } from "../storage.service";
 import { OverlayService } from "../overlay/overlay.service";
+import { CredentialStorageService } from "../credential-storage/credential-storage.service";
 
 @Injectable({
   providedIn: "root",
@@ -24,13 +25,21 @@ export class AuthService {
   public currentUser: any = null;
   public currentUuid: string | null = null;
 
+  // JWT access token -- memory-only by design, never persisted (short-lived,
+  // shrinks what a device-storage compromise exposes). The refresh token is
+  // the durable credential; it lives in CredentialStorageService (encrypted
+  // on native), never here, and never in the generic `userloggedin` blob.
+  public accessToken: string | null = null;
+  private refreshInFlight: Promise<string | null> | null = null;
+
   constructor(
     public http: HttpClient,
     public platform: Platform,
     public dbProvider: DatabaseService,
     private router: Router,
     private storageSr: StorageService,
-    private overlay: OverlayService
+    private overlay: OverlayService,
+    private credentialStorage: CredentialStorageService
   ) {
     this.event = new Subject();
     this.hydrateCurrentUser();
@@ -39,6 +48,65 @@ export class AuthService {
   private async hydrateCurrentUser() {
     this.currentUser = await this.storageSr.get("userloggedin");
     this.currentUuid = await this.storageSr.get("uuid");
+
+    // Access tokens don't survive an app restart (memory-only) -- warm one
+    // up from the persisted refresh token now, so the first real request
+    // doesn't have to eat a 401-then-refresh round trip.
+    if (this.currentUser) {
+      await this.refreshAccessToken();
+    }
+  }
+
+  /**
+   * Exchanges the stored refresh token for a fresh access+refresh pair.
+   * Concurrent callers (e.g. several requests 401-ing at once) share the
+   * same in-flight promise instead of each rotating the refresh token
+   * themselves -- rotation means only the first would succeed, the rest
+   * would be handed an already-dead token.
+   * @returns the new access token, or null if refresh failed (no refresh
+   * token stored, or the server rejected it -- caller should treat this as
+   * "fully logged out").
+   */
+  async refreshAccessToken(): Promise<string | null> {
+    if (this.refreshInFlight) {
+      return this.refreshInFlight;
+    }
+    this.refreshInFlight = this.doRefreshAccessToken();
+    try {
+      return await this.refreshInFlight;
+    } finally {
+      this.refreshInFlight = null;
+    }
+  }
+
+  private async doRefreshAccessToken(): Promise<string | null> {
+    const refreshToken = await this.credentialStorage.get<string>("refreshToken");
+    if (!refreshToken) {
+      this.accessToken = null;
+      return null;
+    }
+
+    try {
+      const body = this.makeObjectToUrlParams({ refresh_token: refreshToken });
+      const res: any = await firstValueFrom(
+        this.http.post(environment.serverURL + "refreshToken", body)
+      );
+
+      if (!res?.success || !res.access_token) {
+        this.accessToken = null;
+        return null;
+      }
+
+      this.accessToken = res.access_token;
+      await this.credentialStorage.set("refreshToken", res.refresh_token);
+      return res.access_token;
+    } catch {
+      // Network failure, not necessarily an invalid token -- don't wipe the
+      // stored refresh token here, just fail this attempt. A genuinely
+      // invalid/expired/revoked refresh token gets a real {success:false}
+      // response above, not a thrown error.
+      return null;
+    }
   }
 
   changeUser(peram: boolean) {
@@ -93,9 +161,21 @@ export class AuthService {
     }
 
     if (resObj.success) {
+      // Access token: memory-only (MyInterceptor reads it off
+      // this.accessToken directly, synchronously, same pattern as
+      // currentUser/currentUuid). Refresh token: CredentialStorageService
+      // (encrypted-capable), never the plain StorageService blob below --
+      // it's a long-lived, password-equivalent credential.
+      this.accessToken = resObj.access_token || null;
+      if (resObj.refresh_token) {
+        await this.credentialStorage.set("refreshToken", resObj.refresh_token);
+      }
+
       // 🔒 نحفظ في المخزن الآمن (StorageService) + نسخة في الذاكرة فقط
       // لـ MyInterceptor، بدلاً من نص صريح في localStorage
-      await this.storageSr.set("userloggedin", resObj);
+      // (tokens themselves excluded -- see above, they have their own homes)
+      const { access_token, refresh_token, ...toPersist } = resObj;
+      await this.storageSr.set("userloggedin", toPersist);
       this.currentUser = resObj;
       return resObj;
     } else {
@@ -197,8 +277,16 @@ export class AuthService {
       throw "الرجاء التأكد من اتصالك بالإنترنت";
     }
 
+    // Every caller of doLogout() historically built { user_no, session_id }
+    // by hand -- rather than touching all of them, refresh_token (what the
+    // backend actually needs to revoke now) is resolved here internally and
+    // merged in. session_id, if present, is now inert -- harmless to keep
+    // sending, the backend just ignores it.
+    const refreshToken = await this.credentialStorage.get<string>("refreshToken");
+    const payload = { ...data, refresh_token: refreshToken };
+
     let header = new HttpHeaders();
-    let body: HttpParams = this.makeObjectToUrlParams(data);
+    let body: HttpParams = this.makeObjectToUrlParams(payload);
     header.append("Content-Type", "application/json");
 
     let response: any;
@@ -290,13 +378,17 @@ export class AuthService {
   makeObjectToUrlParams(data: Record<string, unknown>) {
     let body = new HttpParams();
     Object.keys(data).forEach(function (key) {
-      body = body.append(key, data[key] as string | number | boolean);
+      const value = data[key];
+      if (value === null || value === undefined) return;
+      body = body.append(key, value as string | number | boolean);
     });
     return body;
   }
 
   async flushLocalStorage() {
     this.currentUser = null;
+    this.accessToken = null;
+    await this.credentialStorage.remove("refreshToken");
     await this.storageSr.remove("userloggedin");
     await this.storageSr.remove("availablePlan"); 
     await this.storageSr.remove("attendance");

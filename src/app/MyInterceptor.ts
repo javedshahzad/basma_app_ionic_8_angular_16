@@ -10,11 +10,15 @@ import {
   HttpErrorResponse,
   HttpParams
 } from '@angular/common/http';
-import { Observable, throwError, timer, TimeoutError } from 'rxjs';
-import { tap, retry, catchError, timeout } from 'rxjs/operators';
+import { Observable, throwError, timer, TimeoutError, from } from 'rxjs';
+import { tap, retry, catchError, timeout, switchMap } from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
 import { DataService } from '@services/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
+
+// login/schoolRegister don't have a token yet; refreshToken is what mints
+// one and must stay reachable even when the current access token is dead.
+const AUTH_EXEMPT_ENDPOINTS = ['logout', 'login', 'schoolRegister', 'refreshToken'];
 
 @Injectable()
 export class MyInterceptor implements HttpInterceptor {
@@ -28,6 +32,15 @@ export class MyInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let requestToHandle = request;
+    const isAuthExempt = AUTH_EXEMPT_ENDPOINTS.some(endpoint => request.url.endsWith(endpoint));
+
+    // 0️⃣ JWT: يُرفق كترويسة Authorization، وليس داخل جسم الطلب — هذا هو آلية
+    // المصادقة الفعلية الآن (لم يعد session_id مستخدَماً إطلاقاً).
+    if (!isAuthExempt && this.auth.accessToken) {
+      requestToHandle = requestToHandle.clone({
+        setHeaders: { Authorization: `Bearer ${this.auth.accessToken}` }
+      });
+    }
 
     // 1️⃣ الشق الأول: المنطق الخاص بك (إضافة UUID و user_no لطلبات POST المحددة)
     // 🔒 تُضاف إلى جسم الطلب (body) بدلاً من رابط الطلب (query params) حتى لا تظهر
@@ -35,27 +48,25 @@ export class MyInterceptor implements HttpInterceptor {
     if (
       request.method === 'POST' &&
       this.auth.currentUser &&
-      !request.url.endsWith('logout') &&
-      !request.url.endsWith('login') &&
-      !request.url.endsWith('schoolRegister')
+      !isAuthExempt
     ) {
       const uuid = this.auth.currentUuid || '1122112233112233';
       const userNo = this.auth.currentUser.details?.user_no || '';
 
-      if (request.body instanceof HttpParams) {
-        requestToHandle = request.clone({
-          body: request.body.set('uuid', uuid).set('user_no', userNo)
+      if (requestToHandle.body instanceof HttpParams) {
+        requestToHandle = requestToHandle.clone({
+          body: requestToHandle.body.set('uuid', uuid).set('user_no', userNo)
         });
-      } else if (request.body instanceof FormData) {
-        const formData = request.body;
+      } else if (requestToHandle.body instanceof FormData) {
+        const formData = requestToHandle.body;
         formData.set('uuid', uuid);
         formData.set('user_no', userNo);
-        requestToHandle = request.clone({ body: formData });
+        requestToHandle = requestToHandle.clone({ body: formData });
       } else {
         // Unknown body shape — fall back to the previous query-param
         // behavior rather than risk mangling a body we don't recognize.
-        requestToHandle = request.clone({
-          params: request.params.set('uuid', uuid).set('user_no', userNo)
+        requestToHandle = requestToHandle.clone({
+          params: requestToHandle.params.set('uuid', uuid).set('user_no', userNo)
         });
       }
     }
@@ -109,6 +120,27 @@ export class MyInterceptor implements HttpInterceptor {
 
       // ج) 🛡️ اصطياد الأخطاء النهائية بعد نفاذ المحاولات (أو انقطاع الإنترنت أو انتهاء المهلة)
       catchError((error: any) => {
+        // د) 🔄 انتهاء صلاحية access token: تجديد صامت عبر refresh token ثم
+        // إعادة المحاولة مرة واحدة فقط. فشل التجديد يعني أن الجلسة انتهت
+        // فعلاً (refresh token غير موجود/منتهي/مُلغى) — تسجيل خروج فوري.
+        if (error instanceof HttpErrorResponse && error.status === 401 && !isAuthExempt) {
+          return from(this.auth.refreshAccessToken()).pipe(
+            switchMap(newAccessToken => {
+              if (!newAccessToken) {
+                this.dataProvider.hideLoading();
+                this.auth.flushLocalStorage().then(() => {
+                  this.router.navigate(['login'], { replaceUrl: true });
+                });
+                return throwError(() => error);
+              }
+              const retriedRequest = requestToHandle.clone({
+                setHeaders: { Authorization: `Bearer ${newAccessToken}` }
+              });
+              return next.handle(retriedRequest);
+            })
+          );
+        }
+
         if (error instanceof TimeoutError) {
           this.dataProvider.hideLoading();
           this.dataProvider.showToast(
