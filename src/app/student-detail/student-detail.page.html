@@ -1,12 +1,18 @@
 ﻿<ion-header class="ion-no-border bg-slate-50 border-b border-slate-200" mode="md">
   <ion-toolbar class="--bg-transparent">
     <ion-buttons slot="start" class="mr-2 flex gap-2">
-      @if (userType === 1 || userType === 3 || userType === 7) {
+      @if (userType === UserType.Admin || userType === UserType.Moderator || userType === UserType.Viewer) {
       <button
         (click)="openUserDetails($event, studentDetails)"
         class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center shadow-sm"
       >
         <ion-icon name="id-card-outline" class="text-lg"></ion-icon>
+      </button>
+      <button
+        (click)="openStudentCases(studentDetails)"
+        class="w-10 h-10 rounded-full bg-slate-50 border border-slate-100 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center shadow-sm"
+      >
+        <ion-icon name="briefcase-outline" class="text-lg"></ion-icon>
       </button>
       } @if (userType !==UserType.Parent) {
       <button

@@ -37,11 +37,21 @@ export class ApiClient {
   /** Function to convert object into param string
    * @param {Object} data - contains the properties to post to API
    * @returns Param string
+   *
+   * Keys whose value is null/undefined are skipped entirely rather than
+   * appended -- HttpParams.append() otherwise coerces them to the literal
+   * string "undefined"/"null" (confirmed live: an optional field built as
+   * `field: value || undefined`, e.g. a case's summary left blank, arrived
+   * at the backend as the actual text "undefined" instead of being omitted).
+   * The `field || undefined` pattern is common across the domain services'
+   * optional params, so this is the one place to fix it for all of them.
   */
   makeObjectToUrlParams(data: Record<string, unknown>) {
     let body = new HttpParams();
     Object.keys(data).forEach(function (key) {
-      body = body.append(key, data[key] as string | number | boolean);
+      const value = data[key];
+      if (value === null || value === undefined) return;
+      body = body.append(key, value as string | number | boolean);
     });
     return body;
   }

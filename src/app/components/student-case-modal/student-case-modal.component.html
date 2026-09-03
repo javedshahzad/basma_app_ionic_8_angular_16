@@ -1,0 +1,375 @@
+<div class="p-5 bg-slate-50 min-h-[60vh] pb-8" dir="rtl">
+  <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-100">
+    <h4 class="text-lg font-bold text-slate-800 m-0 flex items-center gap-2">
+      <ion-icon name="briefcase-outline" class="text-indigo-600 bg-indigo-50 p-2 rounded-xl"></ion-icon>
+      {{ 'student-cases.title' | translate }}
+    </h4>
+    <button
+      (click)="closeModal()"
+      class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full hover:bg-rose-50 hover:text-rose-500 transition-colors"
+    >
+      <ion-icon name="close" class="text-xl"></ion-icon>
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="flex justify-center py-10">
+      <ion-spinner name="crescent" color="primary"></ion-spinner>
+    </div>
+  }
+
+  <!-- ───────────────────── LIST VIEW ───────────────────── -->
+  @if (!loading && view === 'list') {
+    <div class="space-y-3">
+      @if (cases.length === 0) {
+        <div class="text-center text-sm text-slate-400 py-8">{{ 'student-cases.no_cases' | translate }}</div>
+      }
+      @for (c of cases; track c.case_id) {
+        <button
+          (click)="openCaseDetail(c.case_id)"
+          class="w-full text-start bg-white border border-slate-200 rounded-xl p-4 hover:border-indigo-300 hover:shadow-sm transition-all flex items-center justify-between gap-3"
+        >
+          <div class="flex flex-col gap-1">
+            <span class="text-sm font-bold text-slate-800">
+              {{ c.case_type ? (c.case_type.name_ar) : ('student-cases.restricted_hidden' | translate) }}
+            </span>
+            <span class="text-xs text-slate-400" dir="ltr">{{ c.opened_at | date: 'yyyy-MM-dd' }}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            @if (c.confidentiality === 'restricted') {
+              <ion-icon name="lock-closed" class="text-amber-500 text-base"></ion-icon>
+            }
+            <span
+              class="text-2xs font-bold px-2.5 py-1 rounded-full"
+              [ngClass]="{
+                'bg-sky-50 text-sky-600': c.status === 'open',
+                'bg-amber-50 text-amber-600': c.status === 'in_progress',
+                'bg-violet-50 text-violet-600': c.status === 'referred',
+                'bg-emerald-50 text-emerald-600': c.status === 'closed'
+              }"
+            >
+              {{ statusLabel(c.status) }}
+            </span>
+          </div>
+        </button>
+      }
+    </div>
+
+    <button
+      (click)="goToNewCase()"
+      class="w-full mt-5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-md shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center gap-2"
+    >
+      <ion-icon name="add-circle-outline" class="text-lg"></ion-icon>
+      {{ 'student-cases.open_new_case' | translate }}
+    </button>
+  }
+
+  <!-- ───────────────────── NEW CASE FORM ───────────────────── -->
+  @if (!loading && view === 'new') {
+    <div class="space-y-4">
+      <button (click)="view = 'list'" class="text-xs font-bold text-indigo-600 flex items-center gap-1 mb-2">
+        <ion-icon name="arrow-forward"></ion-icon>
+        {{ 'student-cases.back_to_list' | translate }}
+      </button>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-500 mb-2">{{ 'student-cases.case_type' | translate }}</label>
+        <select
+          [(ngModel)]="newCaseTypeId"
+          class="w-full bg-white border border-slate-200 rounded-xl px-3 py-3 text-sm font-bold text-slate-800"
+        >
+          <option [ngValue]="null">{{ 'student-cases.select_type' | translate }}</option>
+          @for (t of caseTypes; track t.id) {
+            <option [ngValue]="t.id">{{ t.name_ar }}</option>
+          }
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-500 mb-2">{{ 'student-cases.summary' | translate }}</label>
+        <ion-textarea
+          [(ngModel)]="newSummary"
+          [placeholder]="'student-cases.summary_placeholder' | translate"
+          [autoGrow]="true"
+          class="bg-white border border-slate-200 rounded-xl px-3 text-sm text-slate-800"
+        ></ion-textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-500 mb-2">{{ 'student-cases.confidentiality' | translate }}</label>
+        <div class="flex gap-2">
+          <button
+            (click)="newConfidentiality = 'standard'"
+            class="flex-1 py-3 rounded-xl text-sm font-bold border transition-all"
+            [ngClass]="newConfidentiality === 'standard' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200'"
+          >
+            {{ 'student-cases.confidentiality_standard' | translate }}
+          </button>
+          <button
+            (click)="newConfidentiality = 'restricted'"
+            class="flex-1 py-3 rounded-xl text-sm font-bold border transition-all"
+            [ngClass]="newConfidentiality === 'restricted' ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-slate-600 border-slate-200'"
+          >
+            {{ 'student-cases.confidentiality_restricted' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <button
+        (click)="submitNewCase()"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-md shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center gap-2"
+      >
+        <ion-icon name="save-outline" class="text-lg"></ion-icon>
+        {{ 'student-cases.open_case_button' | translate }}
+      </button>
+    </div>
+  }
+
+  <!-- ───────────────────── CASE DETAIL ───────────────────── -->
+  @if (!loading && view === 'detail' && selectedCase) {
+    <div class="space-y-4">
+      <button (click)="backToList()" class="text-xs font-bold text-indigo-600 flex items-center gap-1 mb-1">
+        <ion-icon name="arrow-forward"></ion-icon>
+        {{ 'student-cases.back_to_list' | translate }}
+      </button>
+
+      <!-- Tabs -->
+      <div class="flex gap-1 bg-slate-100 rounded-xl p-1">
+        @for (tab of ['overview', 'followup', 'referral', 'close']; track tab) {
+          <button
+            (click)="detailTab = $any(tab)"
+            class="flex-1 py-2 rounded-lg text-xs font-bold transition-all"
+            [ngClass]="detailTab === tab ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500'"
+          >
+            {{ 'student-cases.tab_' + tab | translate }}
+          </button>
+        }
+      </div>
+
+      <!-- Overview tab -->
+      @if (detailTab === 'overview') {
+        <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-slate-800">{{ selectedCase.case_type?.name_ar }}</span>
+            <span
+              class="text-2xs font-bold px-2.5 py-1 rounded-full"
+              [ngClass]="{
+                'bg-sky-50 text-sky-600': selectedCase.status === 'open',
+                'bg-amber-50 text-amber-600': selectedCase.status === 'in_progress',
+                'bg-violet-50 text-violet-600': selectedCase.status === 'referred',
+                'bg-emerald-50 text-emerald-600': selectedCase.status === 'closed'
+              }"
+            >
+              {{ statusLabel(selectedCase.status) }}
+            </span>
+          </div>
+          @if (selectedCase.summary) {
+            <p class="text-sm text-slate-600 whitespace-pre-wrap">{{ selectedCase.summary }}</p>
+          }
+          @if (selectedCase.confidentiality === 'restricted') {
+            <div class="flex items-center gap-1.5 text-xs font-bold text-amber-600">
+              <ion-icon name="lock-closed"></ion-icon>
+              {{ 'student-cases.confidentiality_restricted' | translate }}
+            </div>
+          }
+          @if (selectedCase.closure_outcome) {
+            <div class="pt-2 border-t border-slate-100">
+              <span class="block text-xs font-bold text-slate-500 mb-1">{{ 'student-cases.closure_outcome' | translate }}</span>
+              <p class="text-sm text-slate-600 whitespace-pre-wrap">{{ selectedCase.closure_outcome }}</p>
+            </div>
+          }
+        </div>
+
+        <!-- Specialist assignment -->
+        <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-2">
+          <span class="block text-xs font-bold text-slate-500">{{ 'student-cases.assign_specialist' | translate }}</span>
+          <div class="flex gap-2">
+            <select
+              [(ngModel)]="selectedSpecialistUserNo"
+              class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800"
+            >
+              <option [ngValue]="null">{{ 'student-cases.select_specialist' | translate }}</option>
+              @for (s of specialists; track s.user_no) {
+                <option [ngValue]="s.user_no">{{ s.first_name }}</option>
+              }
+            </select>
+            <button
+              (click)="assignSpecialist()"
+              [disabled]="!selectedSpecialistUserNo"
+              class="px-4 rounded-xl bg-indigo-50 text-indigo-600 font-bold text-xs disabled:opacity-40"
+            >
+              {{ 'student-cases.assign' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Moderator access exception (restricted cases, Admin/specialist only) -->
+        @if (selectedCase.confidentiality === 'restricted' && (isAdmin || isSpecialistOfSelectedCase)) {
+          <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+            <span class="block text-xs font-bold text-slate-500">{{ 'student-cases.moderator_access' | translate }}</span>
+
+            @if (selectedCase.moderator_grants.length > 0) {
+              <div class="flex flex-col gap-2">
+                @for (g of selectedCase.moderator_grants; track g.user_no) {
+                  <div class="flex items-center justify-between bg-slate-50 rounded-lg px-3 py-2">
+                    <span class="text-xs font-bold text-slate-700" dir="ltr">#{{ g.user_no }}</span>
+                    <button (click)="revokeModeratorAccess(g.user_no)" class="text-2xs font-bold text-rose-500">
+                      {{ 'student-cases.revoke' | translate }}
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+
+            <div class="flex gap-2">
+              <select
+                [(ngModel)]="selectedModeratorUserNo"
+                class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800"
+              >
+                <option [ngValue]="null">{{ 'student-cases.select_moderator' | translate }}</option>
+                @for (m of moderators; track m.user_no) {
+                  @if (!isModeratorGranted(m.user_no!)) {
+                    <option [ngValue]="m.user_no">{{ m.first_name }}</option>
+                  }
+                }
+              </select>
+              <button
+                (click)="grantModeratorAccess()"
+                [disabled]="!selectedModeratorUserNo"
+                class="px-4 rounded-xl bg-amber-50 text-amber-600 font-bold text-xs disabled:opacity-40"
+              >
+                {{ 'student-cases.grant' | translate }}
+              </button>
+            </div>
+          </div>
+        }
+      }
+
+      <!-- Follow-up tab -->
+      @if (detailTab === 'followup') {
+        <div class="space-y-3">
+          <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+            <select
+              [(ngModel)]="followUpType"
+              (ngModelChange)="onFollowUpTypeChange()"
+              class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-800"
+            >
+              <option value="note">{{ 'student-cases.followup_note' | translate }}</option>
+              <option value="parent_contact">{{ 'student-cases.followup_parent_contact' | translate }}</option>
+              <option value="meeting">{{ 'student-cases.followup_meeting' | translate }}</option>
+              <option value="referral_note">{{ 'student-cases.followup_referral_note' | translate }}</option>
+            </select>
+
+            @if (followUpType === 'parent_contact') {
+              <div class="flex items-center gap-2">
+                <ion-input
+                  type="tel"
+                  [(ngModel)]="followUpPhone"
+                  class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 text-sm font-bold text-slate-800"
+                ></ion-input>
+                @if (followUpPhone) {
+                  <a
+                    [href]="'tel:' + followUpPhone"
+                    class="w-11 h-11 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200"
+                  >
+                    <ion-icon name="call" class="text-xl"></ion-icon>
+                  </a>
+                }
+              </div>
+            }
+
+            <ion-textarea
+              [(ngModel)]="followUpDescription"
+              [placeholder]="'student-cases.followup_description_placeholder' | translate"
+              [autoGrow]="true"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-3 text-sm text-slate-800"
+            ></ion-textarea>
+
+            <button
+              (click)="submitFollowup()"
+              class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2"
+            >
+              <ion-icon name="add-outline"></ion-icon>
+              {{ 'student-cases.add_followup' | translate }}
+            </button>
+          </div>
+
+          @for (f of selectedCase.followups; track f.id) {
+            <div class="bg-white border border-slate-200 rounded-xl p-3">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-2xs font-bold text-indigo-500">{{ 'student-cases.followup_' + f.follow_up_type | translate }}</span>
+                <span class="text-2xs text-slate-400" dir="ltr">{{ f.created_at | date: 'yyyy-MM-dd HH:mm' }}</span>
+              </div>
+              <p class="text-sm text-slate-700 whitespace-pre-wrap">{{ f.description }}</p>
+              @if (f.contact_phone) {
+                <span class="text-xs text-slate-400" dir="ltr">{{ f.contact_phone }}</span>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Referral tab -->
+      @if (detailTab === 'referral') {
+        <div class="space-y-3">
+          @if (selectedCase.status !== 'closed') {
+            <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+              <ion-textarea
+                [(ngModel)]="referralReason"
+                [placeholder]="'student-cases.referral_reason_placeholder' | translate"
+                [autoGrow]="true"
+                class="bg-slate-50 border border-slate-200 rounded-xl px-3 text-sm text-slate-800"
+              ></ion-textarea>
+              <button
+                (click)="submitReferral()"
+                class="w-full bg-violet-600 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2"
+              >
+                <ion-icon name="git-branch-outline"></ion-icon>
+                {{ 'student-cases.refer_case' | translate }}
+              </button>
+            </div>
+          }
+
+          @for (r of selectedCase.referrals; track r.id) {
+            <div class="bg-white border border-slate-200 rounded-xl p-3 space-y-1">
+              <span class="text-2xs text-slate-400" dir="ltr">{{ r.referred_at | date: 'yyyy-MM-dd HH:mm' }}</span>
+              <p class="text-sm text-slate-700 whitespace-pre-wrap">{{ r.reason }}</p>
+              @if (r.committee_response) {
+                <div class="pt-1 border-t border-slate-100 mt-1">
+                  <span class="block text-2xs font-bold text-slate-500">{{ 'student-cases.committee_response' | translate }}</span>
+                  <p class="text-sm text-slate-600 whitespace-pre-wrap">{{ r.committee_response }}</p>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Close tab -->
+      @if (detailTab === 'close') {
+        <div class="bg-white border border-slate-200 rounded-xl p-4 space-y-3">
+          @if (selectedCase.status === 'closed') {
+            <div class="text-center text-sm font-bold text-emerald-600 py-4 flex flex-col items-center gap-2">
+              <ion-icon name="checkmark-circle" class="text-3xl"></ion-icon>
+              {{ 'student-cases.already_closed' | translate }}
+            </div>
+          } @else {
+            <ion-textarea
+              [(ngModel)]="closureOutcome"
+              [placeholder]="'student-cases.closure_outcome_placeholder' | translate"
+              [autoGrow]="true"
+              class="bg-slate-50 border border-slate-200 rounded-xl px-3 text-sm text-slate-800"
+            ></ion-textarea>
+            <button
+              (click)="submitClose()"
+              class="w-full bg-rose-500 text-white font-bold py-3 rounded-xl text-sm flex items-center justify-center gap-2"
+            >
+              <ion-icon name="checkmark-done-outline"></ion-icon>
+              {{ 'student-cases.close_case' | translate }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -21,6 +21,7 @@ import { Storage } from '@ionic/storage';
 import { AddReviewComponent } from '../add-review/add-review.component';
 import { Printer, PrintOptions } from '@awesome-cordova-plugins/printer/ngx';
 import { StudentDetailsComponent } from '../components/student-details/student-details.component';
+import { StudentCaseModalComponent } from '../components/student-case-modal/student-case-modal.component';
 import { AvatarImagesComponent } from '../components/avatar-images/avatar-images.component';
 import { Browser } from '@capacitor/browser';
 import { ImageProcessingService } from '../service/image-processing/image-processing.service';
@@ -105,14 +106,7 @@ export class StudentDetailPage {
   notes: StudentNotesResponse = {};
   category: string;
   studentDetails: Student = {};
-  // Typed string | number (not just string) even though the backend only
-  // ever sends a string: the template compares this against numeric
-  // literals (userType === 1 etc, pre-existing — a real bug where the
-  // comparison always evaluates false, hiding a button for every role).
-  // Narrowing to string alone would flag that comparison as a type error;
-  // widening here preserves the exact (broken) existing behavior without
-  // this lint pass silently deciding to fix or hide a UI-visibility bug.
-  userType: string | number;
+  userType: string;
   lang: Record<string, string> = {};
   userDetails: LoggedInUser = {};
   noteMessage: string = '';
@@ -1551,6 +1545,21 @@ export class StudentDetailPage {
       student.medical_condition = data.medical_condition;
       this.cdr.markForCheck();
     }
+  }
+
+  /** Second entry point next to the ID-card button, same role guard
+   * (Admin/Moderator/Viewer) — opens a standalone case-management modal,
+   * no edit to StudentDetailsComponent or its updateStudentPhone path. */
+  async openStudentCases(student: Student) {
+    const modal = await this.modalController.create({
+      component: StudentCaseModalComponent,
+      componentProps: { student },
+      breakpoints: [0, 0.5, 0.85, 1],
+      initialBreakpoint: 0.85,
+      handleBehavior: 'cycle',
+      cssClass: 'lineone-bottom-sheet'
+    });
+    await modal.present();
   }
 
   sendPushMessageToStudentParent(msg: string) {

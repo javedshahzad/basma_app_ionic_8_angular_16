@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  background: var(--ion-color-light, #f8fafc);
+
+  ion-textarea,
+  ion-input {
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+  }
+}
