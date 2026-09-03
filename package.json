@@ -13,7 +13,8 @@
     "lint": "ng lint",
     "analyze": "ng build --configuration=production --source-map && source-map-explorer www/*.js --no-border-checks --html www/bundle-report.html",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,html,scss}\""
+    "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
+    "postinstall": "patch-package"
   },
   "private": true,
   "dependencies": {
@@ -103,6 +104,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "patch-package": "^8.0.1",
     "postcss": "^8.5.8",
     "prettier": "^3.9.6",
     "source-map-explorer": "^2.5.3",

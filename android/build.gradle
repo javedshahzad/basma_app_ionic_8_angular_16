@@ -9,6 +9,13 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:9.0.0'
         classpath 'com.google.gms:google-services:4.4.4'
+        // Kotlin support (Restore Credentials plugin, Part B2) -- classic
+        // Gradle-plugin classpath rather than AGP's built-in Kotlin, matching
+        // this project's own android.builtInKotlin=false (gradle.properties).
+        // Hardcoded (not $kotlinVersion from variables.gradle) -- that file
+        // is applied further down this script, after buildscript{} already
+        // evaluated.
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.10'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
