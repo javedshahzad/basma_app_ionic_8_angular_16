@@ -19,8 +19,7 @@ export const environment = {
     docUrl:"https://basmapp.com/BasmaCP/",
     ipinfoToken: "eebb6806073dbe",
     // اتركه فارغاً محلياً حتى لا تُرسَل أخطاء بيئة التطوير إلى Sentry
-    sentryDsn: "",
-    recaptchaSiteKey: "6LcOc6ctAAAAACL0_qEZFaj1LyexPY9pp0k3OFtp"
+    sentryDsn: ""
 
 
 };

@@ -15,7 +15,6 @@ import { CredentialStorageService } from '../service/credential-storage/credenti
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
 import { PrefetchService } from '../service/prefetch/prefetch.service';
-import { RecaptchaService } from '../service/recaptcha/recaptcha.service';
 
 import { FormsModule } from '@angular/forms';
 
@@ -59,7 +58,6 @@ export class LoginPage {
     private deviceApi: DeviceApiService,
     private planApi: PlanApiService,
     private prefetchService: PrefetchService,
-    private recaptcha: RecaptchaService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -198,12 +196,9 @@ export class LoginPage {
 
     await this.presentPopover();
 
-    const recaptchaToken = await this.recaptcha.execute('login');
-
     let loginData = {
       ...this.user,
-      uuid: this.uniqueDeviceId,
-      recaptcha_token: recaptchaToken
+      uuid: this.uniqueDeviceId
     };
 
     this.authProvider
