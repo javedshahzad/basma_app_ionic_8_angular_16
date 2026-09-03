@@ -24,6 +24,8 @@ import { SyncService } from './service/sync/sync.service';
 import { DeviceApiService } from './service/device-api/device-api.service';
 import { PlanApiService } from './service/plan-api/plan-api.service';
 import { ReportsApiService } from './service/reports-api/reports-api.service';
+import { RestoreCredentialsApiService } from './service/restore-credentials-api/restore-credentials-api.service';
+import { RestoreCredentials } from './native/restore-credentials.plugin';
 import { Browser } from '@capacitor/browser';
 import { PushNotifications } from '@capacitor/push-notifications';
 
@@ -91,6 +93,7 @@ export class AppComponent {
     private planApi: PlanApiService,
     private reportsApi: ReportsApiService,
     public permissionService: PermissionService,
+    private restoreCredentialsApi: RestoreCredentialsApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.storageSr.init();
@@ -239,7 +242,20 @@ export class AppComponent {
           this.dbProvider.openDataBase().then(async () => {
             this.dbProvider.createTable();
 
-            const userLoggedIn = await this.storageSr.get('userloggedin');
+            let userLoggedIn = await this.storageSr.get('userloggedin');
+
+            // 🟢 Android Restore Credentials (Part B3): before falling through
+            // to the login screen, try a silent sign-in via the on-device
+            // resident WebAuthn key. On success this re-reads freshly-persisted
+            // session data, so the existing branch below runs exactly as it
+            // would for a normal stored login -- no separate routing/menu logic
+            // to keep in sync.
+            if (!userLoggedIn && this.platform.is('android')) {
+              const restored = await this.tryRestoreCredentialLogin();
+              if (restored) {
+                userLoggedIn = await this.storageSr.get('userloggedin');
+              }
+            }
 
             if (userLoggedIn) {
               this.loggedin = true;
@@ -441,6 +457,35 @@ export class AppComponent {
       this.navController.navigateRoot('/tabs/student-titles', { animated: true, animationDirection: 'forward' });
     } else {
       this.navController.navigateRoot('/tabs/classlist', { animated: true, animationDirection: 'forward' });
+    }
+  }
+
+  // 🟢 Android Restore Credentials (Part B3): silent sign-in via the
+  // on-device resident WebAuthn key, attempted only when no session is
+  // already stored. The native plugin (Part B2) doesn't exist yet, so this
+  // simply resolves false for now -- treated identically to "nothing to
+  // restore" or any other failure, never surfaced to the user. On success,
+  // applyRestoredSession() has already persisted the session the same way
+  // a normal login would.
+  private async tryRestoreCredentialLogin(): Promise<boolean> {
+    try {
+      const challenge = await this.restoreCredentialsApi.authChallenge();
+      if (!challenge) return false;
+
+      const result = await RestoreCredentials.getRestoreCredential({
+        requestJson: JSON.stringify(challenge.options)
+      });
+      if (!result.found || !result.authenticationResponseJson) return false;
+
+      const response = JSON.parse(result.authenticationResponseJson);
+      const authResult = await this.restoreCredentialsApi.authVerify(response, challenge.challenge_ticket);
+      if (!authResult) return false;
+
+      await this.auth.applyRestoredSession(authResult);
+      return true;
+    } catch (error) {
+      console.log('Restore credential sign-in skipped:', error);
+      return false;
     }
   }
 

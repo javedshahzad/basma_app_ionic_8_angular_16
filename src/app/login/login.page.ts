@@ -15,6 +15,8 @@ import { CredentialStorageService } from '../service/credential-storage/credenti
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
 import { PrefetchService } from '../service/prefetch/prefetch.service';
+import { RestoreCredentialsApiService } from '../service/restore-credentials-api/restore-credentials-api.service';
+import { RestoreCredentials } from '../native/restore-credentials.plugin';
 
 import { FormsModule } from '@angular/forms';
 
@@ -58,6 +60,7 @@ export class LoginPage {
     private deviceApi: DeviceApiService,
     private planApi: PlanApiService,
     private prefetchService: PrefetchService,
+    private restoreCredentialsApi: RestoreCredentialsApiService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -226,6 +229,10 @@ export class LoginPage {
         // 🟢 1. تسجيل الجهاز في السيرفر فوراً لمنع الطرد
         await this.LogInDevice(response.details.user_no, response.session_id);
 
+        // 🟢 Android Restore Credentials (Part B3) -- best-effort, fire-and-forget,
+        // never blocks or fails a real login.
+        this.registerRestoreCredential();
+
         // 🟢 2. إضافة manual: true لمنع التوجيه المزدوج
         this.authProvider.publishEvent({ loggedin: true, details: response.details, manual: true });
         this.authProvider.changeUser(true);
@@ -352,5 +359,27 @@ export class LoginPage {
       .catch(error => {
         console.error('Failed to register device:', error);
       });
+  }
+
+  // 🟢 Android Restore Credentials (Part B3): registers this device's
+  // resident WebAuthn key so a later reinstall can sign back in without a
+  // password. Best-effort only -- the native plugin (Part B2) doesn't
+  // exist yet, so every call below simply rejects for now; that's treated
+  // identically to any other failure here, never surfaced to the user.
+  private async registerRestoreCredential(): Promise<void> {
+    if (!this.platform.is('android')) return;
+    try {
+      const challenge = await this.restoreCredentialsApi.registerChallenge();
+      if (!challenge) return;
+
+      const result = await RestoreCredentials.createRestoreCredential({
+        requestJson: JSON.stringify(challenge.options)
+      });
+      const response = JSON.parse(result.registrationResponseJson);
+
+      await this.restoreCredentialsApi.registerVerify(response, challenge.challenge_ticket);
+    } catch (error) {
+      console.log('Restore credential registration skipped:', error);
+    }
   }
 }

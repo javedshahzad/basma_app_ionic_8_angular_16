@@ -10,6 +10,7 @@ import { Device } from "@capacitor/device";
 import { StorageService } from "../storage.service";
 import { OverlayService } from "../overlay/overlay.service";
 import { CredentialStorageService } from "../credential-storage/credential-storage.service";
+import { RestoreCredentials } from "../../native/restore-credentials.plugin";
 
 @Injectable({
   providedIn: "root",
@@ -161,26 +162,47 @@ export class AuthService {
     }
 
     if (resObj.success) {
-      // Access token: memory-only (MyInterceptor reads it off
-      // this.accessToken directly, synchronously, same pattern as
-      // currentUser/currentUuid). Refresh token: CredentialStorageService
-      // (encrypted-capable), never the plain StorageService blob below --
-      // it's a long-lived, password-equivalent credential.
-      this.accessToken = resObj.access_token || null;
-      if (resObj.refresh_token) {
-        await this.credentialStorage.set("refreshToken", resObj.refresh_token);
-      }
-
-      // 🔒 نحفظ في المخزن الآمن (StorageService) + نسخة في الذاكرة فقط
-      // لـ MyInterceptor، بدلاً من نص صريح في localStorage
-      // (tokens themselves excluded -- see above, they have their own homes)
-      const { access_token, refresh_token, ...toPersist } = resObj;
-      await this.storageSr.set("userloggedin", toPersist);
-      this.currentUser = resObj;
-      return resObj;
+      return await this.persistAuthResponse(resObj);
     } else {
       throw resObj.msg || "فشل تسجيل الدخول";
     }
+  }
+
+  /**
+   * Persists an access+refresh token pair and the rest of a login-shaped
+   * response ({success, access_token, refresh_token, details, ...}).
+   * Shared by doLogin() and applyRestoredSession() (Part B) -- restoreCredential/
+   * authVerify returns the exact same shape /login does, by design, so both
+   * are stored the same way.
+   */
+  private async persistAuthResponse(resObj: any): Promise<any> {
+    // Access token: memory-only (MyInterceptor reads it off
+    // this.accessToken directly, synchronously, same pattern as
+    // currentUser/currentUuid). Refresh token: CredentialStorageService
+    // (encrypted-capable), never the plain StorageService blob below --
+    // it's a long-lived, password-equivalent credential.
+    this.accessToken = resObj.access_token || null;
+    if (resObj.refresh_token) {
+      await this.credentialStorage.set("refreshToken", resObj.refresh_token);
+    }
+
+    // 🔒 نحفظ في المخزن الآمن (StorageService) + نسخة في الذاكرة فقط
+    // لـ MyInterceptor، بدلاً من نص صريح في localStorage
+    // (tokens themselves excluded -- see above, they have their own homes)
+    const { access_token, refresh_token, ...toPersist } = resObj;
+    await this.storageSr.set("userloggedin", toPersist);
+    this.currentUser = resObj;
+    return resObj;
+  }
+
+  /**
+   * Applies a successful Android Restore Credentials sign-in (Part B3,
+   * called from app.component.ts before the normal login screen would
+   * otherwise show). Same response shape /login returns, stored the same
+   * way, so nothing downstream needs restore-specific handling.
+   */
+  async applyRestoredSession(resObj: any): Promise<any> {
+    return this.persistAuthResponse(resObj);
   }
 
   removeUrlFromString(inputString: string) {
@@ -284,6 +306,14 @@ export class AuthService {
     // sending, the backend just ignores it.
     const refreshToken = await this.credentialStorage.get<string>("refreshToken");
     const payload = { ...data, refresh_token: refreshToken };
+
+    // Forget the on-device restore credential alongside the server-side
+    // refresh-token revocation (Part B3, hook 3). Fire-and-forget: a
+    // missing/unimplemented native plugin (B2 not built yet) or any other
+    // failure here must never block a real logout.
+    if (this.platform.is("android")) {
+      RestoreCredentials.clearRestoreCredential().catch(() => {});
+    }
 
     let header = new HttpHeaders();
     let body: HttpParams = this.makeObjectToUrlParams(payload);

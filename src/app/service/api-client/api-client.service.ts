@@ -128,4 +128,40 @@ export class ApiClient {
       })
     })
   }
+
+  /**
+   * Same as postRequest(), but sends a real JSON body instead of
+   * form-urlencoded -- needed for endpoints whose payload includes a
+   * nested object (e.g. a WebAuthn response) that wouldn't survive
+   * HttpParams serialization intact.
+   * @param {Object} data - contains the properties to post to API
+   * @param {String} slug - contains the API method to call
+   * @returns Success or error
+   */
+  postJsonRequest<T = ApiResponse>(data: Record<string, unknown>, slug: string): Promise<T | false> {
+    return new Promise((resolve, reject) => {
+      this.getNetworkInformation().then((isNetworkAvailable) => {
+        if (isNetworkAvailable) {
+          const header = new HttpHeaders({ 'Content-Type': 'application/json' });
+          const body = { ...data, lang_code: environment.lang_code };
+          this.http.post<T>(environment.serverURL + slug, body, { headers: header }).subscribe((response) => {
+            if (response) {
+              resolve(response);
+            } else {
+              reject('Unable to find any record');
+            }
+          }, (error) => {
+            const status = error?.status ?? 'unknown';
+            const statusText = error?.statusText || error?.message || 'Unknown Error';
+            loadSentryAngular()?.then(Sentry => {
+              Sentry.captureException(new Error(`HTTP ${status} (${statusText}) on ${slug}`), { extra: { slug, status, statusText } });
+            });
+            reject(error);
+          })
+        } else {
+          resolve(false);
+        }
+      })
+    })
+  }
 }
