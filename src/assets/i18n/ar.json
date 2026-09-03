@@ -68,7 +68,12 @@
     "forgot": "نسيت كلمه المرور ؟",
     "app_logo_alt": "شعار التطبيق",
     "welcome_back_subtitle": "مرحباً بك مجدداً، يرجى تسجيل الدخول للمتابعة",
-    "user_fallback": "مستخدم"
+    "user_fallback": "مستخدم",
+    "delete_account_hint": "اضغط مطولاً للحذف",
+    "delete_account_title": "حذف الحساب المحفوظ",
+    "delete_account_message": "هل تريد حذف حساب \"{{name}}\" من قائمة الحسابات المحفوظة؟",
+    "delete_account_cancel": "إلغاء",
+    "delete_account_confirm": "حذف"
   },
   "tos_pp":{
     "and":"و",
@@ -205,7 +210,8 @@
     "logo": "شعار المؤسسة التعليمية",
     "register_btn": "تسجيل",
     "country": "الدولة",
-    "username_pattern_error": "يسمح فقط بالأحرف الإنجليزية، الأرقام، وعلامة (_) بدون مسافات."
+    "username_pattern_error": "يسمح فقط بالأحرف الإنجليزية، الأرقام، وعلامة (_) بدون مسافات.",
+    "country_auto_detected": "تم تحديد الدولة تلقائياً: {{country}}"
   },
   "reg_student": {
     "title": "إضافة طالب جديد",

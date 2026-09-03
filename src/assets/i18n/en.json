@@ -68,7 +68,12 @@
     "forgot": "Forgot Password ?",
     "app_logo_alt": "App Logo",
     "welcome_back_subtitle": "Welcome back, please log in to continue",
-    "user_fallback": "User"
+    "user_fallback": "User",
+    "delete_account_hint": "Press and hold to delete",
+    "delete_account_title": "Delete Saved Account",
+    "delete_account_message": "Remove \"{{name}}\" from your saved accounts?",
+    "delete_account_cancel": "Cancel",
+    "delete_account_confirm": "Delete"
   },
   "tos_pp":{
     "and":"and",
@@ -302,7 +307,8 @@
     "logo": "School Logo",
     "register_btn": "Register",
     "country": "Country",
-    "username_pattern_error": "Only English letters, numbers, and the (_) character are allowed, without spaces."
+    "username_pattern_error": "Only English letters, numbers, and the (_) character are allowed, without spaces.",
+    "country_auto_detected": "Country auto-detected: {{country}}"
   },
   "reg_student": {
     "title": "Register Student",

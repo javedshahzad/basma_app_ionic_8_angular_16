@@ -38,6 +38,7 @@ export class SchoolRegistrationPage implements OnInit {
   countries: any[] = [];
   countryDetails: any = {};
   AgreeOnTosPP = true;
+  detectingCountry = false;
 
   constructor(
     public navCtrl: NavController,
@@ -58,6 +59,7 @@ export class SchoolRegistrationPage implements OnInit {
 
   async ngOnInit() {
     await this.getCountry();
+    await this.autoDetectCountry();
   }
 
   // 🟢 جلب اللغة والدولة بشكل آمن
@@ -69,6 +71,70 @@ export class SchoolRegistrationPage implements OnInit {
       this.countries = this.geo.getArCountries();
     }
     this.cdr.markForCheck();
+  }
+
+  /** Smart country detection, most-to-least reliable, never blocking manual
+   * selection: (1) IP geolocation via GeoServiceProvider.getMyLocation() —
+   * already built (ipinfo.io) but never wired to any screen before this.
+   * (2) If that fails (no network, API down, ipinfoToken exhausted), the
+   * browser's own locale region subtag (`navigator.language`, e.g.
+   * "ar-KW" -> "KW") — instant, no network, no extra dependency. (3) If
+   * neither resolves to one of our known countries, `selected_country`
+   * simply stays empty ('') exactly as it always has, and the existing
+   * `ionic-selectable` dropdown is right there for the user to pick
+   * manually — registerSchool() already blocks submission with a clear
+   * message until a country is chosen, so nothing new is needed there. */
+  async autoDetectCountry() {
+    if (this.selected_country?.code) return; // already set (e.g. by a prior detection re-entry)
+
+    this.detectingCountry = true;
+    this.cdr.markForCheck();
+
+    let code = await this.detectCountryByIp();
+    if (!code) {
+      code = this.detectCountryByLocale();
+    }
+
+    if (code && this.applyDetectedCountry(code)) {
+      // Left silent on failure (network/API issues are routine, not worth
+      // surfacing) — only confirm the happy path, matching this app's
+      // existing toast-on-success/silent-on-best-effort-failure pattern.
+      this.dataProvider.showToast(
+        this.translate.instant('reg_school.country_auto_detected', { country: this.selected_country.name })
+      );
+    }
+
+    this.detectingCountry = false;
+    this.cdr.markForCheck();
+  }
+
+  private async detectCountryByIp(): Promise<string> {
+    try {
+      const location = await this.geo.getMyLocation();
+      return location && location.countryCode ? String(location.countryCode).toUpperCase() : '';
+    } catch {
+      return '';
+    }
+  }
+
+  private detectCountryByLocale(): string {
+    try {
+      const locale = navigator?.language || (navigator as any)?.userLanguage || '';
+      // "ar-KW" / "en-US" -> region subtag after the hyphen/underscore.
+      const match = /[-_]([A-Za-z]{2})$/.exec(locale);
+      return match ? match[1].toUpperCase() : '';
+    } catch {
+      return '';
+    }
+  }
+
+  /** @returns true if `code` matched a known country and was applied. */
+  private applyDetectedCountry(code: string): boolean {
+    const match = this.countries.find(c => String(c.code).toUpperCase() === code);
+    if (!match) return false;
+    this.selected_country = match;
+    this.assignCountry();
+    return true;
   }
 
   assignCountry() {

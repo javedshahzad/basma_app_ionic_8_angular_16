@@ -1,5 +1,5 @@
 ﻿import { Component, NgZone, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ModalController, NavController, Platform, PopoverController, IonicModule } from '@ionic/angular';
+import { ModalController, NavController, Platform, PopoverController, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
@@ -36,6 +36,11 @@ export class LoginPage {
   viewPass: boolean = false;
   uniqueDeviceId: string = ''; // 🟢 متغير لتخزين المعرف الفريد بأمان
 
+  // ضغط مطوّل لحذف حساب محفوظ من الشريط أعلى نموذج الدخول.
+  private longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  private longPressTriggered: boolean = false;
+  private readonly LONG_PRESS_MS = 550;
+
   constructor(
     public navCtrl: NavController,
     public authProvider: AuthService,
@@ -43,6 +48,7 @@ export class LoginPage {
     public platform: Platform,
     public translate: TranslateService,
     public popoverController: PopoverController,
+    private alertController: AlertController,
     public zone: NgZone,
     private router: Router,
     public dbProvider: DatabaseService,
@@ -103,6 +109,66 @@ export class LoginPage {
 
   togglePass() {
     this.viewPass = !this.viewPass;
+  }
+
+  /** Tapping a saved-account chip normally logs straight in with it —
+   * suppressed when the tap is the tail end of a long-press that already
+   * opened the delete confirmation, so the confirm dialog doesn't get
+   * immediately followed by an unwanted login attempt. */
+  selectSavedAccount(u: any) {
+    if (this.longPressTriggered) {
+      this.longPressTriggered = false;
+      return;
+    }
+    this.user.email_id = u.email_id;
+    this.user.password = u.password;
+    this.login();
+  }
+
+  startLongPress(u: any) {
+    this.cancelLongPress();
+    this.longPressTimer = setTimeout(() => {
+      this.longPressTriggered = true;
+      this.confirmDeleteSavedAccount(u);
+    }, this.LONG_PRESS_MS);
+  }
+
+  cancelLongPress() {
+    if (this.longPressTimer) {
+      clearTimeout(this.longPressTimer);
+      this.longPressTimer = null;
+    }
+  }
+
+  async confirmDeleteSavedAccount(u: any) {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: this.translate.instant('login.delete_account_title'),
+      message: this.translate.instant('login.delete_account_message', { name: u.name || this.translate.instant('login.user_fallback') }),
+      buttons: [
+        {
+          text: this.translate.instant('login.delete_account_cancel'),
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            this.longPressTriggered = false;
+          }
+        },
+        {
+          text: this.translate.instant('login.delete_account_confirm'),
+          cssClass: 'text-rose-500 font-bold',
+          handler: async () => {
+            this.zone.run(() => {
+              this.loggedinUser = this.loggedinUser.filter(existing => existing.email_id !== u.email_id);
+              this.cdr.markForCheck();
+            });
+            await this.credentialStorage.set('earlyLogin', this.loggedinUser);
+            this.longPressTriggered = false;
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   openRegister() {
