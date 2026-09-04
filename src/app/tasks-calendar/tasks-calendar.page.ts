@@ -152,7 +152,10 @@ export class TasksCalendarPage implements OnInit {
               if (i == 9) i = 0;
             });
           } else {
-            this.noDataFound = this.lang.no_class_found;
+            // no_class_found lives in the alertmessages bundle (lang1), not
+            // sidemenu (lang) -- reading it off `lang` yielded undefined and
+            // left the empty state blank.
+            this.noDataFound = this.lang1.no_class_found;
             this.classes = [];
           }
         } else {

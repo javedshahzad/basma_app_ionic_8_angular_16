@@ -350,6 +350,24 @@
             <label class="block text-xs font-bold text-slate-600 mb-1.5"
               >{{'manage_report.select_degree' |translate}}</label
             >
+            @if (educationStages.length > 1) {
+            <div
+              class="bg-slate-50 border border-slate-200 rounded-xl px-3 mb-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
+            >
+              <ion-select
+                mode="md"
+                interface="popover"
+                [(ngModel)]="selectedStageId"
+                placeholder="{{'setting.stage_preset' | translate}}"
+                (ionChange)="OnselectStage($event)"
+                class="w-full text-sm font-bold text-slate-800 py-3"
+              >
+                @for (st of educationStages; track st.id) {
+                <ion-select-option [value]="st.id.toString()">{{ stageLabel(st) }}</ion-select-option>
+                }
+              </ion-select>
+            </div>
+            }
             <div
               class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all"
             >
@@ -362,8 +380,8 @@
                 (ionChange)="$any($event.target).offsetWidth > 0 ? OnselectDegree($event) : null"
                 class="w-full text-sm font-bold text-slate-800 py-3 md:hidden"
               >
-                @for (item of AllDegrees; track trackById($index, item)) {
-                <ion-select-option [value]="item.id">{{ item.name }}</ion-select-option>
+                @for (item of stageDegrees; track trackById($index, item)) {
+                <ion-select-option [value]="item.id">{{ degreeLabel(item) }}</ion-select-option>
                 }
               </ion-select>
               <ion-select
@@ -374,8 +392,8 @@
                 (ionChange)="$any($event.target).offsetWidth > 0 ? OnselectDegree($event) : null"
                 class="w-full text-sm font-bold text-slate-800 py-3 hidden md:block"
               >
-                @for (item of AllDegrees; track trackById($index, item)) {
-                <ion-select-option [value]="item.id">{{ item.name }}</ion-select-option>
+                @for (item of stageDegrees; track trackById($index, item)) {
+                <ion-select-option [value]="item.id">{{ degreeLabel(item) }}</ion-select-option>
                 }
               </ion-select>
             </div>
@@ -513,6 +531,12 @@
                 <ion-content class="bg-slate-50">
                   <div class="p-4 space-y-2 pb-8">
                     @for (item of filteredActions; track trackById($index, item)) {
+                    <!-- Tier heading: the bylaw's actions are escalation steps
+                         (الإجراء الأول -> الثاني -> الثالث), so show the group
+                         boundary rather than one flat list. -->
+                    @if (item.tier_label && ($index === 0 || filteredActions[$index - 1].tier_label !== item.tier_label)) {
+                    <p class="text-2xs font-bold text-indigo-600 pt-2 pb-0.5 px-1">{{item.tier_label}}</p>
+                    }
                     <div
                       (click)="selectAction(item)"
                       class="p-3.5 bg-slate-50 border rounded-xl flex items-center justify-between active:scale-95 transition-all cursor-pointer shadow-sm hover:border-indigo-300"
@@ -760,7 +784,7 @@
                 <div class="text-left">
                   <span class="text-3xs font-bold text-slate-400">{{'manage_report.degree' | translate}}</span>
                   <div class="font-bold text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-md">
-                    {{edays.degree_name}}
+                    {{reportDegreeLabel(edays)}}
                   </div>
                 </div>
               </div>

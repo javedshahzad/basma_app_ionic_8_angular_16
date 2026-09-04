@@ -24,6 +24,7 @@ import {
   ExitDayRecord
 } from '../service/reports-api/reports-api.service';
 import { HolidaysApiService } from '../service/holidays-api/holidays-api.service';
+import { EducationStagesApiService, EducationStage } from '../service/education-stages-api/education-stages-api.service';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 import { NgClass, DatePipe } from '@angular/common';
@@ -83,10 +84,14 @@ export class StudentReportManagePage implements OnInit {
   foundAnyReport = true;
   isDeleted: boolean = false;
   AllDegrees: Degree[] = [];
+  // Education stages the school has adopted. Degrees are per-stage now, so the
+  // pledge cascade starts here: stage -> degree -> violation -> action.
+  educationStages: EducationStage[] = [];
+  selectedStageId: string = '';
   AllDegreesViolations: DegreeViolation[] = [];
   AllDegreeActions: DegreeAction[] = [];
-  pledgesViolation: DegreeViolation;
-  pledgesAction: DegreeAction;
+  pledgesViolation: DegreeViolation | null;
+  pledgesAction: DegreeAction | null;
   AllStudentPledgesReports: PledgesReport[] = [];
   AvailablePlan: UserPlan;
   holidayString: string;
@@ -120,6 +125,7 @@ export class StudentReportManagePage implements OnInit {
   }
 
   constructor(
+    private educationStagesApi: EducationStagesApiService,
     public navCtrl: NavController,
     public dataProvider: DataService,
     public authProvider: AuthService,
@@ -321,8 +327,80 @@ export class StudentReportManagePage implements OnInit {
       .then(res => {
         console.log(res);
         this.AllDegrees = res.data || [];
+        // Preselect when the school has only one stage -- nothing to choose.
+        const stageIds = Array.from(new Set(this.AllDegrees.map(d => String(d.stage_id || '')).filter(Boolean)));
+        if (stageIds.length === 1) {
+          this.selectedStageId = stageIds[0];
+        }
         this.cdr.markForCheck();
       });
+    this.loadEducationStages();
+  }
+
+  loadEducationStages() {
+    this.educationStagesApi
+      .getEducationStages({
+        user_no: this.userInfo.user_no,
+        school_id: this.userInfo.school_id,
+        session_id: this.userDetails.session_id
+      })
+      .then(stages => {
+        this.educationStages = stages || [];
+        if (this.educationStages.length === 1) {
+          this.selectedStageId = String(this.educationStages[0].id);
+        }
+        this.cdr.markForCheck();
+      })
+      .catch(error => console.log(error));
+  }
+
+  /**
+   * Bilingual label for a stage or degree, following the same
+   * prefer-current-language-then-fall-back rule used elsewhere in the app
+   * (see student-case-modal.component.ts). Stages and degrees carry both an
+   * Arabic and an English name.
+   *
+   * Violations, actions and action tier labels deliberately have NO
+   * equivalent: they are verbatim text from the MoE regulation, which exists
+   * only in Arabic, so there is nothing to switch to and they render as-is in
+   * both languages.
+   */
+  localized(ar?: string | null, en?: string | null): string {
+    const isEn = (this.translate.currentLang || this.translate.getDefaultLang()) === 'en';
+    return (isEn ? en || ar : ar || en) || '';
+  }
+
+  stageLabel(stage: EducationStage): string {
+    return this.localized(stage.nameAr, stage.nameEn);
+  }
+
+  degreeLabel(degree: Degree): string {
+    return this.localized(degree.name, degree.name_en);
+  }
+
+  /** Same rule for an already-saved pledge row. The violation and action text
+   * on such a row stays Arabic -- it is regulation text with no English form. */
+  reportDegreeLabel(report: PledgesReport): string {
+    return this.localized(report.degree_name, report.degree_name_en);
+  }
+
+  /** Degrees belonging to the chosen stage. Without this the picker shows the
+   * same four names once per adopted stage. */
+  get stageDegrees(): Degree[] {
+    if (!this.selectedStageId) return [];
+    return this.AllDegrees.filter(d => String(d.stage_id || '') === this.selectedStageId);
+  }
+
+  OnselectStage(event: any) {
+    this.selectedStageId = String(event.target.value || '');
+    // Everything downstream belongs to the previous stage's catalogue.
+    this.AllDegreesViolations = [];
+    this.filteredViolations = [];
+    this.AllDegreeActions = [];
+    this.filteredActions = [];
+    this.pledgesViolation = null;
+    this.pledgesAction = null;
+    this.cdr.markForCheck();
   }
 
   OnselectDegree(event: any) {
@@ -330,8 +408,14 @@ export class StudentReportManagePage implements OnInit {
   }
 
   getAllActionsAndViolations(degreeId: string) {
+    // school_id and stage_id are required now: the catalogue is school-owned
+    // and stage-scoped, so omitting school_id returns an empty list rather
+    // than the old shared catalogue.
     let data = {
       degree_id: degreeId,
+      user_no: this.userInfo.user_no,
+      school_id: this.userInfo.school_id,
+      stage_id: this.selectedStageId,
       session_id: this.userDetails.session_id
     };
     this.dataProvider.showLoading();
@@ -339,7 +423,11 @@ export class StudentReportManagePage implements OnInit {
     this.reportsApi.GetAllDegreeViolations(data).then(res => {
       let violations = res.data || [];
       violations.forEach((element, index) => {
-        violations[index].description = `${element.desc_number}-${element.description}`;
+        // Bylaw-seeded violations carry no desc_number; prefixing blindly
+        // rendered them as "null-…".
+        violations[index].description = element.desc_number
+          ? `${element.desc_number}-${element.description}`
+          : `${element.description}`;
       });
       this.AllDegreesViolations = violations;
       this.filteredViolations = violations;
@@ -349,7 +437,9 @@ export class StudentReportManagePage implements OnInit {
     this.reportsApi.GetAllDegreeActions(data).then(res => {
       let actions = res.data || [];
       actions.forEach((element, index) => {
-        actions[index].description = `${element.action_number}-${element.description}`;
+        actions[index].description = element.action_number
+          ? `${element.action_number}-${element.description}`
+          : `${element.description}`;
       });
       this.AllDegreeActions = actions;
       this.filteredActions = actions;

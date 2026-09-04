@@ -75,11 +75,11 @@
     "delete_account_cancel": "Cancel",
     "delete_account_confirm": "Delete"
   },
-  "tos_pp":{
-    "and":"and",
-    "agree_on":"Agree on ",
-    "term_of_service":"Terms of Service ",
-    "privacy_policy":"Privacy Policy "
+  "tos_pp": {
+    "and": "and",
+    "agree_on": "Agree on ",
+    "term_of_service": "Terms of Service ",
+    "privacy_policy": "Privacy Policy "
   },
   "reg_new_parent": {
     "pagetitle": "Register Parent",
@@ -150,7 +150,7 @@
     "startFrom": "Start From",
     "endOn": "End On",
     "status": "Status",
-    "orderId":"Order ID",
+    "orderId": "Order ID",
     "success_title": "Successfully Completed",
     "review_request_title": "Review Request",
     "review_request_subtitle": "Please review the plan details before confirming",
@@ -176,30 +176,30 @@
     "what_are_plan_decription2": "1- Individual Subscription: For Normal users within school to be able to have paid features for there own only.",
     "what_are_plan_decription3": "Through the student newspaper so that the student's performance can be viewed through illustrative graphs and statistics for a specific period of time,",
     "what_are_plan_decription4": "2- School Subscription: For Admin users which allow all users within school to inherit paid features form admin user that have valud subscription plan.",
-    "classes_allowed":"No. Classes",
-    "no_of_students":"No of Students",
-    "news_post_per_day":"News Post Per Day",
-    "e_learning_material":"E-learning Material",
-    "student_report_pdf":"Student Review Report(PDF)",
-    "student_report_excel":"Student Review Report(Excel)",
-    "follow_up_teacher_pdf":"Follow-up Teacher Report(PDF)",
-    "follow_up_teacher_excel":"Follow-up Teacher Report(Excel)",
-    "call_of_student_report":"Call Of Student Parent Reports",
-    "student_pledges":"Student Pledge Report",
-    "premi_head_1":"تقييم أداء الطلاب",
-    "premi_title_1":"آلية مبتكر وفق بنود يمكن من خلالها قياس مستوى الطالب تعليمياً وسلوكياً بهدف السماح بتوحيد آليه تقييم الطلاب من قبل المعلمين مما يسمح لإدارة المدرسة باستخراج التقرير النهائي بدقة نتائج عالية",
-    "premi_head_2":"متابعة معلم إلكترونية",
-    "premi_title_2":"يمكن للمعلمين تصميم متابعة للطلاب يحدد فيها بنود التقييم ودرجة كل بند بما يتناسب مع طبيعة المادة الدراسية كذلك يمكن ربط أحد البنود بحضور وغياب الطالب",
-    "premi_head_3":"تنظيم مواعيد الاختبارات القصيرة",
-    "premi_title_3":"يمكن تنظيم مواعيد الاختبارات القصير من خلال صحيفة الصف مما يسمح للمعلمين باختيار التاريخ المناسب للاختبار مع ارفاق تعليمات عن محتوى الاختبار مما يسهل على الطلاب المتابعة ومعرفة المواعيد ومحتوى الاختبارات بدقة عن طريق رؤية التقويم المخصص للصف",
-    "premi_head_4":"تنوع في التقارير",
-    "premi_title_4":"الخاصة يمكن لك طباعة العديد من التقارير منها طباعة غياب لمجموعة طلاب خلال فترة زمنية محددة أو المتسربين من الحصص الدراسية",
-    "app_manual":"بعض المميزات قد تكون مرتبطة في الموقع الإلكتروني فقط وغير متاحة في تطبيق الهواتف ويمكنك الاطلاع على",
-    "app_manual_link":"دليل المستخدم.",
-    "tos":"سياسية الاستخدام.",
-    "pp":"سياسية الخصوصية.",
-    "try_free":"Activate Features",
-    "subscribe_now":"Continue to Use the app"
+    "classes_allowed": "No. Classes",
+    "no_of_students": "No of Students",
+    "news_post_per_day": "News Post Per Day",
+    "e_learning_material": "E-learning Material",
+    "student_report_pdf": "Student Review Report(PDF)",
+    "student_report_excel": "Student Review Report(Excel)",
+    "follow_up_teacher_pdf": "Follow-up Teacher Report(PDF)",
+    "follow_up_teacher_excel": "Follow-up Teacher Report(Excel)",
+    "call_of_student_report": "Call Of Student Parent Reports",
+    "student_pledges": "Student Pledge Report",
+    "premi_head_1": "تقييم أداء الطلاب",
+    "premi_title_1": "آلية مبتكر وفق بنود يمكن من خلالها قياس مستوى الطالب تعليمياً وسلوكياً بهدف السماح بتوحيد آليه تقييم الطلاب من قبل المعلمين مما يسمح لإدارة المدرسة باستخراج التقرير النهائي بدقة نتائج عالية",
+    "premi_head_2": "متابعة معلم إلكترونية",
+    "premi_title_2": "يمكن للمعلمين تصميم متابعة للطلاب يحدد فيها بنود التقييم ودرجة كل بند بما يتناسب مع طبيعة المادة الدراسية كذلك يمكن ربط أحد البنود بحضور وغياب الطالب",
+    "premi_head_3": "تنظيم مواعيد الاختبارات القصيرة",
+    "premi_title_3": "يمكن تنظيم مواعيد الاختبارات القصير من خلال صحيفة الصف مما يسمح للمعلمين باختيار التاريخ المناسب للاختبار مع ارفاق تعليمات عن محتوى الاختبار مما يسهل على الطلاب المتابعة ومعرفة المواعيد ومحتوى الاختبارات بدقة عن طريق رؤية التقويم المخصص للصف",
+    "premi_head_4": "تنوع في التقارير",
+    "premi_title_4": "الخاصة يمكن لك طباعة العديد من التقارير منها طباعة غياب لمجموعة طلاب خلال فترة زمنية محددة أو المتسربين من الحصص الدراسية",
+    "app_manual": "بعض المميزات قد تكون مرتبطة في الموقع الإلكتروني فقط وغير متاحة في تطبيق الهواتف ويمكنك الاطلاع على",
+    "app_manual_link": "دليل المستخدم.",
+    "tos": "سياسية الاستخدام.",
+    "pp": "سياسية الخصوصية.",
+    "try_free": "Activate Features",
+    "subscribe_now": "Continue to Use the app"
   },
   "search": {
     "search": "Search Student",
@@ -211,7 +211,6 @@
     "no_matching_results": "No results matching your search",
     "search_hint_text": "Type a student's name or ID to search"
   },
-
   "user_selection": {
     "title": "Select Users",
     "search_placeholder": "Search by username...",
@@ -368,7 +367,6 @@
     "logout": "Logout",
     "register_link": "Teacher Registration Link",
     "backend": "Backend Link",
-    "register_school": "School Registration",
     "post_news": "Post News",
     "rate": "Rate App",
     "share": "Share App",
@@ -386,10 +384,10 @@
     "Plans": "Activate Features",
     "users_list": "Users List",
     "tasks_calendar": "Exam Dates",
-    "DeleteAccount":"Delete Account",
-    "apply_voucher_code":"Apply Voucher Code",
+    "DeleteAccount": "Delete Account",
+    "apply_voucher_code": "Apply Voucher Code",
     "devices": "Devices",
-    "absent_students":"Absent Student",
+    "absent_students": "Absent Student",
     "main_menu_section": "Main Menu",
     "management_section": "Management & Settings",
     "legal_section": "Legal"
@@ -403,15 +401,15 @@
     "cancel": "Cancel",
     "okay": "Okay"
   },
-  "device":{
-    "devices_all":"All devices",
-    "no_device":"No device found!",
-    "all_logout":"Log Out from All",
-    "current_device":"Current Device",
-    "device_id":"Device Id",
-    "logout":"Logged Out",
-    "active":"Active",
-    "delete":"Delete Device",
+  "device": {
+    "devices_all": "All devices",
+    "no_device": "No device found!",
+    "all_logout": "Log Out from All",
+    "current_device": "Current Device",
+    "device_id": "Device Id",
+    "logout": "Logged Out",
+    "active": "Active",
+    "delete": "Delete Device",
     "status_label": "Status:",
     "confirm_delete_title": "Confirm Delete",
     "confirm_delete_text": "Are you sure you want to delete this device and log it out permanently?",
@@ -421,35 +419,35 @@
     "logout_all_text": "Your account will be logged out of all connected devices. Do you want to continue?",
     "yes_logout_btn": "Yes, Log Out"
   },
-  "absent_students":{
-    "absent_students":"Absent Students",
-    "class_select":"Select Class",
-    "date_select":"Select Date",
-    "seminar_number":"Seminar number",
-    "student_select":"Select Student",
-    "number_absent":"Number of Absent",
-    "student_name":"Student Name",
-    "student_class":"Class",
-    "total_absents":"Total absents",
-    "Sems":"Seminar",
-    "Date":"Absent Date",
-    "action":"Action",
-    "view_app":"Details",
-    "notes":"Notes",
-    "image":"Image",
-    "accepted":"Accepted",
-    "rejected":"Rejected",
-    "accept":"Accept",
-    "reject":"Reject",
-    "submit_again":"Submit Again",
-    "submit_app":"Submit Application",
-    "all_absent_app":"All Absent Applications",
-    "pending":"Pending",
-    "application_details":"Application Details",
-    "submitted_by":"Submitted by",
-    "status":"Status",
-    "view_application_list":"View Applications List",
-    "filter":"Filter",
+  "absent_students": {
+    "absent_students": "Absent Students",
+    "class_select": "Select Class",
+    "date_select": "Select Date",
+    "seminar_number": "Seminar number",
+    "student_select": "Select Student",
+    "number_absent": "Number of Absent",
+    "student_name": "Student Name",
+    "student_class": "Class",
+    "total_absents": "Total absents",
+    "Sems": "Seminar",
+    "Date": "Absent Date",
+    "action": "Action",
+    "view_app": "Details",
+    "notes": "Notes",
+    "image": "Image",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "accept": "Accept",
+    "reject": "Reject",
+    "submit_again": "Submit Again",
+    "submit_app": "Submit Application",
+    "all_absent_app": "All Absent Applications",
+    "pending": "Pending",
+    "application_details": "Application Details",
+    "submitted_by": "Submitted by",
+    "status": "Status",
+    "view_application_list": "View Applications List",
+    "filter": "Filter",
     "no_data": "No data found",
     "confirm": "Confirm",
     "cancel": "Cancel",
@@ -501,7 +499,6 @@
     "no_bulletins_title": "No Bulletins",
     "no_bulletins_text": "No new bulletins or circulars have been posted yet."
   },
-
   "classlist": {
     "pagetitle": "Class list",
     "seminar": "Statistical Present",
@@ -572,8 +569,7 @@
     "student_review": "Student Review",
     "student_note": "Student Note",
     "student_point": "Add Point to Student",
-    "cancel": "Cancel",
-    "student_points": "Points"
+    "cancel": "Cancel"
   },
   "student-cases": {
     "title": "Student Cases",
@@ -703,10 +699,10 @@
     "delete_School_button_text": "Delete School Account",
     "delete_school_alert_btn_yes": "Yes",
     "delete_school_alert_btn_no": "No",
-    "medical_condition":"Medical Condition",
-    "close":"Close",
-    "phone_one":"Phone #1",
-    "phone_two":"Phone #2",
+    "medical_condition": "Medical Condition",
+    "close": "Close",
+    "phone_one": "Phone #1",
+    "phone_two": "Phone #2",
     "personal_info_title": "Personal Information",
     "security_title": "Security & Password",
     "school_settings_title": "School Settings",
@@ -719,8 +715,9 @@
     "stage_name_en": "English Name",
     "stage_min_age": "Minimum Age",
     "stage_max_age": "Maximum Age",
-    "stage_sort_order": "Sort Order",
-    "confirm_delete_stage": "Are you sure you want to delete this stage? Catalog items linked to it will become available to every stage instead of being deleted."
+    "stage_preset": "Education stage",
+    "stage_preset_custom": "Custom stage",
+    "confirm_delete_stage": "Remove this education stage? It will be hidden along with its violations and actions catalogue. Pledges already recorded against it are kept."
   },
   "eLearning": {
     "title": "eLearning Material",
@@ -888,10 +885,10 @@
     "teacher_type": "Teacher type",
     "regular": "Regular",
     "split": "Split",
-    "absent_students":"Absent Student",
-    "show":"Show",
-    "hide":"Hide",
-    "application_list":"Application List"
+    "absent_students": "Absent Student",
+    "show": "Show",
+    "hide": "Hide",
+    "application_list": "Application List"
   },
   "parent_request_list": {
     "title": "New Parents Join Request",
@@ -918,7 +915,6 @@
     "present": "Present",
     "absent": "Absent",
     "total": "Total",
-    "note": "Notes",
     "grand_total": "School Total",
     "total_percent": "Attendance rate",
     "report_date": "Report Date",
@@ -943,8 +939,8 @@
     "model_title": "Student Review",
     "seminar": "Select Seminar",
     "date": "Select Date",
-    "individual_plan":"Individual Follow-up Plan",
-    "group_councling":"Group Counseling Session",
+    "individual_plan": "Individual Follow-up Plan",
+    "group_councling": "Group Counseling Session",
     "select_exam_date": "Select exam date",
     "select_exam_date_title": "Select Exam Date",
     "confirm": "Confirm",
@@ -1026,17 +1022,17 @@
     "printReport": "Print report",
     "suspend_def_note": "Leaving the school system",
     "exit_def_note": "Guardian",
-    "call_off_report":"Call of Student Report",
-    "student_pledges_report":"Student Pledges Report",
-    "reason":"Reason",
-    "select_degree":"Select Degree",
-    "select_violation":"Select Reason",
-    "select_action":"Select Action",
-    "degree":"Degree",
-    "select_time":"Select Time",
-    "reports":"Reports",
-    "no_reports":"No Reports",
-    "day_name":"Day",
+    "call_off_report": "Call of Student Report",
+    "student_pledges_report": "Student Pledges Report",
+    "reason": "Reason",
+    "select_degree": "Select Degree",
+    "select_violation": "Select Reason",
+    "select_action": "Select Action",
+    "degree": "Degree",
+    "select_time": "Select Time",
+    "reports": "Reports",
+    "no_reports": "No Reports",
+    "day_name": "Day",
     "student_data_unavailable": "Student data unavailable",
     "class_data_unavailable": "Class data unavailable",
     "add_report": "Add Report",
@@ -1132,13 +1128,12 @@
     "confirm_delete_text": "Are you sure you want to permanently delete this user?",
     "yes_delete_btn": "Yes, Delete"
   },
-
   "alertmessages": {
     "login_unauthorized": "Please check your login info",
     "delay_att_mod_error": "You can not modify the delay",
     "att_not_all_complete_err": "Please mark the complete attendance first",
     "att_not_complete_err": "Please mark the attendance first",
-    "mark_all_attendance":"Please mark the attendance for all students in the selected sheet",
+    "mark_all_attendance": "Please mark the attendance for all students in the selected sheet",
     "att_modification_error": "You can not modify the attendance",
     "complete_att_submission": "Please complete the attendance submission first",
     "not_allowed_att_date": "You can not mark attendance for selected date",
@@ -1274,7 +1269,7 @@
     "add_note_success_message": "Student note submitted successfully",
     "note_stored_offline": "Note saved and will be sent once connected to the internet",
     "application_stored_offline": "Application saved and will be sent once connected to the internet",
-    "avatar":"Avatar",
+    "avatar": "Avatar",
     "insufficient_points_merge_title": "Sorry, you don't have enough points to craft this title.",
     "connection_error_retry_later": "A connection error occurred, please try again later.",
     "avatar_processing_error": "Unable to process the avatar image, please try again.",
@@ -1352,7 +1347,6 @@
     "points_added_prefix": "",
     "points_added_suffix": " points added successfully!"
   },
-
   "action_icons": {
     "edit_class": "Edit class",
     "create_class": "Create class",
@@ -1360,18 +1354,17 @@
     "reorder_class": "Reorder Class",
     "cancel": "Cancel"
   },
-  "subscription_duration":{
-    "Standard":"Standard Plan options",
-    "Premium":"Premium Plan options",
-    "month":"month",
-    "months":"months",
-    "continue":"Continue",
-    "by_subscription":"By subscribing, you agree to Basma!'s",
-    "tos":"terms and conditions",
-    "subscription":"Subscription Confirm",
-    "subscription_success":"Success Receipt"
+  "subscription_duration": {
+    "Standard": "Standard Plan options",
+    "Premium": "Premium Plan options",
+    "month": "month",
+    "months": "months",
+    "continue": "Continue",
+    "by_subscription": "By subscribing, you agree to Basma!'s",
+    "tos": "terms and conditions",
+    "subscription": "Subscription Confirm",
+    "subscription_success": "Success Receipt"
   },
-
   "add_review": {
     "criteria_1": "1. Student's attendance, punctuality, and commitment to schedule during the class period",
     "criteria_2": "2. Cooperation with fellow students during the class period",
@@ -1396,7 +1389,6 @@
     "star_acceptable": "Acceptable",
     "star_weak": "Weak"
   },
-
   "student_titles": {
     "page_title": "Titles & Achievements Vault",
     "skills_tree_title": "Skills Tree & Wallet",
@@ -1414,7 +1406,6 @@
     "secret_badges_hint": "Discover hidden secrets! Perform exceptional deeds at school to unlock these rare badges.",
     "secret_badge": "Secret Badge"
   },
-
   "followup_student_list": {
     "add_fields_tooltip": "Add Fields",
     "export_file_tooltip": "Export File",
@@ -1426,7 +1417,6 @@
     "no_students_hint": "No students were found in this class.",
     "confirm_delete_title": "Confirm Deletion"
   },
-
   "student_detail": {
     "general_performance_indicator": "General Performance Indicator",
     "skill_excellence_indicator": "Skill Excellence Indicator",
@@ -1448,7 +1438,6 @@
     "absence_note_placeholder": "Write the note details or absence excuse here...",
     "fetching_absence_stats": "Fetching absence statistics accurately..."
   },
-
   "teacher_view": {
     "time_remaining_edit": "Time remaining to edit your attendance:",
     "cumulative_class_strength": "Cumulative Class Strength",
@@ -1467,7 +1456,6 @@
     "absent": "Absent",
     "select_all": "Select All"
   },
-
   "popovers": {
     "enable_edit_mode": "Enable Edit Mode",
     "register_new_student": "Register New Student",

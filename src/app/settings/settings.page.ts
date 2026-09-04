@@ -16,7 +16,7 @@ import {
   UserManagementApiService,
   SchoolRulesDetails
 } from '../service/user-management-api/user-management-api.service';
-import { EducationStagesApiService, EducationStage } from '../service/education-stages-api/education-stages-api.service';
+import { EducationStagesApiService, EducationStage, PresetStage } from '../service/education-stages-api/education-stages-api.service';
 import { UserType } from '../constants/user-type';
 
 import { FormsModule } from '@angular/forms';
@@ -96,12 +96,15 @@ export class SettingsPage {
   educationStages: EducationStage[] = [];
   showStageModal: boolean = false;
   editingStageId: number | null = null;
-  stageForm: { name_ar: string; name_en: string; min_age: number | null; max_age: number | null; sort_order: number | null } = {
+  presetStages: PresetStage[] = [];
+  // '' = a custom stage the school defines itself; otherwise the stageKey of
+  // the pre-defined MoE stage being adopted.
+  selectedPresetKey: string = '';
+  stageForm: { name_ar: string; name_en: string; min_age: number | null; max_age: number | null } = {
     name_ar: '',
     name_en: '',
     min_age: null,
-    max_age: null,
-    sort_order: 0
+    max_age: null
   };
   showDeleteStageAlert: boolean = false;
   stagePendingDeletion: EducationStage | null = null;
@@ -202,6 +205,7 @@ export class SettingsPage {
       if (this.permissionService.hasRole(UserType.Admin)) {
         this.getAllRules();
         this.loadEducationStages();
+        this.loadPresetStages();
       }
     } else {
       this.dataProvider.hideLoading();
@@ -286,6 +290,42 @@ export class SettingsPage {
     };
   }
 
+  /** Pre-defined stages are static catalogue data, so they are fetched once
+   * alongside the school's own list rather than each time the modal opens. */
+  loadPresetStages() {
+    this.educationStagesApi
+      .getPresetStages(this.baseRequestData())
+      .then(presets => {
+        this.presetStages = presets || [];
+        this.cdr.markForCheck();
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  /** Same prefer-current-language-then-fall-back rule the rest of the app uses
+   * (see student-case-modal.component.ts). Stages carry both names. */
+  localized(ar?: string | null, en?: string | null): string {
+    const isEn = (this.translate.currentLang || this.translate.getDefaultLang()) === 'en';
+    return (isEn ? en || ar : ar || en) || '';
+  }
+
+  stageLabel(stage: EducationStage): string {
+    return this.localized(stage.nameAr, stage.nameEn);
+  }
+
+  presetLabel(preset: PresetStage): string {
+    return this.localized(preset.nameAr, preset.nameEn);
+  }
+
+  /** A preset already adopted by this school is not offered again -- the API
+   * rejects a duplicate, so hiding it avoids an error the user can't act on. */
+  get availablePresetStages(): PresetStage[] {
+    const taken = new Set(this.educationStages.map(s => s.stageKey).filter(Boolean));
+    return this.presetStages.filter(p => !taken.has(p.stageKey));
+  }
+
   loadEducationStages() {
     this.educationStagesApi
       .getEducationStages(this.baseRequestData())
@@ -300,18 +340,38 @@ export class SettingsPage {
 
   openAddStageModal() {
     this.editingStageId = null;
-    this.stageForm = { name_ar: '', name_en: '', min_age: null, max_age: null, sort_order: this.educationStages.length };
+    this.selectedPresetKey = '';
+    this.stageForm = { name_ar: '', name_en: '', min_age: null, max_age: null };
     this.showStageModal = true;
+  }
+
+  /** Picking a pre-defined stage fills in its canonical names and age range
+   * (الابتدائية 6-10، المتوسطة 11-14، الثانوية 15-17). The fields stay
+   * editable -- these are defaults, not a lock. Switching back to "custom"
+   * clears them so the school starts from a blank form rather than silently
+   * inheriting the last preset's ages. */
+  onPresetStageChange() {
+    const preset = this.presetStages.find(p => p.stageKey === this.selectedPresetKey);
+    if (!preset) {
+      this.stageForm = { name_ar: '', name_en: '', min_age: null, max_age: null };
+      return;
+    }
+    this.stageForm = {
+      name_ar: preset.nameAr,
+      name_en: preset.nameEn,
+      min_age: preset.minAge,
+      max_age: preset.maxAge
+    };
   }
 
   openEditStageModal(stage: EducationStage) {
     this.editingStageId = stage.id;
+    this.selectedPresetKey = '';
     this.stageForm = {
       name_ar: stage.nameAr,
       name_en: stage.nameEn,
       min_age: stage.minAge,
-      max_age: stage.maxAge,
-      sort_order: stage.sortOrder
+      max_age: stage.maxAge
     };
     this.showStageModal = true;
   }
@@ -326,13 +386,16 @@ export class SettingsPage {
       return;
     }
 
+    // sort_order is no longer sent -- the server derives it (a preset keeps its
+    // canonical position, a custom stage is appended), so there is no
+    // hand-maintained ordering to drift out of step between the two.
     const payload = {
       ...this.baseRequestData(),
+      stage_key: this.editingStageId ? null : (this.selectedPresetKey || null),
       name_ar: this.stageForm.name_ar,
       name_en: this.stageForm.name_en,
       min_age: this.stageForm.min_age,
-      max_age: this.stageForm.max_age,
-      sort_order: this.stageForm.sort_order ?? 0
+      max_age: this.stageForm.max_age
     };
 
     try {

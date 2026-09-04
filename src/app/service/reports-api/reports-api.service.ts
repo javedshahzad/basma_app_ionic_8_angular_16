@@ -34,17 +34,28 @@ export interface DegreeAction {
   id?: string | number;
   description?: string;
   action_number?: string | number;
+  /** Escalation step this action belongs to (الإجراء الأول/الثاني/الثالث). */
+  tier?: string | number;
+  tier_label?: string;
 }
 
 export interface Degree {
   id?: string | number;
+  /** Arabic label. `name_en` is the English one; violations and actions have
+   * no English equivalent (the source regulation is Arabic-only). */
   name?: string;
+  name_en?: string;
+  /** Degrees are per-education-stage now, so the same name (البسيطة …) appears
+   * once per stage the school has adopted. Filter by this before display. */
+  stage_id?: string | number;
+  degree_key?: string;
 }
 
 export interface PledgesReport {
   id?: string | number;
   date?: string;
   degree_name?: string;
+  degree_name_en?: string;
   violation_desc_number?: string | number;
   violation_description?: string;
   violation_desc?: string;

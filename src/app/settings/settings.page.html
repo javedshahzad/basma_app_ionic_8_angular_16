@@ -398,7 +398,7 @@
           @for (stage of educationStages; track stage.id) {
           <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-3">
             <div>
-              <span class="text-sm font-bold text-slate-700">{{stage.nameAr}}</span>
+              <span class="text-sm font-bold text-slate-700">{{stageLabel(stage)}}</span>
               <span class="text-2xs text-slate-400 block mt-0.5" dir="ltr">{{stage.minAge}} – {{stage.maxAge}}</span>
             </div>
             <div class="flex items-center gap-1">
@@ -496,6 +496,27 @@
       </h4>
     </div>
     <div class="space-y-3 mb-5">
+      @if (!editingStageId) {
+      <div>
+        <label class="block text-2xs font-bold text-slate-500 mb-1.5">{{'setting.stage_preset' | translate}}</label>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 focus-within:border-indigo-500 transition-all">
+          <ion-select
+            [(ngModel)]="selectedPresetKey"
+            (ionChange)="onPresetStageChange()"
+            interface="popover"
+            [placeholder]="'setting.stage_preset_custom' | translate"
+            class="text-sm font-bold text-slate-800"
+          >
+            <ion-select-option value="">{{'setting.stage_preset_custom' | translate}}</ion-select-option>
+            @for (preset of availablePresetStages; track preset.stageKey) {
+            <ion-select-option [value]="preset.stageKey">
+              {{presetLabel(preset)}} ({{preset.minAge}}-{{preset.maxAge}})
+            </ion-select-option>
+            }
+          </ion-select>
+        </div>
+      </div>
+      }
       <div>
         <label class="block text-2xs font-bold text-slate-500 mb-1.5">{{'setting.stage_name_ar' | translate}}</label>
         <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
@@ -520,12 +541,6 @@
           <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
             <ion-input type="number" [(ngModel)]="stageForm.max_age" class="text-sm font-bold text-slate-800 text-center"></ion-input>
           </div>
-        </div>
-      </div>
-      <div>
-        <label class="block text-2xs font-bold text-slate-500 mb-1.5">{{'setting.stage_sort_order' | translate}}</label>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 focus-within:border-indigo-500 transition-all">
-          <ion-input type="number" [(ngModel)]="stageForm.sort_order" class="text-sm font-bold text-slate-800 text-center"></ion-input>
         </div>
       </div>
     </div>
