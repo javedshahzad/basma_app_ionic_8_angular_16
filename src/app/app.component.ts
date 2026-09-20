@@ -274,6 +274,14 @@ export class AppComponent {
                 });
               }
 
+              if (this.permissionService.hasRole(UserType.Teacher, UserType.Moderator)) {
+                this.pages.push({
+                  title: this.lang.sidemenu.my_substitutes,
+                  component: 'my-substitutes',
+                  icon: 'people-outline'
+                });
+              }
+
               if (this.permissionService.hasRole(UserType.Moderator, UserType.Viewer)) {
                 this.pages.push({
                   title: this.lang.sidemenu.student_report,
@@ -690,6 +698,14 @@ export class AppComponent {
           title: this.lang.sidemenu?.my_schedule || 'جدولي الدراسي',
           component: 'my-schedule',
           icon: 'calendar-outline'
+        });
+      }
+
+      if (this.permissionService.hasRole(UserType.Teacher, UserType.Moderator)) {
+        this.pages.push({
+          title: this.lang.sidemenu?.my_substitutes || 'طلبات التغطية',
+          component: 'my-substitutes',
+          icon: 'people-outline'
         });
       }
 

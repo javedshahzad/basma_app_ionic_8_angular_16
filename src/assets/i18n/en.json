@@ -360,6 +360,7 @@
     "news": "News",
     "class_list": "Class List",
     "my_schedule": "My Schedule",
+    "my_substitutes": "Coverage Requests",
     "e_learning": "eLearning Material",
     "about_us": "About us",
     "settings": "Settings",
@@ -1395,6 +1396,20 @@
     "empty": "No classes are scheduled for you yet. Ask your school admin to build the timetable.",
     "load_error": "Couldn't load your schedule. Pull down to try again.",
     "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  },
+  "my_substitutes": {
+    "page_title": "Coverage Requests",
+    "empty": "No coverage requests right now.",
+    "load_error": "Couldn't load your coverage requests. Pull down to try again.",
+    "respond_error": "Couldn't send your response. Please try again.",
+    "pending_heading": "Needs your response",
+    "history_heading": "History",
+    "period": "Period",
+    "covering_for": "Covering for",
+    "accept_btn": "Accept",
+    "decline_btn": "Decline",
+    "status_accepted": "Accepted",
+    "status_uncovered": "No longer needed"
   },
   "student_titles": {
     "page_title": "Titles & Achievements Vault",

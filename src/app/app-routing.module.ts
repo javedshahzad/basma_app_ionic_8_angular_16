@@ -89,6 +89,11 @@ const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin, UserType.Teacher, UserType.Moderator] }
   },
   {
+    path: 'my-substitutes',
+    loadComponent: () => import('./my-substitutes/my-substitutes.page').then(m => m.MySubstitutesPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Teacher, UserType.Moderator] }
+  },
+  {
     path: 'children',
     loadComponent: () => import('./children/children.page').then(m => m.ChildrenPage), canActivate: [AuthGuard]
   },
