@@ -81,7 +81,7 @@ export class DurationSubscriptionComponent implements OnInit {
         selectedPlan: this.choosePlan
       });
     } else {
-      this.dataProvider.showToast(this.lang.select_subscription_duration_first || 'الرجاء اختيار مدة الاشتراك أولاً!');
+      this.dataProvider.showToast(this.lang.select_subscription_duration_first || 'الرجاء اختيار المدة أولاً!');
     }
   }
 

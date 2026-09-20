@@ -262,7 +262,7 @@ export class AvailablePlanPage implements OnInit {
         }
       })
       .catch(e => {
-        this.dataProvider.showToast(this.lang.subscription_process_error || 'حدث خطأ في عملية الاشتراك');
+        this.dataProvider.showToast(this.lang.subscription_process_error || 'حدث خطأ أثناء تفعيل المميزات الاضافية');
       });
   }
 }

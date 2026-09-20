@@ -1582,7 +1582,7 @@ export class ListStudentPage {
       .then(res => {
         var totalStudents = res.data;
         if (this.AvailablePlan.isExpire == true) {
-          this.dataProvider.showToast('This feature is part of subscription plan.Please subscribe plan!');
+          this.dataProvider.showToast('This feature requires activating extra features. Please activate extra features!');
           return;
         }
         let studentData = { student_name: this.newStudentName, student_id: this.newStudentId };
@@ -1677,7 +1677,7 @@ export class ListStudentPage {
       this.cdr.markForCheck();
 
       if (this.AvailablePlan.isExpire === true) {
-        this.dataProvider.showToast('This feature is part of subscription plan.Please subscribe plan!');
+        this.dataProvider.showToast('This feature requires activating extra features. Please activate extra features!');
         return;
       }
 
@@ -1781,7 +1781,7 @@ export class ListStudentPage {
       this.cdr.markForCheck();
 
       if (this.AvailablePlan.isExpire === true) {
-        this.dataProvider.showToast('This feature is part of subscription plan.Please subscribe plan!');
+        this.dataProvider.showToast('This feature requires activating extra features. Please activate extra features!');
         return;
       }
 

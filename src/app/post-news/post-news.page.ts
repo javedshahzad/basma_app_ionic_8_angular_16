@@ -200,7 +200,7 @@ export class PostNewsPage {
 
   sendNews() {
     if (this.AvailablePlan?.isExpire) {
-      this.dataProvider.showToast('This feature is part of subscription plan. Please subscribe plan!');
+      this.dataProvider.showToast('This feature requires activating extra features. Please activate extra features!');
       return;
     }
 
