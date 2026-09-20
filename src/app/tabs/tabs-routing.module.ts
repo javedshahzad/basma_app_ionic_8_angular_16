@@ -124,6 +124,12 @@ const routes: Routes = [
         ]
       },
       {
+        path: 'class-schedule',
+        children: [
+          { path: '', loadComponent: () => import('../class-schedule/class-schedule.page').then(m => m.ClassSchedulePage), data: { preload: true } }
+        ]
+      },
+      {
         path: '',
         redirectTo: '/tabs/classlist',
         pathMatch: 'full'

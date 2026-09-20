@@ -31,6 +31,10 @@
       <ion-icon name="alert-circle-outline"></ion-icon>
     </ion-tab-button>
 
+    <ion-tab-button tab="class-schedule" [style.display]="isStudent ? 'flex' : 'none'">
+      <ion-icon name="calendar-outline"></ion-icon>
+    </ion-tab-button>
+
     <ion-tab-button tab="news" [style.display]="(isStudent && hide_new !== '1') ? 'flex' : 'none'">
       @if (dataProvider.unread) {
       <ion-badge class="lineone-badge" mode="md"></ion-badge>
@@ -40,6 +44,10 @@
 
     <ion-tab-button tab="children" [style.display]="isParent ? 'flex' : 'none'">
       <ion-icon name="people-outline"></ion-icon>
+    </ion-tab-button>
+
+    <ion-tab-button tab="class-schedule" [style.display]="isParent ? 'flex' : 'none'">
+      <ion-icon name="calendar-outline"></ion-icon>
     </ion-tab-button>
 
     <ion-tab-button tab="news" [style.display]="(isParent && hide_new !== '1') ? 'flex' : 'none'">

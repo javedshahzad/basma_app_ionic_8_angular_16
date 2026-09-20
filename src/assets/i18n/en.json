@@ -1418,6 +1418,13 @@
     "load_error": "Couldn't load your invigilation duties. Pull down to try again.",
     "period": "Period"
   },
+  "class_schedule": {
+    "page_title": "Class Schedule",
+    "empty": "No classes are scheduled for this class yet.",
+    "load_error": "Couldn't load the schedule. Pull down to try again.",
+    "select_child": "Select a child",
+    "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  },
   "student_titles": {
     "page_title": "Titles & Achievements Vault",
     "skills_tree_title": "Skills Tree & Wallet",
