@@ -280,6 +280,11 @@ export class AppComponent {
                   component: 'my-substitutes',
                   icon: 'people-outline'
                 });
+                this.pages.push({
+                  title: this.lang.sidemenu.my_invigilation_duties,
+                  component: 'my-invigilation-duties',
+                  icon: 'clipboard-outline'
+                });
               }
 
               if (this.permissionService.hasRole(UserType.Moderator, UserType.Viewer)) {
@@ -706,6 +711,11 @@ export class AppComponent {
           title: this.lang.sidemenu?.my_substitutes || 'طلبات التغطية',
           component: 'my-substitutes',
           icon: 'people-outline'
+        });
+        this.pages.push({
+          title: this.lang.sidemenu?.my_invigilation_duties || 'مراقبة الاختبارات',
+          component: 'my-invigilation-duties',
+          icon: 'clipboard-outline'
         });
       }
 

@@ -265,6 +265,7 @@
     "class_list": "الصفحة الرئيسية",
     "my_schedule": "جدولي الدراسي",
     "my_substitutes": "طلبات التغطية",
+    "my_invigilation_duties": "مراقبة الاختبارات",
     "e_learning": "المحتوى التعليمي",
     "about_us": "عن التطبيق",
     "settings": "الإعدادات",
@@ -1410,6 +1411,12 @@
     "decline_btn": "رفض",
     "status_accepted": "تم القبول",
     "status_uncovered": "لم تعد هناك حاجة"
+  },
+  "my_invigilation_duties": {
+    "page_title": "مراقبة الاختبارات",
+    "empty": "لا توجد مهام مراقبة حالياً.",
+    "load_error": "تعذّر تحميل مهام المراقبة. اسحب للأسفل للمحاولة مجدداً.",
+    "period": "الحصة"
   },
   "student_titles": {
     "page_title": "خزانة الألقاب والإنجازات",

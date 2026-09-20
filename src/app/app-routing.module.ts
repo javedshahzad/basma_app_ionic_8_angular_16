@@ -94,6 +94,11 @@ const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Teacher, UserType.Moderator] }
   },
   {
+    path: 'my-invigilation-duties',
+    loadComponent: () => import('./my-invigilation-duties/my-invigilation-duties.page').then(m => m.MyInvigilationDutiesPage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Teacher, UserType.Moderator] }
+  },
+  {
     path: 'children',
     loadComponent: () => import('./children/children.page').then(m => m.ChildrenPage), canActivate: [AuthGuard]
   },

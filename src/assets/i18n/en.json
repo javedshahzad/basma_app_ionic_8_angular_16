@@ -361,6 +361,7 @@
     "class_list": "Class List",
     "my_schedule": "My Schedule",
     "my_substitutes": "Coverage Requests",
+    "my_invigilation_duties": "Exam Invigilation",
     "e_learning": "eLearning Material",
     "about_us": "About us",
     "settings": "Settings",
@@ -1410,6 +1411,12 @@
     "decline_btn": "Decline",
     "status_accepted": "Accepted",
     "status_uncovered": "No longer needed"
+  },
+  "my_invigilation_duties": {
+    "page_title": "Exam Invigilation",
+    "empty": "No invigilation duties right now.",
+    "load_error": "Couldn't load your invigilation duties. Pull down to try again.",
+    "period": "Period"
   },
   "student_titles": {
     "page_title": "Titles & Achievements Vault",
