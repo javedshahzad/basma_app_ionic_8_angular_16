@@ -266,6 +266,14 @@ export class AppComponent {
                 this.pages.push({ title: this.lang.sidemenu.class_list, component: 'tabs', icon: 'list' });
               }
 
+              if (this.permissionService.hasRole(UserType.Admin, UserType.Teacher, UserType.Moderator)) {
+                this.pages.push({
+                  title: this.lang.sidemenu.my_schedule,
+                  component: 'my-schedule',
+                  icon: 'calendar-outline'
+                });
+              }
+
               if (this.permissionService.hasRole(UserType.Moderator, UserType.Viewer)) {
                 this.pages.push({
                   title: this.lang.sidemenu.student_report,
@@ -676,6 +684,14 @@ export class AppComponent {
         component: 'tabs',
         icon: 'grid-outline'
       });
+
+      if (this.permissionService.hasRole(UserType.Admin, UserType.Teacher, UserType.Moderator)) {
+        this.pages.push({
+          title: this.lang.sidemenu?.my_schedule || 'جدولي الدراسي',
+          component: 'my-schedule',
+          icon: 'calendar-outline'
+        });
+      }
 
       if (this.permissionService.hasRole(UserType.Moderator, UserType.Viewer)) {
         this.pages.push({

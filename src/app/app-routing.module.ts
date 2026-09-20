@@ -84,6 +84,11 @@ const routes: Routes = [
     loadComponent: () => import('./settings/settings.page').then(m => m.SettingsPage), canActivate: [AuthGuard]
   },
   {
+    path: 'my-schedule',
+    loadComponent: () => import('./my-schedule/my-schedule.page').then(m => m.MySchedulePage),
+    canActivate: [AuthGuard, RoleGuard], data: { roles: [UserType.Admin, UserType.Teacher, UserType.Moderator] }
+  },
+  {
     path: 'children',
     loadComponent: () => import('./children/children.page').then(m => m.ChildrenPage), canActivate: [AuthGuard]
   },

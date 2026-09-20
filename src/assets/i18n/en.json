@@ -359,6 +359,7 @@
     "parent_connect": "Parent Connect",
     "news": "News",
     "class_list": "Class List",
+    "my_schedule": "My Schedule",
     "e_learning": "eLearning Material",
     "about_us": "About us",
     "settings": "Settings",
@@ -1388,6 +1389,12 @@
     "star_good": "Good",
     "star_acceptable": "Acceptable",
     "star_weak": "Weak"
+  },
+  "my_schedule": {
+    "page_title": "My Schedule",
+    "empty": "No classes are scheduled for you yet. Ask your school admin to build the timetable.",
+    "load_error": "Couldn't load your schedule. Pull down to try again.",
+    "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   },
   "student_titles": {
     "page_title": "Titles & Achievements Vault",
