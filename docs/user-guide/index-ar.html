@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>تطبيق بصمة — دليل المستخدم</title>
+<style>
+  :root {
+    --accent: #4f46e5; --accent-soft: #eef2ff; --ink: #1e293b; --muted: #64748b;
+    --border: #e2e8f0; --bg: #ffffff; --panel: #f8fafc; --warn: #b45309;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", Tahoma, Arial, sans-serif; color: var(--ink); background: var(--bg); line-height: 1.8; font-size: 15px; }
+  .cover { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: linear-gradient(160deg, var(--accent) 0%, #312e81 100%); color: #fff; padding: 40px; page-break-after: always; }
+  .cover .logo { width: 108px; height: 108px; border-radius: 24px; margin-bottom: 28px; box-shadow: 0 12px 32px rgba(0,0,0,.35); }
+  .cover .badge { font-size: 13px; margin-bottom: 18px; opacity: .8; }
+  .cover h1 { font-size: 42px; margin: 0 0 10px; font-weight: 800; }
+  .cover h2 { font-size: 20px; font-weight: 500; opacity: .9; margin: 0 0 40px; }
+  .cover .meta { font-size: 13px; opacity: .75; margin-top: 60px; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 32px 80px; }
+  nav.toc { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 28px 32px; margin: 40px auto; max-width: 880px; page-break-after: always; }
+  nav.toc h2 { margin-top: 0; }
+  nav.toc ol { padding-inline-start: 22px; }
+  nav.toc > ol > li { font-weight: 700; margin-bottom: 10px; }
+  nav.toc ol ol { font-weight: 400; margin: 4px 0 10px; }
+  nav.toc a { color: var(--ink); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); text-decoration: underline; }
+  h2.chapter { font-size: 24px; color: var(--accent); margin-top: 70px; padding-top: 20px; border-top: 1px solid var(--border); page-break-before: always; }
+  h3.section { font-size: 19px; margin-top: 40px; }
+  h4.subsection { font-size: 16px; margin-top: 24px; }
+  p { margin: 12px 0; }
+  ol, ul { padding-inline-start: 24px; }
+  li { margin: 6px 0; }
+  .shots { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin: 22px 0; }
+  figure { margin: 0; text-align: center; page-break-inside: avoid; }
+  figure img { max-width: 260px; width: 100%; border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+  figcaption { font-size: 12.5px; color: var(--muted); margin-top: 10px; font-style: italic; max-width: 260px; }
+  .callout { border-radius: 10px; padding: 14px 18px; margin: 16px 0; font-size: 14px; }
+  .callout.tip { background: var(--accent-soft); border-inline-start: 4px solid var(--accent); }
+  .callout.note { background: #f1f5f9; border-inline-start: 4px solid var(--muted); }
+  .callout.warn { background: #fffbeb; border-inline-start: 4px solid var(--warn); }
+  .callout strong { display: block; margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: start; }
+  th { background: var(--panel); font-weight: 700; }
+  .chapter-intro { font-size: 16px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <img class="logo" src="images/logo.png" alt="شعار تطبيق بصمة">
+  <div class="badge">منصة بصمة التعليمية</div>
+  <h1>تطبيق بصمة</h1>
+  <h2>الدليل الشامل للمستخدم — تطبيق الهاتف</h2>
+  <div class="meta">النسخة العربية &middot; الإصدار 1.0</div>
+</div>
+
+<nav class="toc">
+  <h2>جدول المحتويات</h2>
+  <ol>
+    <li><a href="#ch1">مقدمة والبدء</a>
+      <ol>
+        <li><a href="#1-1">ما هو تطبيق بصمة؟</a></li>
+        <li><a href="#1-2">تسجيل الدخول</a></li>
+        <li><a href="#1-3">تغيير اللغة</a></li>
+        <li><a href="#1-4">قائمتك تعتمد على دورك</a></li>
+      </ol>
+    </li>
+    <li><a href="#ch2">للمعلمين</a>
+      <ol>
+        <li><a href="#2-1">قائمة فصولك</a></li>
+        <li><a href="#2-2">تسجيل الحضور</a></li>
+        <li><a href="#2-3">عرض ملف طالب</a></li>
+        <li><a href="#2-4">جدولي الدراسي</a></li>
+        <li><a href="#2-5">طلبات التغطية (التدريس البديل)</a></li>
+        <li><a href="#2-6">مهام مراقبة الاختبارات</a></li>
+        <li><a href="#2-7">الأخبار والإشعارات والنشرات</a></li>
+        <li><a href="#2-8">التعليم الإلكتروني</a></li>
+        <li><a href="#2-9">تقارير المتابعة</a></li>
+        <li><a href="#2-10">الإعدادات والأجهزة والحساب</a></li>
+      </ol>
+    </li>
+    <li><a href="#ch3">للمشرفين التربويين</a>
+      <ol>
+        <li><a href="#3-1">قائمة الفصول</a></li>
+        <li><a href="#3-2">قائمة التأخير</a></li>
+        <li><a href="#3-3">متابعة الطلاب</a></li>
+        <li><a href="#3-4">تقارير الإنذار</a></li>
+        <li><a href="#3-5">الطلاب الغائبون</a></li>
+      </ol>
+    </li>
+    <li><a href="#ch4">لمشرفي المدرسة</a>
+      <ol>
+        <li><a href="#4-1">إدارة المعلمين أثناء التنقل</a></li>
+        <li><a href="#4-2">إدارة الطلاب أثناء التنقل</a></li>
+        <li><a href="#4-3">إضافة أولياء أمور</a></li>
+        <li><a href="#4-4">إنشاء الفصول</a></li>
+        <li><a href="#4-5">جميع المستخدمين</a></li>
+      </ol>
+    </li>
+    <li><a href="#ch5">لأولياء الأمور</a>
+      <ol>
+        <li><a href="#5-1">أبناؤك</a></li>
+        <li><a href="#5-2">ملف الابن</a></li>
+        <li><a href="#5-3">الجدول الدراسي للابن</a></li>
+        <li><a href="#5-4">تواصل ولي الأمر (مراسلة الطاقم)</a></li>
+        <li><a href="#5-5">الأخبار والإشعارات</a></li>
+        <li><a href="#5-6">تفعيل المميزات الإضافية</a></li>
+      </ol>
+    </li>
+    <li><a href="#ch6">للطلاب</a>
+      <ol>
+        <li><a href="#6-1">جدولي الدراسي</a></li>
+        <li><a href="#6-2">ألقابي وإنجازاتي</a></li>
+        <li><a href="#6-3">ملاحظاتي</a></li>
+        <li><a href="#6-4">تقرير الإنذار</a></li>
+        <li><a href="#6-5">الأخبار والإشعارات</a></li>
+      </ol>
+    </li>
+    <li><a href="#ch7">استكشاف الأخطاء والأسئلة الشائعة</a></li>
+    <li><a href="#ch8">قائمة المصطلحات</a></li>
+  </ol>
+</nav>
+
+<div class="wrap">
+
+<h2 class="chapter" id="ch1">1. مقدمة والبدء</h2>
+
+<h3 class="section" id="1-1">1.1 ما هو تطبيق بصمة؟</h3>
+<p>تطبيق بصمة هو التطبيق المرافق للوحة بصمة للإدارة على الهاتف. كل ما تُعِدّه المدرسة في لوحة الإدارة — قوائم الطلاب والمعلمين، الجداول الدراسية، الاختبارات، السجلات السلوكية — يصبح شيئاً يمكن للمعلم أو المشرف التربوي أو ولي الأمر أو الطالب رؤيته والتفاعل معه من هاتفه. يكيّف التطبيق قائمته بالكامل حسب من سجّل الدخول: لا يرى ولي الأمر أبداً أدوات حضور المعلم، ولا يرى الطالب أبداً شاشات قوائم المشرف.</p>
+
+<h3 class="section" id="1-2">1.2 تسجيل الدخول</h3>
+<p>أدخل اسم المستخدم وكلمة المرور في شاشة تسجيل الدخول واختر <strong>تسجيل الدخول</strong>. يتذكر التطبيق الحسابات التي سجّلت الدخول إليها من قبل، ويعرضها كصف تبديل سريع أعلى نموذج تسجيل الدخول في المرة القادمة التي تفتحه فيها.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/00-login.png" alt="شاشة تسجيل الدخول"><figcaption>شكل 1.1 — شاشة تسجيل الدخول.</figcaption></figure>
+</div>
+
+<h3 class="section" id="1-3">1.3 تغيير اللغة</h3>
+<p>افتح القائمة الجانبية (الأيقونة في زاوية أي شاشة) واستخدم قائمة <strong>تحديد اللغة</strong> بالقرب من الأعلى. يتغير التطبيق بالكامل فوراً — بما في ذلك اتجاه التخطيط؛ تُعرض العربية من اليمين إلى اليسار، والإنجليزية من اليسار إلى اليمين.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/i-settings.png" alt="القائمة الجانبية مع محدد اللغة"><figcaption>شكل 1.2 — القائمة الجانبية، مع محدد اللغة بالقرب من الأعلى.</figcaption></figure>
+</div>
+
+<h3 class="section" id="1-4">1.4 قائمتك تعتمد على دورك</h3>
+<p>بقية هذا الدليل منظّمة حسب الدور، لأن هذا هو تنظيم التطبيق نفسه — افتح الفصل المطابق لدورك (معلم، مشرف تربوي، مشرف مدرسة، ولي أمر، أو طالب) بدلاً من القراءة من البداية للنهاية.</p>
+
+<h2 class="chapter" id="ch2">2. للمعلمين</h2>
+
+<h3 class="section" id="2-1">2.1 قائمة فصولك</h3>
+<p>الشاشة الرئيسية للمعلم تسرد كل فصل مُسنَد إليك. اختر فصلاً لفتح قائمة طلابه.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/a1-classlist.png" alt="قائمة فصول المعلم"><figcaption>شكل 2.1 — قائمة فصولك.</figcaption></figure>
+</div>
+
+<h3 class="section" id="2-2">2.2 تسجيل الحضور</h3>
+<p>فتح فصل يعرض قائمة طلابه للحصة الحالية، مع زر تحديد حاضر أو غائب بجانب كل طالب. يتيح لك زرا الإجراء السريع تحديد الفصل كله حاضراً أو غائباً بضغطة واحدة قبل إجراء تعديلات فردية، ويعرض عداد أسفل الشاشة كم طالباً تم تسجيله حتى الآن. اختر <strong>حفظ</strong> بعد اكتمال تسجيل الحضور.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/a2-class-roster.png" alt="قائمة الفصل مع تسجيل الحضور"><figcaption>شكل 2.2 — تسجيل الحضور لفصل.</figcaption></figure>
+</div>
+
+<h3 class="section" id="2-3">2.3 عرض ملف طالب</h3>
+<p>اختر اسم الطالب من القائمة (وليس صورته، والتي تفتح عرض صورة أكبر بدلاً من ذلك) لفتح ملفه الكامل — المستوى السلوكي واللقب وسجل الحضور.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/a3-student-detail.png" alt="عرض ملف الطالب"><figcaption>شكل 2.3 — ملف طالب.</figcaption></figure>
+</div>
+
+<h3 class="section" id="2-4">2.4 جدولي الدراسي</h3>
+<p>جدولك الأسبوعي الكامل عبر كل فصل تدرّسه، مجمّعاً حسب اليوم.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/b-my-schedule.png" alt="شاشة جدولي الدراسي"><figcaption>شكل 2.4 — جدولي الدراسي.</figcaption></figure>
+</div>
+
+<h3 class="section" id="2-5">2.5 طلبات التغطية (التدريس البديل)</h3>
+<p>عندما تسجّل مدرستك غيابك، أو تطلب منك تغطية زميل آخر، تظهر الطلبات هنا بحاجة لردك.</p>
+<ol>
+  <li>افتح <strong>طلبات التغطية</strong> من القائمة الجانبية.</li>
+  <li>تعرض الطلبات المعلّقة الفصل والمادة والحصة والمعلم الذي ستغطي عنه.</li>
+  <li>اختر <strong>قبول</strong> أو <strong>رفض</strong>. الرفض يعرض الحصة فوراً على أعدل معلم متاح تالٍ — لن يُطلب منك الرد على تلك الحصة مرة أخرى.</li>
+  <li>يظهر سجل ردودك أسفل قائمة الطلبات المعلّقة.</li>
+</ol>
+<div class="shots">
+  <figure><img src="images/ar/mobile/c-my-substitutes.png" alt="شاشة طلبات التغطية"><figcaption>شكل 2.5 — طلبات التغطية.</figcaption></figure>
+</div>
+
+<h3 class="section" id="2-6">2.6 مهام مراقبة الاختبارات</h3>
+<p>قائمة للقراءة فقط بجلسات الاختبار المُسند إليك مراقبتها — التاريخ والمادة والفصل والحصة والقاعة. على عكس طلبات التغطية، لا تحتاج مهام المراقبة لقبول أو رفض؛ فهي تعيين ثابت.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/d-my-invigilation-duties.png" alt="شاشة مهام مراقبة الاختبارات"><figcaption>شكل 2.6 — مهام مراقبة الاختبارات.</figcaption></figure>
+</div>
+
+<h3 class="section" id="2-7">2.7 الأخبار والإشعارات والنشرات</h3>
+<p>إعلانات مدرستك، وموجز إشعاراتك الشخصي، وأي نشرات مُعمَّمة، لكل منها تبويب أو عنصر قائمة خاص به.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/e-news.png" alt="موجز الأخبار"><figcaption>شكل 2.7 — الأخبار.</figcaption></figure>
+  <figure><img src="images/ar/mobile/f-messages.png" alt="الإشعارات"><figcaption>شكل 2.8 — الإشعارات.</figcaption></figure>
+  <figure><img src="images/ar/mobile/g-bulletins.png" alt="النشرات"><figcaption>شكل 2.9 — النشرات.</figcaption></figure>
+</div>
+
+<h3 class="section" id="2-8">2.8 التعليم الإلكتروني</h3>
+<p>تصفّح مواد الفيديو والمستندات التي نشرتها مدرستك، منظَّمة حسب الفئة.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/h-elearning-schools.png" alt="فئات التعليم الإلكتروني"><figcaption>شكل 2.10 — التعليم الإلكتروني.</figcaption></figure>
+</div>
+
+<h3 class="section" id="2-9">2.9 تقارير المتابعة</h3>
+<p>قائمة مستمرة بدرجات المتابعة الدورية التي أدخلتها لطلابك مقابل حقول المتابعة المخصصة لمدرستك (مثل إكمال الواجب أو المشاركة)، إضافة إلى عرض ملخص لكل فصل لمراجعة الدرجات عبر شعبة كاملة دفعة واحدة.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/m-followup-student-list.png" alt="قائمة متابعة الطلاب"><figcaption>شكل 2.11 — إدخالات المتابعة الخاصة بك.</figcaption></figure>
+  <figure><img src="images/ar/mobile/n-student-report-classes.png" alt="تقرير الطلاب حسب الفصل"><figcaption>شكل 2.12 — مراجعة درجات المتابعة حسب الفصل.</figcaption></figure>
+</div>
+
+<h3 class="section" id="2-10">2.10 الإعدادات والأجهزة والحساب</h3>
+<p>أدر ملفك الشخصي وتفضيلات الإشعارات وقائمة الأجهزة المسجَّل دخولها لحسابك من عنصري الإعدادات والأجهزة في القائمة الجانبية. تحتوي القائمة نفسها أيضاً على روابط سريعة لصفحتي "من نحن" و"تواصل معنا" إذا احتجت التواصل مع دعم بصمة.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/j-all-devices.png" alt="شاشة الأجهزة"><figcaption>شكل 2.13 — أجهزتك المسجَّل دخولها.</figcaption></figure>
+</div>
+
+<h2 class="chapter" id="ch3">3. للمشرفين التربويين</h2>
+<p class="chapter-intro">يرى المشرفون التربويون عرضاً إشرافياً عبر الفصول بدلاً من امتلاك قائمة واحدة — يمكنك مراجعة الحضور والسلوك والإنذارات لأي فصل مُسنَد إليك الإشراف عليه.</p>
+
+<h3 class="section" id="3-1">3.1 قائمة الفصول</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/o1-classlist-moderator.png" alt="قائمة فصول المشرف"><figcaption>شكل 3.1 — الفصول التي تشرف عليها.</figcaption></figure>
+</div>
+
+<h3 class="section" id="3-2">3.2 قائمة التأخير</h3>
+<p>الطلاب المسجَّلون متأخرين في الطابور الصباحي، عبر كل فصل تشرف عليه.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/o2-delaylist.png" alt="قائمة التأخير"><figcaption>شكل 3.2 — قائمة التأخير.</figcaption></figure>
+</div>
+
+<h3 class="section" id="3-3">3.3 متابعة الطلاب</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/o3-follow-up-student.png" alt="شاشة متابعة الطلاب"><figcaption>شكل 3.3 — متابعة الطلاب.</figcaption></figure>
+</div>
+
+<h3 class="section" id="3-4">3.4 تقارير الإنذار</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/o4-warning-report.png" alt="شاشة تقرير الإنذار"><figcaption>شكل 3.4 — تقارير الإنذار.</figcaption></figure>
+</div>
+
+<h3 class="section" id="3-5">3.5 الطلاب الغائبون</h3>
+<p>عرض عبر الفصول لكل طالب مسجَّل غائباً اليوم.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/o5-absent-students.png" alt="شاشة الطلاب الغائبين"><figcaption>شكل 3.5 — الطلاب الغائبون.</figcaption></figure>
+</div>
+
+<h2 class="chapter" id="ch4">4. لمشرفي المدرسة</h2>
+<p class="chapter-intro">قائمة مشرف المدرسة على الهاتف تعكس عدداً من أهم الأدوات الحساسة للوقت من لوحة بصمة للإدارة (الفصل الثالث من ذلك الدليل)، لإدارة قوائمك أثناء التنقل بعيداً عن المكتب.</p>
+
+<h3 class="section" id="4-1">4.1 إدارة المعلمين أثناء التنقل</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/p2-manage-teacher.png" alt="شاشة إدارة المعلمين"><figcaption>شكل 4.1 — إدارة المعلمين.</figcaption></figure>
+  <figure><img src="images/ar/mobile/p4-add-teacher.png" alt="نموذج إضافة معلم"><figcaption>شكل 4.2 — إضافة معلم.</figcaption></figure>
+</div>
+
+<h3 class="section" id="4-2">4.2 إدارة الطلاب أثناء التنقل</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/p3-manage-student.png" alt="شاشة إدارة الطلاب"><figcaption>شكل 4.3 — إدارة الطلاب.</figcaption></figure>
+</div>
+
+<h3 class="section" id="4-3">4.3 إضافة أولياء أمور</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/p5-add-parent.png" alt="نموذج إضافة ولي أمر"><figcaption>شكل 4.4 — إضافة ولي أمر.</figcaption></figure>
+</div>
+
+<h3 class="section" id="4-4">4.4 إنشاء الفصول</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/p6-create-class.png" alt="نموذج إنشاء فصل"><figcaption>شكل 4.5 — إنشاء فصل.</figcaption></figure>
+</div>
+
+<h3 class="section" id="4-5">4.5 جميع المستخدمين</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/p7-users-list.png" alt="قائمة جميع المستخدمين"><figcaption>شكل 4.6 — جميع المستخدمين.</figcaption></figure>
+  <figure><img src="images/ar/mobile/p8-add-user.png" alt="نموذج إضافة مستخدم"><figcaption>شكل 4.7 — إضافة مستخدم.</figcaption></figure>
+</div>
+
+<h2 class="chapter" id="ch5">5. لأولياء الأمور</h2>
+
+<h3 class="section" id="5-1">5.1 أبناؤك</h3>
+<p>الشاشة الرئيسية لولي الأمر تسرد كل ابن مرتبط بحسابك، مع مستواه السلوكي ولقبه وعدد أيام غيابه بلمحة واحدة.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/q1-children.png" alt="قائمة الأبناء"><figcaption>شكل 5.1 — أبناؤك.</figcaption></figure>
+</div>
+
+<h3 class="section" id="5-2">5.2 ملف الابن</h3>
+<p>اختر بطاقة الابن لفتح ملفه الكامل.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/q2-parent-student-detail.png" alt="ملف الابن"><figcaption>شكل 5.2 — ملف الابن.</figcaption></figure>
+</div>
+
+<h3 class="section" id="5-3">5.3 الجدول الدراسي للابن</h3>
+<p>إذا كان لديك أكثر من ابن، تتيح لك قائمة اختيار تحديد جدول أي ابن تريد عرضه؛ مع ابن واحد يُفتح مباشرة.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/q3-class-schedule-parent.png" alt="الجدول الدراسي للابن"><figcaption>شكل 5.3 — الجدول الأسبوعي لفصل الابن.</figcaption></figure>
+</div>
+
+<h3 class="section" id="5-4">5.4 تواصل ولي الأمر (مراسلة الطاقم)</h3>
+<p>قناة مراسلة مباشرة مع مدرسة ابنك.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/q4-parentconnect.png" alt="شاشة تواصل ولي الأمر"><figcaption>شكل 5.4 — تواصل ولي الأمر.</figcaption></figure>
+</div>
+
+<h3 class="section" id="5-5">5.5 الأخبار والإشعارات</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/q5-news-parent.png" alt="موجز الأخبار لأولياء الأمور"><figcaption>شكل 5.5 — الأخبار.</figcaption></figure>
+  <figure><img src="images/ar/mobile/q6-messages-parent.png" alt="الإشعارات لأولياء الأمور"><figcaption>شكل 5.6 — الإشعارات.</figcaption></figure>
+</div>
+
+<h3 class="section" id="5-6">5.6 تفعيل المميزات الإضافية</h3>
+<p>راجع أو فعّل مميزات إضافية لمدرستك، أو استبدل كود قسيمة أصدرته مدرستك.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/q8-available-plan.png" alt="الباقات المتاحة"><figcaption>شكل 5.7 — تفعيل المميزات الإضافية.</figcaption></figure>
+  <figure><img src="images/ar/mobile/q9-apply-vouches-code.png" alt="تطبيق كود قسيمة"><figcaption>شكل 5.8 — تطبيق كود قسيمة.</figcaption></figure>
+</div>
+
+<h2 class="chapter" id="ch6">6. للطلاب</h2>
+
+<h3 class="section" id="6-1">6.1 جدولي الدراسي</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/r1-class-schedule-student.png" alt="الجدول الدراسي للطالب"><figcaption>شكل 6.1 — جدولي الدراسي.</figcaption></figure>
+</div>
+
+<h3 class="section" id="6-2">6.2 ألقابي وإنجازاتي</h3>
+<p>الألقاب وسلاسل الإنجاز التحفيزية التي حققتها عبر نظام النقاط.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/r2-student-titles.png" alt="ألقاب وإنجازات الطالب"><figcaption>شكل 6.2 — ألقابي وإنجازاتي.</figcaption></figure>
+</div>
+
+<h3 class="section" id="6-3">6.3 ملاحظاتي</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/r3-student-notes.png" alt="ملاحظات الطالب"><figcaption>شكل 6.3 — ملاحظاتي.</figcaption></figure>
+</div>
+
+<h3 class="section" id="6-4">6.4 تقرير الإنذار</h3>
+<p>حصر غيابك المستمر مقارنة بحدود الإنذار الخاصة بمدرستك.</p>
+<div class="shots">
+  <figure><img src="images/ar/mobile/r4-warning-report-student.png" alt="تقرير إنذار الطالب"><figcaption>شكل 6.4 — تقرير الإنذار.</figcaption></figure>
+</div>
+
+<h3 class="section" id="6-5">6.5 الأخبار والإشعارات</h3>
+<div class="shots">
+  <figure><img src="images/ar/mobile/r5-news-student.png" alt="موجز الأخبار للطلاب"><figcaption>شكل 6.5 — الأخبار.</figcaption></figure>
+  <figure><img src="images/ar/mobile/r6-messages-student.png" alt="الإشعارات للطلاب"><figcaption>شكل 6.6 — الإشعارات.</figcaption></figure>
+</div>
+
+<h2 class="chapter" id="ch7">7. استكشاف الأخطاء والأسئلة الشائعة</h2>
+<h4 class="subsection">لا أستطيع تسجيل الدخول.</h4>
+<p>تحقق مرة أخرى أن اسم المستخدم وكلمة المرور مكتوبان تماماً كما صدرا. إن استمرت المشكلة، تواصل مع إدارة مدرستك — لا يوفر التطبيق إعادة تعيين ذاتية لكلمة المرور.</p>
+<h4 class="subsection">قائمة فصولي فارغة.</h4>
+<p>لم يتم إسنادك بعد إلى قائمة فصل. تواصل مع إدارة مدرستك للتأكد من تعيين فصلك.</p>
+<h4 class="subsection">قبلت طلب تغطية بالخطأ.</h4>
+<p>تواصل مع إدارة مدرستك — يمكنها إعادة تعيين الحصة من شاشة المعلمين البدلاء في لوحة بصمة للإدارة.</p>
+<h4 class="subsection">لا أرى مبدّل اللغة.</h4>
+<p>يوجد داخل القائمة الجانبية (الأيقونة في زاوية معظم الشاشات)، وليس في شاشة تسجيل الدخول نفسها — سجّل الدخول أولاً، ثم بدّل اللغة.</p>
+<h4 class="subsection">ولي أمر لا يرى أحد أبنائه.</h4>
+<p>روابط الابن بولي الأمر تُدار من لوحة بصمة للإدارة، وليس من التطبيق نفسه — اطلب من إدارة مدرستك التأكد من إعداد الرابط بشكل صحيح.</p>
+
+<h2 class="chapter" id="ch8">8. قائمة المصطلحات</h2>
+<table>
+  <tr><th>المصطلح</th><th>المعنى</th></tr>
+  <tr><td>قائمة الفصول</td><td>الشاشة الرئيسية للمعلم أو المشرف التربوي، تسرد الفصول المُسنَدة إليه.</td></tr>
+  <tr><td>طلب التغطية</td><td>تعيين تدريس بديل يجب على المعلم قبوله أو رفضه.</td></tr>
+  <tr><td>مهمة المراقبة</td><td>تعيين ثابت لمراقبة اختبار؛ على عكس طلب التغطية، لا يحتاج رداً.</td></tr>
+  <tr><td>تواصل ولي الأمر</td><td>قناة المراسلة داخل التطبيق بين ولي الأمر وطاقم المدرسة.</td></tr>
+  <tr><td>المشرف التربوي</td><td>طاقم إشرافي يشرف على عدة فصول دون أن يكون معلم مادة لأي منها.</td></tr>
+</table>
+
+</div>
+</body>
+</html>
