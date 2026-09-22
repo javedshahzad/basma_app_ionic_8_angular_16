@@ -131,6 +131,24 @@
         <ion-icon name="business-outline" class="text-xl"></ion-icon>
         {{'login.register_school' | translate}}
       </button>
+
+      <button
+        type="button"
+        class="w-full flex items-center justify-center gap-2 py-3.5 mt-3 text-sm font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-all active:scale-[0.98] focus:outline-none"
+        (click)="openRegisterTeacher()"
+      >
+        <ion-icon name="person-add-outline" class="text-xl"></ion-icon>
+        {{'login.register_teacher' | translate}}
+      </button>
+
+      <button
+        type="button"
+        class="w-full flex items-center justify-center gap-2 py-3.5 mt-3 text-sm font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 hover:text-indigo-600 transition-all active:scale-[0.98] focus:outline-none"
+        (click)="openRegisterParent()"
+      >
+        <ion-icon name="people-outline" class="text-xl"></ion-icon>
+        {{'login.register_parent' | translate}}
+      </button>
     </div>
   </div>
 </ion-content>

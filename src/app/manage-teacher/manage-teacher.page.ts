@@ -9,6 +9,7 @@ import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { StorageService } from '../service/storage.service';
 import { SearchApiService } from '../service/search-api/search-api.service';
 import { SchoolDirectoryApiService } from '../service/school-directory-api/school-directory-api.service';
+import { TeacherManagementApiService, PendingTeacher } from '../service/teacher-management-api/teacher-management-api.service';
 
 import { FormsModule } from '@angular/forms';
 
@@ -36,6 +37,12 @@ export class ManageTeacherPage {
   searchQuery: string = '';
   searchTimeout: any;
 
+  // docs/SELF_REGISTRATION_VIA_SCHOOL_CODE_PLAN.md §6.6 -- pending-approval
+  // tab, mirroring requested-parent's segmented-control pattern.
+  category: 'teachers' | 'requested' = 'teachers';
+  pendingTeachers: PendingTeacher[] = [];
+  noPendingTeachers: boolean = false;
+
   constructor(
     public navCtrl: NavController,
     public translate: TranslateService,
@@ -49,6 +56,7 @@ export class ManageTeacherPage {
     private storageSr: StorageService, // 🟢 حقن الخدمة
     private searchApi: SearchApiService,
     private schoolDirectoryApi: SchoolDirectoryApiService,
+    private teacherManagementApi: TeacherManagementApiService,
     private cdr: ChangeDetectorRef
   ) {
     this.translate.get('alertmessages').subscribe(res => {
@@ -72,6 +80,7 @@ export class ManageTeacherPage {
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.getTeacher(true);
+      this.getPendingTeachers();
     } else {
       this.router.navigate(['login'], { replaceUrl: true });
     }
@@ -83,8 +92,76 @@ export class ManageTeacherPage {
     if (userLoggedIn) {
       this.userDetails = userLoggedIn;
       this.getTeacher(false); // تحديث بدون Loading
+      this.getPendingTeachers();
     }
     this.cdr.markForCheck();
+  }
+
+  getPendingTeachers() {
+    let data = {
+      school_id: this.userDetails.details.school_id,
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id
+    };
+
+    this.teacherManagementApi.getPendingTeachers(data).then(
+      res => {
+        this.pendingTeachers = res.data || [];
+        this.noPendingTeachers = this.pendingTeachers.length < 1;
+        this.cdr.markForCheck();
+      },
+      error => {
+        console.log(error);
+        this.cdr.markForCheck();
+      }
+    );
+  }
+
+  acceptPendingTeacher(teacher: PendingTeacher) {
+    let data = {
+      teacher_user_no: teacher.user_no,
+      school_id: this.userDetails.details.school_id,
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id
+    };
+
+    this.dataProvider
+      .run(() => this.teacherManagementApi.acceptPendingTeacher(data))
+      .then(res => {
+        if (res.session) {
+          this.getPendingTeachers();
+          this.getTeacher(false);
+          this.dataProvider.showToast(this.lang.request_accepted);
+        } else {
+          this.dataProvider.showToast(this.lang.request_not_accepted);
+        }
+      })
+      .catch(error => {
+        this.dataProvider.showToast(error);
+      });
+  }
+
+  deletePendingTeacher(teacher: PendingTeacher) {
+    let data = {
+      teacher_user_no: teacher.user_no,
+      school_id: this.userDetails.details.school_id,
+      user_no: this.userDetails.details.user_no,
+      session_id: this.userDetails.session_id
+    };
+
+    this.dataProvider
+      .run(() => this.teacherManagementApi.deletePendingTeacher(data))
+      .then(res => {
+        if (res.session) {
+          this.getPendingTeachers();
+          this.dataProvider.showToast(this.lang.request_deleted);
+        } else {
+          this.dataProvider.showToast(this.lang.request_not_deleted);
+        }
+      })
+      .catch(error => {
+        this.dataProvider.showToast(error);
+      });
   }
 
   getTeacher(loader = true) {

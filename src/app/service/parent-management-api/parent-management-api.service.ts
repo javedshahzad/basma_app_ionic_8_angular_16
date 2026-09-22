@@ -13,6 +13,11 @@ export interface Parent {
   access_mode?: string;
   student_info?: { name?: string }[];
   isChecked?: boolean;
+  // docs/SELF_REGISTRATION_VIA_SCHOOL_CODE_PLAN.md §6.7 -- only present on
+  // pending (getNewParents) rows; a self-registered parent may have no
+  // linked student yet (cross-school/nonexistent id at signup time).
+  student_linked?: boolean;
+  student_names?: string[];
 }
 
 /**

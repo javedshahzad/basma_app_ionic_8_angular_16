@@ -23,6 +23,85 @@
 
 <ion-content class="lineone-content" mode="md">
   <div class="main-container max-w-3xl mx-auto" dir="rtl">
+    <div class="px-4 pt-4 pb-2 sticky top-0 z-20 bg-surface-alt/90 backdrop-blur-md">
+      <div
+        class="bg-slate-200/60 p-1.5 rounded-2xl flex items-center justify-between border border-slate-200/50 shadow-inner"
+      >
+        <button
+          class="flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-300"
+          [ngClass]="category === 'teachers' ? 'bg-slate-50 shadow-sm text-indigo-600 border border-slate-100' : 'text-slate-500 hover:text-slate-700'"
+          (click)="category = 'teachers'"
+        >
+          {{'edit_teacher.title' | translate}}
+        </button>
+        <button
+          class="flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-300"
+          [ngClass]="category === 'requested' ? 'bg-slate-50 shadow-sm text-indigo-600 border border-slate-100' : 'text-slate-500 hover:text-slate-700'"
+          (click)="category = 'requested'"
+        >
+          {{'parent_request_list.requested' | translate}} @if (pendingTeachers?.length > 0) {
+          <span
+            class="inline-flex items-center justify-center w-5 h-5 mr-1 text-3xs text-white bg-rose-500 rounded-full animate-pulse"
+            >{{pendingTeachers.length}}</span
+          >
+          }
+        </button>
+      </div>
+    </div>
+
+    @if (category === 'requested') {
+    <div class="px-4 mt-2 animate__animated animate__fadeIn">
+      <div class="space-y-4">
+        @for (teacher of pendingTeachers; track trackByIndex($index)) {
+        <div
+          class="bg-slate-50 rounded-3xl p-5 shadow-[var(--shadow-card-soft)] border border-slate-100 transition-all"
+        >
+          <div class="flex items-center gap-4 mb-4">
+            <div
+              class="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center border border-indigo-100 shadow-sm shrink-0"
+            >
+              <ion-icon name="person" class="text-2xl"></ion-icon>
+            </div>
+            <div class="flex-1 overflow-hidden">
+              <h3 class="text-base font-bold text-slate-800 m-0 mb-1 truncate">{{teacher.name}}</h3>
+              <p class="text-2xs font-bold text-slate-400 m-0 mb-1 truncate" dir="ltr">{{teacher.user_id}}</p>
+              <p class="text-2xs font-bold text-slate-400 m-0 flex items-center gap-1">
+                <ion-icon name="time-outline"></ion-icon> {{teacher.datetime}}
+              </p>
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <button
+              class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3.5 rounded-2xl text-sm shadow-md shadow-emerald-200 transition-all active:scale-95 flex items-center justify-center gap-2"
+              (click)="acceptPendingTeacher(teacher)"
+            >
+              <ion-icon name="checkmark-circle-outline" class="text-lg"></ion-icon> {{'parent_request_list.accept' |
+              translate}}
+            </button>
+            <button
+              class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3.5 rounded-2xl text-sm transition-all active:scale-95 flex items-center justify-center gap-2"
+              (click)="deletePendingTeacher(teacher)"
+            >
+              <ion-icon name="close-circle-outline" class="text-lg"></ion-icon> {{'parent_request_list.denay' |
+              translate}}
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+      @if (pendingTeachers?.length < 1 && noPendingTeachers) {
+      <div class="text-center py-20 animate-fade-in-up">
+        <div
+          class="w-24 h-24 bg-slate-200/50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400 shadow-inner"
+        >
+          <ion-icon name="mail-open-outline" class="text-5xl"></ion-icon>
+        </div>
+        <h3 class="text-lg font-black text-slate-800 m-0 mb-1">{{'parent_request_list.no_data' | translate}}</h3>
+        <p class="text-sm font-bold text-slate-500 m-0">{{'parent_request_list.no_pending_requests_text' | translate}}</p>
+      </div>
+      }
+    </div>
+    } @if (category === 'teachers') {
     @if (trimmedTeacher?.length > 0 || selectedTeacher?.length > 0) {
     <div class="sticky top-0 z-20 bg-surface-alt px-4 pt-4 pb-2">
       <div
@@ -122,5 +201,6 @@
         <ion-infinite-scroll-content loadingSpinner="crescent"></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     </div>
+    }
   </div>
 </ion-content>

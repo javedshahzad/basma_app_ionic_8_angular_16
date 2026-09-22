@@ -138,10 +138,6 @@ export class TasksCalendarPage implements OnInit {
           this.syncService.syncOffileData();
           let courses = response.data;
 
-          if (response.linkData != undefined) {
-            this.authProvider.piblisEvenetActiveLink(response.linkData);
-          }
-
           if (courses && courses.length > 0) {
             let i = 0;
             this.classes = courses;

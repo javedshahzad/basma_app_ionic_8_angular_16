@@ -78,20 +78,6 @@
 
           <div class="menu-section-title">{{ 'sidemenu.management_section' | translate }}</div>
 
-          @if (activeLink.teacher_link === '1' && permissionService.hasRole(UserType.Admin)) {
-            <ion-row class="menu-item" (click)="shareRegistrationLink()">
-              <ion-col size="2" class="icon-col"><ion-icon name="share-social-outline"></ion-icon></ion-col>
-              <ion-col size="10" class="text-col">{{ 'sidemenu.register_link' | translate }}</ion-col>
-            </ion-row>
-          }
-
-          @if (activeLink.parent_link === '1' && permissionService.hasRole(UserType.Admin) && isSchoolAdmin) {
-            <ion-row class="menu-item" (click)="shareParentRegistrationLink()">
-              <ion-col size="2" class="icon-col"><ion-icon name="share-outline"></ion-icon></ion-col>
-              <ion-col size="10" class="text-col">{{ 'sidemenu.register_parent' | translate }}</ion-col>
-            </ion-row>
-          }
-
           @if (user.name) {
             <ion-row class="menu-item" (click)="openPage('settings')">
               <ion-col size="2" class="icon-col"><ion-icon name="settings-outline"></ion-icon></ion-col>

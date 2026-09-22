@@ -95,6 +95,62 @@ export class RegistrationApiService {
     });
   }
 
+  /**
+   * docs/SELF_REGISTRATION_VIA_SCHOOL_CODE_PLAN.md §5.1/§6.4/§6.5 --
+   * public, unauthenticated join-code registration flow, replacing the
+   * invite-link registerNewTeacher/registerNewParent above for new
+   * signups. All three calls are public (no user_no/session_id needed).
+   */
+  lookupSchoolByCode(joinCode: string): Promise<{ school_name: string; teacher_registration_enabled: boolean; parent_registration_enabled: boolean }> {
+    return new Promise((resolve, reject) => {
+      this.apiClient
+        .postRequest<{ success?: boolean; msg?: string; school_name?: string; teacher_registration_enabled?: boolean; parent_registration_enabled?: boolean }>(
+          { join_code: joinCode },
+          'lookupSchoolByCode'
+        )
+        .then((response) => {
+          if (response && response.success) {
+            resolve({
+              school_name: response.school_name || '',
+              teacher_registration_enabled: !!response.teacher_registration_enabled,
+              parent_registration_enabled: !!response.parent_registration_enabled
+            });
+          } else {
+            reject(response && response.msg);
+          }
+        })
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
+    });
+  }
+
+  registerTeacherByCode(data: { join_code: string; name: string; username: string; password: string }): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string }>(data, 'registerTeacherByCode')
+        .then((response) => {
+          if (response && response.success) {
+            resolve(response.msg || '');
+          } else {
+            reject(response && response.msg);
+          }
+        })
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
+    });
+  }
+
+  registerParentByCode(data: { join_code: string; name: string; username: string; password: string; student_id: string }): Promise<{ msg: string; studentLinked: boolean }> {
+    return new Promise((resolve, reject) => {
+      this.apiClient.postRequest<{ success?: boolean; msg?: string; student_linked?: boolean }>(data, 'registerParentByCode')
+        .then((response) => {
+          if (response && response.success) {
+            resolve({ msg: response.msg || '', studentLinked: !!response.student_linked });
+          } else {
+            reject(response && response.msg);
+          }
+        })
+        .catch((error) => this.apiClient.handleApiError(error, reject, this.dataService.lang.usnexpectedError));
+    });
+  }
+
   /** Register new Student.
    * @param {Object} data - contains user_no, school_id, name, student_id
    * @returns Success or Error msg

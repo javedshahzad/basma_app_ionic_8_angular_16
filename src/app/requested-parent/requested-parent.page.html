@@ -81,6 +81,26 @@
               </p>
             </div>
           </div>
+
+          @if (list.student_linked) {
+          <div class="flex flex-wrap gap-1.5 mb-4">
+            @for (name of list.student_names; track trackByIndex($index)) {
+            <span
+              class="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-lg text-3xs font-bold border border-emerald-100 flex items-center gap-1"
+            >
+              <ion-icon name="person-outline"></ion-icon> {{name}}
+            </span>
+            }
+          </div>
+          } @else {
+          <div
+            class="flex items-center gap-2 bg-amber-50 text-amber-700 border border-amber-100 rounded-xl px-3 py-2 mb-4 text-2xs font-bold"
+          >
+            <ion-icon name="alert-circle-outline" class="text-sm"></ion-icon>
+            {{'parent_request_list.no_student_linked' | translate}}
+          </div>
+          }
+
           <div class="h-px w-full bg-slate-100 mb-4"></div>
           <div
             class="flex items-center justify-between bg-slate-50 rounded-2xl p-3 mb-4 cursor-pointer border border-slate-100 hover:bg-slate-100 transition-colors"

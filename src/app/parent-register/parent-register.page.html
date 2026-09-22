@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-buttons slot="end" class="mr-2 w-10">
       <ion-back-button
-        defaultHref="/"
+        defaultHref="/login"
         text=""
         icon="chevron-back-outline"
         class="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 text-slate-700 shadow-sm hover:bg-slate-100 transition-all flex items-center justify-center"
@@ -17,6 +17,7 @@
 
 <ion-content class="bg-surface-alt" mode="md" dir="rtl">
   <div class="px-4 py-8 max-w-lg mx-auto h-full flex flex-col justify-center">
+    @if (!submitted) {
     <div class="text-center mb-8">
       <div
         class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-100 shadow-sm"
@@ -33,7 +34,36 @@
     >
       <div class="space-y-5">
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-2">{{'reg_parent.parentname' | translate}}</label>
+          <label class="block text-xs font-bold text-slate-600 mb-2">{{'reg_parent.join_code' | translate}}</label>
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
+          >
+            <ion-input
+              type="text"
+              name="joinCode"
+              #joinCodeField="ngModel"
+              [(ngModel)]="parent.joinCode"
+              [placeholder]="'reg_parent.join_code_placeholder' | translate"
+              (ionBlur)="checkJoinCode()"
+              required
+              class="text-sm font-bold text-slate-800 w-full m-0"
+              dir="ltr"
+            ></ion-input>
+          </div>
+          @if (schoolLookupState === 'checking') {
+          <div class="text-2xs text-slate-400 font-bold mt-1.5 px-1">{{'reg_parent.checking_code' | translate}}</div>
+          } @if (schoolLookupState === 'invalid') {
+          <div class="text-2xs text-rose-500 font-bold mt-1.5 px-1">{{'reg_parent.invalid_code' | translate}}</div>
+          } @if (schoolLookupState === 'valid') {
+          <div class="text-2xs text-emerald-600 font-bold mt-1.5 px-1 flex items-center gap-1">
+            <ion-icon name="checkmark-circle" class="text-sm"></ion-icon>
+            {{'reg_parent.school_found_prefix' | translate}} {{schoolName}}
+          </div>
+          }
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-2">{{'reg_parent.full_name' | translate}}</label>
           <div
             class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
           >
@@ -56,29 +86,24 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-2"
-            >{{'reg_parent.parentid' | translate}} {{'reg_parent.id_suffix' | translate}}</label
-          >
+          <label class="block text-xs font-bold text-slate-600 mb-2">{{'reg_parent.username' | translate}}</label>
           <div
             class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
           >
             <ion-input
-              type="tel"
-              name="parentID"
-              #parentID="ngModel"
-              [(ngModel)]="parent.parentId"
-              pattern="[0-9]*$"
-              (keypress)="_keyPress($event)"
+              type="text"
+              name="username"
+              #username="ngModel"
+              [(ngModel)]="parent.username"
               required
               class="text-sm font-bold text-slate-800 w-full m-0"
+              dir="ltr"
             ></ion-input>
           </div>
-          @if (parentID.invalid && (parentID.touched)) {
+          @if (username.invalid && (username.touched)) {
           <div class="text-2xs text-rose-500 font-bold mt-1.5 px-1">
-            @if (parentID.errors?.required) {
+            @if (username.errors?.required) {
             <span>{{'validations.required' | translate}}</span>
-            } @if (parentID.errors?.pattern) {
-            <span>{{'validations.invalidparentId' | translate}}</span>
             }
           </div>
           }
@@ -90,13 +115,13 @@
             class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
           >
             <ion-input
-              type="tel"
+              type="text"
               name="studentId"
               #studentId="ngModel"
               [(ngModel)]="parent.studentId"
               required
-              (keypress)="_keyPress($event)"
               class="text-sm font-bold text-slate-800 w-full m-0"
+              dir="ltr"
             ></ion-input>
           </div>
           @if (studentId.invalid && (studentId.touched)) {
@@ -105,6 +130,8 @@
             <span>{{'validations.required' | translate}}</span>
             }
           </div>
+          } @else {
+          <div class="text-2xs text-slate-400 font-bold mt-1.5 px-1">{{'reg_parent.studentid_hint' | translate}}</div>
           }
         </div>
 
@@ -130,15 +157,59 @@
           </div>
           }
         </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-2"
+            >{{'reg_parent.confirm_password' | translate}}</label
+          >
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-xl px-4 h-[46px] flex items-center focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all shadow-sm"
+          >
+            <ion-input
+              type="password"
+              name="confirmPassword"
+              #confirmPassword="ngModel"
+              [(ngModel)]="parent.confirmPassword"
+              required
+              class="text-sm font-bold text-slate-800 w-full m-0"
+            ></ion-input>
+          </div>
+          @if (confirmPassword.invalid && (confirmPassword.touched)) {
+          <div class="text-2xs text-rose-500 font-bold mt-1.5 px-1">
+            @if (confirmPassword.errors?.required) {
+            <span>{{'validations.required' | translate}}</span>
+            }
+          </div>
+          }
+        </div>
       </div>
 
       <button
         class="w-full mt-8 py-3.5 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all active:scale-95 hover:bg-indigo-700 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
-        [disabled]="registerForm.invalid"
+        [disabled]="registerForm.invalid || schoolLookupState !== 'valid'"
         (click)="registerparent()"
       >
         {{'reg_parent.reg_btn' | translate}}
       </button>
     </form>
+    } @else {
+    <div class="bg-slate-50 rounded-4xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100 text-center">
+      <div
+        class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-100 shadow-sm"
+      >
+        <ion-icon name="checkmark-circle-outline" class="text-4xl text-emerald-500"></ion-icon>
+      </div>
+      <h2 class="text-xl font-black text-slate-800 mb-2">{{'reg_parent.success_title' | translate}}</h2>
+      <p class="text-sm font-bold text-slate-500 mb-8">
+        {{ (studentLinked ? 'reg_parent.success_message' : 'reg_parent.success_message_not_linked') | translate }}
+      </p>
+      <button
+        class="w-full py-3.5 rounded-xl font-black text-white text-sm bg-indigo-600 shadow-md shadow-indigo-200 transition-all active:scale-95 hover:bg-indigo-700"
+        (click)="backToLogin()"
+      >
+        {{'reg_parent.back_to_login' | translate}}
+      </button>
+    </div>
+    }
   </div>
 </ion-content>

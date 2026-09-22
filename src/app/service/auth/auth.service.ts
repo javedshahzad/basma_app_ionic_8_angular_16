@@ -120,11 +120,6 @@ export class AuthService {
     this.event.next(em);
   }
 
-  piblisEvenetActiveLink(param: unknown) {
-    let em = { activeLink: param };
-    this.event.next(em);
-  }
-
   deleteNote(param: unknown) {
     let em = { deleteNote: param };
     this.event.next(em);

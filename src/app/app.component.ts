@@ -10,11 +10,11 @@ import { DatabaseService } from './service/database/database.service';
 import { OfflineBannerComponent } from './components/offline-banner/offline-banner.component';
 import { ScreenOrientation } from '@capacitor/screen-orientation';
 import { Share } from '@capacitor/share';
-import { Router, ActivatedRoute, NavigationExtras, NavigationStart } from '@angular/router';
+import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
 import { ToastController } from '@ionic/angular';
-import { App, URLOpenListenerEvent } from '@capacitor/app';
+import { App } from '@capacitor/app';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -53,7 +53,6 @@ export class AppComponent {
   activePage: any;
   user: any = {};
   lang: any = {};
-  activeLink: any = {};
   pages: Array<{ title: string; component: any; icon: any }>;
 
   public selectedLanguage: string = 'ar';
@@ -353,7 +352,6 @@ export class AppComponent {
               this.rootPage = 'login';
             }
             this.cdr.markForCheck();
-            this.initializeDeeppLink();
             this.hideSplashScreen();
           });
         });
@@ -367,12 +365,6 @@ export class AppComponent {
         // ConnectivityService/OfflineBannerComponent (see enterprise-offline-mode-plan.md).
       }
 
-      this.auth.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(data => {
-        if (data && data.activeLink) {
-          this.activeLink = data.activeLink;
-          this.cdr.markForCheck();
-        }
-      });
     });
   }
 
@@ -403,29 +395,6 @@ export class AppComponent {
         console.error('Error requesting notification permission:', error);
       }
     }
-  }
-
-  initializeDeeppLink() {
-    App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
-      this.zone.run(() => {
-        const slug = event.url.split('.app').pop() || '';
-        const que = slug.split('&');
-        const id = que[0].split('=');
-        const un = que[1].split('=');
-        const navigation: NavigationExtras = {
-          state: {
-            id: id[1],
-            un: un[1]
-          }
-        };
-        if (slug.includes('parent_register.php')) {
-          this.router.navigate(['parent-register'], navigation);
-        }
-        if (slug.includes('registration.php')) {
-          this.router.navigate(['register-teacher'], navigation);
-        }
-      });
-    });
   }
 
   async presentToast(message: string) {
@@ -581,28 +550,6 @@ export class AppComponent {
     if (shouldRoute) {
       await this.checkRoute();
     }
-  }
-
-  shareRegistrationLink() {
-    Share.share({
-      text: 'Teacher Registration',
-      title: 'This is registration link for the new teacher.',
-      url: this.activeLink.link
-    }).then(
-      () => {},
-      err => console.log(err)
-    );
-  }
-
-  shareParentRegistrationLink() {
-    Share.share({
-      text: 'Parent Registration',
-      title: 'This is registration link for the new parents.',
-      url: this.activeLink.parent_link_active
-    }).then(
-      () => {},
-      err => console.log(err)
-    );
   }
 
   registerParent(page: string) {

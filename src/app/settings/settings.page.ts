@@ -51,8 +51,6 @@ export class SettingsPage {
     phone_no: '',
     oldpass: '',
     newpass: '',
-    parent_register_link: true,
-    teacher_register_link: true,
     delay_rule: '',
     warning_report: '',
     warning_report_second: '',
@@ -70,8 +68,12 @@ export class SettingsPage {
   userType: string;
   schoolDetail: SchoolRulesDetails['school_details'] = {};
   is_school_admin: number | boolean;
-  parent_link: boolean;
-  teacherLink: boolean;
+  // docs/SELF_REGISTRATION_VIA_SCHOOL_CODE_PLAN.md §6.2 -- school-wide
+  // join-code toggles, replacing the old per-admin share-link toggles.
+  joinCode: string = '';
+  teacherRegistrationEnabled: boolean = false;
+  parentRegistrationEnabled: boolean = false;
+  savingRegistrationToggle: boolean = false;
   countries: SettingsCountry[] = [];
   selectedCountyCode: string;
   countryDetails: { country_en_name: string; country_code: string; country_ar_name: string } = {
@@ -254,17 +256,9 @@ export class SettingsPage {
         if (res) {
           this.schoolDetail = res.school_details || {};
           const schoolDetail = this.schoolDetail;
-          const userDetails = res.user_details || {};
-          if (userDetails.teacher_register_link == '1') {
-            this.teacherLink = true;
-          } else {
-            this.teacherLink = false;
-          }
-          if (userDetails.parent_register_link == '1') {
-            this.parent_link = true;
-          } else {
-            this.parent_link = false;
-          }
+          this.joinCode = schoolDetail.join_code || '';
+          this.teacherRegistrationEnabled = !!schoolDetail.teacher_registration_enabled;
+          this.parentRegistrationEnabled = !!schoolDetail.parent_registration_enabled;
           this.user.delay_rule = String(schoolDetail.delay_rule ?? '');
           this.user.warning_report = String(schoolDetail.report_condition ?? '');
           this.user.warning_report_second = String(schoolDetail.second_report_condition ?? '');
@@ -280,6 +274,87 @@ export class SettingsPage {
       .catch(error => {
         console.log(error);
       });
+  }
+
+  // docs/SELF_REGISTRATION_VIA_SCHOOL_CODE_PLAN.md §6.2 -- each toggle saves
+  // immediately (not bundled into the profile-update form) since it reads
+  // as an on/off switch, not a field the admin fills in and then remembers
+  // to submit.
+  async toggleTeacherRegistration(enabled: boolean) {
+    const previous = this.teacherRegistrationEnabled;
+    this.teacherRegistrationEnabled = enabled;
+    try {
+      await this.userManagementApi.updateUserSettings({
+        ...this.baseRequestData(),
+        users: {},
+        teacher_registration_enabled: String(enabled)
+      });
+    } catch (error) {
+      this.teacherRegistrationEnabled = previous;
+      this.cdr.markForCheck();
+      this.dataProvider.errorALertMessage(String(error || this.lang.usnexpectedError));
+    }
+  }
+
+  async toggleParentRegistration(enabled: boolean) {
+    const previous = this.parentRegistrationEnabled;
+    this.parentRegistrationEnabled = enabled;
+    try {
+      await this.userManagementApi.updateUserSettings({
+        ...this.baseRequestData(),
+        users: {},
+        parent_registration_enabled: String(enabled)
+      });
+    } catch (error) {
+      this.parentRegistrationEnabled = previous;
+      this.cdr.markForCheck();
+      this.dataProvider.errorALertMessage(String(error || this.lang.usnexpectedError));
+    }
+  }
+
+  async copyJoinCode() {
+    if (!this.joinCode) return;
+    try {
+      await navigator.clipboard.writeText(this.joinCode);
+      this.dataProvider.showToast(this.delete_translation_text['join_code_copied'] || this.joinCode);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async confirmRegenerateJoinCode() {
+    const alert = await this.alertCtrl.create({
+      header: this.delete_translation_text['regenerate_join_code_title'] || '',
+      message: this.delete_translation_text['regenerate_join_code_confirm'] || '',
+      buttons: [
+        { text: this.delete_translation_text['delete_school_alert_btn_no'] || 'Cancel', role: 'cancel' },
+        {
+          text: this.delete_translation_text['delete_school_alert_btn_yes'] || 'Confirm',
+          handler: () => this.regenerateJoinCode()
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  private async regenerateJoinCode() {
+    if (this.savingRegistrationToggle) return;
+    this.savingRegistrationToggle = true;
+    try {
+      const response = await this.userManagementApi.updateUserSettings({
+        ...this.baseRequestData(),
+        users: {},
+        regenerate_join_code: 'true'
+      });
+      if (response.joinCode) {
+        this.joinCode = response.joinCode;
+      }
+    } catch (error) {
+      this.dataProvider.errorALertMessage(String(error || this.lang.usnexpectedError));
+    } finally {
+      this.savingRegistrationToggle = false;
+      this.cdr.markForCheck();
+    }
   }
 
   private baseRequestData(): { user_no: string; session_id: string; school_id: string } {
@@ -451,8 +526,6 @@ export class SettingsPage {
           newpass: this.user.newpass
         },
         uuid: uuid,
-        parent_register_link: this.user.parent_register_link,
-        teacher_register_link: this.user.teacher_register_link,
         delay_rule: this.user.delay_rule,
         warning_report: this.user.warning_report,
         warning_report_second: this.user.warning_report_second,

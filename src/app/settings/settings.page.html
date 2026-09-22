@@ -278,23 +278,46 @@
         </h4>
         <div class="space-y-4">
           <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-3">
-            <span class="text-sm font-bold text-slate-700">{{'setting.parent_share_link' | translate}}</span>
+            <span class="text-sm font-bold text-slate-700">{{'setting.teacher_registration_toggle' | translate}}</span>
             <ion-toggle
-              [checked]="parent_link"
+              [checked]="teacherRegistrationEnabled"
               color="primary"
-              [(ngModel)]="user.parent_register_link"
               mode="ios"
+              (ionChange)="toggleTeacherRegistration($event.detail.checked)"
             ></ion-toggle>
           </div>
           <div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl p-3">
-            <span class="text-sm font-bold text-slate-700">{{'setting.teacher_register_link' | translate}}</span>
+            <span class="text-sm font-bold text-slate-700">{{'setting.parent_registration_toggle' | translate}}</span>
             <ion-toggle
-              [checked]="teacherLink"
+              [checked]="parentRegistrationEnabled"
               color="primary"
-              [(ngModel)]="user.teacher_register_link"
               mode="ios"
+              (ionChange)="toggleParentRegistration($event.detail.checked)"
             ></ion-toggle>
           </div>
+
+          @if (joinCode) {
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+            <span class="text-2xs font-bold text-slate-500 uppercase tracking-wider">{{'setting.join_code_title' | translate}}</span>
+            <div class="flex items-center justify-between mt-2 gap-2">
+              <span class="text-lg font-extrabold text-indigo-600 tracking-widest" dir="ltr">{{joinCode}}</span>
+              <div class="flex items-center gap-2">
+                <button
+                  class="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2 active:scale-95 transition-transform"
+                  (click)="copyJoinCode()"
+                >
+                  <ion-icon name="copy-outline" class="align-middle mr-1"></ion-icon>{{'setting.join_code_copy' | translate}}
+                </button>
+                <button
+                  class="text-xs font-bold text-slate-500 bg-white border border-slate-200 rounded-lg px-3 py-2 active:scale-95 transition-transform"
+                  (click)="confirmRegenerateJoinCode()"
+                >
+                  <ion-icon name="refresh-outline" class="align-middle mr-1"></ion-icon>{{'setting.regenerate_join_code' | translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+          }
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-2xs font-bold text-slate-500 mb-2 truncate"

@@ -178,6 +178,14 @@ export class LoginPage {
     this.router.navigate(['school-registration']);
   }
 
+  openRegisterTeacher() {
+    this.router.navigate(['register-teacher']);
+  }
+
+  openRegisterParent() {
+    this.router.navigate(['parent-register']);
+  }
+
   // 🟢 4. دالة تسجيل الدخول الآمنة والسريعة
   async login() {
     if (!this.user.email_id || !this.user.password) {

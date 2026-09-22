@@ -29,6 +29,12 @@ export interface SchoolRulesDetails {
     third_report_condition?: string | number;
     deactivate_date?: string;
     delete_at?: string;
+    // docs/SELF_REGISTRATION_VIA_SCHOOL_CODE_PLAN.md §6.2 -- the school's own
+    // join code + per-role toggles, replacing user_details' teacher/parent
+    // register link below.
+    join_code?: string;
+    teacher_registration_enabled?: boolean;
+    parent_registration_enabled?: boolean;
   };
   user_details?: {
     teacher_register_link?: string;
@@ -45,6 +51,7 @@ interface UpdateUserSettingsResult {
   session: boolean;
   message?: string;
   pic?: string;
+  joinCode?: string;
 }
 
 interface RevertSchoolHttpResponse {
@@ -261,12 +268,12 @@ export class UserManagementApiService {
               body = body.append('user[' + key + ']', data.users[key]);
             }
           });
-          this.httpClient.post<{ session?: boolean; success?: boolean; msg?: string; picUrl?: string }>(environment.serverURL + 'saveUser', body, { headers: header }).subscribe(
+          this.httpClient.post<{ session?: boolean; success?: boolean; msg?: string; picUrl?: string; join_code?: string }>(environment.serverURL + 'saveUser', body, { headers: header }).subscribe(
             (response) => {
               if (!response.session) {
                 resolve({ session: false, message: response.msg });
               } else if (response.success) {
-                resolve({ session: true, message: response.msg, pic: response.picUrl });
+                resolve({ session: true, message: response.msg, pic: response.picUrl, joinCode: response.join_code });
               } else {
                 reject(response.msg);
               }
