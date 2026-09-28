@@ -917,14 +917,24 @@ export class ListStudentPage {
     this.attMarked = this.totalRemaining === 0;
   }
 
+  // Attendance exactly as loaded from the server. setTeacherAttendance() and
+  // setAllStudentsStatusForTeacher() write unsaved taps straight into
+  // attendanceResponse.students[].sheet, so which periods count as already
+  // saved (and get locked) must be decided from this snapshot instead.
+  // Otherwise the edit-window timer re-running determineNextPeriod() mid-way
+  // through a new period locks that never-submitted period.
+  private get savedStudents(): Student[] {
+    return this.students;
+  }
+
   getPeriodStatus(periodNumber: number): string {
     if (!this.attendanceResponse?.students) return 'empty';
     let semKey = 'cem-' + periodNumber;
     let markedCount = 0;
-    let totalCount = this.attendanceResponse.students.length;
+    let totalCount = this.savedStudents.length;
 
     for (let i = 0; i < totalCount; i++) {
-      let status = String(this.attendanceResponse.students[i].sheet?.[semKey]).trim();
+      let status = String(this.savedStudents[i].sheet?.[semKey]).trim();
       if (status === '0' || status === '1' || status === '3') {
         markedCount++;
       }
@@ -964,7 +974,7 @@ export class ListStudentPage {
       if (this.attendanceResponse.students) {
         let otherNonDelayRecordsCount = 0;
 
-        for (let student of this.attendanceResponse.students) {
+        for (let student of this.savedStudents) {
           const sheet = student.sheet || {};
           let val = sheet['cem-' + i];
           let enteredBy = sheet['entered_by-' + i];
@@ -1041,7 +1051,7 @@ export class ListStudentPage {
         let hasUnmarked = false;
         let hasActualOtherRecords = false;
 
-        for (let student of this.attendanceResponse.students) {
+        for (let student of this.savedStudents) {
           const sheet = student.sheet || {};
           let val = sheet['cem-' + i];
           let currentStatus = String(val).trim();
@@ -1087,7 +1097,7 @@ export class ListStudentPage {
           }
 
           if (!isMineCheck) {
-            for (let student of this.attendanceResponse.students) {
+            for (let student of this.savedStudents) {
               if (String(student.sheet?.['entered_by-' + i]) === myUserNo) {
                 isMineCheck = true;
                 break;

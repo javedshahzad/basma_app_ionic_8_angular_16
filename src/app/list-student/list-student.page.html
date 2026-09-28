@@ -197,7 +197,7 @@
       <ion-icon name="cloud-upload-outline" class="text-xl"></ion-icon>
       {{'list-student.submitbtn' | translate}}
     </button>
-    } @if (isAdmin || isModerator || !isViewer) { @if (!editMode && (isAdmin || canEdit)) {
+    } @if (isAdmin || isModerator) { @if (!editMode && (isAdmin || canEdit)) {
     <button
       class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg shadow-indigo-200 transition-all active:scale-95 flex justify-center items-center gap-2"
       (click)="toggleEditModeWithValidation()"
