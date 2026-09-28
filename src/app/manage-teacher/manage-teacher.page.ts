@@ -12,13 +12,14 @@ import { SchoolDirectoryApiService } from '../service/school-directory-api/schoo
 import { TeacherManagementApiService, PendingTeacher } from '../service/teacher-management-api/teacher-management-api.service';
 
 import { FormsModule } from '@angular/forms';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-manage-teacher',
   templateUrl: './manage-teacher.page.html',
   styleUrls: ['./manage-teacher.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IonicModule, FormsModule, TranslatePipe]
+  imports: [IonicModule, FormsModule, NgClass, TranslatePipe]
 })
 export class ManageTeacherPage {
   trackByIndex(index: number): number {
