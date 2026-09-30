@@ -139,7 +139,7 @@
                 <ion-icon name="close-circle" class="text-xl"></ion-icon> {{'teacher_view.absent_saved' | translate}}
               </div>
               }
-              @if (getCemStatus(student.sheet, currentActivePeriod) === '3' || isAbsentDueToDelay(student.sheet)) {
+              @if (isAbsentDueToDelay(student.sheet, currentActivePeriod)) {
               <div class="flex-1 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center gap-2 bg-amber-50 border border-amber-200 text-amber-600 opacity-80 cursor-not-allowed">
                 <ion-icon name="time" class="text-xl"></ion-icon> {{'teacher_view.late_saved' | translate}}
               </div>

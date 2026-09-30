@@ -7,6 +7,23 @@ export class AttendanceManagerService {
 
   constructor() { }
 
+  // Is this student's mark for `period` a delay (تأخير) mark, which only the
+  // delay register may change? A delay is only ever recorded against period
+  // 1 (the morning-lineup sheet is always `cem-1`), as either `3` (late) or,
+  // once the school's delay rule is reached, `0` with absentDueToDelay=1.
+  // The absentDueToDelay flag must NOT be applied to every period: doing so
+  // made that student untappable yet "not recorded" in periods 2+, so the
+  // period could never be completed or submitted by anyone.
+  // Newer servers send a per-period `absentDueToDelay-<n>`; older ones send
+  // only the student-level flag, which then means period 1.
+  isDelayMark(sheet: any, period: number): boolean {
+    if (!sheet) return false;
+    if (String(sheet['cem-' + period]).trim() === '3') return true;
+    const perPeriod = sheet['absentDueToDelay-' + period];
+    if (perPeriod !== undefined && perPeriod !== null) return String(perPeriod) === '1';
+    return period === 1 && String(sheet.absentDueToDelay) === '1';
+  }
+
   // 1. 📊 حساب إحصائيات الغياب (تم إصلاح مسارات قراءة البيانات)
   calculatePeriodStats(students: any[], period: number, localSheet: any) {
     let present = 0; let absent = 0; let remaining = 0;

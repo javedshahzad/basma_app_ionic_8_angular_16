@@ -15,6 +15,7 @@ describe('MyInterceptor', () => {
     const alertControllerStub = { create: () => Promise.resolve({ present: () => Promise.resolve() }) } as any;
     const dataProviderStub = { hideLoading: () => {}, showToast: () => {} } as any;
     const routerStub = { navigate: () => Promise.resolve(true) } as any;
+    const translateStub = { instant: (key: string) => key } as any;
 
     handler = {
       handle: (req: HttpRequest<any>) => {
@@ -23,7 +24,7 @@ describe('MyInterceptor', () => {
       }
     };
 
-    interceptor = new MyInterceptor(alertControllerStub, dataProviderStub, authStub as any, routerStub);
+    interceptor = new MyInterceptor(alertControllerStub, dataProviderStub, authStub as any, routerStub, translateStub);
   });
 
   function makeRequest(body: any): HttpRequest<any> {

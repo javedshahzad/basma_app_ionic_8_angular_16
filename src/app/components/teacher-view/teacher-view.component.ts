@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { GamificationEngineService } from '../../service/gamification-engine/gamification-engine.service';
+import { AttendanceManagerService } from '../../service/attendance-manager/attendance-manager.service';
 import { NgClass, DecimalPipe } from '@angular/common';
 import { ɵɵDir, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf } from '@angular/cdk/scrolling';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -35,7 +36,10 @@ export class TeacherViewComponent {
   @Output() setStudentStatus = new EventEmitter<{ student: any; status: string }>();
   @Output() applicationInfoClick = new EventEmitter<{ event: Event; sid: string | number; period: number }>();
 
-  constructor(public gamification: GamificationEngineService) {}
+  constructor(
+    public gamification: GamificationEngineService,
+    private attendanceManager: AttendanceManagerService
+  ) {}
 
   // 🟢 تقنية لتسريع أداء قائمة الطلاب (تمنع إعادة رسم الشاشة بالكامل)
   trackByStudent(index: number, student: any) {
@@ -55,8 +59,9 @@ export class TeacherViewComponent {
     return String(val);
   }
 
-  isAbsentDueToDelay(sheet: any): boolean {
-    return !!sheet && String(sheet.absentDueToDelay) === '1';
+  // Delay marks belong to one period only -- see AttendanceManagerService.isDelayMark.
+  isAbsentDueToDelay(sheet: any, period: number): boolean {
+    return this.attendanceManager.isDelayMark(sheet, period);
   }
 
   // حساب إجمالي نقاط الطلاب في الصف
