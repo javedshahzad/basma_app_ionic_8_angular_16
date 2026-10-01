@@ -13,6 +13,7 @@ import { PlanReceiptComponent } from '../plan-receipt/plan-receipt.component';
 // 🟢 استيراد خدمة التخزين الموحدة والآمنة
 import { StorageService } from '../service/storage.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
+import { usableUserPlan } from '../service/plan-api/available-plan';
 import { UserType } from '../constants/user-type';
 import { FormsModule } from '@angular/forms';
 
@@ -110,9 +111,10 @@ export class AvailablePlanPage implements OnInit {
     this.dataProvider
       .run(() => this.planApi.getUserPlan(data))
       .then(async (res: any) => {
-        if (res && res.response) {
-          this.availablePlan = res.response;
-          this.availablePlan.cardColor = res.response.isExpire ? 'rgb(249 169 5)' : '#43a047';
+        const userPlan = usableUserPlan(res?.response);
+        if (userPlan) {
+          this.availablePlan = userPlan;
+          this.availablePlan.cardColor = userPlan.isExpire ? 'rgb(249 169 5)' : '#43a047';
           // حفظ الخطة المحدثة في الذاكرة لتستخدمها العمليات الأخرى
           await this.storageSr.set('availablePlan', this.availablePlan);
         } else {

@@ -15,6 +15,7 @@ import { tap, retry, catchError, timeout, switchMap } from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
 import { DataService } from '@services/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../environments/environment';
 
 // login/schoolRegister don't have a token yet; refreshToken is what mints
 // one and must stay reachable even when the current access token is dead.
@@ -31,16 +32,48 @@ export class MyInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let requestToHandle = request;
-    const isAuthExempt = AUTH_EXEMPT_ENDPOINTS.some(endpoint => request.url.endsWith(endpoint));
+    const isAuthExempt = this.isAuthExempt(request.url);
+    const needsAuth = !isAuthExempt && this.isAppApi(request.url);
 
-    // 0️⃣ JWT: يُرفق كترويسة Authorization، وليس داخل جسم الطلب — هذا هو آلية
-    // المصادقة الفعلية الآن (لم يعد session_id مستخدَماً إطلاقاً).
-    if (!isAuthExempt && this.auth.accessToken) {
-      requestToHandle = requestToHandle.clone({
-        setHeaders: { Authorization: `Bearer ${this.auth.accessToken}` }
-      });
+    if (!needsAuth) {
+      return this.forwardRequest(request, next, isAuthExempt);
     }
+
+    // Access tokens are memory-only and missing on cold start until the
+    // refresh-token warm-up finishes. Wait for that so getCourses /
+    // todayDashboard / etc. leave with Authorization instead of a 401.
+    if (this.auth.accessToken) {
+      return this.forwardRequest(this.withAuthHeader(request, this.auth.accessToken), next, false);
+    }
+
+    return from(this.auth.ensureAccessToken()).pipe(
+      switchMap(token =>
+        this.forwardRequest(token ? this.withAuthHeader(request, token) : request, next, false)
+      )
+    );
+  }
+
+  private isAuthExempt(url: string): boolean {
+    const path = url.split('?')[0];
+    return AUTH_EXEMPT_ENDPOINTS.some(endpoint => path === endpoint || path.endsWith('/' + endpoint));
+  }
+
+  private isAppApi(url: string): boolean {
+    return url.startsWith(environment.serverURL) || /\/api\/v\d+\//.test(url);
+  }
+
+  private withAuthHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
+    return request.clone({
+      setHeaders: { Authorization: `Bearer ${token}` }
+    });
+  }
+
+  private forwardRequest(
+    request: HttpRequest<any>,
+    next: HttpHandler,
+    isAuthExempt: boolean
+  ): Observable<HttpEvent<any>> {
+    let requestToHandle = request;
 
     // 1️⃣ الشق الأول: المنطق الخاص بك (إضافة UUID و user_no لطلبات POST المحددة)
     // 🔒 تُضاف إلى جسم الطلب (body) بدلاً من رابط الطلب (query params) حتى لا تظهر
@@ -125,6 +158,13 @@ export class MyInterceptor implements HttpInterceptor {
         // فعلاً (refresh token غير موجود/منتهي/مُلغى) — تسجيل خروج فوري.
         if (error instanceof HttpErrorResponse && error.status === 401 && !isAuthExempt) {
           return from(this.auth.refreshAccessToken()).pipe(
+            // The refresh attempt itself blew up (e.g. the local credential
+            // store couldn't be read), which is different from the server
+            // rejecting the token (that resolves to null below). Surface the
+            // original 401 -- with its real status, not a status-less error --
+            // and do NOT sign the user out: nothing says their session is
+            // dead, and the next request simply tries the refresh again.
+            catchError(() => throwError(() => error)),
             switchMap(newAccessToken => {
               if (!newAccessToken) {
                 this.dataProvider.hideLoading();

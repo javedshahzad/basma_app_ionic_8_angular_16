@@ -1590,7 +1590,7 @@ export class ListStudentPage {
       .run(() => this.schoolDirectoryApi.getCountStudents(data))
       .then(res => {
         var totalStudents = res.data;
-        if (this.AvailablePlan.isExpire == true) {
+        if (this.AvailablePlan?.isExpire == true) {
           this.dataProvider.showToast('This feature requires activating extra features. Please activate extra features!');
           return;
         }
@@ -1685,7 +1685,7 @@ export class ListStudentPage {
       this.addStudentLang = response;
       this.cdr.markForCheck();
 
-      if (this.AvailablePlan.isExpire === true) {
+      if (this.AvailablePlan?.isExpire === true) {
         this.dataProvider.showToast('This feature requires activating extra features. Please activate extra features!');
         return;
       }
@@ -1789,7 +1789,7 @@ export class ListStudentPage {
       this.addStudentLang = response;
       this.cdr.markForCheck();
 
-      if (this.AvailablePlan.isExpire === true) {
+      if (this.AvailablePlan?.isExpire === true) {
         this.dataProvider.showToast('This feature requires activating extra features. Please activate extra features!');
         return;
       }

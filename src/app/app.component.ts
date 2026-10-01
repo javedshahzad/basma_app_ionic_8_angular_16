@@ -23,6 +23,7 @@ import { FcmService } from './service/fcm.service';
 import { SyncService } from './service/sync/sync.service';
 import { DeviceApiService } from './service/device-api/device-api.service';
 import { PlanApiService } from './service/plan-api/plan-api.service';
+import { hasActivePaidPlan, usableUserPlan } from './service/plan-api/available-plan';
 import { ReportsApiService } from './service/reports-api/reports-api.service';
 import { RestoreCredentialsApiService } from './service/restore-credentials-api/restore-credentials-api.service';
 import { RestoreCredentials } from './native/restore-credentials.plugin';
@@ -238,8 +239,10 @@ export class AppComponent {
         .subscribe(response => {
           this.lang = response;
           this.cdr.markForCheck();
-          this.dbProvider.openDataBase().then(async () => {
-            this.dbProvider.createTable();
+          // tryOpenDataBase never rejects: boot (routing, menu) must not hinge on the
+          // local cache database opening, it used to stall entirely when it failed.
+          this.dbProvider.tryOpenDataBase().then(async dbReady => {
+            if (dbReady) this.dbProvider.createTable();
 
             let userLoggedIn = await this.storageSr.get('userloggedin');
 
@@ -330,11 +333,7 @@ export class AppComponent {
 
               this.rootPage = this.permissionService.hasRole(UserType.Parent) ? 'ChildrenPage' : 'tabs';
 
-              if (
-                this.AvailablePlan &&
-                this.AvailablePlan.plan.slug != 'free' &&
-                this.AvailablePlan.isExpire == false
-              ) {
+              if (hasActivePaidPlan(this.AvailablePlan)) {
                 if (!this.pages.some(p => p.component === 'elearning-schools')) {
                   this.pages.push({
                     title: this.lang.sidemenu.e_learning,
@@ -720,7 +719,7 @@ export class AppComponent {
         });
       }
 
-      if (this.AvailablePlan && this.AvailablePlan.plan.slug != 'free' && this.AvailablePlan.isExpire == false) {
+      if (hasActivePaidPlan(this.AvailablePlan)) {
         this.pages.push({
           title: this.lang.sidemenu?.e_learning || 'التعليم الإلكتروني',
           component: 'elearning-schools',
@@ -795,12 +794,16 @@ export class AppComponent {
       this.planApi
         .getUserPlan(data)
         .then(async (res: any) => {
-          if (res && res.response) {
-            await this.storageSr.set('availablePlan', res.response);
-            localStorage.setItem('availablePlan', JSON.stringify(res.response));
-            this.AvailablePlan = res.response;
+          // Only a real plan is kept. The API also answers false, "User Not Found" or a
+          // subscription with plan: null; storing those made every later start crash on
+          // `.plan.slug`. They are handled like "no plan" below.
+          const userPlan = usableUserPlan(res?.response);
+          if (userPlan) {
+            await this.storageSr.set('availablePlan', userPlan);
+            localStorage.setItem('availablePlan', JSON.stringify(userPlan));
+            this.AvailablePlan = userPlan;
 
-            if (this.AvailablePlan.plan.slug != 'free' && this.AvailablePlan.isExpire == false) {
+            if (hasActivePaidPlan(userPlan)) {
               if (!this.pages.some(p => p.component === 'elearning-schools')) {
                 this.pages.push({
                   title: this.lang.sidemenu.e_learning,
@@ -809,7 +812,7 @@ export class AppComponent {
                 });
               }
             }
-          } else if (!res.response && this.userDetails.details.is_school_admin == 1) {
+          } else if (this.userDetails.details.is_school_admin == 1) {
             this.subcribeToServerFreePlan();
           } else {
             await this.storageSr.remove('availablePlan');

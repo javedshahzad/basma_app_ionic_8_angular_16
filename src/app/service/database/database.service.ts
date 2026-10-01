@@ -7,6 +7,7 @@ import { Capacitor } from '@capacitor/core';
   providedIn: 'root'
 })
 export class DatabaseService {
+  private readonly dbName = 'attendance.db';
   private sqlite: SQLiteConnection;
   public db: SQLiteDBConnection;
   private isNative: boolean = false;
@@ -19,35 +20,154 @@ export class DatabaseService {
     }
   }
 
+  // The one in-flight open, shared by every caller. At cold start four things
+  // ask for the database at the same moment (app.component, tabs.page twice,
+  // and the refresh-token read via ensureReady). `this.db` is only assigned
+  // after createConnection() resolves, so unshared callers all saw "no
+  // connection yet" and each created one: the losers failed with
+  // "Connection attendance already exists". That failure escaped the token
+  // refresh, so every request that needed a refresh died with a status-less
+  // error ("HTTP unknown (Unknown Error)" in Sentry).
+  private openInFlight: Promise<any> | null = null;
+  private readyInFlight: Promise<void> | null = null;
+
   /**
-   * Open the local database
+   * Open the local database. Safe to call from anywhere, any number of times:
+   * concurrent and repeat calls share one open. A failed open is not cached,
+   * so the next call tries again.
    */
-  async openDataBase(): Promise<any> {
-    return new Promise(async (resolve, reject) => {
-      await this.platform.ready();
-      if (this.isNative) {
-        try {
-          await this.ensureEncryptionSecret();
+  openDataBase(): Promise<any> {
+    if (!this.openInFlight) {
+      this.openInFlight = this.doOpenDataBase().catch(error => {
+        this.openInFlight = null;
+        throw error;
+      });
+    }
+    return this.openInFlight;
+  }
 
-          // التحقق مما إذا كان الاتصال موجوداً مسبقاً لتجنب الأخطاء
-          const isConn = (await this.sqlite.isConnection('attendance.db', false)).result;
-          if (isConn) {
-            this.db = await this.sqlite.retrieveConnection('attendance.db', false);
-          } else {
-            await this.discardUnencryptedDatabase();
-            this.db = await this.sqlite.createConnection('attendance.db', true, 'encryption', 1, false);
-          }
+  /**
+   * For startup paths that must carry on whether or not the local database
+   * could be opened (routing, the signed-in menu, the user's name). The
+   * database is a cache plus the credential store, so a failure to open it
+   * must not stop the app booting or leave a signed-in user looking signed out.
+   * Never rejects; resolves false (and logs) when the database isn't available.
+   * Later credential reads/writes go through ensureReady(), which retries.
+   */
+  async tryOpenDataBase(): Promise<boolean> {
+    try {
+      await this.openDataBase();
+      return true;
+    } catch (error) {
+      console.warn('Local database unavailable; continuing without it.', error);
+      return false;
+    }
+  }
 
-          await this.db.open();
-          resolve(true);
-        } catch (error) {
-          console.error("Error opening DB: ", error);
-          reject(false);
-        }
-      } else {
-        resolve(true); // تخطي في حالة المتصفح
+  private async doOpenDataBase(): Promise<any> {
+    await this.platform.ready();
+    if (!this.isNative) {
+      return true; // تخطي في حالة المتصفح
+    }
+
+    try {
+      if (await this.isHandleOpen()) {
+        return true;
       }
-    });
+
+      await this.ensureEncryptionSecret();
+
+      // After live-reload or a new SQLiteConnection wrapper, the JS map is
+      // empty while Android still holds "attendance". isConnection() then
+      // returns false and createConnection() throws
+      // "Connection attendance already exists". Sync the wrapper first.
+      try {
+        await this.sqlite.checkConnectionsConsistency();
+      } catch {
+        // Older / stub plugin — create-or-retrieve below still covers this.
+      }
+
+      const isConn = (await this.sqlite.isConnection(this.dbName, false)).result;
+      if (isConn) {
+        this.db = await this.sqlite.retrieveConnection(this.dbName, false);
+      } else {
+        await this.discardUnencryptedDatabase();
+        // 'secret' opens the encrypted database with the stored passphrase and
+        // creates it when it doesn't exist yet. NOT 'encryption': that mode
+        // converts an existing PLAIN file to encrypted, and throws
+        // "Failed in encryption .../attendanceSQLite.db not found" when there is
+        // none. discardUnencryptedDatabase() has just removed any plain file,
+        // so 'encryption' could never work here: on every fresh install the
+        // database failed to open, nothing in it (the refresh token, remember-me,
+        // the offline cache) could be saved, and the user was signed out as soon
+        // as the in-memory access token lapsed (Sentry issue 150453613).
+        this.db = await this.createOrRetrieveConnection(true, 'secret');
+      }
+
+      await this.ensureDbOpen();
+      return true;
+    } catch (error) {
+      console.error('Error opening DB: ', error);
+      // Reject with the real error: this used to reject with a bare `false`,
+      // which is why the failure showed up in Sentry with no message at all.
+      throw error;
+    }
+  }
+
+  private async isHandleOpen(): Promise<boolean> {
+    if (!this.db) {
+      return false;
+    }
+    try {
+      return !!(await this.db.isDBOpen())?.result;
+    } catch {
+      return false;
+    }
+  }
+
+  private async ensureDbOpen(): Promise<void> {
+    try {
+      await this.db.open();
+    } catch (error) {
+      if (!this.messageIncludes(error, 'already exists') && !this.messageIncludes(error, 'already open')) {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * createConnection() talks to the native plugin, which still has the
+   * connection after a JS-wrapper reset. Prefer the existing JS handle;
+   * if the wrapper lost it, close the native leftover and create again.
+   */
+  private async createOrRetrieveConnection(encrypted: boolean, mode: string): Promise<SQLiteDBConnection> {
+    try {
+      return await this.sqlite.createConnection(this.dbName, encrypted, mode, 1, false);
+    } catch (error) {
+      if (!this.messageIncludes(error, 'already exists')) {
+        throw error;
+      }
+      try {
+        return await this.sqlite.retrieveConnection(this.dbName, false);
+      } catch {
+        try {
+          await this.sqlite.closeConnection(this.dbName, false);
+        } catch {
+          // native leftover with no JS handle
+        }
+        return await this.sqlite.createConnection(this.dbName, encrypted, mode, 1, false);
+      }
+    }
+  }
+
+  private messageIncludes(error: unknown, snippet: string): boolean {
+    const message =
+      typeof error === 'string'
+        ? error
+        : error && typeof error === 'object' && 'message' in error
+          ? String((error as { message: unknown }).message)
+          : String(error ?? '');
+    return message.toLowerCase().includes(snippet.toLowerCase());
   }
 
   /**
@@ -73,16 +193,28 @@ export class DatabaseService {
    * than converting it in place.
    */
   private async discardUnencryptedDatabase() {
-    const exists = (await this.sqlite.isDatabase('attendance.db')).result;
+    const exists = (await this.sqlite.isDatabase(this.dbName)).result;
     if (!exists) return;
 
-    const encrypted = (await this.sqlite.isDatabaseEncrypted('attendance.db')).result;
+    const encrypted = (await this.sqlite.isDatabaseEncrypted(this.dbName)).result;
     if (encrypted) return;
 
-    const oldDb = await this.sqlite.createConnection('attendance.db', false, 'no-encryption', 1, false);
-    await oldDb.open();
-    await oldDb.delete();
-    await this.sqlite.closeConnection('attendance.db', false);
+    const isConn = (await this.sqlite.isConnection(this.dbName, false)).result;
+    if (isConn) {
+      await this.sqlite.closeConnection(this.dbName, false);
+    }
+
+    try {
+      const oldDb = await this.createOrRetrieveConnection(false, 'no-encryption');
+      await oldDb.open();
+      await oldDb.delete();
+    } finally {
+      try {
+        await this.sqlite.closeConnection(this.dbName, false);
+      } catch {
+        // already closed or never opened
+      }
+    }
   }
 
   /**
@@ -410,11 +542,17 @@ export class DatabaseService {
    * method runs before app.component.ts's normal startup sequence has
    * done so (mirrors StorageService's own defensive lazy-init pattern).
    */
-  private async ensureReady(): Promise<void> {
-    if (!this.db) {
-      await this.openDataBase();
-      await this.createTable();
+  private ensureReady(): Promise<void> {
+    if (!this.readyInFlight) {
+      this.readyInFlight = (async () => {
+        await this.openDataBase();
+        await this.createTable();
+      })().catch(error => {
+        this.readyInFlight = null;
+        throw error;
+      });
     }
+    return this.readyInFlight;
   }
 
   /**

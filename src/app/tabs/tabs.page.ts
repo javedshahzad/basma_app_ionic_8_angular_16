@@ -44,7 +44,7 @@ export class TabsPage {
   ) {
     this.authProvider.event.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(async res => {
       if (res) {
-        await this.dbProvider.openDataBase();
+        await this.dbProvider.tryOpenDataBase();
         // 🟢 إضافة مهلة صغيرة جداً لضمان تحديث الـ Storage قبل قراءته
         setTimeout(async () => {
           let userLoggedIn = await this.storageSr.get('userloggedin');
@@ -58,7 +58,7 @@ export class TabsPage {
       }
     });
 
-    this.dbProvider.openDataBase().then(async () => {
+    this.dbProvider.tryOpenDataBase().then(async () => {
       let userLoggedIn = await this.storageSr.get('userloggedin');
       if (userLoggedIn) {
         this.loggedin = true;

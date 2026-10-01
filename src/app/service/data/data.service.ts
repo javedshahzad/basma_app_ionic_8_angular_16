@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Platform, LoadingController, ModalController, NavController, PopoverController } from '@ionic/angular';
-import { Network } from '@capacitor/network';
 import { DatabaseService } from '../database/database.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
@@ -49,13 +48,6 @@ export class DataService {
           // console.log(this.translate.instant('alertmessages'))
         });
       }, 2000);
-    });
-    Network.addListener('networkStatusChange', status => {
-      if (status.connected) {
-        this.showToast('Internet connected');
-      } else {
-        this.showToast('No Internet connection...');
-      }
     });
   }
 

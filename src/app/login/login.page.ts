@@ -14,6 +14,7 @@ import { StorageService } from '../service/storage.service';
 import { CredentialStorageService } from '../service/credential-storage/credential-storage.service';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { PlanApiService } from '../service/plan-api/plan-api.service';
+import { usableUserPlan } from '../service/plan-api/available-plan';
 import { PrefetchService } from '../service/prefetch/prefetch.service';
 import { RestoreCredentialsApiService } from '../service/restore-credentials-api/restore-credentials-api.service';
 import { RestoreCredentials } from '../native/restore-credentials.plugin';
@@ -333,11 +334,13 @@ export class LoginPage {
     this.planApi
       .getUserPlan(data)
       .then(async (res: any) => {
-        if (res && res.response) {
-          let availablePlan = res.response;
+        // usableUserPlan: the API also answers false, "User Not Found" or a plan-less
+        // subscription. Those mean "no plan" (same as response: false) and must not be saved.
+        const availablePlan = usableUserPlan(res?.response);
+        if (availablePlan) {
           await this.storageSr.set('availablePlan', availablePlan);
 
-          if (availablePlan.isExpire == true || availablePlan.plan.slug == 'free') {
+          if (availablePlan.isExpire == true || availablePlan.plan?.slug == 'free') {
             this.presentModalSubscription();
           } else {
             this.router.navigate(['tabs'], { replaceUrl: true });

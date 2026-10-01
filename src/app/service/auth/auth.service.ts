@@ -32,6 +32,7 @@ export class AuthService {
   // on native), never here, and never in the generic `userloggedin` blob.
   public accessToken: string | null = null;
   private refreshInFlight: Promise<string | null> | null = null;
+  private hydrateInFlight: Promise<void>;
 
   constructor(
     public http: HttpClient,
@@ -43,7 +44,7 @@ export class AuthService {
     private credentialStorage: CredentialStorageService
   ) {
     this.event = new Subject();
-    this.hydrateCurrentUser();
+    this.hydrateInFlight = this.hydrateCurrentUser();
   }
 
   private async hydrateCurrentUser() {
@@ -54,8 +55,40 @@ export class AuthService {
     // up from the persisted refresh token now, so the first real request
     // doesn't have to eat a 401-then-refresh round trip.
     if (this.currentUser) {
-      await this.refreshAccessToken();
+      try {
+        await this.refreshAccessToken();
+      } catch (error) {
+        // Only a warm-up: if it fails (e.g. the local credential store isn't
+        // readable yet), the first request that gets a 401 refreshes anyway.
+        // Runs from the constructor with nothing awaiting it, so letting it
+        // reject would be an unhandled promise rejection.
+        console.warn('Token warm-up failed; will refresh on first 401.', error);
+      }
     }
+  }
+
+  /**
+   * Returns a usable access token, waiting for startup hydration (and a
+   * refresh if needed) so MyInterceptor can put Authorization on the first
+   * API calls instead of sending them bare and 401-ing. Null when nobody
+   * is signed in.
+   */
+  async ensureAccessToken(): Promise<string | null> {
+    if (this.accessToken) {
+      return this.accessToken;
+    }
+    try {
+      await this.hydrateInFlight;
+    } catch {
+      // hydrateCurrentUser already logs; fall through to a refresh attempt
+    }
+    if (this.accessToken) {
+      return this.accessToken;
+    }
+    if (this.currentUser) {
+      return this.refreshAccessToken();
+    }
+    return null;
   }
 
   /**
