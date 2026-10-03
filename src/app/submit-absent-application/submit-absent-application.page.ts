@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Network } from '@capacitor/network';
+import { isNetworkConnected } from '../service/network-status';
 import { NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { AuthService } from '../service/auth/auth.service';
@@ -175,7 +175,7 @@ export class SubmitAbsentApplicationPage implements OnInit {
   async takePicture() {
     // 🟢 حماية الكاميرا للعمل فقط إذا كان هناك إنترنت، لأن السيرفر يحتاج لرفع الصورة فوراً
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      if (!(await Network.getStatus()).connected) {
+      if (!(await isNetworkConnected())) {
         this.dataProvider.showToast(this.lang?.no_internet || 'لا يوجد اتصال بالإنترنت');
         return;
       }

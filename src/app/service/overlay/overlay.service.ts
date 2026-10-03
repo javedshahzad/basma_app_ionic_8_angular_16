@@ -9,6 +9,30 @@ function BlurActiveElement(): void {
   active?.blur();
 }
 
+/** Shown when an error carries nothing readable (an empty value, or an object with no message). */
+export const GENERIC_ERROR_MESSAGE = 'حدث خطأ غير متوقع يرجى معاودة المحاولة في وقت لاحق.';
+
+/**
+ * The text to show for whatever a catch block received. Callers pass strings,
+ * Error objects, Capacitor plugin errors ({ code, message }) and
+ * HttpErrorResponse alike, so this can't assume a string: calling .replace()
+ * on an object threw a second TypeError inside the catch handler, which hid
+ * the real error and left the user with no alert at all (Sentry issue
+ * 151065986). A server's own message, when there is one (HttpErrorResponse
+ * keeps it under .error), wins over the generic transport text.
+ */
+export function messageFromError(error: unknown): string {
+  if (typeof error === 'string') return error;
+  if (!error || typeof error !== 'object') return '';
+
+  const e = error as Record<string, unknown>;
+  const body = e['error'];
+  const bodyRecord = body && typeof body === 'object' ? (body as Record<string, unknown>) : null;
+  const candidates = [typeof body === 'string' ? body : undefined, bodyRecord?.['msg'], bodyRecord?.['message'], e['msg'], e['message']];
+  const found = candidates.find(c => typeof c === 'string' && c.trim() !== '');
+  return typeof found === 'string' ? found : '';
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -45,10 +69,11 @@ export class OverlayService {
     }
   }
 
-  removeUrlFromString(inputString: string): string {
-    if (!inputString) return '';
+  removeUrlFromString(input: unknown): string {
+    const text = messageFromError(input);
+    if (!text) return '';
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return inputString.replace(urlRegex, '');
+    return text.replace(urlRegex, '');
   }
 
   async presentAlert(header: string, message: string, buttons: (AlertButton | string)[] = ['Ok'], mode?: 'ios' | 'md', backdropDismiss: boolean = true): Promise<void> {
@@ -118,8 +143,9 @@ export class OverlayService {
     }
   }
 
-  async errorAlert(error: string): Promise<void> {
-    await this.presentAlert('تحذير', this.removeUrlFromString(error), ['Ok'], undefined, false);
+  async errorAlert(error: unknown): Promise<void> {
+    const message = this.removeUrlFromString(error).trim() || GENERIC_ERROR_MESSAGE;
+    await this.presentAlert('تحذير', message, ['Ok'], undefined, false);
   }
 
   async infoAlert(msg: string): Promise<void> {

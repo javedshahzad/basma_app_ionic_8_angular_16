@@ -12,7 +12,7 @@ import {
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { Network } from '@capacitor/network';
+import { isNetworkConnected } from '../service/network-status';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { DatabaseService } from '../service/database/database.service';
 import { StudentDataService } from '../service/student-data/student-data.service';
@@ -1004,7 +1004,7 @@ export class StudentDetailPage {
   }
 
   async takePicture(event?: Event) {
-    if ((await Network.getStatus()).connected) {
+    if ((await isNetworkConnected())) {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popover.create({
           component: ImageOptionPopoverComponent,
@@ -1302,7 +1302,7 @@ export class StudentDetailPage {
     //   return;
     // }
 
-    if ((await Network.getStatus()).connected) {
+    if ((await isNetworkConnected())) {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popover.create({
           component: PrintOptionsPopoverComponent,

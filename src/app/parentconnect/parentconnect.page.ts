@@ -4,7 +4,7 @@ import { NavController, AlertController, Platform, ModalController, IonicModule 
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { Network } from '@capacitor/network';
+import { isNetworkConnected } from '../service/network-status';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { ConnectNewMessagePage } from '../connect-new-message/connect-new-message.page';
 
@@ -174,7 +174,7 @@ export class ParentconnectPage {
   async createChatMessage() {
     let isOffline = false;
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      isOffline = !(await Network.getStatus()).connected;
+      isOffline = !(await isNetworkConnected());
     } else {
       isOffline = !navigator.onLine;
     }
@@ -212,7 +212,7 @@ export class ParentconnectPage {
   async openChat(chat: ParentConnectChat) {
     let isOffline = false;
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      isOffline = !(await Network.getStatus()).connected;
+      isOffline = !(await isNetworkConnected());
     } else {
       isOffline = !navigator.onLine;
     }

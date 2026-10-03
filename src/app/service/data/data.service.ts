@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Platform, LoadingController, ModalController, NavController, PopoverController } from '@ionic/angular';
-import { Network } from '@capacitor/network';
+import { onNetworkChange } from '../network-status';
 import { DatabaseService } from '../database/database.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -48,8 +48,8 @@ export class DataService {
         });
       }, 2000);
     });
-    Network.addListener('networkStatusChange', status => {
-      if (status.connected) {
+    onNetworkChange(connected => {
+      if (connected) {
         this.showToast('Internet connected');
       } else {
         this.showToast('No Internet connection...');
@@ -141,11 +141,11 @@ export class DataService {
   /** ALert message popup.
    * @param {String} error - Error message to display
    */
-  async errorALertMessage(error: string) {
+  async errorALertMessage(error: unknown) {
     await this.overlay.errorAlert(error);
   }
 
-  removeUrlFromString(inputString: string) {
+  removeUrlFromString(inputString: unknown) {
     return this.overlay.removeUrlFromString(inputString);
   }
 

@@ -14,7 +14,7 @@ import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
-import { Network } from '@capacitor/network';
+import { isNetworkConnected } from '../service/network-status';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // الاستيرادات الخاصة بالصورة والنوافذ
@@ -384,7 +384,7 @@ export class StudentsPage {
 
   async openCalenderModal() {
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      if (!(await Network.getStatus()).connected) {
+      if (!(await isNetworkConnected())) {
         this.dataProvider.showToast(this.lang.no_internet);
         return;
       }
@@ -464,7 +464,7 @@ export class StudentsPage {
       let submittedByUser = this.userType == UserType.Admin ? 1 : this.userType == UserType.Moderator ? 2 : 0;
 
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        if ((await Network.getStatus()).connected) {
+        if ((await isNetworkConnected())) {
           this.attendanceApi
             .markDelayAttendance(data, submittedByUser)
             .then(response => {
@@ -770,7 +770,7 @@ export class StudentsPage {
 
   // ================= دوال الكاميرا وتغيير الصورة =================
   async takePicture(event?: Event) {
-    if ((await Network.getStatus()).connected) {
+    if ((await isNetworkConnected())) {
       if (this.platform.width() >= 768 && event) {
         const popover = await this.popoverController.create({
           component: ImageOptionPopoverComponent,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
-import { Network } from '@capacitor/network';
+import { isNetworkConnected } from '../network-status';
 import { loadSentryAngular } from '../sentry/sentry-lazy';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../model/api-response.model';
@@ -27,7 +27,7 @@ export class ApiClient {
   async getNetworkInformation(): Promise<boolean> {
     // Native app (Cordova/Capacitor)
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      return (await Network.getStatus()).connected;
+      return (await isNetworkConnected());
     }
 
     // Browser/Desktop

@@ -12,7 +12,7 @@ import {
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { Network } from '@capacitor/network';
+import { isNetworkConnected } from '../service/network-status';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
 // 🟢 استيراد الخدمات المساعدة
@@ -356,7 +356,7 @@ export class FollowupStudentListPage {
     //   return;
     // }
 
-    if ((await Network.getStatus()).connected) {
+    if ((await isNetworkConnected())) {
       const actionSheet = await this.actionSheetController.create({
         header: 'تصدير تقرير المتابعة',
         mode: 'md',

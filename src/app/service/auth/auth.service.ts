@@ -2,13 +2,13 @@ import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { firstValueFrom, Subject } from "rxjs";
-import { Network } from "@capacitor/network";
+import { isNetworkConnected } from '../network-status';
 import { Platform } from "@ionic/angular";
 import { DatabaseService } from "../database/database.service";
 import { Router } from "@angular/router";
 import { currentOsType, getInstallId, getNativeDeviceId } from "../device-id";
 import { StorageService } from "../storage.service";
-import { OverlayService } from "../overlay/overlay.service";
+import { GENERIC_ERROR_MESSAGE, OverlayService } from "../overlay/overlay.service";
 import { CredentialStorageService } from "../credential-storage/credential-storage.service";
 import { RestoreCredentials } from "../../native/restore-credentials.plugin";
 
@@ -208,12 +208,12 @@ export class AuthService {
     return this.persistAuthResponse(resObj);
   }
 
-  removeUrlFromString(inputString: string) {
+  removeUrlFromString(inputString: unknown) {
     return this.overlay.removeUrlFromString(inputString);
   }
 
-  async presentAlert(message: string) {
-    await this.overlay.presentAlert("تنبيه", this.removeUrlFromString(message), ["موافق"], "ios");
+  async presentAlert(message: unknown) {
+    await this.overlay.presentAlert("تنبيه", this.removeUrlFromString(message) || GENERIC_ERROR_MESSAGE, ["موافق"], "ios");
   }
 
   logout(): Promise<any> {
@@ -442,7 +442,7 @@ export class AuthService {
 
   async getNetworkInformation(): Promise<any> {
     if (this.platform.is("cordova") || this.platform.is("capacitor")) {
-      return (await Network.getStatus()).connected;
+      return (await isNetworkConnected());
     }
     return true;
   }

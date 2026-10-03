@@ -14,7 +14,7 @@ import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { Storage } from '@ionic/storage';
 import { ToastController } from '@ionic/angular';
-import { App } from '@capacitor/app';
+import { onAppForeground } from './service/app-foreground';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -117,12 +117,12 @@ export class AppComponent {
         }
       });
 
-    App.addListener('appStateChange', async ({ isActive }) => {
-      if (isActive) {
-        const isLoggedIn = await this.storageSr.get('userloggedin');
-        if (isLoggedIn) {
-          this.tryLogin();
-        }
+    // onAppForeground never throws: with the native App plugin missing it listens for
+    // the browser's visibilitychange instead of leaving an unhandled rejection.
+    onAppForeground(async () => {
+      const isLoggedIn = await this.storageSr.get('userloggedin');
+      if (isLoggedIn) {
+        this.tryLogin();
       }
     });
 

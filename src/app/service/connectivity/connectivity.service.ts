@@ -1,6 +1,6 @@
 import { Injectable, NgZone, signal } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { Network } from '@capacitor/network';
+import { isNetworkConnected, onNetworkChange } from '../network-status';
 
 /**
  * Single source of truth for "are we online right now" — replaces the
@@ -32,17 +32,18 @@ export class ConnectivityService {
 
   private async init() {
     if (this.isNative) {
-      const status = await Network.getStatus();
-      this._isOnline.set(status.connected);
+      // isNetworkConnected / onNetworkChange never throw: with the native Network
+      // plugin missing they use the browser's online state and events instead.
+      this._isOnline.set(await isNetworkConnected());
 
-      Network.addListener('networkStatusChange', status => {
-        this.zone.run(() => this.handleStatusChange(status.connected));
+      onNetworkChange(connected => {
+        this.zone.run(() => this.handleStatusChange(connected));
       });
 
       this.platform.resume.subscribe(() => {
         setTimeout(async () => {
-          const current = await Network.getStatus();
-          this.zone.run(() => this.handleStatusChange(current.connected));
+          const connected = await isNetworkConnected();
+          this.zone.run(() => this.handleStatusChange(connected));
         }, 1000);
       });
     } else {
@@ -64,14 +65,14 @@ export class ConnectivityService {
     }
 
     this.offlineDebounceTimer = setTimeout(async () => {
-      const stillDown = this.isNative ? !(await Network.getStatus()).connected : !navigator.onLine;
+      const stillDown = this.isNative ? !(await isNetworkConnected()) : !navigator.onLine;
       if (stillDown) this._isOnline.set(false);
     }, 2000);
   }
 
   /** Force a fresh read (e.g. before a critical write) rather than waiting on the next event. */
   async refresh(): Promise<boolean> {
-    const connected = this.isNative ? (await Network.getStatus()).connected : navigator.onLine;
+    const connected = this.isNative ? await isNetworkConnected() : navigator.onLine;
     this._isOnline.set(connected);
     return connected;
   }

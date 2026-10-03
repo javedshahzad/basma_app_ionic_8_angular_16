@@ -253,7 +253,7 @@ export class NewsPage implements OnInit {
             // فتح الشاشة في حالة تشغيل فيديو
             for (let i = 0; i < this.allNews.length; i++) {
               if (this.allNews[i].video_url != '') {
-                if (this.platform.is('cordova')) ScreenOrientation.unlock();
+                if (this.platform.is('cordova')) ScreenOrientation.unlock().catch(() => {});
                 break;
               }
             }

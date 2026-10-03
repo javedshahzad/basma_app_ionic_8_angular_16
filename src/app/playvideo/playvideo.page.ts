@@ -108,7 +108,7 @@ export class PlayvideoPage {
       const video = this.mVideoPlayer.nativeElement;
       video.addEventListener('play', () => {
         if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-          ScreenOrientation.unlock();
+          ScreenOrientation.unlock().catch(() => {});
         }
       });
       video.addEventListener('ended', () => {
