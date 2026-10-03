@@ -7,7 +7,6 @@ import { Capacitor } from '@capacitor/core';
   providedIn: 'root'
 })
 export class DatabaseService {
-  private readonly dbName = 'attendance.db';
   private sqlite: SQLiteConnection;
   public db: SQLiteDBConnection;
   private isNative: boolean = false;
@@ -71,25 +70,13 @@ export class DatabaseService {
     }
 
     try {
-      if (await this.isHandleOpen()) {
-        return true;
-      }
-
       await this.ensureEncryptionSecret();
+      await this.reconcileNativeConnections();
 
-      // After live-reload or a new SQLiteConnection wrapper, the JS map is
-      // empty while Android still holds "attendance". isConnection() then
-      // returns false and createConnection() throws
-      // "Connection attendance already exists". Sync the wrapper first.
-      try {
-        await this.sqlite.checkConnectionsConsistency();
-      } catch {
-        // Older / stub plugin — create-or-retrieve below still covers this.
-      }
-
-      const isConn = (await this.sqlite.isConnection(this.dbName, false)).result;
+      // التحقق مما إذا كان الاتصال موجوداً مسبقاً لتجنب الأخطاء
+      const isConn = (await this.sqlite.isConnection('attendance.db', false)).result;
       if (isConn) {
-        this.db = await this.sqlite.retrieveConnection(this.dbName, false);
+        this.db = await this.sqlite.retrieveConnection('attendance.db', false);
       } else {
         await this.discardUnencryptedDatabase();
         // 'secret' opens the encrypted database with the stored passphrase and
@@ -101,10 +88,10 @@ export class DatabaseService {
         // database failed to open, nothing in it (the refresh token, remember-me,
         // the offline cache) could be saved, and the user was signed out as soon
         // as the in-memory access token lapsed (Sentry issue 150453613).
-        this.db = await this.createOrRetrieveConnection(true, 'secret');
+        this.db = await this.sqlite.createConnection('attendance.db', true, 'secret', 1, false);
       }
 
-      await this.ensureDbOpen();
+      await this.db.open();
       return true;
     } catch (error) {
       console.error('Error opening DB: ', error);
@@ -114,60 +101,25 @@ export class DatabaseService {
     }
   }
 
-  private async isHandleOpen(): Promise<boolean> {
-    if (!this.db) {
-      return false;
-    }
-    try {
-      return !!(await this.db.isDBOpen())?.result;
-    } catch {
-      return false;
-    }
-  }
-
-  private async ensureDbOpen(): Promise<void> {
-    try {
-      await this.db.open();
-    } catch (error) {
-      if (!this.messageIncludes(error, 'already exists') && !this.messageIncludes(error, 'already open')) {
-        throw error;
-      }
-    }
-  }
-
   /**
-   * createConnection() talks to the native plugin, which still has the
-   * connection after a JS-wrapper reset. Prefer the existing JS handle;
-   * if the wrapper lost it, close the native leftover and create again.
+   * isConnection() only looks at an in-memory map that starts empty on every
+   * page load, but the native layer keeps its connections for the life of the
+   * process. When the WebView restarts and the process survives (common on
+   * low-end Android phones), isConnection() says "no connection" while the
+   * native side still has one, and createConnection() fails with "Connection
+   * attendance already exists" (Sentry issue 150599335, seen on a build that
+   * already had the concurrent-open fix). The plugin's own answer is
+   * checkConnectionsConsistency(): it compares the two sides and closes any
+   * native connection this page doesn't know about, so a fresh create works.
+   * It is a no-op when both sides agree. Never throws: if it can't run, the
+   * open below proceeds as it did before.
    */
-  private async createOrRetrieveConnection(encrypted: boolean, mode: string): Promise<SQLiteDBConnection> {
+  private async reconcileNativeConnections(): Promise<void> {
     try {
-      return await this.sqlite.createConnection(this.dbName, encrypted, mode, 1, false);
+      await this.sqlite.checkConnectionsConsistency();
     } catch (error) {
-      if (!this.messageIncludes(error, 'already exists')) {
-        throw error;
-      }
-      try {
-        return await this.sqlite.retrieveConnection(this.dbName, false);
-      } catch {
-        try {
-          await this.sqlite.closeConnection(this.dbName, false);
-        } catch {
-          // native leftover with no JS handle
-        }
-        return await this.sqlite.createConnection(this.dbName, encrypted, mode, 1, false);
-      }
+      console.warn('Could not reconcile SQLite connections; opening anyway.', error);
     }
-  }
-
-  private messageIncludes(error: unknown, snippet: string): boolean {
-    const message =
-      typeof error === 'string'
-        ? error
-        : error && typeof error === 'object' && 'message' in error
-          ? String((error as { message: unknown }).message)
-          : String(error ?? '');
-    return message.toLowerCase().includes(snippet.toLowerCase());
   }
 
   /**
@@ -193,28 +145,16 @@ export class DatabaseService {
    * than converting it in place.
    */
   private async discardUnencryptedDatabase() {
-    const exists = (await this.sqlite.isDatabase(this.dbName)).result;
+    const exists = (await this.sqlite.isDatabase('attendance.db')).result;
     if (!exists) return;
 
-    const encrypted = (await this.sqlite.isDatabaseEncrypted(this.dbName)).result;
+    const encrypted = (await this.sqlite.isDatabaseEncrypted('attendance.db')).result;
     if (encrypted) return;
 
-    const isConn = (await this.sqlite.isConnection(this.dbName, false)).result;
-    if (isConn) {
-      await this.sqlite.closeConnection(this.dbName, false);
-    }
-
-    try {
-      const oldDb = await this.createOrRetrieveConnection(false, 'no-encryption');
-      await oldDb.open();
-      await oldDb.delete();
-    } finally {
-      try {
-        await this.sqlite.closeConnection(this.dbName, false);
-      } catch {
-        // already closed or never opened
-      }
-    }
+    const oldDb = await this.sqlite.createConnection('attendance.db', false, 'no-encryption', 1, false);
+    await oldDb.open();
+    await oldDb.delete();
+    await this.sqlite.closeConnection('attendance.db', false);
   }
 
   /**
@@ -564,14 +504,20 @@ export class DatabaseService {
    */
   async setCredential(key: string, value: unknown): Promise<void> {
     if (!this.isNative) return;
-    await this.ensureReady();
     try {
+      // ensureReady is inside the try: saving is best-effort. A store that can't
+      // open must not fail the caller (a login that the server already accepted,
+      // or a logout half-way through); the session just isn't persisted.
+      await this.ensureReady();
       await this.db.run('INSERT OR REPLACE INTO credentials (key, value) VALUES (?, ?)', [key, JSON.stringify(value)]);
     } catch (error) {
       console.error('Error saving credential: ', error);
     }
   }
 
+  // Unlike setCredential/removeCredential, this one REJECTS when the store can't be opened,
+  // on purpose: null means "nothing saved", which for the refresh token means "signed out".
+  // Callers that can live without the value use CredentialStorageService.tryGet.
   async getCredential<T = any>(key: string): Promise<T | null> {
     if (!this.isNative) return null;
     await this.ensureReady();
@@ -587,8 +533,8 @@ export class DatabaseService {
 
   async removeCredential(key: string): Promise<void> {
     if (!this.isNative) return;
-    await this.ensureReady();
     try {
+      await this.ensureReady(); // best-effort, like setCredential
       await this.db.run('DELETE FROM credentials WHERE key = ?', [key]);
     } catch (error) {
       console.error('Error removing credential: ', error);

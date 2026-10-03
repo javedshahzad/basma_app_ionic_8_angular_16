@@ -6,7 +6,7 @@ import { Network } from "@capacitor/network";
 import { Platform } from "@ionic/angular";
 import { DatabaseService } from "../database/database.service";
 import { Router } from "@angular/router";
-import { Device } from "@capacitor/device";
+import { currentOsType, getInstallId, getNativeDeviceId } from "../device-id";
 import { StorageService } from "../storage.service";
 import { OverlayService } from "../overlay/overlay.service";
 import { CredentialStorageService } from "../credential-storage/credential-storage.service";
@@ -32,7 +32,6 @@ export class AuthService {
   // on native), never here, and never in the generic `userloggedin` blob.
   public accessToken: string | null = null;
   private refreshInFlight: Promise<string | null> | null = null;
-  private hydrateInFlight: Promise<void>;
 
   constructor(
     public http: HttpClient,
@@ -44,7 +43,7 @@ export class AuthService {
     private credentialStorage: CredentialStorageService
   ) {
     this.event = new Subject();
-    this.hydrateInFlight = this.hydrateCurrentUser();
+    this.hydrateCurrentUser();
   }
 
   private async hydrateCurrentUser() {
@@ -65,30 +64,6 @@ export class AuthService {
         console.warn('Token warm-up failed; will refresh on first 401.', error);
       }
     }
-  }
-
-  /**
-   * Returns a usable access token, waiting for startup hydration (and a
-   * refresh if needed) so MyInterceptor can put Authorization on the first
-   * API calls instead of sending them bare and 401-ing. Null when nobody
-   * is signed in.
-   */
-  async ensureAccessToken(): Promise<string | null> {
-    if (this.accessToken) {
-      return this.accessToken;
-    }
-    try {
-      await this.hydrateInFlight;
-    } catch {
-      // hydrateCurrentUser already logs; fall through to a refresh attempt
-    }
-    if (this.accessToken) {
-      return this.accessToken;
-    }
-    if (this.currentUser) {
-      return this.refreshAccessToken();
-    }
-    return null;
   }
 
   /**
@@ -332,7 +307,9 @@ export class AuthService {
     // backend actually needs to revoke now) is resolved here internally and
     // merged in. session_id, if present, is now inert -- harmless to keep
     // sending, the backend just ignores it.
-    const refreshToken = await this.credentialStorage.get<string>("refreshToken");
+    // tryGet: if the local store can't be read, logging out must still go through (it just
+    // can't tell the server which token to revoke) instead of aborting before anything is cleared.
+    const refreshToken = await this.credentialStorage.tryGet<string>("refreshToken");
     const payload = { ...data, refresh_token: refreshToken };
 
     // Forget the on-device restore credential alongside the server-side
@@ -411,9 +388,8 @@ export class AuthService {
     // تأمين الهوية للمتصفح والأجهزة
     let currentDeviceId = '';
     if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      const [deviceId, deviceInfo] = await Promise.all([Device.getId(), Device.getInfo()]);
-      currentDeviceId = deviceId.identifier;
-      data.os_type = deviceInfo.platform === 'android' ? 1 : 2;
+      currentDeviceId = (await getNativeDeviceId()) || (await getInstallId(this.storageSr));
+      data.os_type = currentOsType();
     } else {
       currentDeviceId = await this.storageSr.get("browser_uuid");
       data.os_type = 2;

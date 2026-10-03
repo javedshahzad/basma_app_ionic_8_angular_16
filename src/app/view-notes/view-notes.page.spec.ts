@@ -1,6 +1,5 @@
 ﻿import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
@@ -25,7 +24,6 @@ describe('ViewNotesPage', () => {
         ViewNotesPage
       ],
       providers: [
-        { provide: AppRate, useValue: {} },
         { provide: PhotoViewer, useValue: { show: () => {} } },
         {
           provide: IonicStorage,

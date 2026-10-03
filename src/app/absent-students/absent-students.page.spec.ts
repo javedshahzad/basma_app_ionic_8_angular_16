@@ -1,6 +1,5 @@
 ﻿import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { DatePipe } from '@angular/common';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
@@ -25,7 +24,6 @@ describe('AbsentStudentsPage', () => {
         AbsentStudentsPage
       ],
       providers: [
-        { provide: AppRate, useValue: {} },
         DatePipe,
         {
           provide: IonicStorage,

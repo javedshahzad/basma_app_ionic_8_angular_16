@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Platform, LoadingController, ModalController, NavController, PopoverController } from '@ionic/angular';
+import { Network } from '@capacitor/network';
 import { DatabaseService } from '../database/database.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 
 import { StorageService } from '../storage.service';
 import { OverlayService } from '../overlay/overlay.service';
@@ -33,7 +33,6 @@ export class DataService {
     public modalController: ModalController,
     public popoverController: PopoverController,
     public dbProvider: DatabaseService,
-    private appRate: AppRate,
     private storageSr: StorageService,
     private overlay: OverlayService,
     private apiClient: ApiClient,
@@ -48,6 +47,13 @@ export class DataService {
           // console.log(this.translate.instant('alertmessages'))
         });
       }, 2000);
+    });
+    Network.addListener('networkStatusChange', status => {
+      if (status.connected) {
+        this.showToast('Internet connected');
+      } else {
+        this.showToast('No Internet connection...');
+      }
     });
   }
 
@@ -86,23 +92,6 @@ export class DataService {
       componentProps: { pic: pic }
     });
     return await modal.present();
-  }
-
-  showRatePrompt(lang: unknown) {
-    this.appRate.setPreferences({
-      // ملاحظة: قمنا بمسح السطر (...this.appRate.preferences) لأنه لم يعد مطلوباً
-      // ضع باقي إعداداتك الموجودة مسبقاً هنا كما هي، مثال:
-      displayAppName: 'اسم تطبيقك',
-      promptAgainForEachNewVersion: true,
-      storeAppURL: {
-        ios: 'رقم_التطبيق_هنا',
-        android: 'market://details?id=حزمة_التطبيق_هنا'
-      }
-    });
-    // this.appRate.preferences.openUrl = function(url) {
-    // window.open(url, '_system', 'location=yes');
-    // };
-    this.appRate.promptForRating(true);
   }
 
   async switchAccount(ev: unknown, lang: any) {

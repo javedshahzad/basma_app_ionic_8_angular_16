@@ -1,6 +1,5 @@
 ﻿import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
@@ -25,7 +24,6 @@ describe('NewsPage', () => {
         NewsPage
       ],
       providers: [
-        { provide: AppRate, useValue: {} },
         {
           provide: GeoServiceProvider,
           useValue: {

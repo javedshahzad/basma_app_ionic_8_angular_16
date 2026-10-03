@@ -5,22 +5,12 @@ import { MyInterceptor } from './MyInterceptor';
 
 describe('MyInterceptor', () => {
   let interceptor: MyInterceptor;
-  let authStub: {
-    currentUser: any;
-    currentUuid: string | null;
-    accessToken: string | null;
-    ensureAccessToken: () => Promise<string | null>;
-  };
+  let authStub: { currentUser: any; currentUuid: string | null };
   let handledRequest: HttpRequest<any>;
   let handler: HttpHandler;
 
   beforeEach(() => {
-    authStub = {
-      currentUser: { details: { user_no: '123' } },
-      currentUuid: 'test-uuid',
-      accessToken: null,
-      ensureAccessToken: () => Promise.resolve(null)
-    };
+    authStub = { currentUser: { details: { user_no: '123' } }, currentUuid: 'test-uuid' };
 
     const alertControllerStub = { create: () => Promise.resolve({ present: () => Promise.resolve() }) } as any;
     const dataProviderStub = { hideLoading: () => {}, showToast: () => {} } as any;
@@ -82,43 +72,6 @@ describe('MyInterceptor', () => {
     interceptor.intercept(makeRequest(body), handler).subscribe(() => {
       expect((handledRequest.body as HttpParams).has('uuid')).toBeFalse();
       expect(handledRequest.params.has('uuid')).toBeFalse();
-      expect(handledRequest.headers.has('Authorization')).toBeFalse();
-      done();
-    });
-  });
-
-  it('attaches Authorization when an access token is already in memory', done => {
-    authStub.accessToken = 'ready-token';
-    interceptor.intercept(makeRequest(new HttpParams().set('school_id', '1')), handler).subscribe(() => {
-      expect(handledRequest.headers.get('Authorization')).toBe('Bearer ready-token');
-      done();
-    });
-  });
-
-  it('waits for ensureAccessToken on cold start and attaches the warmed-up token', done => {
-    authStub.ensureAccessToken = () => Promise.resolve('warmed-token');
-    interceptor.intercept(makeRequest(new HttpParams().set('school_id', '1')), handler).subscribe(() => {
-      expect(handledRequest.headers.get('Authorization')).toBe('Bearer warmed-token');
-      done();
-    });
-  });
-
-  it('does not attach Authorization to login or refreshToken', done => {
-    authStub.accessToken = 'ready-token';
-    const req = new HttpRequest('POST', 'https://staging.basmapp.com/api/v1/login', new HttpParams());
-    interceptor.intercept(req, handler).subscribe(() => {
-      expect(handledRequest.headers.has('Authorization')).toBeFalse();
-      done();
-    });
-  });
-
-  it('does not wait for a token on non-API requests (i18n, assets)', done => {
-    const ensure = jasmine.createSpy('ensureAccessToken').and.resolveTo('warmed-token');
-    authStub.ensureAccessToken = ensure;
-    const req = new HttpRequest('GET', './assets/i18n/ar.json');
-    interceptor.intercept(req, handler).subscribe(() => {
-      expect(ensure).not.toHaveBeenCalled();
-      expect(handledRequest.headers.has('Authorization')).toBeFalse();
       done();
     });
   });
@@ -140,7 +93,6 @@ describe('MyInterceptor', () => {
         currentUser: { details: { user_no: '123' } },
         currentUuid: 'test-uuid',
         accessToken: 'stale-token',
-        ensureAccessToken: () => Promise.resolve('stale-token'),
         refreshAccessToken,
         flushLocalStorage
       };

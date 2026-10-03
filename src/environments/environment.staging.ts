@@ -7,7 +7,7 @@
 // a normal dev build.
 export const environment = {
   production: false,
-  serverURL: "https://production.basmapp.com/api/v1/",//"https://staging.basmapp.com/api/v1/",
+  serverURL: "https://staging.basmapp.com/api/v1/",
   lang_code: 'en',
   docUrl: "https://basmapp.com/BasmaCP/",
   ipinfoToken: "eebb6806073dbe",

@@ -54,6 +54,21 @@ export class CredentialStorageService {
     return this.migrateLegacyValue<T>(key);
   }
 
+  /**
+   * get() for values the app can live without (remember-me, the account list):
+   * if the encrypted store can't be opened this behaves like "nothing saved" instead of
+   * failing the screen that asked. NOT for the refresh token, where "can't read" and
+   * "no token" must stay different (AuthService uses get()).
+   */
+  async tryGet<T = any>(key: string): Promise<T | null> {
+    try {
+      return await this.get<T>(key);
+    } catch (error) {
+      console.warn(`Credential store unavailable; treating "${key}" as not saved.`, error);
+      return null;
+    }
+  }
+
   async remove(key: string): Promise<void> {
     if (this.isNative) {
       await this.db.removeCredential(key);

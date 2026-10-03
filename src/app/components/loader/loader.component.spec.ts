@@ -1,6 +1,5 @@
 ﻿import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -18,7 +17,6 @@ describe('LoaderComponent', () => {
     TestBed.configureTestingModule({
       imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, LoaderComponent],
       providers: [
-        { provide: AppRate, useValue: {} },
         {
           provide: IonicStorage,
           useValue: {

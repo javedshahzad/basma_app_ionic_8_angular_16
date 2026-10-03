@@ -2,7 +2,7 @@
 import { ModalController, PopoverController, NavController, AlertController, Platform, IonicModule } from '@ionic/angular';
 import { AuthService } from '../../service/auth/auth.service';
 import { DatabaseService } from '../../service/database/database.service';
-import { Device } from '@capacitor/device';
+import { currentOsType, getNativeDeviceId } from '../../service/device-id';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoaderComponent } from '../../components/loader/loader.component';
@@ -70,10 +70,11 @@ export class SwitchAccountComponent implements OnInit {
       this.fcm_Token = localStorage.getItem('FcmToken') || '';
     }
 
-    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      const [deviceId, deviceInfo] = await Promise.all([Device.getId(), Device.getInfo()]);
-      this.device_id = deviceId.identifier;
-      this.os_type = deviceInfo.platform === 'android' ? 1 : 2;
+    const nativeDeviceId =
+      this.platform.is('cordova') || this.platform.is('capacitor') ? await getNativeDeviceId() : '';
+    if (nativeDeviceId) {
+      this.device_id = nativeDeviceId;
+      this.os_type = currentOsType();
     } else {
       let browserId = await this.storageSr.get('browser_uuid');
       if (!browserId) {
@@ -81,7 +82,7 @@ export class SwitchAccountComponent implements OnInit {
         await this.storageSr.set('browser_uuid', browserId);
       }
       this.device_id = browserId;
-      this.os_type = 2;
+      this.os_type = currentOsType();
     }
 
     let userLoggedInData = await this.storageSr.get('userloggedin');
@@ -97,7 +98,7 @@ export class SwitchAccountComponent implements OnInit {
     // CredentialStorageService already handles the encrypted-native vs.
     // web fallback, plus one-time migration of any pre-existing plaintext
     // copy — no manual raw-localStorage fallback needed here anymore.
-    let earlyLoginData = await this.credentialStorage.get('earlyLogin');
+    let earlyLoginData = await this.credentialStorage.tryGet('earlyLogin');
 
     this.zone.run(() => {
       if (userLoggedInData && userLoggedInData.details) {

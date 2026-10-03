@@ -1,6 +1,5 @@
 ﻿import { TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -17,7 +16,6 @@ describe('DatabaseService', () => {
     TestBed.configureTestingModule({
       imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule],
       providers: [
-        { provide: AppRate, useValue: {} },
         {
           provide: IonicStorage,
           useValue: {
@@ -46,19 +44,19 @@ describe('DatabaseService', () => {
     // ms, which is the window in which concurrent callers used to slip
     // through, and (like the real plugin) throws if a connection for the same
     // database already exists.
-    function useFakeNativeSqlite(opts: { failFirstCreate?: boolean; leftoverNative?: boolean } = {}) {
-      const calls = { create: 0, retrieve: 0, modes: [] as string[] };
-      let connected = false;
-      let nativeHasConnection = !!opts.leftoverNative;
-      let db: any = opts.leftoverNative
-        ? {
-            open: () => Promise.resolve(),
-            isDBOpen: async () => ({ result: true }),
-            execute: () => Promise.resolve(),
-            run: () => Promise.resolve(),
-            query: () => Promise.resolve({ values: [{ value: JSON.stringify('refresh-token-1') }] })
-          }
-        : undefined;
+    //
+    // Like the real plugin it has TWO places that know about connections: the
+    // JavaScript side's map (what isConnection answers from, empty on every page
+    // load) and the native side (kept for the life of the process, what
+    // createConnection checks). staleNativeConnection starts them out of step,
+    // as after a WebView restart with the process still alive.
+    function useFakeNativeSqlite(
+      opts: { failFirstCreate?: boolean; staleNativeConnection?: boolean; alwaysFail?: boolean } = {}
+    ) {
+      const calls = { create: 0, consistency: 0, modes: [] as string[] };
+      let jsKnows = false;
+      let nativeHas = !!opts.staleNativeConnection;
+      let db: any;
       // Like the real plugin on a fresh install: there is no database file, so
       // opening in 'encryption' mode (convert an existing PLAIN file to
       // encrypted) fails at open(), while 'secret' creates the encrypted file.
@@ -67,38 +65,31 @@ describe('DatabaseService', () => {
           mode === 'encryption'
             ? Promise.reject({ message: 'Open: Failed in encryption /data/user/0/app/databases/attendanceSQLite.db not found' })
             : Promise.resolve(),
-        isDBOpen: async () => ({ result: true }),
         execute: () => Promise.resolve(),
         run: () => Promise.resolve(),
         query: () => Promise.resolve({ values: [{ value: JSON.stringify('refresh-token-1') }] })
       });
       const sqlite = {
         isSecretStored: async () => ({ result: true }),
-        checkConnectionsConsistency: async () => ({ result: connected === nativeHasConnection }),
-        isConnection: async () => ({ result: connected }),
+        isConnection: async () => ({ result: jsKnows }),
+        // The plugin's own repair: with nothing known to the JavaScript side it closes
+        // whatever the native side is still holding.
+        checkConnectionsConsistency: async () => {
+          calls.consistency++;
+          if (!jsKnows) nativeHas = false;
+          return { result: jsKnows === nativeHas };
+        },
         isDatabase: async () => ({ result: false }),
-        closeConnection: async () => {
-          connected = false;
-          nativeHasConnection = false;
-        },
-        retrieveConnection: async () => {
-          calls.retrieve++;
-          // The real plugin only returns a handle the JS wrapper already
-          // tracks. After live-reload the wrapper is empty, so this throws
-          // even though Android still has the connection.
-          if (!connected || !db) {
-            throw { message: 'Connection attendance does not exist' };
-          }
-          return db;
-        },
+        retrieveConnection: async () => db,
         createConnection: async (_name: string, _encrypted: boolean, mode: string) => {
           calls.create++;
           calls.modes.push(mode);
           await new Promise(resolve => setTimeout(resolve, 5));
-          if (connected || nativeHasConnection) throw { message: 'CreateConnection: Connection attendance already exists' };
+          if (nativeHas) throw { message: 'CreateConnection: Connection attendance already exists' };
+          if (opts.alwaysFail) throw new Error('disk error');
           if (opts.failFirstCreate && calls.create === 1) throw new Error('disk error');
-          connected = true;
-          nativeHasConnection = true;
+          nativeHas = true;
+          jsKnows = true;
           db = makeDb(mode);
           return db;
         }
@@ -126,6 +117,32 @@ describe('DatabaseService', () => {
       expect(token).toBe('refresh-token-1');
     });
 
+    it('opens after the WebView restarted while the native layer kept its connection', async () => {
+      // Sentry issue 150599335, on a build that already had the concurrent-open fix:
+      // a fresh page knows no connections, the native side still has "attendance",
+      // so createConnection failed with "Connection attendance already exists".
+      const calls = useFakeNativeSqlite({ staleNativeConnection: true });
+
+      await expectAsync(service.openDataBase()).toBeResolved();
+      expect(calls.consistency).toBeGreaterThan(0);
+      expect(calls.create).toBe(1);
+    });
+
+    describe('when the database cannot be opened at all', () => {
+      beforeEach(() => useFakeNativeSqlite({ alwaysFail: true }));
+
+      it('saving and removing a credential do not fail the caller', async () => {
+        // A login the server already accepted must not look failed, and a logout
+        // must not stop half-way, just because the local store is unavailable.
+        await expectAsync(service.setCredential('refreshToken', 'x')).toBeResolved();
+        await expectAsync(service.removeCredential('refreshToken')).toBeResolved();
+      });
+
+      it('reading a credential still rejects, so "can\'t read" is never mistaken for "no token"', async () => {
+        await expectAsync(service.getCredential('refreshToken')).toBeRejected();
+      });
+    });
+
     it('creates the encrypted database in "secret" mode, so a fresh install can open it', async () => {
       // Sentry issue 150453613: mode "encryption" threw "Failed in encryption
       // ...attendanceSQLite.db not found" on every fresh install.
@@ -151,18 +168,6 @@ describe('DatabaseService', () => {
       await expectAsync(service.openDataBase()).toBeRejectedWithError('disk error');
       await expectAsync(service.openDataBase()).toBeResolved();
       expect(calls.create).toBe(2);
-    });
-
-    it('closes a leftover native connection and opens again instead of failing with already exists', async () => {
-      // Live-reload / a new SQLiteConnection wrapper: JS isConnection() is
-      // false, but Android still has "attendance". createConnection then
-      // throws and used to take the whole open down with it.
-      const calls = useFakeNativeSqlite({ leftoverNative: true });
-
-      await expectAsync(service.openDataBase()).toBeResolved();
-      expect(calls.create).toBe(2);
-      expect(calls.retrieve).toBe(1);
-      await expectAsync(service.getCredential<string>('refreshToken')).toBeResolvedTo('refresh-token-1');
     });
   });
 });

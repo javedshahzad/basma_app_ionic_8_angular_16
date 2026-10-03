@@ -1,4 +1,4 @@
-﻿import { Device } from '@capacitor/device';
+﻿import { getInstallId, getNativeDeviceId } from './service/device-id';
 import { UserType } from './constants/user-type';
 import { Component, NgZone, ChangeDetectorRef, ChangeDetectionStrategy, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -225,7 +225,7 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(async () => {
       if (this.platform.is('capacitor')) {
-        this.storageSr.set('uuid', (await Device.getId()).identifier);
+        this.storageSr.set('uuid', (await getNativeDeviceId()) || (await getInstallId(this.storageSr)));
       } else {
         this.storageSr.set('uuid', '#1122112233112233');
       }
@@ -575,12 +575,6 @@ export class AppComponent {
       });
   }
 
-  rateApp() {
-    const lang = this.translate.getDefaultLang();
-    this.dataProvider.showRatePrompt(lang);
-    this.menuCtrl.close();
-  }
-
   async openBackendUrl() {
     await Browser.open({ url: 'https://basmapp.com/BasmaCP' });
   }
@@ -856,7 +850,7 @@ export class AppComponent {
       let currentDeviceId = '';
 
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        currentDeviceId = (await Device.getId()).identifier;
+        currentDeviceId = await getNativeDeviceId();
       }
 
       if (!currentDeviceId || currentDeviceId === 'undefined') {
@@ -899,7 +893,7 @@ export class AppComponent {
       let currentDeviceId = '';
 
       if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-        currentDeviceId = (await Device.getId()).identifier;
+        currentDeviceId = await getNativeDeviceId();
       }
 
       if (!currentDeviceId || currentDeviceId === 'undefined') {

@@ -1,6 +1,5 @@
 ﻿import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { Printer } from '@awesome-cordova-plugins/printer/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
@@ -19,7 +18,6 @@ describe('ListStudentPage', () => {
     TestBed.configureTestingModule({
       imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule, ListStudentPage],
       providers: [
-        { provide: AppRate, useValue: {} },
         { provide: Printer, useValue: { print: () => Promise.resolve() } },
         {
           provide: IonicStorage,

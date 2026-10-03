@@ -1,6 +1,5 @@
 ﻿import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
 import { of, NEVER } from 'rxjs';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -23,7 +22,6 @@ describe('ClasslistOptionsPopoverComponent', () => {
         ClasslistOptionsPopoverComponent
       ],
       providers: [
-        { provide: AppRate, useValue: {} },
         {
           provide: IonicStorage,
           useValue: {

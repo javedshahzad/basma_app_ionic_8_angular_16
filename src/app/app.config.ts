@@ -15,7 +15,6 @@ import { FormsModule } from '@angular/forms';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
 import { Printer } from '@awesome-cordova-plugins/printer/ngx';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 
 import { createTranslateLoader } from './app.module';
 import { DataService } from './service/data/data.service';
@@ -55,7 +54,6 @@ export const appConfig: ApplicationConfig = {
     DatabaseService,
     PhotoViewer,
     Printer,
-    AppRate,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: MyInterceptor,

@@ -3,7 +3,7 @@ import { NavController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { Router } from '@angular/router';
-import { Device } from '@capacitor/device';
+import { getInstallId, getNativeDeviceId } from '../service/device-id';
 import { DeviceApiService } from '../service/device-api/device-api.service';
 import { StorageService } from '../service/storage.service';
 import { NgClass } from '@angular/common';
@@ -47,7 +47,7 @@ export class AllDevicesPage implements OnInit {
 
   async ngOnInit() {
     this.userDetails = await this.storageSr.get('userloggedin');
-    this.deviceSr.uuid = (await Device.getId()).identifier;
+    this.deviceSr.uuid = (await getNativeDeviceId()) || (await getInstallId(this.storageSr));
     this.translate.get('alertmessages').subscribe(res => {
       this.lang = res;
       this.cdr.markForCheck();

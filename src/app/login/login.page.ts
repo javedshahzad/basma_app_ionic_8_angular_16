@@ -4,7 +4,7 @@ import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
 import { DatabaseService } from '../service/database/database.service';
 import { LoginModel } from '../model/login.model';
-import { Device } from '@capacitor/device';
+import { currentOsType, getNativeDeviceId } from '../service/device-id';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, NavigationExtras } from '@angular/router';
 import { LoaderComponent } from '../components/loader/loader.component';
@@ -70,10 +70,13 @@ export class LoginPage {
     this.dissmissPopOver();
 
     // 1. تحديد المعرف الفريد (UUID) ومنع أخطاء المتصفح
-    if (this.platform.is('cordova') || this.platform.is('capacitor')) {
-      const [deviceId, deviceInfo] = await Promise.all([Device.getId(), Device.getInfo()]);
-      this.uniqueDeviceId = deviceId.identifier;
-      this.user.os_type = deviceInfo.platform === 'android' ? 1 : 2;
+    // getNativeDeviceId never throws: with the native Device plugin missing it gives '' and the
+    // install id below is used, instead of this screen failing before it loads anything.
+    const nativeDeviceId =
+      this.platform.is('cordova') || this.platform.is('capacitor') ? await getNativeDeviceId() : '';
+    if (nativeDeviceId) {
+      this.uniqueDeviceId = nativeDeviceId;
+      this.user.os_type = currentOsType();
     } else {
       let browserId = await this.storageSr.get('browser_uuid');
       if (!browserId) {
@@ -81,12 +84,12 @@ export class LoginPage {
         await this.storageSr.set('browser_uuid', browserId);
       }
       this.uniqueDeviceId = browserId;
-      this.user.os_type = 2;
+      this.user.os_type = currentOsType();
     }
     this.user.device_id = this.uniqueDeviceId;
 
     // 2. استرجاع بيانات "تذكرني" بذكاء
-    const credentials = await this.credentialStorage.get('usercredentials');
+    const credentials = await this.credentialStorage.tryGet('usercredentials');
 
     if (credentials) {
       // 🟢 نستخدم zone.run مع تأخير بسيط لضمان أن الحقول جاهزة للاستقبال
@@ -102,7 +105,7 @@ export class LoginPage {
     }
 
     // استرجاع قائمة الحسابات السابقة
-    let earlyLoginData = await this.credentialStorage.get('earlyLogin');
+    let earlyLoginData = await this.credentialStorage.tryGet('earlyLogin');
     if (earlyLoginData) {
       this.zone.run(() => {
         this.loggedinUser = earlyLoginData;

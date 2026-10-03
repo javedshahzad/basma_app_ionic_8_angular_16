@@ -5,7 +5,6 @@ import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/com
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AppRate } from '@awesome-cordova-plugins/app-rate/ngx';
 
 import { CredentialStorageService } from './credential-storage.service';
 
@@ -30,7 +29,6 @@ describe('CredentialStorageService', () => {
     TestBed.configureTestingModule({
       imports: [IonicModule.forRoot(), TranslateModule.forRoot(), RouterTestingModule],
       providers: [
-        { provide: AppRate, useValue: {} },
         {
           provide: IonicStorage,
           useValue: {
@@ -65,6 +63,25 @@ describe('CredentialStorageService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('when the native encrypted store cannot be opened', () => {
+    beforeEach(() => {
+      // Pretend to be on a device (the harness itself is never native) and make
+      // every read of the encrypted database fail.
+      (service as any).isNative = true;
+      spyOn((service as any).db, 'getCredential').and.rejectWith(new Error('database attendance not opened'));
+    });
+
+    it('get() rejects, so an unreadable refresh token is not mistaken for "not saved"', async () => {
+      await expectAsync(service.get('refreshToken')).toBeRejected();
+    });
+
+    it('tryGet() treats it as nothing saved instead of failing the screen that asked', async () => {
+      // login.page reads remember-me / the account list on ionViewWillEnter with
+      // nothing to catch a rejection (Sentry issue 150599335, "Handled: No").
+      await expectAsync(service.tryGet('usercredentials')).toBeResolvedTo(null);
+    });
   });
 
   it('round-trips a value through set/get/remove', async () => {
