@@ -35,11 +35,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>We need access to your camera to capture profile pictures and send images in chat, enhancing your communication experience with personalized visuals</string>
+	<string>We need access to your camera to capture profile pictures and send images in chat, enhancing your communication experience with personalized visuals.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>$PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION</string>
+	<string>We need access to save photos you take or receive in Basma, such as profile pictures and chat images.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We would like to access your photo library to allow you to select and send existing photos in chat . making your conversations more engaging with visual content.</string>
+	<string>We would like to access your photo library so you can select and send existing photos in chat and for profile pictures.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
