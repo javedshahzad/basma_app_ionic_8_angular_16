@@ -15,12 +15,12 @@ export const environment = {
     // serverURL: "https://basmapp.com/development/app_service_new/",
     // serverURL: "https://basmapp.com/BasmaCP/app_service_new/",
     // serverURL: "https://staging.basmapp.com/api/v1/",
-    serverURL: "https://staging.basmapp.com/api/v1/",
+    serverURL: "https://production.basmapp.com/api/v1/",
     lang_code: 'en',
     docUrl:"https://basmapp.com/BasmaCP/",
     ipinfoToken: "eebb6806073dbe",
     // اتركه فارغاً محلياً حتى لا تُرسَل أخطاء بيئة التطوير إلى Sentry
-    sentryDsn: ""
+    sentryDsn: "https://559fc7bf2e03cf467e6fd52eb5c763a9@o4511849267855360.ingest.de.sentry.io/4511849284960336"
 
 
 };
