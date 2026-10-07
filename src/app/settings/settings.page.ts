@@ -2,7 +2,8 @@
 import { NavController, Platform, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
+import { CameraResultType, ImageOptions, CameraSource } from '@capacitor/camera';
+import { getPhotoOrNull } from '@services/photo-picker';
 
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
@@ -725,7 +726,7 @@ export class SettingsPage {
       source: CameraSource.Camera
     };
 
-    Camera.getPhoto(options).then(imageData => {
+    getPhotoOrNull(options).then(imageData => {
       if (imageData) {
         this.displayPic = 'data:image/png;base64,' + imageData.base64String;
         this.user.pic = 'data:image/png;base64,' + imageData.base64String;
@@ -741,7 +742,7 @@ export class SettingsPage {
       source: CameraSource.Photos
     };
 
-    Camera.getPhoto(options).then(imageData => {
+    getPhotoOrNull(options).then(imageData => {
       if (imageData) {
         this.displayPic = 'data:image/png;base64,' + imageData.base64String;
         this.user.pic = 'data:image/png;base64,' + imageData.base64String;

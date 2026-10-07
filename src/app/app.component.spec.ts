@@ -1,12 +1,12 @@
 ﻿import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of, Subject } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 
 import { Platform, MenuController, NavController, ToastController } from '@ionic/angular';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { Storage as IonicStorage } from '@ionic/storage-angular';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { AuthService } from './service/auth/auth.service';
@@ -60,6 +60,7 @@ describe('AppComponent', () => {
         { provide: DataService, useValue: dataProviderSpy },
         { provide: DatabaseService, useValue: jasmine.createSpyObj('DatabaseService', {
                 openDataBase: Promise.resolve(),
+                tryOpenDataBase: Promise.resolve(true),
                 createTable: undefined
             }) },
         { provide: IonicStorage, useValue: { create: () => Promise.resolve({ get: () => Promise.resolve(null), set: () => Promise.resolve(), remove: () => Promise.resolve(), clear: () => Promise.resolve() }) } },
@@ -85,5 +86,49 @@ describe('AppComponent', () => {
     appFixture = TestBed.createComponent(AppComponent);
     const app = appFixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('tryLogin does not raise an unhandled error when the device is offline (Sentry 151218027)', async () => {
+    // Only tryLogin() is under test; an empty template keeps the (mocked) translate pipe out of it.
+    TestBed.overrideComponent(AppComponent, { set: { template: '' } });
+    appFixture = TestBed.createComponent(AppComponent);
+    const app = appFixture.componentInstance;
+
+    storageSrSpy.get.and.callFake((key: string) =>
+      Promise.resolve(key === 'userloggedin' ? { details: { user_no: '1', country_code: 'KW', school_id: 2 } } : null)
+    );
+    const get = jasmine.createSpy('get').and.returnValue(throwError(() => new HttpErrorResponse({ status: 0 })));
+    app.http = { get };
+
+    await app.tryLogin();
+    // An unhandled subscriber error is rethrown on a timer; give it the chance to fail the spec.
+    await new Promise(resolve => setTimeout(resolve, 10));
+
+    expect(get).toHaveBeenCalled();
+  });
+
+  describe('device check poll', () => {
+    const run = async (visibility: 'hidden' | 'visible') => {
+      appFixture = TestBed.createComponent(AppComponent);
+      const app = appFixture.componentInstance;
+      storageSrSpy.get.and.callFake((key: string) =>
+        Promise.resolve(key === 'userloggedin' ? { details: { user_no: '1' }, session_id: 's' } : null)
+      );
+      const check = jasmine.createSpy('CheckDeviceLogInStatus').and.returnValue(Promise.resolve({ success: true, data: {} }));
+      app.deviceApi = { CheckDeviceLogInStatus: check };
+      spyOnProperty(document, 'visibilityState', 'get').and.returnValue(visibility);
+      await app.CheckDeviceLogInStatus();
+      return check;
+    };
+
+    it('does not call the server while the app is in the background', async () => {
+      TestBed.overrideComponent(AppComponent, { set: { template: '' } });
+      expect(await run('hidden')).not.toHaveBeenCalled();
+    });
+
+    it('calls the server while the app is visible', async () => {
+      TestBed.overrideComponent(AppComponent, { set: { template: '' } });
+      expect(await run('visible')).toHaveBeenCalledTimes(1);
+    });
   });
 });

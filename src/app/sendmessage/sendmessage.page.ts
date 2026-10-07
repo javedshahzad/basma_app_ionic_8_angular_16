@@ -5,7 +5,8 @@ import { DataService } from '../service/data/data.service';
 
 import { UserSelectionPage } from '../user-selection/user-selection.page';
 
-import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
+import { CameraResultType, ImageOptions, CameraSource } from '@capacitor/camera';
+import { getPhotoOrNull } from '@services/photo-picker';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -339,7 +340,7 @@ export class SendmessagePage {
       source: CameraSource.Camera
     };
 
-    Camera.getPhoto(options).then(imageData => {
+    getPhotoOrNull(options).then(imageData => {
       if (imageData) {
         this.ticketImage = imageData.base64String || '';
         this.mediaType = 'image/jpg';
@@ -355,7 +356,7 @@ export class SendmessagePage {
       source: CameraSource.Photos
     };
 
-    Camera.getPhoto(options).then(imageData => {
+    getPhotoOrNull(options).then(imageData => {
       if (imageData) {
         this.ticketImage = imageData.base64String || '';
         this.mediaType = 'image/jpg';

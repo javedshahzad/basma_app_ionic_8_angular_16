@@ -123,6 +123,8 @@ export class AppComponent {
       const isLoggedIn = await this.storageSr.get('userloggedin');
       if (isLoggedIn) {
         this.tryLogin();
+        // The 7-second poll is skipped while hidden, so check once on the way back.
+        this.CheckDeviceLogInStatus();
       }
     });
 
@@ -759,15 +761,20 @@ export class AppComponent {
             `get_user_type?user_no=${userInfo.details.user_no}&code=${userInfo.details.country_code}&school_id=${userInfo?.details.school_id}`
         )
         .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(async (res: any) => {
-          if (res.user_type) {
-            this.dataProvider.unread = res.unread;
-            this.dataProvider.private_message = res.notifications;
-            if (res.school?.deactivate_date) {
-              this.dataProvider.deactivate_date = res.school?.deactivate_date;
+        .subscribe({
+          next: async (res: any) => {
+            if (res.user_type) {
+              this.dataProvider.unread = res.unread;
+              this.dataProvider.private_message = res.notifications;
+              if (res.school?.deactivate_date) {
+                this.dataProvider.deactivate_date = res.school?.deactivate_date;
+              }
+              await this.storageSr.set('userloggedin', userInfo);
             }
-            await this.storageSr.set('userloggedin', userInfo);
-          }
+          },
+          // A background refresh of the unread counts. Offline it fails with HTTP 0, which
+          // with no error handler became an unhandled error on every resume (Sentry 151218027).
+          error: () => {}
         });
     }
 
@@ -841,7 +848,10 @@ export class AppComponent {
   }
 
   async CheckDeviceLogInStatus() {
-    if (this.checkingDeviceStatus) {
+    // The poll runs every 7 seconds from a timer that keeps firing while the app is in the
+    // background. There it only piles up requests the OS suspends or drops, which come back
+    // as HTTP 0 / timeouts on resume. onAppForeground() checks once when the app returns.
+    if (this.checkingDeviceStatus || document.visibilityState === 'hidden') {
       return;
     }
     const userDetails = await this.storageSr.get('userloggedin');

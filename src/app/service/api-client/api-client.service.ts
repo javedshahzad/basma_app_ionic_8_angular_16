@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
 import { isNetworkConnected } from '../network-status';
-import { loadSentryAngular } from '../sentry/sentry-lazy';
+import { reportHttpFailure } from './http-failure-report';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../model/api-response.model';
 
@@ -101,25 +101,9 @@ export class ApiClient {
               }
             }
           }, (error) => {
-            // Only real transport/HTTP failures are Sentry-worthy here — the
-            // empty-body "Unable to find any record" reject above is a normal
-            // no-data outcome, not a bug, and must not be captured.
-            // HttpErrorResponse doesn't extend Error, so passing it directly
-            // makes Sentry fall back to a generic "Object captured as
-            // exception with keys: ..." title with no message or stack.
-            // Wrap it in a real Error so issues are readable and group by
-            // endpoint/status. Deliberately do NOT forward the raw
-            // HttpErrorResponse as `extra` — `error.error` is the backend's
-            // response body, which can echo back submitted PII (names,
-            // phone numbers, national IDs) in validation messages, and
-            // `error.url`/`error.headers` can carry identifiers too. Only
-            // status/statusText/slug — already visible in the request URL
-            // itself — are safe, genuinely diagnostic metadata.
-            const status = error?.status ?? 'unknown';
-            const statusText = error?.statusText || error?.message || 'Unknown Error';
-            loadSentryAngular()?.then(Sentry => {
-              Sentry.captureException(new Error(`HTTP ${status} (${statusText}) on ${slug}`), { extra: { slug, status, statusText } });
-            });
+            // The empty-body "Unable to find any record" reject above is a normal no-data
+            // outcome and is not reported; only real transport/HTTP failures are.
+            reportHttpFailure(error, slug);
             reject(error);
           })
         } else {
@@ -151,11 +135,7 @@ export class ApiClient {
               reject('Unable to find any record');
             }
           }, (error) => {
-            const status = error?.status ?? 'unknown';
-            const statusText = error?.statusText || error?.message || 'Unknown Error';
-            loadSentryAngular()?.then(Sentry => {
-              Sentry.captureException(new Error(`HTTP ${status} (${statusText}) on ${slug}`), { extra: { slug, status, statusText } });
-            });
+            reportHttpFailure(error, slug);
             reject(error);
           })
         } else {

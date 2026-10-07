@@ -13,7 +13,8 @@ import {
 import { AuthService } from '../service/auth/auth.service';
 import { DataService, getFileReader } from '../service/data/data.service';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
+import { CameraResultType, ImageOptions, CameraSource } from '@capacitor/camera';
+import { getPhotoOrNull } from '@services/photo-picker';
 import { isNetworkConnected } from '../service/network-status';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 
@@ -833,7 +834,7 @@ export class StudentsPage {
       height: 500,
       allowEditing: true
     };
-    Camera.getPhoto(options).then(imageData => {
+    getPhotoOrNull(options).then(imageData => {
       if (imageData) {
         this.ChangeStudentProfileAvatar(imageData.base64String || '');
       }
@@ -849,7 +850,7 @@ export class StudentsPage {
       height: 500,
       allowEditing: true
     };
-    Camera.getPhoto(options).then(imageData => {
+    getPhotoOrNull(options).then(imageData => {
       if (imageData) {
         this.ChangeStudentProfileAvatar(imageData.base64String || '');
       }

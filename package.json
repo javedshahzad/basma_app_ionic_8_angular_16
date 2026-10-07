@@ -14,7 +14,7 @@
     "analyze": "ng build --configuration=production --source-map && source-map-explorer www/*.js --no-border-checks --html www/bundle-report.html",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
     "format:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
-    "postinstall": "patch-package"
+    "postinstall": "node node_modules/patch-package/index.js"
   },
   "private": true,
   "dependencies": {

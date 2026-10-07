@@ -6,7 +6,8 @@ import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { Location, NgClass } from '@angular/common';
 import { PhotoViewer } from '@awesome-cordova-plugins/photo-viewer/ngx';
-import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
+import { CameraResultType, ImageOptions, CameraSource } from '@capacitor/camera';
+import { getPhotoOrNull } from '@services/photo-picker';
 
 // 🟢 1. استيراد خدمة التخزين الآمنة
 import { StorageService } from '../service/storage.service';
@@ -372,7 +373,7 @@ export class ConnectChatPage implements OnDestroy {
       allowEditing: true
     };
 
-    Camera.getPhoto(options).then(imageData => {
+    getPhotoOrNull(options).then(imageData => {
       if (imageData && imageData.base64String) {
         this.attachment = 'data:image/png;base64,' + imageData.base64String;
         this.image = 'data:image/jpeg;base64,' + imageData.base64String;
@@ -391,7 +392,7 @@ export class ConnectChatPage implements OnDestroy {
       allowEditing: true
     };
 
-    Camera.getPhoto(options).then(imageData => {
+    getPhotoOrNull(options).then(imageData => {
       if (imageData && imageData.base64String) {
         this.attachment = 'data:image/png;base64,' + imageData.base64String;
         this.image = 'data:image/jpeg;base64,' + imageData.base64String;

@@ -2,7 +2,8 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { NavController, Platform, AlertController, IonicModule } from '@ionic/angular';
 import { AuthService } from '../service/auth/auth.service';
 import { DataService } from '../service/data/data.service';
-import { CameraResultType, Camera, ImageOptions, CameraSource } from '@capacitor/camera';
+import { CameraResultType, ImageOptions, CameraSource } from '@capacitor/camera';
+import { getPhotoOrNull } from '@services/photo-picker';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 import { GeoServiceProvider } from '../service/geo-service/geo-service';
@@ -217,7 +218,7 @@ export class SchoolRegistrationPage implements OnInit {
       resultType: CameraResultType.Base64,
       source: CameraSource.Camera
     };
-    const image = await Camera.getPhoto(options);
+    const image = await getPhotoOrNull(options);
     if (image) {
       this.handleImageData(image.base64String || '', type);
     }
@@ -229,7 +230,7 @@ export class SchoolRegistrationPage implements OnInit {
       resultType: CameraResultType.Base64,
       source: CameraSource.Photos
     };
-    const image = await Camera.getPhoto(options);
+    const image = await getPhotoOrNull(options);
     if (image) {
       this.handleImageData(image.base64String || '', type);
     }

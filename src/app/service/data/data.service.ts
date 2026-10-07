@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Platform, LoadingController, ModalController, NavController, PopoverController } from '@ionic/angular';
-import { onNetworkChange } from '../network-status';
 import { DatabaseService } from '../database/database.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -48,13 +47,10 @@ export class DataService {
         });
       }, 2000);
     });
-    onNetworkChange(connected => {
-      if (connected) {
-        this.showToast('Internet connected');
-      } else {
-        this.showToast('No Internet connection...');
-      }
-    });
+    // No toast on network changes. Android reports the current network the moment a listener
+    // is added, so a toast fired on every app launch, and again on each wifi/cellular blip,
+    // and presenting it took focus and closed the keyboard mid-typing. Connectivity is shown
+    // by <app-offline-banner> (ConnectivityService), which is debounced and non-focusable.
   }
 
   // --- Passthroughs to AppStateService (Subjects + shared mutable state) ---

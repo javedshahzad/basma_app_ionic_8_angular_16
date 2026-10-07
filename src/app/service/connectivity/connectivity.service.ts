@@ -19,8 +19,13 @@ export class ConnectivityService {
   private readonly _isOnline = signal(true);
   readonly isOnline = this._isOnline.asReadonly();
 
+  /** True for a few seconds after a real outage ends, so the banner can say "back online". */
+  private readonly _justReconnected = signal(false);
+  readonly justReconnected = this._justReconnected.asReadonly();
+
   private readonly isNative: boolean;
   private offlineDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  private reconnectedTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private platform: Platform,
@@ -60,7 +65,7 @@ export class ConnectivityService {
     }
 
     if (connected) {
-      this._isOnline.set(true);
+      this.setOnline();
       return;
     }
 
@@ -73,7 +78,26 @@ export class ConnectivityService {
   /** Force a fresh read (e.g. before a critical write) rather than waiting on the next event. */
   async refresh(): Promise<boolean> {
     const connected = this.isNative ? await isNetworkConnected() : navigator.onLine;
-    this._isOnline.set(connected);
+    if (connected) {
+      this.setOnline();
+    } else {
+      this._isOnline.set(false);
+    }
     return connected;
+  }
+
+  /**
+   * Marks the device online. Only a change from offline counts as a reconnect: the
+   * native Network plugin also reports "connected" on every app launch and resume, and
+   * that must stay silent.
+   */
+  private setOnline() {
+    const wasOffline = !this._isOnline();
+    this._isOnline.set(true);
+    if (!wasOffline) return;
+
+    this._justReconnected.set(true);
+    if (this.reconnectedTimer) clearTimeout(this.reconnectedTimer);
+    this.reconnectedTimer = setTimeout(() => this._justReconnected.set(false), 3000);
   }
 }

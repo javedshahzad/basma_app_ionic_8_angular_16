@@ -39,6 +39,11 @@ async function initSentry(injector: Injector): Promise<void> {
       environment: environment.production ? 'production' : 'development',
       integrations: [SentryAngular.browserTracingIntegration()],
       tracesSampleRate: 0.15,
+      // ionic-selectable's open()/close() reject with a plain string when the control is
+      // tapped twice (the second tap finds it already open/closed) and its own callers
+      // have no .catch. The user's selection is already made, so there is nothing to act
+      // on (Sentry 151187994).
+      ignoreErrors: [/IonicSelectable is disabled or already (opened|closed)/],
       // Defense-in-depth scrub, independent of what any individual capture
       // call site attaches: strips query strings (which have carried
       // user_no/uuid — see finding 3b) from request/breadcrumb URLs, and
