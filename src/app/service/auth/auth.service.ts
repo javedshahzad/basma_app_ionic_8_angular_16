@@ -43,12 +43,22 @@ export class AuthService {
     private credentialStorage: CredentialStorageService
   ) {
     this.event = new Subject();
-    this.hydrateCurrentUser();
+    this.startup = this.hydrateCurrentUser();
   }
 
+  // Settles (never rejects) once the saved user is loaded and, if there is one, the
+  // startup token refresh has finished, whether or not it worked.
+  private readonly startup: Promise<void>;
+
   private async hydrateCurrentUser() {
-    this.currentUser = await this.storageSr.get("userloggedin");
-    this.currentUuid = await this.storageSr.get("uuid");
+    try {
+      this.currentUser = await this.storageSr.get("userloggedin");
+      this.currentUuid = await this.storageSr.get("uuid");
+    } catch (error) {
+      // Nothing awaits this from the constructor, so a rejection would be unhandled.
+      console.warn('Could not read the saved session at startup.', error);
+      return;
+    }
 
     // Access tokens don't survive an app restart (memory-only) -- warm one
     // up from the persisted refresh token now, so the first real request
@@ -86,6 +96,31 @@ export class AuthService {
     } finally {
       this.refreshInFlight = null;
     }
+  }
+
+  /**
+   * The current access token, waiting for the startup refresh when there isn't one yet.
+   *
+   * The token is memory-only, so at a cold start the first requests (class list, dashboard,
+   * account-status checks) used to go out with no token, all come back 401, and only then
+   * trigger the refresh and a retry of each one. Callers that are about to send an
+   * authenticated request wait here first, so they go out once, with a token.
+   *
+   * Never rejects and never waits longer than `maxWaitMs`: a slow credential store or network
+   * falls back to the old behaviour (send, and let the 401 path refresh) instead of holding
+   * every request.
+   */
+  async ensureAccessToken(maxWaitMs = 10000): Promise<string | null> {
+    if (this.accessToken) {
+      return this.accessToken;
+    }
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timedOut = new Promise<void>(resolve => {
+      timer = setTimeout(resolve, maxWaitMs);
+    });
+    await Promise.race([this.startup, timedOut]);
+    clearTimeout(timer);
+    return this.accessToken;
   }
 
   private async doRefreshAccessToken(): Promise<string | null> {

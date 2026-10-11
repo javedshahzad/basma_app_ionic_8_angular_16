@@ -15,6 +15,7 @@ import { tap, retry, catchError, timeout, switchMap } from 'rxjs/operators';
 import { AlertController } from '@ionic/angular';
 import { DataService } from '@services/data/data.service';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from '../environments/environment';
 
 // login/schoolRegister don't have a token yet; refreshToken is what mints
 // one and must stay reachable even when the current access token is dead.
@@ -31,8 +32,30 @@ export class MyInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    // At a cold start the access token (memory-only) doesn't exist until the startup refresh
+    // finishes. Without waiting, the first API requests go out tokenless, all fail with 401,
+    // and each is retried after the refresh. Wait once instead and send them with a token.
+    if (this.isApiRequest(request) && !this.isExempt(request) && !this.auth.accessToken) {
+      return from(this.auth.ensureAccessToken()).pipe(switchMap(() => this.send(request, next)));
+    }
+    return this.send(request, next);
+  }
+
+  // Only calls to our own API carry the user's token. Everything else that goes through
+  // HttpClient (translation files, the ipinfo.io country lookup) must not: the token was
+  // being sent to ipinfo.io, and a third party's 401 would have triggered a refresh and
+  // possibly a sign-out.
+  private isApiRequest(request: HttpRequest<any>): boolean {
+    return request.url.startsWith(environment.serverURL);
+  }
+
+  private isExempt(request: HttpRequest<any>): boolean {
+    return !this.isApiRequest(request) || AUTH_EXEMPT_ENDPOINTS.some(endpoint => request.url.endsWith(endpoint));
+  }
+
+  private send(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let requestToHandle = request;
-    const isAuthExempt = AUTH_EXEMPT_ENDPOINTS.some(endpoint => request.url.endsWith(endpoint));
+    const isAuthExempt = this.isExempt(request);
 
     // 0️⃣ JWT: يُرفق كترويسة Authorization، وليس داخل جسم الطلب — هذا هو آلية
     // المصادقة الفعلية الآن (لم يعد session_id مستخدَماً إطلاقاً).
